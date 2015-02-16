@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FB0614DF-E1BF-45FF-80EC-0DBC8A504C7A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Polimi.DEIB.VahidJalili.MSPC.CLI</RootNamespace>
+    <AssemblyName>MSPC</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Polimi.DEIB.VahidJalili.MSPC.CLI.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="GIFP">
+      <HintPath>..\..\Libraries\GIFP.dll</HintPath>
+    </Reference>
+    <Reference Include="IGenomics">
+      <HintPath>..\..\Libraries\IGenomics.dll</HintPath>
+    </Reference>
+    <Reference Include="PowerCollections">
+      <HintPath>..\..\Libraries\PowerCollections.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommandLineOptions.cs" />
+    <Compile Include="LoadSamples.cs" />
+    <Compile Include="Process.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MSPCCore\MSPCCore.csproj">
+      <Project>{afe1effd-777e-4edd-932d-08d81030283c}</Project>
+      <Name>MSPCCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MSPCExporter\MSPCExporter.csproj">
+      <Project>{a5a0848b-67e7-4fa8-b3b6-ef89b38fb729}</Project>
+      <Name>MSPCExporter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MSPCWarehouse\MSPCWarehouse.csproj">
+      <Project>{16dee90e-db43-4c0c-9540-2f56249396e2}</Project>
+      <Name>MSPCWarehouse</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

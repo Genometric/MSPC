@@ -25,7 +25,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.CLI
                     source: arg,
                     species: Genomes.HomoSapiens,
                     assembly: Assemblies.hm19,
-                    readOnlyValidChrs: true,
+                    readOnlyValidChrs: false,
                     startOffset: 0,
                     chrColumn: 0,
                     leftEndColumn: 1,

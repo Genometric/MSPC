@@ -11,140 +11,143 @@
 using Polimi.DEIB.VahidJalili.IGenomics;
 using Polimi.DEIB.VahidJalili.MSPC.Warehouse;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
 {
-    public class ExporterBase<Peak, Metadata> : Enums
+    public class ExporterBase<Peak, Metadata>
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
         where Metadata : IChIPSeqPeak, new()
     {
         public string samplePath { set; get; }
-
-        public string sessionPath { set; get; }
-
-        public bool includeBEDHeader { set; get; }
-
-        internal void Export__R_j__o(AnalysisResult<Peak, Metadata> data)
+        protected string sessionPath { set; get; }
+        protected bool includeBEDHeader { set; get; }
+        protected Dictionary<UInt32, string> samples { set; get; }
+        protected AnalysisResult<Peak, Metadata> data { set; get; }
+        
+        protected void Export__R_j__o_BED()
         {
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "A_Output_Set.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "A_Output_Set.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "AOutputSet.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "AOutputSet.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
                 foreach (var chr in data.R_j__o)
                 {
                     chr.Value.Sort();
-
                     foreach (var item in chr.Value)
                     {
-                        if (item.falsePositive == false)
+                        if (item.statisticalClassification == PeakClassificationType.TruePositive)
                         {
-                            SP_Writer.WriteLine(
+                            writter.WriteLine(
                                 chr.Key + "\t" +
                                 item.peak.left.ToString() + "\t" +
                                 item.peak.right.ToString() + "\t" +
                                 item.peak.metadata.name + "\t" +
-                                ConvertPValue(item.peak.metadata.value));
+                                ConvertPValue(item.peak.metadata.value)+ "\t" +
+                                Math.Round(item.xSquared, 3) + "\t" +
+                                ConvertPValue(item.rtp));
                         }
                     }
                 }
             }
 
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "A_Output_Set_stringent_Confirmed_peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "A_Output_Set_stringent_Confirmed_peaks.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "AOutputSetstringentConfirmedpeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "AOutputSetstringentConfirmedpeaks.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
                 foreach (var chr in data.R_j__o)
                 {
                     chr.Value.Sort();
-
                     foreach (var item in chr.Value)
                     {
-                        if (item.falsePositive == false && item.classification == Classification.StringentConfirmed)
+                        if (item.statisticalClassification == PeakClassificationType.TruePositive && item.classification == PeakClassificationType.StringentConfirmed)
                         {
-                            SP_Writer.WriteLine(
+                            writter.WriteLine(
                                 chr.Key + "\t" +
                                 item.peak.left.ToString() + "\t" +
                                 item.peak.right.ToString() + "\t" +
                                 item.peak.metadata.name + "\t" +
-                                ConvertPValue(item.peak.metadata.value));
+                                ConvertPValue(item.peak.metadata.value) + "\t" +
+                                Math.Round(item.xSquared, 3) + "\t" +
+                                ConvertPValue(item.rtp));
                         }
                     }
                 }
             }
 
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "A_Output_Set_weak_Confirmed_peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "A_Output_Set_weak_Confirmed_peaks.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "AOutputSetweakConfirmedpeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "AOutputSetweakConfirmedpeaks.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
                 foreach (var chr in data.R_j__o)
                 {
                     chr.Value.Sort();
-
                     foreach (var item in chr.Value)
                     {
-                        if (item.falsePositive == false && item.classification == Classification.WeakConfirmed)
+                        if (item.statisticalClassification == PeakClassificationType.TruePositive && item.classification == PeakClassificationType.WeakConfirmed)
                         {
-                            SP_Writer.WriteLine(
+                            writter.WriteLine(
                                 chr.Key + "\t" +
                                 item.peak.left.ToString() + "\t" +
                                 item.peak.right.ToString() + "\t" +
                                 item.peak.metadata.name + "\t" +
-                                ConvertPValue(item.peak.metadata.value));
+                                ConvertPValue(item.peak.metadata.value) + "\t" +
+                                Math.Round(item.xSquared, 3) + "\t" +
+                                ConvertPValue(item.rtp));
                         }
                     }
                 }
             }
 
 
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "A_Output_Set_False_Positives.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "A_Output_Set_False_Positives.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "AOutputSetFalsePositives.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "AOutputSetFalsePositives.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
                 foreach (var chr in data.R_j__o)
                 {
                     chr.Value.Sort();
-
                     foreach (var item in chr.Value)
                     {
-                        if (item.falsePositive == true)
+                        if (item.statisticalClassification == PeakClassificationType.FalsePositive)
                         {
-                            SP_Writer.WriteLine(
+                            writter.WriteLine(
                                 chr.Key + "\t" +
                                 item.peak.left.ToString() + "\t" +
                                 item.peak.right.ToString() + "\t" +
                                 item.peak.metadata.name + "\t" +
-                                ConvertPValue(item.peak.metadata.value));
+                                ConvertPValue(item.peak.metadata.value) + "\t" +
+                                Math.Round(item.xSquared, 3) + "\t" +
+                                ConvertPValue(item.rtp));
                         }
                     }
                 }
             }
-        }
-
-        internal void Export__R_j__s(AnalysisResult<Peak, Metadata> data)
+        }        
+        protected void Export__R_j__s_BED()
         {
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "B_Stringent_Peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "B_Stringent_Peaks.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "BStringentPeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "BStringentPeaks.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))");
 
                 foreach (var chr in data.R_j__s)
                 {
                     chr.Value.Sort();
-
                     foreach (var item in chr.Value)
                     {
-                        SP_Writer.WriteLine(
+                        writter.WriteLine(
                             chr.Key + "\t" +
                             item.left.ToString() + "\t" +
                             item.right.ToString() + "\t" +
@@ -154,22 +157,20 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
                 }
             }
         }
-
-        internal void Export__R_j__w(AnalysisResult<Peak, Metadata> data)
+        protected void Export__R_j__w_BED()
         {
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "C_Weak_Peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "C_Weak_Peaks.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "CWeakPeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "CWeakPeaks.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))");
 
                 foreach (var chr in data.R_j__w)
                 {
                     chr.Value.Sort();
-
                     foreach (var item in chr.Value)
                     {
-                        SP_Writer.WriteLine(
+                        writter.WriteLine(
                             chr.Key + "\t" +
                             item.left.ToString() + "\t" +
                             item.right.ToString() + "\t" +
@@ -179,14 +180,13 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
                 }
             }
         }
-
-        internal void Export__R_j__v(AnalysisResult<Peak, Metadata> data)
+        protected void Export__R_j__c_BED()
         {
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "D_Confirmed_Peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "D_Confirmed_Peaks.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "DConfirmedPeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "DConfirmedPeaks.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
                 foreach (var chr in data.R_j__c)
                 {
@@ -194,21 +194,23 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        SP_Writer.WriteLine(
+                        writter.WriteLine(
                             chr.Key + "\t" +
                             item.Value.peak.left.ToString() + "\t" +
                             item.Value.peak.right.ToString() + "\t" +
                             item.Value.peak.metadata.name + "\t" +
-                            ConvertPValue(item.Value.peak.metadata.value));
+                            ConvertPValue(item.Value.peak.metadata.value) + "\t" +
+                            Math.Round(item.Value.xSquared, 3) + "\t" +
+                            ConvertPValue(item.Value.rtp));
                     }
                 }
             }
 
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "D_Stringent_Confirmed_Peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "D_Stringent_Confirmed_Peaks.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "DStringentConfirmedPeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "DStringentConfirmedPeaks.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
                 foreach (var chr in data.R_j__c)
                 {
@@ -216,24 +218,26 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Value.classification == Classification.StringentConfirmed)
+                        if (item.Value.classification == PeakClassificationType.StringentConfirmed)
                         {
-                            SP_Writer.WriteLine(
+                            writter.WriteLine(
                                 chr.Key + "\t" +
                                 item.Value.peak.left.ToString() + "\t" +
                                 item.Value.peak.right.ToString() + "\t" +
                                 item.Value.peak.metadata.name + "\t" +
-                                ConvertPValue(item.Value.peak.metadata.value));
+                                ConvertPValue(item.Value.peak.metadata.value) + "\t" +
+                                Math.Round(item.Value.xSquared, 3) + "\t" +
+                                ConvertPValue(item.Value.rtp));
                         }
                     }
                 }
             }
 
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "D_Weak_Confirmed_Peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "D_Weak_Confirmed_Peaks.bed"))
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "DWeakConfirmedPeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "DWeakConfirmedPeaks.bed"))
             {
                 if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
                 foreach (var chr in data.R_j__c)
                 {
@@ -241,96 +245,97 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Value.classification == Classification.WeakConfirmed)
+                        if (item.Value.classification == PeakClassificationType.WeakConfirmed)
                         {
-                            SP_Writer.WriteLine(
+                            writter.WriteLine(
                                 chr.Key + "\t" +
                                 item.Value.peak.left.ToString() + "\t" +
                                 item.Value.peak.right.ToString() + "\t" +
                                 item.Value.peak.metadata.name + "\t" +
-                                ConvertPValue(item.Value.peak.metadata.value));
+                                ConvertPValue(item.Value.peak.metadata.value) + "\t" +
+                                Math.Round(item.Value.xSquared, 3) + "\t" +
+                                ConvertPValue(item.Value.rtp));
+                        }
+                    }
+                }
+            }
+        }        
+        protected void Export__R_j__d_BED()
+        {
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "EDiscardedPeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "EDiscardedPeaks.bed"))
+            {
+                if (includeBEDHeader)
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd");
+
+                foreach (var chr in data.R_j__d)
+                {
+                    foreach (var item in chr.Value)
+                    {
+                        writter.WriteLine(
+                            chr.Key + "\t" +
+                            item.Value.peak.left.ToString() + "\t" +
+                            item.Value.peak.right.ToString() + "\t" +
+                            item.Value.peak.metadata.name + "\t" +
+                            ConvertPValue(item.Value.peak.metadata.value) + "\t" +
+                            Math.Round(item.Value.xSquared, 3));
+                    }
+                }
+            }
+
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "EStringentDiscardedPeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "EStringentDiscardedPeaks.bed"))
+            {
+                if (includeBEDHeader)
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd");
+
+                foreach (var chr in data.R_j__d)
+                {
+                    foreach (var item in chr.Value)
+                    {
+                        if (item.Value.classification == PeakClassificationType.StringentDiscarded)
+                        {
+                            writter.WriteLine(
+                                chr.Key + "\t" +
+                                item.Value.peak.left.ToString() + "\t" +
+                                item.Value.peak.right.ToString() + "\t" +
+                                item.Value.peak.metadata.name + "\t" +
+                                ConvertPValue(item.Value.peak.metadata.value) + "\t" +
+                                Math.Round(item.Value.xSquared, 3));
+                        }
+                    }
+                }
+            }
+
+            using (File.Create(samplePath + Path.DirectorySeparatorChar + "EWeakDiscardedPeaks.bed")) { }
+            using (StreamWriter writter = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "EWeakDiscardedPeaks.bed"))
+            {
+                if (includeBEDHeader)
+                    writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd");
+
+                foreach (var chr in data.R_j__d)
+                {
+                    foreach (var item in chr.Value)
+                    {
+                        if (item.Value.classification == PeakClassificationType.WeakDiscarded)
+                        {
+                            writter.WriteLine(
+                                chr.Key + "\t" +
+                                item.Value.peak.left.ToString() + "\t" +
+                                item.Value.peak.right.ToString() + "\t" +
+                                item.Value.peak.metadata.name + "\t" +
+                                ConvertPValue(item.Value.peak.metadata.value) + "\t" +
+                                Math.Round(item.Value.xSquared, 3));
                         }
                     }
                 }
             }
         }
-
-        internal void Export__R_j__d(AnalysisResult<Peak, Metadata> data)
-        {
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "E_Discarded_Peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "E_Discarded_Peaks.bed"))
-            {
-                if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
-
-                foreach (var chr in data.R_j__d)
-                {
-                    foreach (var item in chr.Value)
-                    {
-                        SP_Writer.WriteLine(
-                            chr.Key + "\t" +
-                            item.Value.peak.left.ToString() + "\t" +
-                            item.Value.peak.right.ToString() + "\t" +
-                            item.Value.peak.metadata.name + "\t" +
-                            ConvertPValue(item.Value.peak.metadata.value));
-                    }
-                }
-            }
-
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "E_Stringent_Discarded_Peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "E_Stringent_Discarded_Peaks.bed"))
-            {
-                if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
-
-                foreach (var chr in data.R_j__d)
-                {
-                    foreach (var item in chr.Value)
-                    {
-                        if (item.Value.classification == Classification.StringentDiscarded)
-                        {
-                            SP_Writer.WriteLine(
-                                chr.Key + "\t" +
-                                item.Value.peak.left.ToString() + "\t" +
-                                item.Value.peak.right.ToString() + "\t" +
-                                item.Value.peak.metadata.name + "\t" +
-                                ConvertPValue(item.Value.peak.metadata.value));
-                        }
-                    }
-                }
-            }
-
-            using (File.Create(samplePath + Path.DirectorySeparatorChar + "E_Weak_Discarded_Peaks.bed")) { }
-            using (StreamWriter SP_Writer = new StreamWriter(samplePath + Path.DirectorySeparatorChar + "E_Weak_Discarded_Peaks.bed"))
-            {
-                if (includeBEDHeader)
-                    SP_Writer.WriteLine("chr\tstart\tstop\tpeak_identifier\tp_value(-10xlog10(p-value))");
-
-                foreach (var chr in data.R_j__d)
-                {
-                    foreach (var item in chr.Value)
-                    {
-                        if (item.Value.classification == Classification.WeakDiscarded)
-                        {
-                            SP_Writer.WriteLine(
-                                chr.Key + "\t" +
-                                item.Value.peak.left.ToString() + "\t" +
-                                item.Value.peak.right.ToString() + "\t" +
-                                item.Value.peak.metadata.name + "\t" +
-                                ConvertPValue(item.Value.peak.metadata.value));
-                        }
-                    }
-                }
-            }
-        }
-
+        
         private string ConvertPValue(double pValue)
         {
             if (pValue != 0)
-            {
-                return (Math.Round((-10.0) * Math.Log10(pValue), 3)).ToString();
-            }
-
+                return (Math.Round((-1) * Math.Log10(pValue), 3)).ToString();
             return "0";
         }
     }

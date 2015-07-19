@@ -63,7 +63,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -101,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="MSPCCLI_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
@@ -115,7 +114,7 @@
       <Name>MSPCExporter</Name>
     </ProjectReference>
     <ProjectReference Include="..\MSPCWarehouse\MSPCWarehouse.csproj">
-      <Project>{16dee90e-db43-4c0c-9540-2f56249396e2}</Project>
+      <Project>{9f68e94d-b71c-4365-aff3-0823ddecce5b}</Project>
       <Name>MSPCWarehouse</Name>
     </ProjectReference>
   </ItemGroup>

@@ -33,7 +33,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer.Data
             {
                 var sample = Samples<Peak, Metadata>.Data[sampleKey.Key];
 
-                analysisResults.Add(sample.fileHashKey, new AnalysisResult<Peak, Metadata>(sample.fileName, sample.filePath));
+                analysisResults.Add(sample.fileHashKey, new AnalysisResult<Peak, Metadata>(sample.fileName, sample.filePath, Samples<Peak, Metadata>.Data.Count * 2));
 
                 Dictionary<string, IntervalTree<Peak, int>> sampleTree = new Dictionary<string, IntervalTree<Peak, int>>();
 
@@ -47,7 +47,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer.Data
                             if (p.metadata.value <= Options.tauW)
                                 sampleTree[chromosome.Key].AddInterval(p.left, p.right, p);
                             else
-                                analysisResults[sampleKey.Key].R_j__g[chromosome.Key].Add(p);
+                                analysisResults[sampleKey.Key].R_j__b[chromosome.Key].Add(p);
                     }
 
                 trees.Add(sample.fileHashKey, sampleTree);

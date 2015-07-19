@@ -21,41 +21,58 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
         where Metadata : IChIPSeqPeak, new()
     {
-        public bool Export_R_j__o { set; get; }
-
-        public bool Export_R_j__s { set; get; }
-
-        public bool Export_R_j__w { set; get; }
-
-        public bool Export_R_j__v { set; get; }
-
-        public bool Export_R_j__d { set; get; }
-
-        public bool Export_R_j__o_Details { set; get; }
-
-        public bool Export_R_j__v_Details { set; get; }
-
-        public bool Export_R_j__d_Details { set; get; }
-
-        public bool Export_Chromosomewide_stats { set; get; }
-
-        public bool IncludeBEDHeader { set; get; }
-
-        private Dictionary<UInt32, AnalysisResult<Peak, Metadata>> AnalysisResults { set; get; }
-
-        public Session<Peak, Metadata> Session { set; get; }
-
-        private Dictionary<UInt32, string> sampleKeys { set; get; }
-
-        public void Export()
+        public Exporter(Session<Peak, Metadata> session)
         {
-            AnalysisResults = Session.analysisResults;
-            sampleKeys = Session.samples;
+            _session = session;
+        }
+
+        public int fileProgress
+        {
+            set
+            {
+                _fileProgress = value;
+                OnFileProgressChanged(value);
+            }
+            get { return _fileProgress; }
+        }
+        private int _fileProgress;
+        public event EventHandler<ExporterEventArgs> FileProgressChanged;
+        private void OnFileProgressChanged(int value)
+        {
+            if (FileProgressChanged != null)
+                FileProgressChanged(this, new ExporterEventArgs(value));
+        }
+
+        public int sampleProgress
+        {
+            set
+            {
+                _sampleProgress = value;
+                OnSampleProgressChanged(value);
+            }
+            get { return _sampleProgress; }
+        }
+        private int _sampleProgress;
+        public event EventHandler<ExporterEventArgs> SampleProgressChanged;
+        private void OnSampleProgressChanged(int value)
+        {
+            if (SampleProgressChanged != null)
+                SampleProgressChanged(this, new ExporterEventArgs(value));
+        }
+
+
+        private Dictionary<UInt32, AnalysisResult<Peak, Metadata>> _analysisResults { set; get; }
+        private Session<Peak, Metadata> _session { set; get; }
+
+        public void Export(ExportOptions options)
+        {
+            _analysisResults = _session.analysisResults;
+            samples = _session.samples;
+            includeBEDHeader = options.includeBEDHeader;
+            sessionPath = options.sessionPath;
 
             if (!Directory.Exists(sessionPath))
                 Directory.CreateDirectory(sessionPath);
-
-            includeBEDHeader = IncludeBEDHeader;
 
             string date =
                 DateTime.Now.Date.ToString("dd'_'MM'_'yyyy", CultureInfo.InvariantCulture) +
@@ -63,35 +80,23 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
                 "_m" + DateTime.Now.TimeOfDay.Minutes.ToString() +
                 "_s" + DateTime.Now.TimeOfDay.Seconds.ToString() + "__";
 
-            //ExportOverview(AnalysisResults);
-
-            foreach (var sampleKey in sampleKeys)
+            foreach (var sample in samples)
             {
-                var data = AnalysisResults[sampleKey.Key];
-
-                int DISP = 0; // Duplication Index for Session Path
+                int duplicationExtension = 0;
+                fileProgress = 0;
+                sampleProgress++;
+                data = _analysisResults[sample.Key];
 
                 samplePath = sessionPath + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(data.FileName);
-
                 while (Directory.Exists(samplePath))
-                    samplePath = sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(data.FileName) + "_" + (DISP++).ToString();
-
+                    samplePath = sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(data.FileName) + "_" + (duplicationExtension++).ToString();
                 Directory.CreateDirectory(samplePath);
 
-                if (Export_R_j__o) Export__R_j__o(AnalysisResults[sampleKey.Key]);
-                if (Export_R_j__s) Export__R_j__s(AnalysisResults[sampleKey.Key]);
-                if (Export_R_j__w) Export__R_j__w(AnalysisResults[sampleKey.Key]);
-                if (Export_R_j__v) Export__R_j__v(AnalysisResults[sampleKey.Key]);
-                if (Export_R_j__d) Export__R_j__d(AnalysisResults[sampleKey.Key]);
-
-                //if (Export_R_j__v_Details)
-                //if (Export_R_j__d_Details)
-                //if (Export_Chromosomewide_stats)
-                /*if (Export_R_j__o_Details)
-                {
-                    Export_Output_set_in_Details("A_Output_set_True_Positives_Details", true);
-                    Export_Output_set_in_Details("A_Output_set_False_Positives_Details", false);
-                }*/
+                if (options.Export_R_j__o_BED) { fileProgress++; Export__R_j__o_BED(); }
+                if (options.Export_R_j__s_BED) { fileProgress++; Export__R_j__s_BED(); }
+                if (options.Export_R_j__w_BED) { fileProgress++; Export__R_j__w_BED(); }
+                if (options.Export_R_j__c_BED) { fileProgress++; Export__R_j__c_BED(); }
+                if (options.Export_R_j__d_BED) { fileProgress++; Export__R_j__d_BED(); }
             }
         }
     }

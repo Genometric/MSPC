@@ -17,7 +17,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
         /// <summary>
         /// Represents the replicate type of the input samples.
         /// </summary>
-        internal static new Enums.ReplicateType replicateType { set; get; }
+        internal static new ReplicateType replicateType { set; get; }
 
         /// <summary>
         /// Only one peak out of multiple peaks of a sample intersecting
@@ -25,7 +25,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
         /// this parameter is TRUE, the peak with lowest p-value will be 
         /// used; otherwise the peak with highest p-value will be used.
         /// </summary>
-        internal static new Enums.MultipleIntersections multipleIntersections { set; get; }
+        internal static new MultipleIntersections multipleIntersections { set; get; }
 
         /// <summary>
         /// Represents the default value for maximum log of p-value. 

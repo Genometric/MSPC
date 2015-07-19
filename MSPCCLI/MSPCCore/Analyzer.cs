@@ -15,7 +15,7 @@ using Polimi.DEIB.VahidJalili.MSPC.Analyzer.Data;
 using Polimi.DEIB.VahidJalili.MSPC.Warehouse;
 using System;
 using System.Collections.Generic;
-using XSquaredData;
+using Polimi.DEIB.VahidJalili.XSquaredData;
 
 namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
 {
@@ -59,7 +59,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
         {
             Data<Peak, Metadata>.sampleKeys.Add(sampleKey, fileName);
         }
-        public void Run(SessionOptions options)
+        public void Run(AnalysisOptions options)
         {
             Options.replicateType = options.replicateType;
             Options.C = options.C;

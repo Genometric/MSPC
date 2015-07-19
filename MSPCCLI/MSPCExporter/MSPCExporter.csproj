@@ -30,8 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GIFP">
+      <HintPath>..\..\libraries\GIFP.dll</HintPath>
+    </Reference>
     <Reference Include="IGenomics">
-      <HintPath>..\..\Libraries\IGenomics.dll</HintPath>
+      <HintPath>..\..\libraries\IGenomics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,11 +47,13 @@
   <ItemGroup>
     <Compile Include="Exporter.cs" />
     <Compile Include="ExporterBase.cs" />
+    <Compile Include="ExporterEventArgs.cs" />
+    <Compile Include="ExportOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MSPCWarehouse\MSPCWarehouse.csproj">
-      <Project>{16dee90e-db43-4c0c-9540-2f56249396e2}</Project>
+      <Project>{9f68e94d-b71c-4365-aff3-0823ddecce5b}</Project>
       <Name>MSPCWarehouse</Name>
     </ProjectReference>
   </ItemGroup>

@@ -15,11 +15,11 @@ using Polimi.DEIB.VahidJalili.MSPC.Warehouse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using XSquaredData;
+using Polimi.DEIB.VahidJalili.XSquaredData;
 
 namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
 {
-    internal class Processor<Peak, Metadata> : Enums
+    internal class Processor<Peak, Metadata>
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
         where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
@@ -62,23 +62,15 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
 
         private void InitialClassification(Peak p)
         {
-            if (p.metadata.value <= Options.tauS)
-            {
-                analysisResults.R_j__s[chrTitle].Add(p);
-            }
-            else if (p.metadata.value <= Options.tauW)
-            {
+            if (p.metadata.value <= Options.tauS)            
+                analysisResults.R_j__s[chrTitle].Add(p);            
+            else if (p.metadata.value <= Options.tauW)            
                 analysisResults.R_j__w[chrTitle].Add(p);
-            }
-            else
-            {
-                analysisResults.R_j__g[chrTitle].Add(p);
-            }
         }
 
-        private List<AnalysisResult<Peak, Metadata>.SupportingPeaks> FindSupportingPeaks(Peak p)
+        private List<AnalysisResult<Peak, Metadata>.SupportingPeak> FindSupportingPeaks(Peak p)
         {
-            var supPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeaks>();
+            var supPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeak>();
 
             foreach (var sampleKey in Data<Peak, Metadata>.sampleKeys)
             {
@@ -94,8 +86,8 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                         case 0: break;
 
                         case 1:
-                            supPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeaks()
-                            {
+                            supPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak()
+                            {                                
                                 peak = (Peak)interPeaks[0].Data,
                                 sampleIndex = sampleKey.Key
                             });
@@ -110,7 +102,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                                     chosenPeak = tIp;
 
 
-                            supPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeaks()
+                            supPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak()
                             {
                                 peak = (Peak)chosenPeak.Data,
                                 sampleIndex = sampleKey.Key
@@ -123,7 +115,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             return supPeak;
         }
 
-        private void SecondaryClassification(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeaks> supportingPeaks)
+        private void SecondaryClassification(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
         {
             if (supportingPeaks.Count + 1 >= Options.C)
             {
@@ -140,7 +132,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             }
         }
 
-        private void ConfirmPeak(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeaks> supportingPeaks)
+        private void ConfirmPeak(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
         {
             var anRe = new AnalysisResult<Peak, Metadata>.ProcessedPeak()
             {
@@ -153,12 +145,12 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             if (p.metadata.value <= Options.tauS)
             {
                 analysisResults.R_j___sc[chrTitle]++;
-                anRe.classification = Classification.StringentConfirmed;
+                anRe.classification = PeakClassificationType.StringentConfirmed;
             }
             else
             {
                 analysisResults.R_j___wc[chrTitle]++;
-                anRe.classification = Classification.WeakConfirmed;
+                anRe.classification = PeakClassificationType.WeakConfirmed;
             }
 
             if (!analysisResults.R_j__c[chrTitle].ContainsKey(p.metadata.hashKey))
@@ -167,15 +159,15 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             ConfirmeSupportingPeaks(p, supportingPeaks);
         }
 
-        private void ConfirmeSupportingPeaks(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeaks> supportingPeaks)
+        private void ConfirmeSupportingPeaks(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
         {
             foreach (var supPeak in supportingPeaks)
             {
                 if (!Data<Peak, Metadata>.analysisResults[supPeak.sampleIndex].R_j__c[chrTitle].ContainsKey(supPeak.peak.metadata.hashKey))
                 {
-                    var tSupPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeaks>();
+                    var tSupPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeak>();
                     var targetSample = Data<Peak, Metadata>.analysisResults[supPeak.sampleIndex];
-                    tSupPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeaks() { peak = p, sampleIndex = sampleHashKey });
+                    tSupPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak() { peak = p, sampleIndex = sampleHashKey });
 
                     foreach (var sP in supportingPeaks)
                         if (supPeak.CompareTo(sP) != 0)
@@ -192,12 +184,12 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                     if (supPeak.peak.metadata.value <= Options.tauS)
                     {
                         targetSample.R_j___sc[chrTitle]++;
-                        anRe.classification = Classification.StringentConfirmed;
+                        anRe.classification = PeakClassificationType.StringentConfirmed;
                     }
                     else
                     {
                         targetSample.R_j___wc[chrTitle]++;
-                        anRe.classification = Classification.WeakConfirmed;
+                        anRe.classification = PeakClassificationType.WeakConfirmed;
                     }
 
                     targetSample.R_j__c[chrTitle].Add(supPeak.peak.metadata.hashKey, anRe);
@@ -205,7 +197,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             }
         }
 
-        private void DiscardPeak(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeaks> supportingPeaks, byte discardReason)
+        private void DiscardPeak(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks, byte discardReason)
         {
             var anRe = new AnalysisResult<Peak, Metadata>.ProcessedPeak
             {
@@ -222,7 +214,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                     analysisResults.R_j__sdt[chrTitle]++;  // - Test failure
                 else analysisResults.R_j__sdc[chrTitle]++; // - insufficient intersecting regions count
 
-                anRe.classification = Classification.StringentDiscarded;
+                anRe.classification = PeakClassificationType.StringentDiscarded;
             }
             else
             {
@@ -231,7 +223,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                     analysisResults.R_j__wdt[chrTitle]++;  // - Test failure
                 else analysisResults.R_j__wdc[chrTitle]++; // - insufficient intersecting regions count
 
-                anRe.classification = Classification.WeakDiscarded;
+                anRe.classification = PeakClassificationType.WeakDiscarded;
             }
 
             if (!analysisResults.R_j__d[chrTitle].ContainsKey(p.metadata.hashKey))
@@ -241,15 +233,15 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                 DiscardSupportingPeaks(p, supportingPeaks, discardReason);
         }
 
-        private void DiscardSupportingPeaks(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeaks> supportingPeaks, byte discardReason)
+        private void DiscardSupportingPeaks(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks, byte discardReason)
         {
             foreach (var supPeak in supportingPeaks)
             {
                 if (!Data<Peak, Metadata>.analysisResults[supPeak.sampleIndex].R_j__d[chrTitle].ContainsKey(supPeak.peak.metadata.hashKey))
                 {
-                    var tSupPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeaks>();
+                    var tSupPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeak>();
                     var targetSample = Data<Peak, Metadata>.analysisResults[supPeak.sampleIndex];
-                    tSupPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeaks() { peak = p, sampleIndex = sampleHashKey });
+                    tSupPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak() { peak = p, sampleIndex = sampleHashKey });
 
                     foreach (var sP in supportingPeaks)
                         if (supPeak.CompareTo(sP) != 0)
@@ -268,12 +260,12 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                     if (supPeak.peak.metadata.value <= Options.tauS)
                     {
                         targetSample.R_j__sdt[chrTitle]++;
-                        anRe.classification = Classification.StringentDiscarded;
+                        anRe.classification = PeakClassificationType.StringentDiscarded;
                     }
                     else
                     {
                         targetSample.R_j__wdt[chrTitle]++;
-                        anRe.classification = Classification.WeakDiscarded;
+                        anRe.classification = PeakClassificationType.WeakDiscarded;
                     }
 
                     targetSample.R_j__d[chrTitle].Add(supPeak.peak.metadata.hashKey, anRe);
@@ -281,7 +273,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             }
         }
 
-        private void CalculateXsqrd(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeaks> supportingPeaks)
+        private void CalculateXsqrd(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
         {
             if (p.metadata.value != 0)
                 tXsqrd = Math.Log(p.metadata.value, Math.E);
@@ -371,18 +363,18 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                             peak = confirmedPeak.Value.peak,
                             rtp = confirmedPeak.Value.rtp,
                             xSquared = confirmedPeak.Value.xSquared,
-                            falsePositive = false,
+                            classification = PeakClassificationType.TruePositive,
                             supportingPeaks = confirmedPeak.Value.supportingPeaks,
                         };
 
                         if (confirmedPeak.Value.peak.metadata.value <= Options.tauS)
                         {
-                            outputPeak.classification = Classification.StringentConfirmed;
+                            outputPeak.classification = PeakClassificationType.StringentConfirmed;
                             analysisResults[sample.Key].R_j___so[chr.Key]++;
                         }
                         else if (confirmedPeak.Value.peak.metadata.value <= Options.tauW)
                         {
-                            outputPeak.classification = Classification.WeakConfirmed;
+                            outputPeak.classification = PeakClassificationType.WeakConfirmed;
                             analysisResults[sample.Key].R_j___wo[chr.Key]++;
                         }
 
@@ -424,12 +416,12 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                             {
                                 // This should update the [analysisResults[sample.Key].R_j__o[chr.Key]] ; is it updating ?
                                 outputSet[l].adjPValue = (((double)k * outputSet[l].peak.metadata.value) / (double)m) * Options.alpha;
-                                outputSet[l].falsePositive = false;
+                                outputSet[l].statisticalClassification = PeakClassificationType.TruePositive;
                             }
                             for (int l = k; l < m; l++)
                             {
                                 outputSet[l].adjPValue = (((double)k * outputSet[l].peak.metadata.value) / (double)m) * Options.alpha;
-                                outputSet[l].falsePositive = true;
+                                outputSet[l].statisticalClassification = PeakClassificationType.FalsePositive;
                             }
 
                             analysisResults[sample.Key].R_j_TP[chr.Key] = (uint)k;

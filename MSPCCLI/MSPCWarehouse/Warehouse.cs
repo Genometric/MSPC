@@ -19,7 +19,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse
         where ER : IInterval<int, Metadata>, IComparable<ER>, new()
         where Metadata : IChIPSeqPeak, new()
     {
-        public static Dictionary<UInt32, ParsedChIPseqPeaks<int, ER, Metadata>> Data { set; get; }
+        public static Dictionary<uint, ParsedChIPseqPeaks<int, ER, Metadata>> Data { set; get; }
     }
 
     public static class Sessions<ER, Metadata>

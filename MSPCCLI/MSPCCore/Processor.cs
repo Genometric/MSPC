@@ -31,15 +31,15 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
 
         private string chrTitle { set; get; }
 
-        private UInt32 sampleHashKey { set; get; }
+        private uint sampleHashKey { set; get; }
 
 
-        private Dictionary<UInt32, Dictionary<string, IntervalTree<Peak, int>>> trees { set; get; }
+        private Dictionary<uint, Dictionary<string, IntervalTree<Peak, int>>> trees { set; get; }
 
         internal Processor()
         { }
 
-        internal void Run(UInt32 SampleHashKey, string ChrTitle, char strand)
+        internal void Run(uint SampleHashKey, string ChrTitle, char strand)
         {
             chrTitle = ChrTitle;
             sampleHashKey = SampleHashKey;

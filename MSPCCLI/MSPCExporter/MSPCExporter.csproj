@@ -31,10 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GIFP">
-      <HintPath>..\..\libraries\GIFP.dll</HintPath>
+      <HintPath>..\Resources\GIFP.dll</HintPath>
     </Reference>
     <Reference Include="IGenomics">
-      <HintPath>..\..\libraries\IGenomics.dll</HintPath>
+      <HintPath>..\Resources\IGenomics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

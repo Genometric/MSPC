@@ -30,17 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ChrDataInitializer">
-      <HintPath>..\..\Libraries\ChrDataInitializer.dll</HintPath>
-    </Reference>
     <Reference Include="GIFP">
-      <HintPath>..\..\Libraries\GIFP.dll</HintPath>
+      <HintPath>..\Resources\GIFP.dll</HintPath>
     </Reference>
     <Reference Include="IGenomics">
-      <HintPath>..\..\Libraries\IGenomics.dll</HintPath>
+      <HintPath>..\Resources\IGenomics.dll</HintPath>
     </Reference>
     <Reference Include="IntervalTreeLib">
-      <HintPath>..\..\Libraries\IntervalTreeLib.dll</HintPath>
+      <HintPath>..\Resources\IntervalTreeLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,7 +47,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="XSquaredData">
-      <HintPath>..\..\Libraries\XSquaredData.dll</HintPath>
+      <HintPath>..\Resources\XSquaredData.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

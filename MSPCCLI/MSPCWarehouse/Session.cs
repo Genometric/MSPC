@@ -21,7 +21,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse
     {
         public bool isCompleted { set; get; }
         public int index { set; get; }
-        public Dictionary<UInt32, string> samples { set; get; }
+        public Dictionary<uint, string> samples { set; get; }
         public DateTime startTime { set; get; }
         public DateTime endTime { set; get; }
         public string elapsedTime { set; get; }

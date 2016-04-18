@@ -20,14 +20,14 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer.Data
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
         where Metadata : IChIPSeqPeak, new()
     {
-        internal static Dictionary<UInt32, string> sampleKeys { set; get; }
-        internal static Dictionary<UInt32, Dictionary<string, IntervalTree<Peak, int>>> trees { set; get; }
-        internal static Dictionary<UInt32, AnalysisResult<Peak, Metadata>> analysisResults { set; get; }
+        internal static Dictionary<uint, string> sampleKeys { set; get; }
+        internal static Dictionary<uint, Dictionary<string, IntervalTree<Peak, int>>> trees { set; get; }
+        internal static Dictionary<uint, AnalysisResult<Peak, Metadata>> analysisResults { set; get; }
         internal static List<double> cachedChiSqrd { set; get; }
         internal static void BuildSharedItems()
         {
-            trees = new Dictionary<UInt32, Dictionary<string, IntervalTree<Peak, int>>>();
-            Data<Peak, Metadata>.analysisResults = new Dictionary<UInt32, AnalysisResult<Peak, Metadata>>();
+            trees = new Dictionary<uint, Dictionary<string, IntervalTree<Peak, int>>>();
+            Data<Peak, Metadata>.analysisResults = new Dictionary<uint, AnalysisResult<Peak, Metadata>>();
 
             foreach (var sampleKey in sampleKeys)
             {

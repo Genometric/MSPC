@@ -73,16 +73,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+      <HintPath>..\Resources\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="GIFP">
-      <HintPath>..\..\Libraries\GIFP.dll</HintPath>
+      <HintPath>..\Resources\GIFP.dll</HintPath>
     </Reference>
     <Reference Include="IGenomics">
-      <HintPath>..\..\Libraries\IGenomics.dll</HintPath>
+      <HintPath>..\Resources\IGenomics.dll</HintPath>
     </Reference>
     <Reference Include="PowerCollections">
-      <HintPath>..\..\Libraries\PowerCollections.dll</HintPath>
+      <HintPath>..\Resources\PowerCollections.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

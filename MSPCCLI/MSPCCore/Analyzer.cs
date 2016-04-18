@@ -8,7 +8,6 @@
  * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
  **/
 
-using ChrDataInitializer;
 using Polimi.DEIB.VahidJalili.GIFP;
 using Polimi.DEIB.VahidJalili.IGenomics;
 using Polimi.DEIB.VahidJalili.MSPC.Analyzer.Data;
@@ -39,23 +38,22 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             }
         }
 
-        public event EventHandler<ValueEventArgs> Status_Changed;
+        public event EventHandler<ValueEventArgs> statusChanged;
         private void OnStatusValueChaned(string value)
         {
-            if (Status_Changed != null)
-                Status_Changed(this, new ValueEventArgs(value));
+            if (statusChanged != null)
+                statusChanged(this, new ValueEventArgs(value));
         }
 
         #endregion
 
-        private ChrDataInitializer.DataInitializer initializer { set; get; }
         private Processor<Peak, Metadata> processor { set; get; }
 
         public Analyzer()
         {
             Data<Peak, Metadata>.sampleKeys = new Dictionary<uint, string>();
         }
-        public void AddSample(UInt32 sampleKey, string fileName)
+        public void AddSample(uint sampleKey, string fileName)
         {
             Data<Peak, Metadata>.sampleKeys.Add(sampleKey, fileName);
         }
@@ -74,7 +72,6 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                 Data<Peak, Metadata>.cachedChiSqrd.Add(Math.Round(ChiSquaredCache.ChiSqrdINVRTP(Options.gamma, (byte)(i * 2)), 3));
 
             Data<Peak, Metadata>.BuildSharedItems();
-            initializer = new DataInitializer();
 
             processor = new Processor<Peak, Metadata>();
 
@@ -99,8 +96,6 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                 foreach (var chr in sample.intervals)
                     foreach (var strand in chr.Value)
                     {
-                        initializer.Run(chr.Key);
-
                         int currentLineCursor = Console.CursorTop;
                         Console.SetCursorPosition(0, Console.CursorTop);
                         Console.Write(new string(' ', Console.WindowWidth));
@@ -126,11 +121,11 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             #endregion
             processor.EstimateFalseDiscoveryRate();
         }
-        public Dictionary<UInt32, AnalysisResult<Peak, Metadata>> GetResults()
+        public Dictionary<uint, AnalysisResult<Peak, Metadata>> GetResults()
         {
             return Data.Data<Peak, Metadata>.analysisResults;
         }
-        public Dictionary<UInt32, string> GetSamples()
+        public Dictionary<uint, string> GetSamples()
         {
             return Data<Peak, Metadata>.sampleKeys;
         }

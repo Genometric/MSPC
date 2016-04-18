@@ -17,12 +17,12 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse.Classes
         /// <summary>
         /// gets and sets the total peaks count on the chromosomes.
         /// </summary>
-        public UInt32 R_j__t_c { set; get; }
+        public uint R_j__t_c { set; get; }
 
         /// <summary>
         /// gets and sets the total number of stringent peaks count on the chromosome.
         /// </summary>
-        public UInt32 R_j__s_c { set; get; }
+        public uint R_j__s_c { set; get; }
 
         /// <summary>
         /// gets and sets the percentage of total number of stringent peaks count on the chromosome.
@@ -32,7 +32,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse.Classes
         /// <summary>
         /// gets and sets the total number of weak peaks count on the chromosome.
         /// </summary>
-        public UInt32 R_j__w_c { set; get; }
+        public uint R_j__w_c { set; get; }
 
         /// <summary>
         /// gets and sets the percentage of total number of weak peaks count on the chromosome.
@@ -42,7 +42,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse.Classes
         /// <summary>
         /// gets and sets the total number of Confirmed peaks count on the chromosome.
         /// </summary>
-        public UInt32 R_j__c_c { set; get; }
+        public uint R_j__c_c { set; get; }
 
         /// <summary>
         /// gets and sets the percentage of total number of Confirmed peaks count on the chromosome.
@@ -52,7 +52,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse.Classes
         /// <summary>
         /// gets and sets the total number of Discarded peaks count on the chromosome.
         /// </summary>
-        public UInt32 R_j__d_c { set; get; }
+        public uint R_j__d_c { set; get; }
 
         /// <summary>
         /// gets and sets the percentage of total number of Discarded peaks count on the chromosome.
@@ -62,7 +62,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse.Classes
         /// <summary>
         /// gets and sets the total number of peaks count in Output set on the chromosome.
         /// </summary>
-        public UInt32 R_j__o_c { set; get; }
+        public uint R_j__o_c { set; get; }
 
         /// <summary>
         /// gets and sets the percentage of total number of peaks count in Output set on the chromosome.
@@ -72,7 +72,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse.Classes
         /// <summary>
         /// gets and set the total number of True-Positive peaks count in Output set on the chromosome
         /// </summary>
-        public UInt32 R_j_TP_c { set; get; }
+        public uint R_j_TP_c { set; get; }
 
         /// <summary>
         /// gets and sets the percentage of True-Positive peaks count in Output set on the chromosome.
@@ -82,7 +82,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse.Classes
         /// <summary>
         /// gets and set the total number of False-Positive peaks count in Output set on the chromosome
         /// </summary>
-        public UInt32 R_j_FP_c { set; get; }
+        public uint R_j_FP_c { set; get; }
 
         /// <summary>
         /// gets and sets the percentage of False-Positive peaks count in Output set on the chromosome.

@@ -8,9 +8,7 @@ When replicate samples are analysed, overlapping enriched regions are expected. 
 
 Given a set of peaks from (biological or technical) replicates, the method combines the p-values of overlapping enriched regions: users can choose a threshold on the combined significance of overlapping peaks and set a minimum number of replicates where the overlapping peaks should be present. The method allows the "rescue" of weak peaks occuring in more than one replicate and outputs a new set of enriched regions for each replicate. 
 
-For details you may refer to the project's [website](http://www.bioinformatics.deib.polimi.it/genomic_computing/MSPC/index.html) or [MSPC publication](http://bioinformatics.oxfordjournals.org/content/31/17/2761).
-Alternatively, you may check the [MSPC slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133).
-A linux/Mac built is available at [DOWNLOADS](https://mspc.codeplex.com/releases/view/611735) tab.
+For details you may refer to the [MSPC publication](http://bioinformatics.oxfordjournals.org/content/31/17/2761) and  [slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133).
 
 
 ## Citing MSPC

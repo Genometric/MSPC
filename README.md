@@ -19,6 +19,10 @@ If you use or extend MSPC in your published work, please cite the following publ
     Vahid Jalili, Matteo Matteucci, Marco Masseroli, Marco J. Morelli;
     Using combined evidence from replicates to evaluate ChIP-seq peaks.
     Bioinformatics 2015; 31 (17): 2761-2769. doi: 10.1093/bioinformatics/btv293
+    
+
+## Documentation
+Check wiki pages for [quick start](https://github.com/Genometric/MSPC/wiki/Quick-Start) and [detailed description of arguments](https://github.com/Genometric/MSPC/wiki/Arguments-in-details).
 
 
 ## Graphical version

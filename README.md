@@ -21,8 +21,8 @@ If you use or extend MSPC in your published work, please cite the following publ
     Bioinformatics 2015; 31 (17): 2761-2769. doi: 10.1093/bioinformatics/btv293
     
 
-## Documentation
-Check wiki pages for [quick start](https://github.com/Genometric/MSPC/wiki/Quick-Start) and [detailed description of arguments](https://github.com/Genometric/MSPC/wiki/Arguments-in-details).
+## Download and Documentation
+All releases of MSPC are available for [download from this page](https://github.com/Genometric/MSPC/tree/master/Downloads). For documentation, check wiki pages for [quick start](https://github.com/Genometric/MSPC/wiki/Quick-Start) and [detailed description of arguments](https://github.com/Genometric/MSPC/wiki/Arguments-in-details).
 
 
 ## Graphical version

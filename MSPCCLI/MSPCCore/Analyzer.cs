@@ -76,7 +76,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             processor = new Processor<Peak, Metadata>();
 
             #region .::.    Status      .::.
-            int totalSteps = Data<Peak, Metadata>.sampleKeys.Count + 3;
+            int totalSteps = Data<Peak, Metadata>.sampleKeys.Count + 5;
             int stepCounter = 0;
             #endregion
 
@@ -107,7 +107,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             }
 
             #region .::.    Status      .::.
-            Console.Write("\r[" + (++stepCounter).ToString() + "\\" + totalSteps + "] Purifying intermediate sets.");
+            Console.WriteLine("\r[" + (++stepCounter).ToString() + "\\" + totalSteps + "] Purifying intermediate sets.");
             #endregion
             processor.IntermediateSetsPurification();
 
@@ -117,13 +117,22 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             processor.CreateOuputSet();
 
             #region .::.    Status      .::.
-            Console.WriteLine("[" + stepCounter + "\\" + totalSteps + "] Performing Multiple testing correction.");
+            Console.WriteLine("[" + (++stepCounter).ToString() + "\\" + totalSteps + "] Performing Multiple testing correction.");
             #endregion
             processor.EstimateFalseDiscoveryRate();
+
+            #region .::.    Status      .::.
+            Console.WriteLine("[" + (++stepCounter).ToString() + "\\" + totalSteps + "] Creating combined output set.");
+            #endregion
+            processor.CreateCombinedOutputSet();
         }
         public Dictionary<uint, AnalysisResult<Peak, Metadata>> GetResults()
         {
             return Data.Data<Peak, Metadata>.analysisResults;
+        }
+        public Dictionary<string, SortedList<Warehouse.Interval<Peak, Metadata>, Peak>> GetMergedReplicates()
+        {
+            return Data.Data<Peak, Metadata>.mergedReplicates;
         }
         public Dictionary<uint, string> GetSamples()
         {

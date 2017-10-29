@@ -17,14 +17,14 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse
 {
     public static class Samples<ER, Metadata>
         where ER : IInterval<int, Metadata>, IComparable<ER>, new()
-        where Metadata : IChIPSeqPeak, new()
+        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
         public static Dictionary<uint, ParsedChIPseqPeaks<int, ER, Metadata>> Data { set; get; }
     }
 
     public static class Sessions<ER, Metadata>
         where ER : IInterval<int, Metadata>, IComparable<ER>, new()
-        where Metadata : IChIPSeqPeak, new()
+        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
         public static Dictionary<string, Session<ER, Metadata>> Data { set; get; }
 

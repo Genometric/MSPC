@@ -41,14 +41,23 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse
 
         public uint hashKey { set; get; }
 
+        public void Merge(int left, int right)
+        {
+            this.left = Math.Min(this.left, left);
+            this.right = Math.Max(this.right, right);
+        }
+
         public int CompareTo(Interval<C, M> that)
         {
-            if (that == null) return 1;
+            /*if (that == null) return 1;
             if (this.left != that.left) return this.left.CompareTo(that.left);
             if (this.right != that.right) return this.right.CompareTo(that.right);
 
             //if (this.metadata != that.metadata)
-            return this.metadata.CompareTo(that.metadata);
+            return this.metadata.CompareTo(that.metadata);*/
+            if (this.right <= that.left) return -1;
+            if (this.left >= that.right) return 1;
+            return 0;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse
 {
     public class Session<ER, Metadata> : INotifyPropertyChanged
         where ER : IInterval<int, Metadata>, IComparable<ER>, new()
-        where Metadata : IChIPSeqPeak, new()
+        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
         public bool isCompleted { set; get; }
         public int index { set; get; }
@@ -27,6 +27,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Warehouse
         public string elapsedTime { set; get; }
         public AnalysisOptions options { set; get; }
         public Dictionary<UInt32, AnalysisResult<ER, Metadata>> analysisResults { set; get; }
+        public Dictionary<string, SortedList<Interval<ER, Metadata>, ER>> mergedReplicates { set; get; }
 
         public string status
         {

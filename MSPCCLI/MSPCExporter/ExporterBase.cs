@@ -19,14 +19,15 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
 {
     public class ExporterBase<Peak, Metadata>
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, new()
+        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
         public string samplePath { set; get; }
         protected string sessionPath { set; get; }
         protected bool includeBEDHeader { set; get; }
         protected Dictionary<UInt32, string> samples { set; get; }
         protected AnalysisResult<Peak, Metadata> data { set; get; }
-        
+        protected Dictionary<string, SortedList<Interval<Peak, Metadata>, Peak>> mergedReplicates { set; get; }
+
         protected void Export__R_j__o_BED()
         {
             using (File.Create(samplePath + Path.DirectorySeparatorChar + "AOutputSet.bed")) { }
@@ -47,7 +48,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
                                 item.peak.left.ToString() + "\t" +
                                 item.peak.right.ToString() + "\t" +
                                 item.peak.metadata.name + "\t" +
-                                ConvertPValue(item.peak.metadata.value)+ "\t" +
+                                ConvertPValue(item.peak.metadata.value) + "\t" +
                                 Math.Round(item.xSquared, 3) + "\t" +
                                 ConvertPValue(item.rtp));
                         }
@@ -133,7 +134,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
                     }
                 }
             }
-        }        
+        }
         protected void Export__R_j__s_BED()
         {
             using (File.Create(samplePath + Path.DirectorySeparatorChar + "BStringentPeaks.bed")) { }
@@ -259,7 +260,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
                     }
                 }
             }
-        }        
+        }
         protected void Export__R_j__d_BED()
         {
             using (File.Create(samplePath + Path.DirectorySeparatorChar + "EDiscardedPeaks.bed")) { }
@@ -331,7 +332,29 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
                 }
             }
         }
-        
+        protected void Export__MergedReps()
+        {
+            using (File.Create(sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed")) { }
+            using (StreamWriter writter = new StreamWriter(sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))
+            {
+                if (includeBEDHeader)
+                    writter.WriteLine("chr\tstart\tstop\tname\tX-squared");
+
+                foreach (var chr in mergedReplicates)
+                {
+                    foreach (var item in chr.Value)
+                    {
+                        writter.WriteLine(
+                            chr.Key + "\t" +
+                            item.Value.left.ToString() + "\t" +
+                            item.Value.right.ToString() + "\t" +
+                            item.Value.metadata.name + "\t" +
+                            Math.Round(item.Value.metadata.value, 3));
+                    }
+                }
+            }
+        }
+
         private string ConvertPValue(double pValue)
         {
             if (pValue != 0)

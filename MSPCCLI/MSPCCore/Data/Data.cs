@@ -18,11 +18,12 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer.Data
 {
     internal static class Data<Peak, Metadata>
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, new()
+        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
         internal static Dictionary<uint, string> sampleKeys { set; get; }
         internal static Dictionary<uint, Dictionary<string, IntervalTree<Peak, int>>> trees { set; get; }
         internal static Dictionary<uint, AnalysisResult<Peak, Metadata>> analysisResults { set; get; }
+        internal static Dictionary<string, SortedList<Warehouse.Interval<Peak, Metadata>, Peak>> mergedReplicates { set; get; }
         internal static List<double> cachedChiSqrd { set; get; }
         internal static void BuildSharedItems()
         {

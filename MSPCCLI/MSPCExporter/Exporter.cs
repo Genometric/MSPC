@@ -19,7 +19,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
 {
     public class Exporter<Peak, Metadata> : ExporterBase<Peak, Metadata>
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, new()
+        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
         public Exporter(Session<Peak, Metadata> session)
         {
@@ -79,6 +79,9 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Exporter
                 "_h" + DateTime.Now.TimeOfDay.Hours.ToString() +
                 "_m" + DateTime.Now.TimeOfDay.Minutes.ToString() +
                 "_s" + DateTime.Now.TimeOfDay.Seconds.ToString() + "__";
+
+            mergedReplicates = _session.mergedReplicates;
+            Export__MergedReps();
 
             foreach (var sample in samples)
             {

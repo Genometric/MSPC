@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Polimi.DEIB.VahidJalili.XSquaredData;
+using Polimi.DEIB.VahidJalili.MSPC.Analyzer.Comparers;
 
 namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
 {
@@ -436,6 +437,54 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
                     outputSet.Sort();
                 }
             }
+        }
+
+        internal void CreateCombinedOutputSet()
+        {
+            Data<Peak, Metadata>.mergedReplicates = new Dictionary<string, SortedList<Warehouse.Interval<Peak, Metadata>, Peak>>();
+            var mergedReplicates = Data<Peak, Metadata>.mergedReplicates;
+            foreach (var analysisResults in Data<Peak, Metadata>.analysisResults)
+            {
+                foreach (var chr in analysisResults.Value.R_j__o)
+                {
+                    if (!mergedReplicates.ContainsKey(chr.Key))
+                        mergedReplicates.Add(chr.Key, new SortedList<Warehouse.Interval<Peak, Metadata>, Peak>());
+
+                    foreach (var outputER in chr.Value)
+                    {
+                        var peak = outputER.peak;
+                        var interval = new Warehouse.Interval<Peak, Metadata>();
+                        interval.left = peak.left;
+                        interval.right = peak.right;
+
+                        Peak mergedPeak;
+                        Peak mergingPeak = new Peak();
+                        mergingPeak.left = peak.left;
+                        mergingPeak.right = peak.right;
+                        mergingPeak.metadata.value =
+                            (-2) * Math.Log((peak.metadata.value == 0 ? Options.default0PValue : peak.metadata.value), Math.E);
+
+                        while (mergedReplicates[chr.Key].TryGetValue(interval, out mergedPeak))
+                        {
+                            mergedReplicates[chr.Key].Remove(interval);
+                            interval.Merge(mergedPeak.left, mergedPeak.right);
+                            mergingPeak.left = interval.left;
+                            mergingPeak.right = interval.right;
+                            mergingPeak.metadata.value += mergedPeak.metadata.value;
+                        }
+
+                        if (mergingPeak.metadata.value >= Math.Abs(Options.defaultMaxLogOfPVvalue))
+                            mergingPeak.metadata.value = Math.Abs(Options.defaultMaxLogOfPVvalue);
+                        
+                        mergedReplicates[chr.Key].Add(interval, mergingPeak);
+                    }
+                }
+            }
+
+            int c = 0;
+            foreach (var chr in mergedReplicates)
+                foreach (var peak in chr.Value)
+                    peak.Value.metadata.name = "MSPC_peak_" + (c++);
         }
     }
 }

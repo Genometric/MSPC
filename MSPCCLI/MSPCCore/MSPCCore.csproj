@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Analyzer.cs" />
     <Compile Include="Comparers\CompareByValue.cs" />
+    <Compile Include="Comparers\OverlappingIntervalComparer.cs" />
     <Compile Include="Data\Data.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Processor.cs" />

@@ -124,7 +124,7 @@ namespace Polimi.DEIB.VahidJalili.MSPC.CLI
 
                 try
                 {
-                    Console.WriteLine("[" + (files.Count + 2).ToString() + "\\" + (files.Count + 2).ToString() + "] Exporting Data.");
+                    Console.WriteLine("[" + (files.Count + 5).ToString() + "\\" + (files.Count + 5).ToString() + "] Exporting Data.");
                     p.Export(sessionTitle);
                 }
                 catch (Exception exception)

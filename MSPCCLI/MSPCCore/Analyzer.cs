@@ -87,9 +87,9 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
 
                 #region .::.    Status      .::.
                 if (sampleKey.Value.Length > 36)
-                    Console.Write("\r[" + (++stepCounter).ToString() + "\\" + totalSteps + "] processing sample: ..." + sampleKey.Value.Substring(sampleKey.Value.Length - 35, 35));
+                    Console.Write("\r[" + (++stepCounter).ToString() + "/" + totalSteps + "] processing sample: ..." + sampleKey.Value.Substring(sampleKey.Value.Length - 35, 35));
                 else
-                    Console.Write("\r[" + (++stepCounter).ToString() + "\\" + totalSteps + "] processing sample: " + sampleKey.Value);
+                    Console.Write("\r[" + (++stepCounter).ToString() + "/" + totalSteps + "] processing sample: " + sampleKey.Value);
                 Console.WriteLine("");
                 #endregion
 
@@ -107,22 +107,22 @@ namespace Polimi.DEIB.VahidJalili.MSPC.Analyzer
             }
 
             #region .::.    Status      .::.
-            Console.WriteLine("\r[" + (++stepCounter).ToString() + "\\" + totalSteps + "] Purifying intermediate sets.");
+            Console.WriteLine("\r[" + (++stepCounter).ToString() + "/" + totalSteps + "] Purifying intermediate sets.");
             #endregion
             processor.IntermediateSetsPurification();
 
             #region .::.    Status      .::.
-            Console.WriteLine("[" + (++stepCounter).ToString() + "\\" + totalSteps + "] Creating output set.");
+            Console.WriteLine("[" + (++stepCounter).ToString() + "/" + totalSteps + "] Creating output set.");
             #endregion
             processor.CreateOuputSet();
 
             #region .::.    Status      .::.
-            Console.WriteLine("[" + (++stepCounter).ToString() + "\\" + totalSteps + "] Performing Multiple testing correction.");
+            Console.WriteLine("[" + (++stepCounter).ToString() + "/" + totalSteps + "] Performing Multiple testing correction.");
             #endregion
             processor.EstimateFalseDiscoveryRate();
 
             #region .::.    Status      .::.
-            Console.WriteLine("[" + (++stepCounter).ToString() + "\\" + totalSteps + "] Creating combined output set.");
+            Console.WriteLine("[" + (++stepCounter).ToString() + "/" + totalSteps + "] Creating combined output set.");
             #endregion
             processor.CreateCombinedOutputSet();
         }

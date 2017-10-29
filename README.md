@@ -1,3 +1,7 @@
+| [Documentation](https://github.com/Genometric/MSPC/wiki) | [Download](https://github.com/Genometric/MSPC/releases) | [Publication](https://academic.oup.com/bioinformatics/article/31/17/2761/183989/Using-combined-evidence-from-replicates-to)
+| -- |:--:| --: |
+---
+
 ![](docs/Home_mspc.jpg)
 
 ## About
@@ -10,6 +14,17 @@ Given a set of peaks from (biological or technical) replicates, the method combi
 
 For details you may refer to the [MSPC publication](http://bioinformatics.oxfordjournals.org/content/31/17/2761) and  [slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133).
 
+<br/>
+
+## Call Example (see [this page](https://github.com/Genometric/MSPC/wiki) for documentation)
+
+    // on Windows
+    MSPC -i rep1.bed -i rep2.bed -i rep3.bed -r biological -s 1E-8 -w 1E-4
+    
+    //on Linux/Mac
+    mono MSPC -i rep1.bed -i rep2.bed -i rep3.bed -r biological -s 1E-8 -w 1E-4
+
+<br/>
 
 ## Citing MSPC
 If you use or extend MSPC in your published work, please cite the following publication:
@@ -17,22 +32,7 @@ If you use or extend MSPC in your published work, please cite the following publ
     Vahid Jalili, Matteo Matteucci, Marco Masseroli, Marco J. Morelli;
     Using combined evidence from replicates to evaluate ChIP-seq peaks.
     Bioinformatics 2015; 31 (17): 2761-2769. doi: 10.1093/bioinformatics/btv293
-    
-
-## Download and Documentation
-All releases of MSPC are available for [download from this page](https://github.com/Genometric/MSPC/tree/master/Downloads). For documentation, check wiki pages for [quick start](https://github.com/Genometric/MSPC/wiki/Quick-Start) and [detailed description of arguments](https://github.com/Genometric/MSPC/wiki/Arguments-in-details).
 
 
 ## Graphical version
 [MuSERA](Musera.codeplex.com) is a graphical tool that efficiently implements MSPC for comparative evaluation of ChIP-seq and DNase-seq samples. Additionally, it facilitates the assessment of replicates by integrating common pipelines such as _functional analysis_, _nearest feature distance distribution_, _chromosome-wide statistics_, _plotting features_, and an _integrated genome browser_.
-
-
-
-
-
-
-
-
-
-
-

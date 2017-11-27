@@ -16,7 +16,6 @@ using System.Linq;
 using Genometric.MSPC.Core.IntervalTree;
 using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.XSquaredData;
-using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC.Core.Model
 {
@@ -132,27 +131,6 @@ namespace Genometric.MSPC.Core.Model
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating consensus peaks set"));
             CreateCombinedOutputSet();
             return analysisResults;
-
-
-            //chrTitle = ChrTitle;
-            //sampleHashKey = id;
-            //sourcePeaks = Samples<Peak, Metadata>.Data[sampleHashKey].intervals[chrTitle][strand];
-            //_analysisResults = Data<Peak, Metadata>.analysisResults[SampleHashKey];
-            //trees = Data<Peak, Metadata>.trees;
-
-
-
-            /*foreach (Peak p in sourcePeaks)
-            {
-                tXsqrd = 0;
-
-                InitialClassification(p);
-
-                if (p.metadata.value <= Options.tauS || p.metadata.value <= Options.tauW)
-                {
-                    SecondaryClassification(p, FindSupportingPeaks(p));
-                }
-            }*/
         }
 
         private void InitialClassification(uint id, string chr, Peak p)

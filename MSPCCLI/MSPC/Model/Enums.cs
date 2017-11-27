@@ -27,19 +27,6 @@ namespace Genometric.MSPC.Core.Model
         Discarded = 12
     };
 
-    public enum ERClassificationCategory : byte
-    {
-        First = 0,
-        Second = 1,
-        Third = 2,
-        Fourth = 3
-    };
-
-    public enum FDRProcedure : byte
-    {
-        BenjaminiHochberg = 0
-    };
-
     public enum MultipleIntersections : byte
     {
         UseLowestPValue = 0,

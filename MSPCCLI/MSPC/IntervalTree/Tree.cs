@@ -9,47 +9,47 @@ namespace Genometric.MSPC.Core.IntervalTree
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
         where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
-        private Node<Peak, Metadata> head;
-        private List<Peak> intervalList;
-        private bool inSync;
-        private int size;
+        private Node<Peak, Metadata> _head;
+        private List<Peak> _intervalList;
+        private bool _inSync;
+        private int _size;
 
         public Tree()
         {
-            this.head = new Node<Peak, Metadata>();
-            this.intervalList = new List<Peak>();
-            this.inSync = true;
-            this.size = 0;
+            _head = new Node<Peak, Metadata>();
+            _intervalList = new List<Peak>();
+            _inSync = true;
+            _size = 0;
         }
 
         public Tree(List<Peak> intervalList)
         {
-            this.head = new Node<Peak, Metadata>(intervalList);
-            this.intervalList = new List<Peak>();
-            this.intervalList.AddRange(intervalList);
-            this.inSync = true;
-            this.size = intervalList.Count;
+            _head = new Node<Peak, Metadata>(intervalList);
+            _intervalList = new List<Peak>();
+            _intervalList.AddRange(intervalList);
+            _inSync = true;
+            _size = intervalList.Count;
         }
 
         public void Add(Peak interval)
         {
-            intervalList.Add(interval);
-            inSync = false;
+            _intervalList.Add(interval);
+            _inSync = false;
         }
 
         public List<Peak> GetIntervals(Peak peak)
         {
             Build();
-            return head.Query(peak);
+            return _head.Query(peak);
         }
 
         public void Build()
         {
-            if (!inSync)
+            if (!_inSync)
             {
-                head = new Node<Peak, Metadata>(intervalList);
-                inSync = true;
-                size = intervalList.Count;
+                _head = new Node<Peak, Metadata>(_intervalList);
+                _inSync = true;
+                _size = _intervalList.Count;
             }
         }
 

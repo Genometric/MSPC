@@ -80,7 +80,7 @@ namespace Genometric.MSPC.CLI
         }
         private void _mspc_statusChanged(object sender, ValueEventArgs e)
         {
-            Console.WriteLine("[" + e.Value.step + "/" + e.Value.stepCount + "] " + e.Value.message);
+            Console.WriteLine("[" + e.Value.Step + "/" + e.Value.StepCount + "] " + e.Value.Message);
         }
 
         internal void Export()

@@ -10,22 +10,22 @@ namespace Genometric.MSPC.Core.IntervalTree
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
         where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
-        private SortedDictionary<Peak, List<Peak>> intervals { set; get; }
-        private int center { set; get; }
-        private Node<Peak, Metadata> leftNode { set; get; }
-        private Node<Peak, Metadata> rightNode { set; get; }
+        private SortedDictionary<Peak, List<Peak>> _intervals;
+        private int _center;
+        private Node<Peak, Metadata> _leftNode;
+        private Node<Peak, Metadata> _rightNode;
 
         public Node()
         {
-            intervals = new SortedDictionary<Peak, List<Peak>>();
-            center = 0;
-            leftNode = null;
-            rightNode = null;
+            _intervals = new SortedDictionary<Peak, List<Peak>>();
+            _center = 0;
+            _leftNode = null;
+            _rightNode = null;
         }
 
         public Node(List<Peak> intervalsList)
         {
-            intervals = new SortedDictionary<Peak, List<Peak>>();
+            _intervals = new SortedDictionary<Peak, List<Peak>>();
             var endpoints = new SortedSet<int>();
             foreach (var interval in intervalsList)
             {
@@ -34,33 +34,33 @@ namespace Genometric.MSPC.Core.IntervalTree
             }
 
             int? median = GetMedian(endpoints);
-            center = median.GetValueOrDefault();
+            _center = median.GetValueOrDefault();
 
             var left = new List<Peak>();
             var right = new List<Peak>();
 
             foreach (Peak interval in intervalsList)
             {
-                if (interval.right.CompareTo(center) < 0)
+                if (interval.right.CompareTo(_center) < 0)
                     left.Add(interval);
-                else if (interval.left.CompareTo(center) > 0)
+                else if (interval.left.CompareTo(_center) > 0)
                     right.Add(interval);
                 else
                 {
                     List<Peak> posting;
-                    if (!intervals.TryGetValue(interval, out posting))
+                    if (!_intervals.TryGetValue(interval, out posting))
                     {
                         posting = new List<Peak>();
-                        intervals.Add(interval, posting);
+                        _intervals.Add(interval, posting);
                     }
                     posting.Add(interval);
                 }
             }
 
             if (left.Count > 0)
-                leftNode = new Node<Peak, Metadata>(left);
+                _leftNode = new Node<Peak, Metadata>(left);
             if (right.Count > 0)
-                rightNode = new Node<Peak, Metadata>(right);
+                _rightNode = new Node<Peak, Metadata>(right);
         }
 
         private int? GetMedian(SortedSet<int> set)
@@ -80,7 +80,7 @@ namespace Genometric.MSPC.Core.IntervalTree
         {
             var allIntervals =
               from k in intervalKeys
-              select intervals[k];
+              select _intervals[k];
 
             return allIntervals.SelectMany(x => x).ToList();
         }
@@ -89,21 +89,21 @@ namespace Genometric.MSPC.Core.IntervalTree
         {
             get
             {
-                if (intervals.Count == 0) yield break;
-                else if (intervals.Count == 1)
+                if (_intervals.Count == 0) yield break;
+                else if (_intervals.Count == 1)
                 {
-                    if (intervals.First().Value.Count > 1)
+                    if (_intervals.First().Value.Count > 1)
                     {
-                        yield return intervals.First().Value;
+                        yield return _intervals.First().Value;
                     }
                 }
                 else
                 {
-                    var keys = intervals.Keys.ToArray();
+                    var keys = _intervals.Keys.ToArray();
 
                     int lastIntervalIndex = 0;
                     var intersectionsKeys = new List<Peak>();
-                    for (int index = 1; index < intervals.Count; index++)
+                    for (int index = 1; index < _intervals.Count; index++)
                     {
                         var intervalKey = keys[index];
                         if (IntervalOperations<Peak, Metadata>.Intersects(intervalKey, keys[lastIntervalIndex]))
@@ -124,9 +124,9 @@ namespace Genometric.MSPC.Core.IntervalTree
                             }
                             else
                             {
-                                if (intervals[intervalKey].Count > 1)
+                                if (_intervals[intervalKey].Count > 1)
                                 {
-                                    yield return intervals[intervalKey];
+                                    yield return _intervals[intervalKey];
                                 }
                             }
 
@@ -143,7 +143,7 @@ namespace Genometric.MSPC.Core.IntervalTree
         {
             List<Peak> result = new List<Peak>();
 
-            foreach (var entry in intervals)
+            foreach (var entry in _intervals)
             {
                 if (IntervalOperations<Peak, Metadata>.Contains(entry.Key, time, constraint))
                     foreach (var interval in entry.Value)
@@ -152,10 +152,10 @@ namespace Genometric.MSPC.Core.IntervalTree
                     break;
             }
 
-            if (time.CompareTo(center) < 0 && leftNode != null)
-                result.AddRange(leftNode.Stab(time, constraint));
-            else if (time.CompareTo(center) > 0 && rightNode != null)
-                result.AddRange(rightNode.Stab(time, constraint));
+            if (time.CompareTo(_center) < 0 && _leftNode != null)
+                result.AddRange(_leftNode.Stab(time, constraint));
+            else if (time.CompareTo(_center) > 0 && _rightNode != null)
+                result.AddRange(_rightNode.Stab(time, constraint));
             return result;
         }
 
@@ -163,7 +163,7 @@ namespace Genometric.MSPC.Core.IntervalTree
         {
             List<Peak> result = new List<Peak>();
 
-            foreach (var entry in intervals)
+            foreach (var entry in _intervals)
             {
                 if (IntervalOperations<Peak, Metadata>.Intersects(entry.Key, target))
                     foreach (Peak interval in entry.Value)
@@ -172,30 +172,30 @@ namespace Genometric.MSPC.Core.IntervalTree
                     break;
             }
 
-            if (target.left.CompareTo(center) < 0 && leftNode != null)
-                result.AddRange(leftNode.Query(target));
-            if (target.right.CompareTo(center) > 0 && rightNode != null)
-                result.AddRange(rightNode.Query(target));
+            if (target.left.CompareTo(_center) < 0 && _leftNode != null)
+                result.AddRange(_leftNode.Query(target));
+            if (target.right.CompareTo(_center) > 0 && _rightNode != null)
+                result.AddRange(_rightNode.Query(target));
             return result;
         }
 
 
         public int Center
         {
-            get { return center; }
-            set { center = value; }
+            get { return _center; }
+            set { _center = value; }
         }
 
         public Node<Peak, Metadata> Left
         {
-            get { return leftNode; }
-            set { leftNode = value; }
+            get { return _leftNode; }
+            set { _leftNode = value; }
         }
 
         public Node<Peak, Metadata> Right
         {
-            get { return rightNode; }
-            set { rightNode = value; }
+            get { return _rightNode; }
+            set { _rightNode = value; }
         }
     }
 }

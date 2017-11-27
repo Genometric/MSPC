@@ -14,15 +14,15 @@ namespace Genometric.MSPC.Core.Model
         /// <param name="message">message explaining the step</param>
         public ProgressReport(int step, int stepCount, string message)
         {
-            this.step = step;
-            this.stepCount = stepCount;
-            this.message = message;
+            Step = step;
+            StepCount = stepCount;
+            Message = message;
         }
 
-        public int step { private set; get; }
-        public int stepCount { private set; get; }
-        public string message { private set; get; }
-        public int percentage { get { return (step / stepCount) * 100; } }
+        public int Step { private set; get; }
+        public int StepCount { private set; get; }
+        public string Message { private set; get; }
+        public int Percentage { get { return (Step / StepCount) * 100; } }
 
         public override bool Equals(object obj)
         {
@@ -30,12 +30,12 @@ namespace Genometric.MSPC.Core.Model
                 return false;
 
             var that = (ProgressReport)obj;
-            return step == that.step && stepCount == that.stepCount && message == that.message ? true : false;
+            return Step == that.Step && StepCount == that.StepCount && Message == that.Message ? true : false;
         }
 
         public override string ToString()
         {
-            return step.ToString() + ":" + message;
+            return Step.ToString() + ":" + Message;
         }
     }
 }

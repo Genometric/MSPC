@@ -26,10 +26,10 @@ namespace Genometric.MSPC.Core.Model
         public delegate void ProgressUpdate(ProgressReport value);
         public event ProgressUpdate OnProgressUpdate;
 
-        private double tXsqrd { set; get; }
+        private double _xsqrd { set; get; }
 
         private Dictionary<uint, AnalysisResult<Peak, Metadata>> _analysisResults { set; get; }
-        public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> analysisResults
+        public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> AnalysisResults
         {
             get { return new ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>>(_analysisResults); }
         }
@@ -37,16 +37,12 @@ namespace Genometric.MSPC.Core.Model
         private Dictionary<uint, Dictionary<string, Tree<Peak, Metadata>>> _trees { set; get; }
 
         private Dictionary<string, SortedList<Peak, Peak>> _mergedReplicates { set; get; }
-        public ReadOnlyDictionary<string, SortedList<Peak, Peak>> mergedReplicates
+        public ReadOnlyDictionary<string, SortedList<Peak, Peak>> MergedReplicates
         {
             get { return new ReadOnlyDictionary<string, SortedList<Peak, Peak>>(_mergedReplicates); }
         }
 
         private List<double> _cachedChiSqrd { set; get; }
-
-        private List<Peak> sourcePeaks { set; get; }
-
-        private uint sampleHashKey { set; get; }
 
         private Config _config { set; get; }
 
@@ -83,7 +79,7 @@ namespace Genometric.MSPC.Core.Model
             _config = config;
             _cachedChiSqrd = new List<double>();
             for (int i = 1; i <= _samples.Count; i++)
-                _cachedChiSqrd.Add(Math.Round(ChiSquaredCache.ChiSqrdINVRTP(config.gamma, (byte)(i * 2)), 3));
+                _cachedChiSqrd.Add(Math.Round(ChiSquaredCache.ChiSqrdINVRTP(config.Gamma, (byte)(i * 2)), 3));
 
             _trees = new Dictionary<uint, Dictionary<string, Tree<Peak, Metadata>>>();
             _analysisResults = new Dictionary<uint, AnalysisResult<Peak, Metadata>>();
@@ -97,7 +93,7 @@ namespace Genometric.MSPC.Core.Model
                     _analysisResults[sample.Key].AddChromosome(chr.Key);
                     foreach (var strand in chr.Value)
                         foreach (Peak p in strand.Value)
-                            if (p.metadata.value <= _config.tauW)
+                            if (p.metadata.value <= _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
                             else
                                 _analysisResults[sample.Key].R_j__b[chr.Key].Add(p);
@@ -110,9 +106,9 @@ namespace Genometric.MSPC.Core.Model
                     foreach (var strand in chr.Value)
                         foreach (Peak peak in strand.Value)
                         {
-                            tXsqrd = 0;
+                            _xsqrd = 0;
                             InitialClassification(sample.Key, chr.Key, peak);
-                            if (peak.metadata.value <= _config.tauS || peak.metadata.value <= _config.tauW)
+                            if (peak.metadata.value <= _config.TauS || peak.metadata.value <= _config.TauW)
                                 SecondaryClassification(sample.Key, chr.Key, peak, FindSupportingPeaks(sample.Key, chr.Key, peak));
                         }
 
@@ -130,14 +126,14 @@ namespace Genometric.MSPC.Core.Model
 
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating consensus peaks set"));
             CreateCombinedOutputSet();
-            return analysisResults;
+            return AnalysisResults;
         }
 
         private void InitialClassification(uint id, string chr, Peak p)
         {
-            if (p.metadata.value <= _config.tauS)
+            if (p.metadata.value <= _config.TauS)
                 _analysisResults[id].R_j__s[chr].Add(p);            
-            else if (p.metadata.value <= _config.tauW)            
+            else if (p.metadata.value <= _config.TauW)            
                 _analysisResults[id].R_j__w[chr].Add(p);
         }
 
@@ -168,8 +164,8 @@ namespace Genometric.MSPC.Core.Model
                     default:
                         var chosenPeak = interPeaks[0];
                         foreach (var tIp in interPeaks.Skip(1))
-                            if ((_config.multipleIntersections == MultipleIntersections.UseLowestPValue && tIp.metadata.value < chosenPeak.metadata.value) ||
-                                (_config.multipleIntersections == MultipleIntersections.UseHighestPValue && tIp.metadata.value > chosenPeak.metadata.value))
+                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue && tIp.metadata.value < chosenPeak.metadata.value) ||
+                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue && tIp.metadata.value > chosenPeak.metadata.value))
                                 chosenPeak = tIp;
 
                         supPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak()
@@ -190,7 +186,7 @@ namespace Genometric.MSPC.Core.Model
             {
                 CalculateXsqrd(p, supportingPeaks);
 
-                if (tXsqrd >= _cachedChiSqrd[supportingPeaks.Count])
+                if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                     ConfirmPeak(id, chr, p, supportingPeaks);
                 else
                     DiscardPeak(id, chr, p, supportingPeaks, 0);
@@ -206,12 +202,12 @@ namespace Genometric.MSPC.Core.Model
             var anRe = new AnalysisResult<Peak, Metadata>.ProcessedPeak()
             {
                 peak = p,
-                xSquared = tXsqrd,
-                rtp = ChiSquaredCache.ChiSqrdDistRTP(tXsqrd, 2 + (supportingPeaks.Count * 2)),
+                xSquared = _xsqrd,
+                rtp = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
                 supportingPeaks = supportingPeaks
             };
 
-            if (p.metadata.value <= _config.tauS)
+            if (p.metadata.value <= _config.TauS)
             {
                 _analysisResults[id].R_j___sc[chr]++;
                 anRe.classification = PeakClassificationType.StringentConfirmed;
@@ -225,10 +221,10 @@ namespace Genometric.MSPC.Core.Model
             if (!_analysisResults[id].R_j__c[chr].ContainsKey(p.metadata.hashKey))
                 _analysisResults[id].R_j__c[chr].Add(p.metadata.hashKey, anRe);
 
-            ConfirmeSupportingPeaks(chr, p, supportingPeaks);
+            ConfirmeSupportingPeaks(id, chr, p, supportingPeaks);
         }
 
-        private void ConfirmeSupportingPeaks(string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
+        private void ConfirmeSupportingPeaks(uint id, string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
         {
             foreach (var supPeak in supportingPeaks)
             {
@@ -236,7 +232,7 @@ namespace Genometric.MSPC.Core.Model
                 {
                     var tSupPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeak>();
                     var targetSample = _analysisResults[supPeak.sampleID];
-                    tSupPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak() { peak = p, sampleID = sampleHashKey });
+                    tSupPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak() { peak = p, sampleID = id });
 
                     foreach (var sP in supportingPeaks)
                         if (supPeak.CompareTo(sP) != 0)
@@ -245,12 +241,12 @@ namespace Genometric.MSPC.Core.Model
                     var anRe = new AnalysisResult<Peak, Metadata>.ProcessedPeak()
                     {
                         peak = supPeak.peak,
-                        xSquared = tXsqrd,
-                        rtp = ChiSquaredCache.ChiSqrdDistRTP(tXsqrd, 2 + (supportingPeaks.Count * 2)),
+                        xSquared = _xsqrd,
+                        rtp = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
                         supportingPeaks = tSupPeak
                     };
 
-                    if (supPeak.peak.metadata.value <= _config.tauS)
+                    if (supPeak.peak.metadata.value <= _config.TauS)
                     {
                         targetSample.R_j___sc[chr]++;
                         anRe.classification = PeakClassificationType.StringentConfirmed;
@@ -271,12 +267,12 @@ namespace Genometric.MSPC.Core.Model
             var anRe = new AnalysisResult<Peak, Metadata>.ProcessedPeak
             {
                 peak = p,
-                xSquared = tXsqrd,
+                xSquared = _xsqrd,
                 reason = discardReason,
                 supportingPeaks = supportingPeaks
             };
 
-            if (p.metadata.value <= _config.tauS)
+            if (p.metadata.value <= _config.TauS)
             {
                 // The cause of discarding the region is :
                 if (supportingPeaks.Count + 1 >= _config.C)
@@ -299,10 +295,10 @@ namespace Genometric.MSPC.Core.Model
                 _analysisResults[id].R_j__d[chr].Add(p.metadata.hashKey, anRe);
 
             if (supportingPeaks.Count + 1 >= _config.C)
-                DiscardSupportingPeaks(chr, p, supportingPeaks, discardReason);
+                DiscardSupportingPeaks(id, chr, p, supportingPeaks, discardReason);
         }
 
-        private void DiscardSupportingPeaks(string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks, byte discardReason)
+        private void DiscardSupportingPeaks(uint id, string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks, byte discardReason)
         {
             foreach (var supPeak in supportingPeaks)
             {
@@ -310,7 +306,7 @@ namespace Genometric.MSPC.Core.Model
                 {
                     var tSupPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeak>();
                     var targetSample = _analysisResults[supPeak.sampleID];
-                    tSupPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak() { peak = p, sampleID = sampleHashKey });
+                    tSupPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak() { peak = p, sampleID = id });
 
                     foreach (var sP in supportingPeaks)
                         if (supPeak.CompareTo(sP) != 0)
@@ -319,13 +315,13 @@ namespace Genometric.MSPC.Core.Model
                     var anRe = new AnalysisResult<Peak, Metadata>.ProcessedPeak()
                     {
                         peak = supPeak.peak,
-                        xSquared = tXsqrd,
+                        xSquared = _xsqrd,
                         reason = discardReason,
-                        rtp = ChiSquaredCache.ChiSqrdDistRTP(tXsqrd, 2 + (supportingPeaks.Count * 2)),
+                        rtp = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
                         supportingPeaks = tSupPeak
                     };
 
-                    if (supPeak.peak.metadata.value <= _config.tauS)
+                    if (supPeak.peak.metadata.value <= _config.TauS)
                     {
                         targetSample.R_j__sdt[chr]++;
                         anRe.classification = PeakClassificationType.StringentDiscarded;
@@ -344,25 +340,25 @@ namespace Genometric.MSPC.Core.Model
         private void CalculateXsqrd(Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
         {
             if (p.metadata.value != 0)
-                tXsqrd = Math.Log(p.metadata.value, Math.E);
+                _xsqrd = Math.Log(p.metadata.value, Math.E);
             else
-                tXsqrd = Math.Log(Config.default0PValue, Math.E);
+                _xsqrd = Math.Log(Config.default0PValue, Math.E);
 
             foreach (var supPeak in supportingPeaks)
                 if (supPeak.peak.metadata.value != 0)
-                    tXsqrd += Math.Log(supPeak.peak.metadata.value, Math.E);
+                    _xsqrd += Math.Log(supPeak.peak.metadata.value, Math.E);
                 else
-                    tXsqrd += Math.Log(Config.default0PValue, Math.E);
+                    _xsqrd += Math.Log(Config.default0PValue, Math.E);
 
-            tXsqrd = tXsqrd * (-2);
+            _xsqrd = _xsqrd * (-2);
 
-            if (tXsqrd >= Math.Abs(Config.defaultMaxLogOfPVvalue))
-                tXsqrd = Math.Abs(Config.defaultMaxLogOfPVvalue);
+            if (_xsqrd >= Math.Abs(Config.defaultMaxLogOfPVvalue))
+                _xsqrd = Math.Abs(Config.defaultMaxLogOfPVvalue);
         }
 
         internal void IntermediateSetsPurification()
         {
-            if (_config.replicateType == ReplicateType.Biological)
+            if (_config.ReplicateType == ReplicateType.Biological)
             {
                 // Performe : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
 
@@ -374,9 +370,9 @@ namespace Genometric.MSPC.Core.Model
                         {
                             if (result.Value.R_j__d[chr.Key].ContainsKey(confirmedPeak.Key))
                             {
-                                if (confirmedPeak.Value.peak.metadata.value <= _config.tauS)
+                                if (confirmedPeak.Value.peak.metadata.value <= _config.TauS)
                                     result.Value.total_scom++;
-                                else if (confirmedPeak.Value.peak.metadata.value <= _config.tauW)
+                                else if (confirmedPeak.Value.peak.metadata.value <= _config.TauW)
                                     result.Value.total_wcom++;
 
                                 result.Value.R_j__d[chr.Key].Remove(confirmedPeak.Key);
@@ -397,9 +393,9 @@ namespace Genometric.MSPC.Core.Model
                         {
                             if (result.Value.R_j__c[chr.Key].ContainsKey(discardedPeak.Key))
                             {
-                                if (discardedPeak.Value.peak.metadata.value <= _config.tauS)
+                                if (discardedPeak.Value.peak.metadata.value <= _config.TauS)
                                     result.Value.total_scom++;
-                                else if (discardedPeak.Value.peak.metadata.value <= _config.tauW)
+                                else if (discardedPeak.Value.peak.metadata.value <= _config.TauW)
                                     result.Value.total_wcom++;
 
                                 result.Value.R_j__c[chr.Key].Remove(discardedPeak.Key);
@@ -427,12 +423,12 @@ namespace Genometric.MSPC.Core.Model
                             supportingPeaks = confirmedPeak.Value.supportingPeaks,
                         };
 
-                        if (confirmedPeak.Value.peak.metadata.value <= _config.tauS)
+                        if (confirmedPeak.Value.peak.metadata.value <= _config.TauS)
                         {
                             outputPeak.classification = PeakClassificationType.StringentConfirmed;
                             result.Value.R_j___so[chr.Key]++;
                         }
-                        else if (confirmedPeak.Value.peak.metadata.value <= _config.tauW)
+                        else if (confirmedPeak.Value.peak.metadata.value <= _config.TauW)
                         {
                             outputPeak.classification = PeakClassificationType.WeakConfirmed;
                             result.Value.R_j___wo[chr.Key]++;
@@ -465,19 +461,19 @@ namespace Genometric.MSPC.Core.Model
 
                     for (int k = 1; k <= m; k++)
                     {
-                        if (outputSet[k - 1].peak.metadata.value > ((double)k / (double)m) * _config.alpha)
+                        if (outputSet[k - 1].peak.metadata.value > ((double)k / (double)m) * _config.Alpha)
                         {
                             k--;
 
                             for (int l = 1; l < k; l++)
                             {
                                 // This should update the [analysisResults[sample.Key].R_j__o[chr.Key]] ; is it updating ?
-                                outputSet[l].adjPValue = (((double)k * outputSet[l].peak.metadata.value) / (double)m) * _config.alpha;
+                                outputSet[l].adjPValue = (((double)k * outputSet[l].peak.metadata.value) / (double)m) * _config.Alpha;
                                 outputSet[l].statisticalClassification = PeakClassificationType.TruePositive;
                             }
                             for (int l = k; l < m; l++)
                             {
-                                outputSet[l].adjPValue = (((double)k * outputSet[l].peak.metadata.value) / (double)m) * _config.alpha;
+                                outputSet[l].adjPValue = (((double)k * outputSet[l].peak.metadata.value) / (double)m) * _config.Alpha;
                                 outputSet[l].statisticalClassification = PeakClassificationType.FalsePositive;
                             }
 

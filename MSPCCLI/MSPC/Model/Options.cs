@@ -14,18 +14,18 @@ namespace Genometric.MSPC.Core.Model
     {
         public Config(ReplicateType replicateType, double tauW, double tauS, double gamma, byte C, float alpha, MultipleIntersections multipleIntersections)
         {
-            this.replicateType = replicateType;
-            this.tauW = tauW;
-            this.tauS = tauS;
-            this.gamma = gamma;
+            this.ReplicateType = replicateType;
+            this.TauW = tauW;
+            this.TauS = tauS;
+            this.Gamma = gamma;
             this.C = C;
-            this.alpha = alpha;
-            this.multipleIntersections = multipleIntersections;
+            this.Alpha = alpha;
+            this.MultipleIntersections = multipleIntersections;
         }
         /// <summary>
         /// Represents the replicate type of the input samples.
         /// </summary>
-        public ReplicateType replicateType { private set; get; }
+        public ReplicateType ReplicateType { private set; get; }
 
         /// <summary>
         /// Only one peak out of multiple peaks of a sample intersecting
@@ -33,7 +33,7 @@ namespace Genometric.MSPC.Core.Model
         /// this parameter is TRUE, the peak with lowest p-value will be 
         /// used; otherwise the peak with highest p-value will be used.
         /// </summary>
-        public MultipleIntersections multipleIntersections { private set; get; }
+        public MultipleIntersections MultipleIntersections { private set; get; }
 
         /// <summary>
         /// Represents the default value for maximum log of p-value. 
@@ -50,17 +50,17 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Represents the Stringent p-value threshold.
         /// </summary>
-        public double tauS { private set; get; }
+        public double TauS { private set; get; }
 
         /// <summary>
         /// Represents the weak p-value threshold.
         /// </summary>
-        public double tauW { private set; get; }
+        public double TauW { private set; get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public double gamma { private set; get; }
+        public double Gamma { private set; get; }
 
         /// <summary>
         /// 
@@ -70,6 +70,6 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// 
         /// </summary>
-        public float alpha { private set; get; }
+        public float Alpha { private set; get; }
     }
 }

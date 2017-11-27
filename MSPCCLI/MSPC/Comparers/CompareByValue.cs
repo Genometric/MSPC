@@ -13,12 +13,12 @@ namespace Genometric.MSPC.Core.Comparers
         {
             if (A == null)
             {
-                if (B == null) return 0;// then they are equal
-                else return -1; // then B is greater
+                if (B == null) return 0; // they are equal
+                else return -1; // B is greater
             }
             else
             {
-                if (B == null) return 1;// A is greater
+                if (B == null) return 1; // A is greater
                 else
                 {
                     if (A.peak.metadata.value != B.peak.metadata.value)

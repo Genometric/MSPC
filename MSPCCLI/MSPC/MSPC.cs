@@ -66,7 +66,7 @@ namespace Genometric.MSPC.Core
 
         public ReadOnlyDictionary<string, SortedList<Peak, Peak>> GetMergedReplicates()
         {
-            return _processor.mergedReplicates;
+            return _processor.MergedReplicates;
         }
 
         private void _doWork(object sender, DoWorkEventArgs e)

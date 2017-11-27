@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <StartupObject>Genometric.MSPC.CLI.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MSPC\Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="GIFP">
+      <HintPath>..\..\..\..\Libraries\GIFP.dll</HintPath>
+    </Reference>
+    <Reference Include="IGenomics">
+      <HintPath>..\..\..\..\Libraries\IGenomics.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

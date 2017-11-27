@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RootNamespace>Genometric.MSPC.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="IGenomics">
+      <HintPath>..\..\..\..\GIFP\GIFP\GIFPCore\Libraries\IGenomics.dll</HintPath>
+      <Private>true</Private>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -33,7 +33,7 @@ namespace Genometric.MSPC.CLI
         internal Orchestrator()
         {
             _mspc = new MSPC<Peak, Metadata>();
-            _mspc.statusChanged += _mspc_statusChanged;
+            _mspc.StatusChanged += _mspc_statusChanged;
             _samples = new List<ParsedChIPseqPeaks<int, Peak, Metadata>>();
         }
 

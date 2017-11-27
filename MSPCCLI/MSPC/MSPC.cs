@@ -24,27 +24,11 @@ namespace Genometric.MSPC.Core
         where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
         where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
     {
-        #region .::.      Status Change        .::.
-        private ProgressReport _status;
-        public ProgressReport Status
-        {
-            get { return _status; }
-            set
-            {
-                if (!_status.Equals(value))
-                {
-                    _status = value;
-                    OnStatusValueChaned(value);
-                }
-            }
-        }
-
-        public event EventHandler<ValueEventArgs> statusChanged;
+        public event EventHandler<ValueEventArgs> StatusChanged;
         private void OnStatusValueChaned(ProgressReport value)
         {
-            statusChanged?.Invoke(this, new ValueEventArgs(value));
+            StatusChanged?.Invoke(this, new ValueEventArgs(value));
         }
-        #endregion
 
         public AutoResetEvent done;
 
@@ -64,8 +48,6 @@ namespace Genometric.MSPC.Core
             done = new AutoResetEvent(false);
         }
 
-
-
         public void AddSample(uint id, Dictionary<string, Dictionary<char, List<Peak>>> sample)
         {
             _processor.AddSample(id, sample);
@@ -77,14 +59,17 @@ namespace Genometric.MSPC.Core
             if (!_backgroundProcessor.IsBusy)
                 _backgroundProcessor.RunWorkerAsync(config);
         }
+
         public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> GetResults()
         {
             return _results;
         }
+
         public ReadOnlyDictionary<string, SortedList<Peak, Peak>> GetMergedReplicates()
         {
             return _processor.mergedReplicates;
         }
+
         public Dictionary<uint, string> GetSamples()
         {
             return Data<Peak, Metadata>.sampleKeys;
@@ -94,6 +79,7 @@ namespace Genometric.MSPC.Core
         {
             _results = _processor.Run((Config)e.Argument);
         }
+
         private void _runWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             done.Set();

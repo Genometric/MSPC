@@ -9,7 +9,6 @@
  **/
 
 using Genometric.IGenomics;
-using Genometric.MSPC.Core.Data;
 using System;
 using System.Collections.Generic;
 using Genometric.MSPC.Model;
@@ -68,11 +67,6 @@ namespace Genometric.MSPC.Core
         public ReadOnlyDictionary<string, SortedList<Peak, Peak>> GetMergedReplicates()
         {
             return _processor.mergedReplicates;
-        }
-
-        public Dictionary<uint, string> GetSamples()
-        {
-            return Data<Peak, Metadata>.sampleKeys;
         }
 
         private void _doWork(object sender, DoWorkEventArgs e)

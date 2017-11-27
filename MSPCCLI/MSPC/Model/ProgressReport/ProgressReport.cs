@@ -22,7 +22,7 @@ namespace Genometric.MSPC.Core.Model
         public int step { private set; get; }
         public int stepCount { private set; get; }
         public string message { private set; get; }
-        public int percentage { get { return step / stepCount; } }
+        public int percentage { get { return (step / stepCount) * 100; } }
 
         public override bool Equals(object obj)
         {

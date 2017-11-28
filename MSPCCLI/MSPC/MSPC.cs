@@ -65,10 +65,11 @@ namespace Genometric.MSPC.Core
         {
             // TODO: do not run if no sample is given.
             done.Reset();
+            canceled.Reset();
             _processor.cancel = false;
-            if (!_backgroundProcessor.IsBusy)
-                _backgroundProcessor.RunWorkerAsync(config);
-            // TODO: cancel running thread, if background worker is busy.
+            if (_backgroundProcessor.IsBusy)
+                Cancel();
+            _backgroundProcessor.RunWorkerAsync(config);
         }
 
         public void Cancel()

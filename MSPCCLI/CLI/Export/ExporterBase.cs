@@ -20,15 +20,15 @@ using System.Linq;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
-    public class ExporterBase<Peak, Metadata>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
+    public class ExporterBase<P, M>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, IComparable<M>, new()
     {
         public string samplePath { set; get; }
         protected string sessionPath { set; get; }
         protected bool includeBEDHeader { set; get; }
-        protected AnalysisResult<Peak, Metadata> data { set; get; }
-        protected ReadOnlyDictionary<string, SortedList<Peak, Peak>> mergedReplicates { set; get; }
+        protected AnalysisResult<P, M> data { set; get; }
+        protected ReadOnlyDictionary<string, SortedList<P, P>> mergedReplicates { set; get; }
 
         protected void Export__R_j__o_BED()
         {

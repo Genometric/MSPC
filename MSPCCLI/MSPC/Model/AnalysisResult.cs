@@ -16,9 +16,9 @@ using System.Collections.Generic;
 
 namespace Genometric.MSPC.Model
 {
-    public class AnalysisResult<Peak, Metadata>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, new()
+    public class AnalysisResult<P, M>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, new()
     {
         public AnalysisResult()
         {
@@ -28,9 +28,9 @@ namespace Genometric.MSPC.Model
             R_j_FP = new Dictionary<string, uint>();
             R_j_TP = new Dictionary<string, uint>();
 
-            R_j__s = new Dictionary<string, List<Peak>>();
-            R_j__w = new Dictionary<string, List<Peak>>();
-            R_j__b = new Dictionary<string, List<Peak>>();
+            R_j__s = new Dictionary<string, List<P>>();
+            R_j__w = new Dictionary<string, List<P>>();
+            R_j__b = new Dictionary<string, List<P>>();
 
             R_j__c = new Dictionary<string, Dictionary<UInt64, ProcessedPeak>>();
             R_j__d = new Dictionary<string, Dictionary<UInt64, ProcessedPeak>>();
@@ -64,17 +64,17 @@ namespace Genometric.MSPC.Model
         /// <summary>
         /// Chromosome-wide stringent peaks of sample j
         /// </summary>
-        public Dictionary<string, List<Peak>> R_j__s { set; get; }
+        public Dictionary<string, List<P>> R_j__s { set; get; }
 
         /// <summary>
         /// Chromosome-wide weak peaks of sample j
         /// </summary>
-        public Dictionary<string, List<Peak>> R_j__w { set; get; }
+        public Dictionary<string, List<P>> R_j__w { set; get; }
 
         /// <summary>
         /// Chromosome-wide background peaks of sample j (i.e., the peaks with p-value > T_w ).
         /// </summary>
-        public Dictionary<string, List<Peak>> R_j__b { set; get; }
+        public Dictionary<string, List<P>> R_j__b { set; get; }
 
 
 
@@ -253,7 +253,7 @@ namespace Genometric.MSPC.Model
 
             double totalERsCount = 0;
             chrwideStats = new Dictionary<string, ChrWideStat>();
-            foreach (KeyValuePair<string, List<Peak>> chr in R_j__s)
+            foreach (KeyValuePair<string, List<P>> chr in R_j__s)
             {
                 total____s += (UInt32)R_j__s[chr.Key].Count;
                 total____w += (UInt32)R_j__w[chr.Key].Count;
@@ -296,9 +296,9 @@ namespace Genometric.MSPC.Model
         }
         public void AddChromosome(string chromosome)
         {
-            R_j__s.Add(chromosome, new List<Peak>());
-            R_j__w.Add(chromosome, new List<Peak>());
-            R_j__b.Add(chromosome, new List<Peak>());
+            R_j__s.Add(chromosome, new List<P>());
+            R_j__w.Add(chromosome, new List<P>());
+            R_j__b.Add(chromosome, new List<P>());
 
             R_j__c.Add(chromosome, new Dictionary<UInt64, ProcessedPeak>());
             R_j__d.Add(chromosome, new Dictionary<UInt64, ProcessedPeak>());
@@ -328,7 +328,7 @@ namespace Genometric.MSPC.Model
             /// <summary>
             /// Sets and gets the Confirmed I. Is a reference to the original er in cached data.
             /// </summary>
-            public Peak peak { set; get; }
+            public P peak { set; get; }
 
             /// <summary>
             /// Sets and gets X-squared of test
@@ -387,7 +387,7 @@ namespace Genometric.MSPC.Model
             /// <summary>
             /// Sets and gets the supporting er.
             /// </summary>
-            public Peak peak { set; get; }
+            public P peak { set; get; }
 
             int IComparable<SupportingPeak>.CompareTo(SupportingPeak that)
             {

@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace Genometric.MSPC.Core.Comparers
 {
-    class CompareProcessedPeakByValue<Peak, Metadata> : IComparer<AnalysisResult<Peak, Metadata>.ProcessedPeak>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
+    class CompareProcessedPeakByValue<P, M> : IComparer<AnalysisResult<P, M>.ProcessedPeak>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, IComparable<M>, new()
     {
-        public int Compare(AnalysisResult<Peak, Metadata>.ProcessedPeak A, AnalysisResult<Peak, Metadata>.ProcessedPeak B)
+        public int Compare(AnalysisResult<P, M>.ProcessedPeak A, AnalysisResult<P, M>.ProcessedPeak B)
         {
             if (A == null)
             {

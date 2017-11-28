@@ -5,16 +5,16 @@ using System.Text;
 
 namespace Genometric.MSPC.Core.IntervalTree
 {
-    internal class IntervalOperations<Peak, Metadata>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
+    internal class IntervalOperations<P, M>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, IComparable<M>, new()
     {
-        public static bool Intersects(Peak a, Peak b)
+        public static bool Intersects(P a, P b)
         {
             return b.right.CompareTo(a.left) > 0 && b.left.CompareTo(a.right) < 0;
         }
 
-        public static bool Contains(Peak interval, int point, ContainConstrains constraint)
+        public static bool Contains(P interval, int point, ContainConstrains constraint)
         {
             bool isContained;
 
@@ -39,23 +39,23 @@ namespace Genometric.MSPC.Core.IntervalTree
             return isContained;
         }
 
-        public static bool Contains(Peak interval, int point)
+        public static bool Contains(P interval, int point)
         {
             //return time < end && time > start;
             return point.CompareTo(interval.right) < 0 && point.CompareTo(interval.left) > 0;
         }
 
-        public static bool ContainsWithStart(Peak interval, int point)
+        public static bool ContainsWithStart(P interval, int point)
         {
             return point.CompareTo(interval.right) < 0 && point.CompareTo(interval.left) >= 0;
         }
 
-        public static bool ContainsWithEnd(Peak interval, int point)
+        public static bool ContainsWithEnd(P interval, int point)
         {
             return point.CompareTo(interval.right) <= 0 && point.CompareTo(interval.left) > 0;
         }
 
-        public static bool ContainsWithStartEnd(Peak interval, int point)
+        public static bool ContainsWithStartEnd(P interval, int point)
         {
             return point.CompareTo(interval.right) <= 0 && point.CompareTo(interval.left) >= 0;
         }

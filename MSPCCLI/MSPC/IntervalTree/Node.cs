@@ -6,26 +6,26 @@ using System.Text;
 
 namespace Genometric.MSPC.Core.IntervalTree
 {
-    internal class Node<Peak, Metadata>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
+    internal class Node<P, M>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, IComparable<M>, new()
     {
-        private SortedDictionary<Peak, List<Peak>> _intervals;
+        private SortedDictionary<P, List<P>> _intervals;
         private int _center;
-        private Node<Peak, Metadata> _leftNode;
-        private Node<Peak, Metadata> _rightNode;
+        private Node<P, M> _leftNode;
+        private Node<P, M> _rightNode;
 
         public Node()
         {
-            _intervals = new SortedDictionary<Peak, List<Peak>>();
+            _intervals = new SortedDictionary<P, List<P>>();
             _center = 0;
             _leftNode = null;
             _rightNode = null;
         }
 
-        public Node(List<Peak> intervalsList)
+        public Node(List<P> intervalsList)
         {
-            _intervals = new SortedDictionary<Peak, List<Peak>>();
+            _intervals = new SortedDictionary<P, List<P>>();
             var endpoints = new SortedSet<int>();
             foreach (var interval in intervalsList)
             {
@@ -36,10 +36,10 @@ namespace Genometric.MSPC.Core.IntervalTree
             int? median = GetMedian(endpoints);
             _center = median.GetValueOrDefault();
 
-            var left = new List<Peak>();
-            var right = new List<Peak>();
+            var left = new List<P>();
+            var right = new List<P>();
 
-            foreach (Peak interval in intervalsList)
+            foreach (P interval in intervalsList)
             {
                 if (interval.right.CompareTo(_center) < 0)
                     left.Add(interval);
@@ -47,10 +47,10 @@ namespace Genometric.MSPC.Core.IntervalTree
                     right.Add(interval);
                 else
                 {
-                    List<Peak> posting;
+                    List<P> posting;
                     if (!_intervals.TryGetValue(interval, out posting))
                     {
-                        posting = new List<Peak>();
+                        posting = new List<P>();
                         _intervals.Add(interval, posting);
                     }
                     posting.Add(interval);
@@ -58,9 +58,9 @@ namespace Genometric.MSPC.Core.IntervalTree
             }
 
             if (left.Count > 0)
-                _leftNode = new Node<Peak, Metadata>(left);
+                _leftNode = new Node<P, M>(left);
             if (right.Count > 0)
-                _rightNode = new Node<Peak, Metadata>(right);
+                _rightNode = new Node<P, M>(right);
         }
 
         private int? GetMedian(SortedSet<int> set)
@@ -76,7 +76,7 @@ namespace Genometric.MSPC.Core.IntervalTree
             return null;
         }
 
-        private List<Peak> GetIntervalsOfKeys(List<Peak> intervalKeys)
+        private List<P> GetIntervalsOfKeys(List<P> intervalKeys)
         {
             var allIntervals =
               from k in intervalKeys
@@ -85,7 +85,7 @@ namespace Genometric.MSPC.Core.IntervalTree
             return allIntervals.SelectMany(x => x).ToList();
         }
 
-        public IEnumerable<IList<Peak>> Intersections
+        public IEnumerable<IList<P>> Intersections
         {
             get
             {
@@ -102,11 +102,11 @@ namespace Genometric.MSPC.Core.IntervalTree
                     var keys = _intervals.Keys.ToArray();
 
                     int lastIntervalIndex = 0;
-                    var intersectionsKeys = new List<Peak>();
+                    var intersectionsKeys = new List<P>();
                     for (int index = 1; index < _intervals.Count; index++)
                     {
                         var intervalKey = keys[index];
-                        if (IntervalOperations<Peak, Metadata>.Intersects(intervalKey, keys[lastIntervalIndex]))
+                        if (IntervalOperations<P, M>.Intersects(intervalKey, keys[lastIntervalIndex]))
                         {
                             if (intersectionsKeys.Count == 0)
                             {
@@ -119,7 +119,7 @@ namespace Genometric.MSPC.Core.IntervalTree
                             if (intersectionsKeys.Count > 0)
                             {
                                 yield return GetIntervalsOfKeys(intersectionsKeys);
-                                intersectionsKeys = new List<Peak>();
+                                intersectionsKeys = new List<P>();
                                 index--;
                             }
                             else
@@ -139,13 +139,13 @@ namespace Genometric.MSPC.Core.IntervalTree
             }
         }
 
-        public List<Peak> Stab(int time, ContainConstrains constraint)
+        public List<P> Stab(int time, ContainConstrains constraint)
         {
-            List<Peak> result = new List<Peak>();
+            List<P> result = new List<P>();
 
             foreach (var entry in _intervals)
             {
-                if (IntervalOperations<Peak, Metadata>.Contains(entry.Key, time, constraint))
+                if (IntervalOperations<P, M>.Contains(entry.Key, time, constraint))
                     foreach (var interval in entry.Value)
                         result.Add(interval);
                 else if (entry.Key.left.CompareTo(time) > 0)
@@ -159,14 +159,14 @@ namespace Genometric.MSPC.Core.IntervalTree
             return result;
         }
 
-        public List<Peak> Query(Peak target)
+        public List<P> Query(P target)
         {
-            List<Peak> result = new List<Peak>();
+            List<P> result = new List<P>();
 
             foreach (var entry in _intervals)
             {
-                if (IntervalOperations<Peak, Metadata>.Intersects(entry.Key, target))
-                    foreach (Peak interval in entry.Value)
+                if (IntervalOperations<P, M>.Intersects(entry.Key, target))
+                    foreach (P interval in entry.Value)
                         result.Add(interval);
                 else if (entry.Key.left.CompareTo(target.right) > 0)
                     break;
@@ -186,13 +186,13 @@ namespace Genometric.MSPC.Core.IntervalTree
             set { _center = value; }
         }
 
-        public Node<Peak, Metadata> Left
+        public Node<P, M> Left
         {
             get { return _leftNode; }
             set { _leftNode = value; }
         }
 
-        public Node<Peak, Metadata> Right
+        public Node<P, M> Right
         {
             get { return _rightNode; }
             set { _rightNode = value; }

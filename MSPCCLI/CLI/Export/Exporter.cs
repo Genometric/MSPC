@@ -20,9 +20,9 @@ using System.Linq;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
-    public class Exporter<Peak, Metadata> : ExporterBase<Peak, Metadata>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
+    public class Exporter<P, M> : ExporterBase<P, M>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, IComparable<M>, new()
     {
         public Exporter()
         {
@@ -63,8 +63,8 @@ namespace Genometric.MSPC.CLI.Exporter
 
         public void Export(
             Dictionary<uint, string> fileNames,
-            ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> results,
-            ReadOnlyDictionary<string, SortedList<Peak, Peak>> mergedReplicates,
+            ReadOnlyDictionary<uint, AnalysisResult<P, M>> results,
+            ReadOnlyDictionary<string, SortedList<P, P>> mergedReplicates,
             ExportOptions options)
         {
             includeBEDHeader = options.includeBEDHeader;

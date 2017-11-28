@@ -5,39 +5,39 @@ using System.Text;
 
 namespace Genometric.MSPC.Core.IntervalTree
 {
-    internal class Tree<Peak, Metadata>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
+    internal class Tree<P, M>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, IComparable<M>, new()
     {
-        private Node<Peak, Metadata> _head;
-        private List<Peak> _intervalList;
+        private Node<P, M> _head;
+        private List<P> _intervalList;
         private bool _inSync;
         private int _size;
 
         public Tree()
         {
-            _head = new Node<Peak, Metadata>();
-            _intervalList = new List<Peak>();
+            _head = new Node<P, M>();
+            _intervalList = new List<P>();
             _inSync = true;
             _size = 0;
         }
 
-        public Tree(List<Peak> intervalList)
+        public Tree(List<P> intervalList)
         {
-            _head = new Node<Peak, Metadata>(intervalList);
-            _intervalList = new List<Peak>();
+            _head = new Node<P, M>(intervalList);
+            _intervalList = new List<P>();
             _intervalList.AddRange(intervalList);
             _inSync = true;
             _size = intervalList.Count;
         }
 
-        public void Add(Peak interval)
+        public void Add(P interval)
         {
             _intervalList.Add(interval);
             _inSync = false;
         }
 
-        public List<Peak> GetIntervals(Peak peak)
+        public List<P> GetIntervals(P peak)
         {
             Build();
             return _head.Query(peak);
@@ -47,7 +47,7 @@ namespace Genometric.MSPC.Core.IntervalTree
         {
             if (!_inSync)
             {
-                _head = new Node<Peak, Metadata>(_intervalList);
+                _head = new Node<P, M>(_intervalList);
                 _inSync = true;
                 _size = _intervalList.Count;
             }

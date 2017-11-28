@@ -19,9 +19,9 @@ using System.Threading;
 
 namespace Genometric.MSPC.Core
 {
-    public class MSPC<Peak, Metadata>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
+    public class MSPC<P, M>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, IComparable<M>, new()
     {
         public event EventHandler<ValueEventArgs> StatusChanged;
         private void OnStatusValueChaned(ProgressReport value)
@@ -32,14 +32,14 @@ namespace Genometric.MSPC.Core
         public AutoResetEvent done;
         public AutoResetEvent canceled;
 
-        private Processor<Peak, Metadata> _processor { set; get; }
+        private Processor<P, M> _processor { set; get; }
         private BackgroundWorker _backgroundProcessor { set; get; }
 
-        private ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> _results { set; get; }
+        private ReadOnlyDictionary<uint, AnalysisResult<P, M>> _results { set; get; }
 
         public MSPC()
         {
-            _processor = new Processor<Peak, Metadata>();
+            _processor = new Processor<P, M>();
             _processor.OnProgressUpdate += _processorOnProgressUpdate;
             _backgroundProcessor = new BackgroundWorker();
             _backgroundProcessor.DoWork += _doWork;
@@ -48,12 +48,12 @@ namespace Genometric.MSPC.Core
             canceled = new AutoResetEvent(false);
         }
 
-        public void AddSample(uint id, Dictionary<string, Dictionary<char, List<Peak>>> sample)
+        public void AddSample(uint id, Dictionary<string, Dictionary<char, List<P>>> sample)
         {
             _processor.AddSample(id, sample);
         }
 
-        public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> Run(Config config)
+        public ReadOnlyDictionary<uint, AnalysisResult<P, M>> Run(Config config)
         {
             if (_processor.SamplesCount < 2)
                 throw new InvalidOperationException(String.Format("Minimum two samples are required; {} is given.", _processor.SamplesCount));
@@ -89,12 +89,12 @@ namespace Genometric.MSPC.Core
             _processor.cancel = true;
         }
 
-        public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> GetResults()
+        public ReadOnlyDictionary<uint, AnalysisResult<P, M>> GetResults()
         {
             return _results;
         }
 
-        public ReadOnlyDictionary<string, SortedList<Peak, Peak>> GetMergedReplicates()
+        public ReadOnlyDictionary<string, SortedList<P, P>> GetMergedReplicates()
         {
             return _processor.MergedReplicates;
         }

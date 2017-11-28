@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace Genometric.MSPC.Core.Comparers
 {
-    internal class OverlappingIntervalComparer<Peak, Metadata> : IComparer<Peak>
-        where Peak : IInterval<int, Metadata>, IComparable<Peak>, new()
-        where Metadata : IChIPSeqPeak, IComparable<Metadata>, new()
+    internal class OverlappingIntervalComparer<P, M> : IComparer<P>
+        where P : IInterval<int, M>, IComparable<P>, new()
+        where M : IChIPSeqPeak, IComparable<M>, new()
     {
-        public int Compare(Peak x, Peak y)
+        public int Compare(P x, P y)
         {
             if (x.right <= y.left) return -1;
             if (x.left >= y.right) return 1;

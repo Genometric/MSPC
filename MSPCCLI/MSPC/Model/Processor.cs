@@ -64,7 +64,7 @@ namespace Genometric.MSPC.Core.Model
         /// </summary>
         private Dictionary<uint, Dictionary<string, Dictionary<char, List<Peak>>>> _samples { set; get; }
 
-        public int SamplesCount { get { return _samples.Count; } }
+        internal int SamplesCount { get { return _samples.Count; } }
 
         internal Processor()
         {
@@ -150,7 +150,7 @@ namespace Genometric.MSPC.Core.Model
 
             if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
-            IntermediateSetsPurification();
+            ProcessIntermediaSets();
 
             if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating output set"));
@@ -158,47 +158,47 @@ namespace Genometric.MSPC.Core.Model
 
             if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
-            CalculateFalseDiscoveryRate();
+            PerformMultipleTestingCorrection();
 
             if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating consensus peaks set"));
-            CreateCombinedOutputSet();
+            CreateConsensusPeaks();
 
             return AnalysisResults;
         }
 
         private List<AnalysisResult<Peak, Metadata>.SupportingPeak> FindSupportingPeaks(uint id, string chr, Peak p)
         {
-            var supPeak = new List<AnalysisResult<Peak, Metadata>.SupportingPeak>();
+            var supportingPeaks = new List<AnalysisResult<Peak, Metadata>.SupportingPeak>();
             foreach(var tree in _trees)
             {
                 if (tree.Key == id)
                     continue;
 
-                var interPeaks = new List<Peak>();
+                var sps = new List<Peak>();
                 if (_trees[tree.Key].ContainsKey(chr))
-                    interPeaks = _trees[tree.Key][chr].GetIntervals(p);
+                    sps = _trees[tree.Key][chr].GetIntervals(p);
 
-                switch (interPeaks.Count)
+                switch (sps.Count)
                 {
                     case 0: break;
 
                     case 1:
-                        supPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak()
+                        supportingPeaks.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak()
                         {
-                            peak = interPeaks[0],
+                            peak = sps[0],
                             sampleID = tree.Key
                         });
                         break;
 
                     default:
-                        var chosenPeak = interPeaks[0];
-                        foreach (var tIp in interPeaks.Skip(1))
-                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue && tIp.metadata.value < chosenPeak.metadata.value) ||
-                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue && tIp.metadata.value > chosenPeak.metadata.value))
-                                chosenPeak = tIp;
+                        var chosenPeak = sps[0];
+                        foreach (var sp in sps.Skip(1))
+                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue && sp.metadata.value < chosenPeak.metadata.value) ||
+                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue && sp.metadata.value > chosenPeak.metadata.value))
+                                chosenPeak = sp;
 
-                        supPeak.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak()
+                        supportingPeaks.Add(new AnalysisResult<Peak, Metadata>.SupportingPeak()
                         {
                             peak = chosenPeak,
                             sampleID = tree.Key
@@ -207,7 +207,7 @@ namespace Genometric.MSPC.Core.Model
                 }
             }
 
-            return supPeak;
+            return supportingPeaks;
         }
 
         private void ConfirmPeak(uint id, string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
@@ -234,10 +234,10 @@ namespace Genometric.MSPC.Core.Model
             if (!_analysisResults[id].R_j__c[chr].ContainsKey(p.metadata.hashKey))
                 _analysisResults[id].R_j__c[chr].Add(p.metadata.hashKey, anRe);
 
-            ConfirmeSupportingPeaks(id, chr, p, supportingPeaks);
+            ConfirmSupportingPeaks(id, chr, p, supportingPeaks);
         }
 
-        private void ConfirmeSupportingPeaks(uint id, string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
+        private void ConfirmSupportingPeaks(uint id, string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
         {
             foreach (var supPeak in supportingPeaks)
             {
@@ -369,7 +369,7 @@ namespace Genometric.MSPC.Core.Model
                 _xsqrd = Math.Abs(Config.defaultMaxLogOfPVvalue);
         }
 
-        internal void IntermediateSetsPurification()
+        private void ProcessIntermediaSets()
         {
             if (_config.ReplicateType == ReplicateType.Biological)
             {
@@ -419,7 +419,7 @@ namespace Genometric.MSPC.Core.Model
             }
         }
 
-        internal void CreateOuputSet()
+        private void CreateOuputSet()
         {
             foreach(var result in _analysisResults)
             {
@@ -456,7 +456,7 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Benjamini–Hochberg procedure (step-up procedure)
         /// </summary>
-        internal void CalculateFalseDiscoveryRate()
+        private void PerformMultipleTestingCorrection()
         {
             foreach(var result in _analysisResults)
             {
@@ -464,9 +464,7 @@ namespace Genometric.MSPC.Core.Model
                 {
                     result.Value.R_j_TP[chr.Key] = (uint)chr.Value.Count;
                     result.Value.R_j_FP[chr.Key] = 0;
-
                     var outputSet = result.Value.R_j__o[chr.Key];
-
                     int m = outputSet.Count();
 
                     // Sorts output set based on the values of peaks. 
@@ -477,10 +475,8 @@ namespace Genometric.MSPC.Core.Model
                         if (outputSet[k - 1].peak.metadata.value > ((double)k / (double)m) * _config.Alpha)
                         {
                             k--;
-
                             for (int l = 1; l < k; l++)
                             {
-                                // This should update the [analysisResults[sample.Key].R_j__o[chr.Key]] ; is it updating ?
                                 outputSet[l].adjPValue = (((double)k * outputSet[l].peak.metadata.value) / (double)m) * _config.Alpha;
                                 outputSet[l].statisticalClassification = PeakClassificationType.TruePositive;
                             }
@@ -490,11 +486,8 @@ namespace Genometric.MSPC.Core.Model
                                 outputSet[l].statisticalClassification = PeakClassificationType.FalsePositive;
                             }
 
-                            //analysisResults[sample.Key].R_j_TP[chr.Key] = (uint)k;
                             result.Value.R_j_TP[chr.Key] = (uint)k;
-                            //analysisResults[sample.Key].R_j_FP[chr.Key] = (uint)(m - k);
                             result.Value.R_j_FP[chr.Key] = (uint)(m - k);
-
                             break;
                         }
                     }
@@ -506,7 +499,7 @@ namespace Genometric.MSPC.Core.Model
             }
         }
 
-        internal void CreateCombinedOutputSet()
+        private void CreateConsensusPeaks()
         {
             _mergedReplicates = new Dictionary<string, SortedList<Peak, Peak>>();
             foreach (var result in _analysisResults)

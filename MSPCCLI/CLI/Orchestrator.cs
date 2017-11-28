@@ -75,7 +75,7 @@ namespace Genometric.MSPC.CLI
 
             foreach (var sample in _samples)
                 _mspc.AddSample(sample.fileHashKey, sample.intervals);
-            _mspc.Run(config);
+            _mspc.RunAsync(config);
             _mspc.done.WaitOne();
         }
         private void _mspc_statusChanged(object sender, ValueEventArgs e)

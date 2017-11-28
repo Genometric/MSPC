@@ -52,11 +52,18 @@ namespace Genometric.MSPC.Core
             _processor.AddSample(id, sample);
         }
 
-        public void Run(Config config)
+        public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> Run(Config config)
+        {
+            _results = _processor.Run(config);
+            return GetResults();
+        }
+
+        public void RunAsync(Config config)
         {
             done.Reset();
             if (!_backgroundProcessor.IsBusy)
                 _backgroundProcessor.RunWorkerAsync(config);
+            // TODO: cancel running thread, if background worker is busy.
         }
 
         public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> GetResults()

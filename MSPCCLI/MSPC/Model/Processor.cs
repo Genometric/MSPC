@@ -121,9 +121,31 @@ namespace Genometric.MSPC.Core.Model
                         {
                             if (cancel) return null;
                             _xsqrd = 0;
-                            InitialClassification(sample.Key, chr.Key, peak);
-                            if (peak.metadata.value <= _config.TauS || peak.metadata.value <= _config.TauW)
-                                SecondaryClassification(sample.Key, chr.Key, peak, FindSupportingPeaks(sample.Key, chr.Key, peak));
+
+                            // Initial assessment: classifying peak as strong or weak based on p-value.
+                            if (peak.metadata.value <= _config.TauS)
+                                _analysisResults[sample.Key].R_j__s[chr.Key].Add(peak);
+                            else if (peak.metadata.value <= _config.TauW)
+                                _analysisResults[sample.Key].R_j__w[chr.Key].Add(peak);
+                            else
+                                continue;
+
+                            // Combined stringency assessment: confirming or discarding a peak based on
+                            // (a) the number of peaks it overlaps with, and (b) the combined p-value of
+                            // the overlapping peaks calculated using Fisher's combined probability test.
+                            var supportingPeaks = FindSupportingPeaks(sample.Key, chr.Key, peak);
+                            if (supportingPeaks.Count + 1 >= _config.C)
+                            {
+                                CalculateXsqrd(peak, supportingPeaks);
+                                if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
+                                    ConfirmPeak(sample.Key, chr.Key, peak, supportingPeaks);
+                                else
+                                    DiscardPeak(sample.Key, chr.Key, peak, supportingPeaks, 0);
+                            }
+                            else
+                            {
+                                DiscardPeak(sample.Key, chr.Key, peak, supportingPeaks, 1);
+                            }
                         }
 
             if (cancel) return null;
@@ -143,14 +165,6 @@ namespace Genometric.MSPC.Core.Model
             CreateCombinedOutputSet();
 
             return AnalysisResults;
-        }
-
-        private void InitialClassification(uint id, string chr, Peak p)
-        {
-            if (p.metadata.value <= _config.TauS)
-                _analysisResults[id].R_j__s[chr].Add(p);            
-            else if (p.metadata.value <= _config.TauW)            
-                _analysisResults[id].R_j__w[chr].Add(p);
         }
 
         private List<AnalysisResult<Peak, Metadata>.SupportingPeak> FindSupportingPeaks(uint id, string chr, Peak p)
@@ -194,23 +208,6 @@ namespace Genometric.MSPC.Core.Model
             }
 
             return supPeak;
-        }
-
-        private void SecondaryClassification(uint id, string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)
-        {
-            if (supportingPeaks.Count + 1 >= _config.C)
-            {
-                CalculateXsqrd(p, supportingPeaks);
-
-                if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
-                    ConfirmPeak(id, chr, p, supportingPeaks);
-                else
-                    DiscardPeak(id, chr, p, supportingPeaks, 0);
-            }
-            else
-            {
-                DiscardPeak(id, chr, p, supportingPeaks, 1);
-            }
         }
 
         private void ConfirmPeak(uint id, string chr, Peak p, List<AnalysisResult<Peak, Metadata>.SupportingPeak> supportingPeaks)

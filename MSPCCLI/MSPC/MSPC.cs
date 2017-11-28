@@ -30,6 +30,7 @@ namespace Genometric.MSPC.Core
         }
 
         public AutoResetEvent done;
+        public AutoResetEvent canceled;
 
         private Processor<Peak, Metadata> _processor { set; get; }
         private BackgroundWorker _backgroundProcessor { set; get; }
@@ -41,10 +42,10 @@ namespace Genometric.MSPC.Core
             _processor = new Processor<Peak, Metadata>();
             _processor.OnProgressUpdate += _processorOnProgressUpdate;
             _backgroundProcessor = new BackgroundWorker();
-            _backgroundProcessor.WorkerSupportsCancellation = true;
             _backgroundProcessor.DoWork += _doWork;
             _backgroundProcessor.RunWorkerCompleted += _runWorkerCompleted;
             done = new AutoResetEvent(false);
+            canceled = new AutoResetEvent(false);
         }
 
         public void AddSample(uint id, Dictionary<string, Dictionary<char, List<Peak>>> sample)
@@ -54,16 +55,33 @@ namespace Genometric.MSPC.Core
 
         public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> Run(Config config)
         {
+            // TODO: do not run if no sample is given.
+            _processor.cancel = false;
             _results = _processor.Run(config);
             return GetResults();
         }
 
         public void RunAsync(Config config)
         {
+            // TODO: do not run if no sample is given.
             done.Reset();
+            _processor.cancel = false;
             if (!_backgroundProcessor.IsBusy)
                 _backgroundProcessor.RunWorkerAsync(config);
             // TODO: cancel running thread, if background worker is busy.
+        }
+
+        public void Cancel()
+        {
+            canceled.Reset();
+            _processor.cancel = true;
+            canceled.WaitOne();
+        }
+
+        public void CancelAsync()
+        {
+            canceled.Reset();
+            _processor.cancel = true;
         }
 
         public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> GetResults()
@@ -83,6 +101,7 @@ namespace Genometric.MSPC.Core
 
         private void _runWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            canceled.Set();
             done.Set();
         }
 

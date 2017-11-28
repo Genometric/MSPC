@@ -16,6 +16,7 @@ using System.Linq;
 using Genometric.MSPC.Core.IntervalTree;
 using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.XSquaredData;
+using System.Threading;
 
 namespace Genometric.MSPC.Core.Model
 {
@@ -25,6 +26,8 @@ namespace Genometric.MSPC.Core.Model
     {
         public delegate void ProgressUpdate(ProgressReport value);
         public event ProgressUpdate OnProgressUpdate;
+
+        internal bool cancel;
 
         private double _xsqrd { set; get; }
 
@@ -85,18 +88,26 @@ namespace Genometric.MSPC.Core.Model
             _analysisResults = new Dictionary<uint, AnalysisResult<Peak, Metadata>>();
             foreach (var sample in _samples)
             {
+                if (cancel) return null;
                 _trees.Add(sample.Key, new Dictionary<string, Tree<Peak, Metadata>>());
                 _analysisResults.Add(sample.Key, new AnalysisResult<Peak, Metadata>());
                 foreach (var chr in sample.Value)
                 {
+                    if (cancel) return null;
                     _trees[sample.Key].Add(chr.Key, new Tree<Peak, Metadata>());
                     _analysisResults[sample.Key].AddChromosome(chr.Key);
                     foreach (var strand in chr.Value)
+                    {
+                        if (cancel) return null;
                         foreach (Peak p in strand.Value)
+                        {
+                            if (cancel) return null;
                             if (p.metadata.value <= _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
                             else
                                 _analysisResults[sample.Key].R_j__b[chr.Key].Add(p);
+                        }
+                    }
                 }
             }
 
@@ -106,26 +117,29 @@ namespace Genometric.MSPC.Core.Model
                     foreach (var strand in chr.Value)
                         foreach (Peak peak in strand.Value)
                         {
+                            if (cancel) return null;
                             _xsqrd = 0;
                             InitialClassification(sample.Key, chr.Key, peak);
                             if (peak.metadata.value <= _config.TauS || peak.metadata.value <= _config.TauW)
                                 SecondaryClassification(sample.Key, chr.Key, peak, FindSupportingPeaks(sample.Key, chr.Key, peak));
                         }
 
-
-
-
+            if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
             IntermediateSetsPurification();
 
+            if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating output set"));
             CreateOuputSet();
 
+            if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
             CalculateFalseDiscoveryRate();
 
+            if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating consensus peaks set"));
             CreateCombinedOutputSet();
+
             return AnalysisResults;
         }
 

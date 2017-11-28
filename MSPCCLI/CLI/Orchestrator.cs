@@ -10,6 +10,7 @@ using Genometric.MSPC.Model;
 using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
+using System.Threading;
 
 namespace Genometric.MSPC.CLI
 {

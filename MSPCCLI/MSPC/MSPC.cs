@@ -55,7 +55,9 @@ namespace Genometric.MSPC.Core
 
         public ReadOnlyDictionary<uint, AnalysisResult<Peak, Metadata>> Run(Config config)
         {
-            // TODO: do not run if no sample is given.
+            if (_processor.SamplesCount < 2)
+                throw new InvalidOperationException(String.Format("Minimum two samples are required; {} is given.", _processor.SamplesCount));
+
             _processor.cancel = false;
             _results = _processor.Run(config);
             return GetResults();
@@ -63,7 +65,9 @@ namespace Genometric.MSPC.Core
 
         public void RunAsync(Config config)
         {
-            // TODO: do not run if no sample is given.
+            if (_processor.SamplesCount < 2)
+                throw new InvalidOperationException(String.Format("Minimum two samples are required; {} is given.", _processor.SamplesCount));
+
             done.Reset();
             canceled.Reset();
             _processor.cancel = false;

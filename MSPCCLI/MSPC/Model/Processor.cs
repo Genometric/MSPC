@@ -64,6 +64,8 @@ namespace Genometric.MSPC.Core.Model
         /// </summary>
         private Dictionary<uint, Dictionary<string, Dictionary<char, List<Peak>>>> _samples { set; get; }
 
+        public int SamplesCount { get { return _samples.Count; } }
+
         internal Processor()
         {
             _samples = new Dictionary<uint, Dictionary<string, Dictionary<char, List<Peak>>>>();

@@ -30,7 +30,7 @@ namespace Genometric.MSPC.CLI
         internal float alpha { set; get; }
 
         private List<BED<ChIPSeqPeak>> _samples { set; get; }
-        internal ReadOnlyCollection<ParsedChIPseqPeaks<int, I, M>> samples { get { return _samples.AsReadOnly(); } }
+        internal ReadOnlyCollection<BED<ChIPSeqPeak>> samples { get { return _samples.AsReadOnly(); } }
 
         internal Orchestrator()
         {
@@ -58,7 +58,7 @@ namespace Genometric.MSPC.CLI
 
 
             foreach (var sample in _samples)
-                _mspc.AddSample(sample.fileHashKey, sample.intervals);
+                _mspc.AddSample(sample.FileHashKey, sample.Chromosomes);
             _mspc.RunAsync(config);
             _mspc.done.WaitOne();
         }
@@ -86,7 +86,7 @@ namespace Genometric.MSPC.CLI
                 Export_R_j__d_BED: true,
                 Export_Chromosomewide_stats: false);
 
-            exporter.Export(_samples.ToDictionary(x => x.fileHashKey, x => x.fileName), _mspc.GetResults(), _mspc.GetMergedReplicates(), options);
+            exporter.Export(_samples.ToDictionary(x => x.FileHashKey, x => x.FileName), _mspc.GetResults(), _mspc.GetMergedReplicates(), options);
         }
     }
 }

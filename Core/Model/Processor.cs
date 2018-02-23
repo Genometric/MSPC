@@ -8,7 +8,6 @@
  * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
  **/
 
-using Genometric.IGenomics;
 using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ using Genometric.MSPC.Core.IntervalTree;
 using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.XSquaredData;
 using System.Threading;
+using Polimi.DEIB.VahidJalili.IGenomics;
 
 namespace Genometric.MSPC.Core.Model
 {

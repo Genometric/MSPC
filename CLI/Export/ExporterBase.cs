@@ -8,10 +8,9 @@
  * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
  **/
 
-using Genometric.IGenomics;
-using Genometric.MSPC.CLI.Model;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
+using Polimi.DEIB.VahidJalili.IGenomics;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

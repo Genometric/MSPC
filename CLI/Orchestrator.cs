@@ -1,8 +1,7 @@
-﻿using Genometric.IGenomics;
+﻿
 using System;
 using System.ComponentModel;
 using System.IO;
-using Genometric.GIFP;
 using System.Collections.Generic;
 using Genometric.MSPC.Core;
 using Genometric.MSPC.CLI.Exporter;
@@ -11,6 +10,8 @@ using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
 using System.Threading;
+using Polimi.DEIB.VahidJalili.IGenomics;
+using Polimi.DEIB.VahidJalili.GIFP;
 
 namespace Genometric.MSPC.CLI
 {
@@ -56,8 +57,8 @@ namespace Genometric.MSPC.CLI
                     strandColumn: -1,
                     defaultValue: 0.1,
                     pValueFormat: pValueFormat.minus1_Log10_pValue,
-                    dropPeakIfInvalidValue: true,
-                    hashFunction: HashFunction.One_at_a_Time);
+                    dropPeakIfInvalidValue: true);
+                    //hashFunction: HashFunction.One_at_a_Time);
 
             _samples.Add(bedParser.Parse());
         }

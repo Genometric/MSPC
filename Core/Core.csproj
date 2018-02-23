@@ -7,9 +7,7 @@
 
   <ItemGroup>
     <Reference Include="IGenomics">
-      <HintPath>..\..\..\..\GIFP\GIFP\GIFPCore\Libraries\IGenomics.dll</HintPath>
-      <Private>true</Private>
-      <EmbedInteropTypes>false</EmbedInteropTypes>
+      <HintPath>..\Resources\IGenomics.dll</HintPath>
     </Reference>
   </ItemGroup>
 

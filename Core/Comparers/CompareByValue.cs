@@ -21,8 +21,8 @@ namespace Genometric.MSPC.Core.Comparers
                 if (B == null) return 1; // A is greater
                 else
                 {
-                    if (A.peak.metadata.Value != B.peak.metadata.Value)
-                        return A.peak.metadata.Value.CompareTo(B.peak.metadata.Value);
+                    if (A.peak.Value != B.peak.Value)
+                        return A.peak.Value.CompareTo(B.peak.Value);
                     else if (A.peak.Left != B.peak.Left)
                         return A.peak.Left.CompareTo(B.peak.Left);
                     else

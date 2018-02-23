@@ -62,7 +62,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
         public void Export(
             Dictionary<uint, string> fileNames,
-            ReadOnlyDictionary<uint, AnalysisResult<P, M>> results,
+            ReadOnlyDictionary<uint, AnalysisResult<P>> results,
             ReadOnlyDictionary<string, SortedList<P, P>> mergedReplicates,
             ExportOptions options)
         {

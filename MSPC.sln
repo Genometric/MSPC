@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CLI", "CLI\CLI.csproj", "{CCD8931C-07DD-4C36-A958-3433A80A3487}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "MSPC\Core.csproj", "{E1E13825-8CD9-448F-980F-A30EDAD3C497}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{E1E13825-8CD9-448F-980F-A30EDAD3C497}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,16 +10,16 @@ using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
 using System.Threading;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.CLI
 {
-    internal class Orchestrator<P, M>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    internal class Orchestrator<I>
+        where I : IInterval<int>, new()
     {
         private BackgroundWorker _analysisBGW { set; get; }
-        internal MSPC<P, M> _mspc { set; get; }
-        internal Exporter<P, M> exporter { set; get; }
+        internal MSPC<I> _mspc { set; get; }
+        internal Exporter<I> exporter { set; get; }
         internal string replicateType { set; get; }
         internal double tauS { set; get; }
         internal double tauW { set; get; }
@@ -27,20 +27,20 @@ namespace Genometric.MSPC.CLI
         internal byte C { set; get; }
         internal float alpha { set; get; }
 
-        private List<ParsedChIPseqPeaks<int, P, M>> _samples { set; get; }
-        internal ReadOnlyCollection<ParsedChIPseqPeaks<int, P, M>> samples { get { return _samples.AsReadOnly(); } }
+        private List<ParsedChIPseqPeaks<int, I, M>> _samples { set; get; }
+        internal ReadOnlyCollection<ParsedChIPseqPeaks<int, I, M>> samples { get { return _samples.AsReadOnly(); } }
 
         internal Orchestrator()
         {
-            _mspc = new MSPC<P, M>();
+            _mspc = new MSPC<I, M>();
             _mspc.StatusChanged += _mspc_statusChanged;
-            _samples = new List<ParsedChIPseqPeaks<int, P, M>>();
+            _samples = new List<ParsedChIPseqPeaks<int, I, M>>();
         }
 
         public void LoadSample(string fileName)
         {
-            BEDParser<P, M> bedParser =
-                new BEDParser<P, M>(
+            BEDParser<I, M> bedParser =
+                new BEDParser<I, M>(
                     source: fileName,
                     species: Genomes.HomoSapiens,
                     assembly: Assemblies.hg19,
@@ -85,7 +85,7 @@ namespace Genometric.MSPC.CLI
 
         internal void Export()
         {
-            exporter = new Exporter<P, M>();
+            exporter = new Exporter<I, M>();
             var options = new ExportOptions(
                 sessionPath: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
                              DateTime.Now.Year +

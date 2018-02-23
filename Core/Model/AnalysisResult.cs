@@ -10,7 +10,6 @@
 
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model.Classes;
-using Polimi.DEIB.VahidJalili.IGenomics;
 using System;
 using System.Collections.Generic;
 

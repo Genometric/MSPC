@@ -16,7 +16,6 @@ using Genometric.MSPC.Core.IntervalTree;
 using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.XSquaredData;
 using System.Threading;
-using Polimi.DEIB.VahidJalili.IGenomics;
 
 namespace Genometric.MSPC.Core.Model
 {

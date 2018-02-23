@@ -10,8 +10,6 @@ using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
 using System.Threading;
-using Polimi.DEIB.VahidJalili.IGenomics;
-using Polimi.DEIB.VahidJalili.GIFP;
 
 namespace Genometric.MSPC.CLI
 {

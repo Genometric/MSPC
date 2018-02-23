@@ -1,6 +1,5 @@
 ﻿
 using Genometric.MSPC.Model;
-using Polimi.DEIB.VahidJalili.IGenomics;
 using System;
 using System.Collections.Generic;
 

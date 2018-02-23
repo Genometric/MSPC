@@ -12,12 +12,12 @@ using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model.Classes;
 using System;
 using System.Collections.Generic;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.Model
 {
-    public class AnalysisResult<P, M>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, new()
+    public class AnalysisResult<I>
+        where I : IChIPSeqPeak, new()
     {
         public AnalysisResult()
         {
@@ -27,9 +27,9 @@ namespace Genometric.MSPC.Model
             R_j_FP = new Dictionary<string, uint>();
             R_j_TP = new Dictionary<string, uint>();
 
-            R_j__s = new Dictionary<string, List<P>>();
-            R_j__w = new Dictionary<string, List<P>>();
-            R_j__b = new Dictionary<string, List<P>>();
+            R_j__s = new Dictionary<string, List<I>>();
+            R_j__w = new Dictionary<string, List<I>>();
+            R_j__b = new Dictionary<string, List<I>>();
 
             R_j__c = new Dictionary<string, Dictionary<UInt64, ProcessedPeak>>();
             R_j__d = new Dictionary<string, Dictionary<UInt64, ProcessedPeak>>();
@@ -63,17 +63,17 @@ namespace Genometric.MSPC.Model
         /// <summary>
         /// Chromosome-wide stringent peaks of sample j
         /// </summary>
-        public Dictionary<string, List<P>> R_j__s { set; get; }
+        public Dictionary<string, List<I>> R_j__s { set; get; }
 
         /// <summary>
         /// Chromosome-wide weak peaks of sample j
         /// </summary>
-        public Dictionary<string, List<P>> R_j__w { set; get; }
+        public Dictionary<string, List<I>> R_j__w { set; get; }
 
         /// <summary>
         /// Chromosome-wide background peaks of sample j (i.e., the peaks with p-value > T_w ).
         /// </summary>
-        public Dictionary<string, List<P>> R_j__b { set; get; }
+        public Dictionary<string, List<I>> R_j__b { set; get; }
 
 
 
@@ -252,7 +252,7 @@ namespace Genometric.MSPC.Model
 
             double totalERsCount = 0;
             chrwideStats = new Dictionary<string, ChrWideStat>();
-            foreach (KeyValuePair<string, List<P>> chr in R_j__s)
+            foreach (KeyValuePair<string, List<I>> chr in R_j__s)
             {
                 total____s += (UInt32)R_j__s[chr.Key].Count;
                 total____w += (UInt32)R_j__w[chr.Key].Count;
@@ -295,9 +295,9 @@ namespace Genometric.MSPC.Model
         }
         public void AddChromosome(string chromosome)
         {
-            R_j__s.Add(chromosome, new List<P>());
-            R_j__w.Add(chromosome, new List<P>());
-            R_j__b.Add(chromosome, new List<P>());
+            R_j__s.Add(chromosome, new List<I>());
+            R_j__w.Add(chromosome, new List<I>());
+            R_j__b.Add(chromosome, new List<I>());
 
             R_j__c.Add(chromosome, new Dictionary<UInt64, ProcessedPeak>());
             R_j__d.Add(chromosome, new Dictionary<UInt64, ProcessedPeak>());
@@ -327,7 +327,7 @@ namespace Genometric.MSPC.Model
             /// <summary>
             /// Sets and gets the Confirmed I. Is a reference to the original er in cached data.
             /// </summary>
-            public P peak { set; get; }
+            public I peak { set; get; }
 
             /// <summary>
             /// Sets and gets X-squared of test
@@ -386,7 +386,7 @@ namespace Genometric.MSPC.Model
             /// <summary>
             /// Sets and gets the supporting er.
             /// </summary>
-            public P peak { set; get; }
+            public I peak { set; get; }
 
             int IComparable<SupportingPeak>.CompareTo(SupportingPeak that)
             {
@@ -405,17 +405,17 @@ namespace Genometric.MSPC.Model
                 if (this.sampleID != that.sampleID)
                     return this.sampleID.CompareTo(that.sampleID);
 
-                if (this.peak.left != that.peak.left)
-                    return this.peak.left.CompareTo(that.peak.left);
+                if (this.peak.Left != that.peak.Left)
+                    return this.peak.Left.CompareTo(that.peak.Left);
 
-                if (this.peak.right != that.peak.right)
-                    return this.peak.right.CompareTo(that.peak.right);
+                if (this.peak.Right != that.peak.Right)
+                    return this.peak.Right.CompareTo(that.peak.Right);
 
                 /*if (this.er.metadata.strand != that.er.metadata.strand)
                     return this.er.metadata.strand.CompareTo(that.er.metadata.strand);*/
 
-                if (this.peak.metadata.value != that.peak.metadata.value)
-                    return this.peak.metadata.value.CompareTo(that.peak.metadata.value);
+                if (this.peak.Value != that.peak.Value)
+                    return this.peak.Value.CompareTo(that.peak.Value);
 
                 /*if (this.er.metadata.name != that.er.metadata.name)
                     return this.er.metadata.name.CompareTo(that.er.metadata.name);*/

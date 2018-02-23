@@ -16,12 +16,12 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
-    public class Exporter<P, M> : ExporterBase<P, M>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    public class Exporter<P> : ExporterBase<P>
+        where P : IChIPSeqPeak, new()
     {
         public Exporter()
         {

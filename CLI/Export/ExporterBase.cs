@@ -15,12 +15,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
-    public class ExporterBase<P, M>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    public class ExporterBase<P>
+        where P : IChIPSeqPeak, new()
     {
         public string samplePath { set; get; }
         protected string sessionPath { set; get; }

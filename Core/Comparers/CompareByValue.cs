@@ -2,14 +2,14 @@
 using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.Core.Comparers
 {
-    class CompareProcessedPeakByValue<P, M> : IComparer<AnalysisResult<P, M>.ProcessedPeak>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    class CompareProcessedPeakByValue<I> : IComparer<AnalysisResult<I>.ProcessedPeak>
+        where I : IChIPSeqPeak, new()
     {
-        public int Compare(AnalysisResult<P, M>.ProcessedPeak A, AnalysisResult<P, M>.ProcessedPeak B)
+        public int Compare(AnalysisResult<I>.ProcessedPeak A, AnalysisResult<I>.ProcessedPeak B)
         {
             if (A == null)
             {
@@ -21,12 +21,12 @@ namespace Genometric.MSPC.Core.Comparers
                 if (B == null) return 1; // A is greater
                 else
                 {
-                    if (A.peak.metadata.value != B.peak.metadata.value)
-                        return A.peak.metadata.value.CompareTo(B.peak.metadata.value);
-                    else if (A.peak.left != B.peak.left)
-                        return A.peak.left.CompareTo(B.peak.left);
+                    if (A.peak.metadata.Value != B.peak.metadata.Value)
+                        return A.peak.metadata.Value.CompareTo(B.peak.metadata.Value);
+                    else if (A.peak.Left != B.peak.Left)
+                        return A.peak.Left.CompareTo(B.peak.Left);
                     else
-                        return A.peak.right.CompareTo(B.peak.right);
+                        return A.peak.Right.CompareTo(B.peak.Right);
                 }
             }
         }

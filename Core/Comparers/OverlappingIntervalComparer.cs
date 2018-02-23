@@ -1,17 +1,17 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.Core.Comparers
 {
-    internal class OverlappingIntervalComparer<P, M> : IComparer<P>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    internal class OverlappingIntervalComparer<I> : IComparer<I>
+        where I : IChIPSeqPeak, new()
     {
-        public int Compare(P x, P y)
+        public int Compare(I x, I y)
         {
-            if (x.right <= y.left) return -1;
-            if (x.left >= y.right) return 1;
+            if (x.Right <= y.Left) return -1;
+            if (x.Left >= y.Right) return 1;
             return 0;
         }
     }

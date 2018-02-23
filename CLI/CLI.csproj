@@ -18,16 +18,4 @@
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="GIFP">
-      <HintPath>..\Resources\GIFP.dll</HintPath>
-    </Reference>
-    <Reference Include="IGenomics">
-      <HintPath>..\Resources\IGenomics.dll</HintPath>
-    </Reference>
-    <Reference Include="XSquaredData">
-      <HintPath>..\Resources\XSquaredData.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

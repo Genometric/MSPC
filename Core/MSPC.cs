@@ -15,12 +15,12 @@ using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.Model;
 using System.ComponentModel;
 using System.Threading;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.Core
 {
-    public class MSPC<P, M>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    public class MSPC<I>
+        where I : IChIPSeqPeak, new()
     {
         public event EventHandler<ValueEventArgs> StatusChanged;
         private void OnStatusValueChaned(ProgressReport value)
@@ -31,14 +31,14 @@ namespace Genometric.MSPC.Core
         public AutoResetEvent done;
         public AutoResetEvent canceled;
 
-        private Processor<P, M> _processor { set; get; }
+        private Processor<I> _processor { set; get; }
         private BackgroundWorker _backgroundProcessor { set; get; }
 
-        private ReadOnlyDictionary<uint, AnalysisResult<P, M>> _results { set; get; }
+        private ReadOnlyDictionary<uint, AnalysisResult<I>> _results { set; get; }
 
         public MSPC()
         {
-            _processor = new Processor<P, M>();
+            _processor = new Processor<I>();
             _processor.OnProgressUpdate += _processorOnProgressUpdate;
             _backgroundProcessor = new BackgroundWorker();
             _backgroundProcessor.DoWork += _doWork;
@@ -47,12 +47,12 @@ namespace Genometric.MSPC.Core
             canceled = new AutoResetEvent(false);
         }
 
-        public void AddSample(uint id, Dictionary<string, Dictionary<char, List<P>>> sample)
+        public void AddSample(uint id, Dictionary<string, Dictionary<char, List<I>>> sample)
         {
             _processor.AddSample(id, sample);
         }
 
-        public ReadOnlyDictionary<uint, AnalysisResult<P, M>> Run(Config config)
+        public ReadOnlyDictionary<uint, AnalysisResult<I>> Run(Config config)
         {
             if (_processor.SamplesCount < 2)
                 throw new InvalidOperationException(String.Format("Minimum two samples are required; {} is given.", _processor.SamplesCount));
@@ -88,12 +88,12 @@ namespace Genometric.MSPC.Core
             _processor.cancel = true;
         }
 
-        public ReadOnlyDictionary<uint, AnalysisResult<P, M>> GetResults()
+        public ReadOnlyDictionary<uint, AnalysisResult<I>> GetResults()
         {
             return _results;
         }
 
-        public ReadOnlyDictionary<string, SortedList<P, P>> GetMergedReplicates()
+        public ReadOnlyDictionary<string, SortedList<I, I>> GetMergedReplicates()
         {
             return _processor.MergedReplicates;
         }

@@ -11,6 +11,8 @@ using Genometric.MSPC.Core.Model;
 using System.Linq;
 using System.Threading;
 using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.IntervalParsers;
+using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 
 namespace Genometric.MSPC.CLI
 {
@@ -27,38 +29,20 @@ namespace Genometric.MSPC.CLI
         internal byte C { set; get; }
         internal float alpha { set; get; }
 
-        private List<ParsedChIPseqPeaks<int, I, M>> _samples { set; get; }
+        private List<BED<ChIPSeqPeak>> _samples { set; get; }
         internal ReadOnlyCollection<ParsedChIPseqPeaks<int, I, M>> samples { get { return _samples.AsReadOnly(); } }
 
         internal Orchestrator()
         {
             _mspc = new MSPC<I, M>();
             _mspc.StatusChanged += _mspc_statusChanged;
-            _samples = new List<ParsedChIPseqPeaks<int, I, M>>();
+            _samples = new List<BED<ChIPSeqPeak>>();
         }
 
         public void LoadSample(string fileName)
         {
-            BEDParser<I, M> bedParser =
-                new BEDParser<I, M>(
-                    source: fileName,
-                    species: Genomes.HomoSapiens,
-                    assembly: Assemblies.hg19,
-                    readOnlyValidChrs: false,
-                    startOffset: 0,
-                    chrColumn: 0,
-                    leftEndColumn: 1,
-                    rightEndColumn: 2,
-                    nameColumn: 3,
-                    summitColumn: -1,
-                    valueColumn: 4,
-                    strandColumn: -1,
-                    defaultValue: 0.1,
-                    pValueFormat: pValueFormat.minus1_Log10_pValue,
-                    dropPeakIfInvalidValue: true);
-                    //hashFunction: HashFunction.One_at_a_Time);
-
-            _samples.Add(bedParser.Parse());
+            var bedParser = new BEDParser();
+            _samples.Add(bedParser.Parse(fileName));
         }
 
         internal void Run()

@@ -16,12 +16,11 @@ using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 
 namespace Genometric.MSPC.CLI
 {
-    internal class Orchestrator<I>
-        where I : IInterval<int>, new()
+    internal class Orchestrator
     {
         private BackgroundWorker _analysisBGW { set; get; }
-        internal MSPC<I> _mspc { set; get; }
-        internal Exporter<I> exporter { set; get; }
+        internal MSPC<ChIPSeqPeak> _mspc { set; get; }
+        internal Exporter<ChIPSeqPeak> exporter { set; get; }
         internal string replicateType { set; get; }
         internal double tauS { set; get; }
         internal double tauW { set; get; }
@@ -34,7 +33,7 @@ namespace Genometric.MSPC.CLI
 
         internal Orchestrator()
         {
-            _mspc = new MSPC<I, M>();
+            _mspc = new MSPC<ChIPSeqPeak>();
             _mspc.StatusChanged += _mspc_statusChanged;
             _samples = new List<BED<ChIPSeqPeak>>();
         }
@@ -69,7 +68,7 @@ namespace Genometric.MSPC.CLI
 
         internal void Export()
         {
-            exporter = new Exporter<I, M>();
+            exporter = new Exporter<ChIPSeqPeak>();
             var options = new ExportOptions(
                 sessionPath: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
                              DateTime.Now.Year +

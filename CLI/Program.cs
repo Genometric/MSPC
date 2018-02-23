@@ -29,7 +29,7 @@ namespace Genometric.MSPC.CLI
             Stopwatch analysisTime = new Stopwatch();
             Stopwatch parserStopwatch = new Stopwatch();
 
-            var orchestrator = new Orchestrator<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>();
+            var orchestrator = new Orchestrator();
             /*
             if (Samples<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>.Data == null)
                 Samples<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>.Data = new Dictionary<uint, GIFP.ParsedChIPseqPeaks<int, Interval<int, MChIPSeqPeak>, MChIPSeqPeak>>();

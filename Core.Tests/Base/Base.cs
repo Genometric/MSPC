@@ -14,16 +14,16 @@ namespace Genometric.MSPC.Core.Tests.Base
         {
             // Arrange
             var bed1 = new GeUtilities.IntervalParsers.BED<ChIPSeqPeak>();
-            bed1.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 100 }, "chr1", '*');
+            bed1.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-8 }, "chr1", '*');
 
             var bed2 = new GeUtilities.IntervalParsers.BED<ChIPSeqPeak>();
-            bed2.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 100 }, "chr1", '*');
+            bed2.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-8 }, "chr1", '*');
 
             var mspc = new MSPC<ChIPSeqPeak>();
             mspc.AddSample(1, bed1);
             mspc.AddSample(2, bed2);
 
-            var config = new Model.Config(Model.ReplicateType.Biological, 100, 100, 100, 1, 0.05F, Model.MultipleIntersections.UseLowestPValue);
+            var config = new Model.Config(Model.ReplicateType.Biological, 1e-8, 1e-8, 1e-8, 1, 0.05F, Model.MultipleIntersections.UseLowestPValue);
 
             // Act
             var res = mspc.Run(config);

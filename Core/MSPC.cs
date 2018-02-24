@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using Genometric.MSPC.Model;
 using System.Collections.ObjectModel;
-using Genometric.MSPC.Core.Model;
 using System.ComponentModel;
 using System.Threading;
 using Genometric.GeUtilities.IGenomics;

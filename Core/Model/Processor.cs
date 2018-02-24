@@ -20,7 +20,7 @@ using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.GeUtilities.IntervalParsers;
 
-namespace Genometric.MSPC.Core.Model
+namespace Genometric.MSPC.Model
 {
     internal class Processor<I>
         where I : IChIPSeqPeak, new()

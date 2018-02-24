@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Genometric.MSPC.Core.XSquaredData
+namespace Genometric.MSPC.XSquaredData
 {
     internal class DF10
     {

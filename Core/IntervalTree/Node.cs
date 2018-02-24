@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Genometric.GeUtilities.IGenomics;
 
-namespace Genometric.MSPC.Core.IntervalTree
+namespace Genometric.MSPC.IntervalTree
 {
     internal class Node<I>
         where I : IChIPSeqPeak, new()

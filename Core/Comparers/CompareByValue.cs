@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Genometric.GeUtilities.IGenomics;
 
-namespace Genometric.MSPC.Core.Comparers
+namespace Genometric.MSPC.Comparers
 {
     class CompareProcessedPeakByValue<I> : IComparer<AnalysisResult<I>.ProcessedPeak>
         where I : IChIPSeqPeak, new()

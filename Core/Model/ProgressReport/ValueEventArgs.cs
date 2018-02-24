@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Genometric.MSPC.Core.Model
+namespace Genometric.MSPC.Model
 {
     public class ValueEventArgs:EventArgs
     {

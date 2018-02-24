@@ -16,6 +16,8 @@ using Genometric.MSPC.Core.Model;
 using System.ComponentModel;
 using System.Threading;
 using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.IntervalParsers;
+using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 
 namespace Genometric.MSPC.Core
 {
@@ -47,7 +49,7 @@ namespace Genometric.MSPC.Core
             canceled = new AutoResetEvent(false);
         }
 
-        public void AddSample(uint id, Dictionary<string, Dictionary<char, List<I>>> sample)
+        public void AddSample(uint id, BED<I> sample)
         {
             _processor.AddSample(id, sample);
         }

@@ -57,7 +57,7 @@ namespace Genometric.MSPC.CLI
 
 
             foreach (var sample in _samples)
-                _mspc.AddSample(sample.FileHashKey, sample.Chromosomes);
+                _mspc.AddSample(sample.FileHashKey, sample);
             _mspc.RunAsync(config);
             _mspc.done.WaitOne();
         }

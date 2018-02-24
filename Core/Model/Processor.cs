@@ -17,6 +17,8 @@ using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.XSquaredData;
 using System.Threading;
 using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.IntervalParsers;
 
 namespace Genometric.MSPC.Core.Model
 {
@@ -61,16 +63,16 @@ namespace Genometric.MSPC.Core.Model
         /// </description></item>
         /// </list>
         /// </summary>
-        private Dictionary<uint, Dictionary<string, Dictionary<char, List<I>>>> _samples { set; get; }
+        private Dictionary<uint, BED<I>> _samples { set; get; }
 
         internal int SamplesCount { get { return _samples.Count; } }
 
         internal Processor()
         {
-            _samples = new Dictionary<uint, Dictionary<string, Dictionary<char, List<I>>>>();
+            _samples = new Dictionary<uint, BED<I>>();
         }
 
-        internal void AddSample(uint id, Dictionary<string, Dictionary<char, List<I>>> peaks)
+        internal void AddSample(uint id, BED<I> peaks)
         {
             _samples.Add(id, peaks);
         }
@@ -92,15 +94,15 @@ namespace Genometric.MSPC.Core.Model
                 if (cancel) return null;
                 _trees.Add(sample.Key, new Dictionary<string, Tree<I>>());
                 _analysisResults.Add(sample.Key, new AnalysisResult<I>());
-                foreach (var chr in sample.Value)
+                foreach (var chr in sample.Value.Chromosomes)
                 {
                     if (cancel) return null;
                     _trees[sample.Key].Add(chr.Key, new Tree<I>());
                     _analysisResults[sample.Key].AddChromosome(chr.Key);
-                    foreach (var strand in chr.Value)
+                    foreach (var strand in chr.Value.Strands)
                     {
                         if (cancel) return null;
-                        foreach (I p in strand.Value)
+                        foreach (I p in strand.Value.Intervals)
                         {
                             if (cancel) return null;
                             if (p.Value <= _config.TauW)
@@ -114,9 +116,9 @@ namespace Genometric.MSPC.Core.Model
 
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
             foreach (var sample in _samples)
-                foreach (var chr in sample.Value)
-                    foreach (var strand in chr.Value)
-                        foreach (I peak in strand.Value)
+                foreach (var chr in sample.Value.Chromosomes)
+                    foreach (var strand in chr.Value.Strands)
+                        foreach (I peak in strand.Value.Intervals)
                         {
                             if (cancel) return null;
                             _xsqrd = 0;

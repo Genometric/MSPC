@@ -1,44 +1,43 @@
 ﻿
-using Polimi.DEIB.VahidJalili.IGenomics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.Core.IntervalTree
 {
-    internal class Tree<P, M>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    internal class Tree<I>
+        where I : IChIPSeqPeak, new()
     {
-        private Node<P, M> _head;
-        private List<P> _intervalList;
+        private Node<I> _head;
+        private List<I> _intervalList;
         private bool _inSync;
         private int _size;
 
         public Tree()
         {
-            _head = new Node<P, M>();
-            _intervalList = new List<P>();
+            _head = new Node<I>();
+            _intervalList = new List<I>();
             _inSync = true;
             _size = 0;
         }
 
-        public Tree(List<P> intervalList)
+        public Tree(List<I> intervalList)
         {
-            _head = new Node<P, M>(intervalList);
-            _intervalList = new List<P>();
+            _head = new Node<I>(intervalList);
+            _intervalList = new List<I>();
             _intervalList.AddRange(intervalList);
             _inSync = true;
             _size = intervalList.Count;
         }
 
-        public void Add(P interval)
+        public void Add(I interval)
         {
             _intervalList.Add(interval);
             _inSync = false;
         }
 
-        public List<P> GetIntervals(P peak)
+        public List<I> GetIntervals(I peak)
         {
             Build();
             return _head.Query(peak);
@@ -48,7 +47,7 @@ namespace Genometric.MSPC.Core.IntervalTree
         {
             if (!_inSync)
             {
-                _head = new Node<P, M>(_intervalList);
+                _head = new Node<I>(_intervalList);
                 _inSync = true;
                 _size = _intervalList.Count;
             }

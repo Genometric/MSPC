@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="IGenomics">
-      <HintPath>..\Resources\IGenomics.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Genometric.GeUtilities" Version="4.0.0" />
   </ItemGroup>
 
 </Project>

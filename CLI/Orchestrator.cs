@@ -10,18 +10,17 @@ using System.Collections.ObjectModel;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
 using System.Threading;
-using Polimi.DEIB.VahidJalili.IGenomics;
-using Polimi.DEIB.VahidJalili.GIFP;
+using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.IntervalParsers;
+using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 
 namespace Genometric.MSPC.CLI
 {
-    internal class Orchestrator<P, M>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    internal class Orchestrator
     {
         private BackgroundWorker _analysisBGW { set; get; }
-        internal MSPC<P, M> _mspc { set; get; }
-        internal Exporter<P, M> exporter { set; get; }
+        internal MSPC<ChIPSeqPeak> _mspc { set; get; }
+        internal Exporter<ChIPSeqPeak> exporter { set; get; }
         internal string replicateType { set; get; }
         internal double tauS { set; get; }
         internal double tauW { set; get; }
@@ -29,38 +28,20 @@ namespace Genometric.MSPC.CLI
         internal byte C { set; get; }
         internal float alpha { set; get; }
 
-        private List<ParsedChIPseqPeaks<int, P, M>> _samples { set; get; }
-        internal ReadOnlyCollection<ParsedChIPseqPeaks<int, P, M>> samples { get { return _samples.AsReadOnly(); } }
+        private List<BED<ChIPSeqPeak>> _samples { set; get; }
+        internal ReadOnlyCollection<BED<ChIPSeqPeak>> samples { get { return _samples.AsReadOnly(); } }
 
         internal Orchestrator()
         {
-            _mspc = new MSPC<P, M>();
+            _mspc = new MSPC<ChIPSeqPeak>();
             _mspc.StatusChanged += _mspc_statusChanged;
-            _samples = new List<ParsedChIPseqPeaks<int, P, M>>();
+            _samples = new List<BED<ChIPSeqPeak>>();
         }
 
         public void LoadSample(string fileName)
         {
-            BEDParser<P, M> bedParser =
-                new BEDParser<P, M>(
-                    source: fileName,
-                    species: Genomes.HomoSapiens,
-                    assembly: Assemblies.hg19,
-                    readOnlyValidChrs: false,
-                    startOffset: 0,
-                    chrColumn: 0,
-                    leftEndColumn: 1,
-                    rightEndColumn: 2,
-                    nameColumn: 3,
-                    summitColumn: -1,
-                    valueColumn: 4,
-                    strandColumn: -1,
-                    defaultValue: 0.1,
-                    pValueFormat: pValueFormat.minus1_Log10_pValue,
-                    dropPeakIfInvalidValue: true);
-                    //hashFunction: HashFunction.One_at_a_Time);
-
-            _samples.Add(bedParser.Parse());
+            var bedParser = new BEDParser();
+            _samples.Add(bedParser.Parse(fileName));
         }
 
         internal void Run()
@@ -76,7 +57,7 @@ namespace Genometric.MSPC.CLI
 
 
             foreach (var sample in _samples)
-                _mspc.AddSample(sample.fileHashKey, sample.intervals);
+                _mspc.AddSample(sample.FileHashKey, sample);
             _mspc.RunAsync(config);
             _mspc.done.WaitOne();
         }
@@ -87,7 +68,7 @@ namespace Genometric.MSPC.CLI
 
         internal void Export()
         {
-            exporter = new Exporter<P, M>();
+            exporter = new Exporter<ChIPSeqPeak>();
             var options = new ExportOptions(
                 sessionPath: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
                              DateTime.Now.Year +
@@ -104,7 +85,7 @@ namespace Genometric.MSPC.CLI
                 Export_R_j__d_BED: true,
                 Export_Chromosomewide_stats: false);
 
-            exporter.Export(_samples.ToDictionary(x => x.fileHashKey, x => x.fileName), _mspc.GetResults(), _mspc.GetMergedReplicates(), options);
+            exporter.Export(_samples.ToDictionary(x => x.FileHashKey, x => x.FileName), _mspc.GetResults(), _mspc.GetMergedReplicates(), options);
         }
     }
 }

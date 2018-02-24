@@ -29,7 +29,7 @@ namespace Genometric.MSPC.CLI
             Stopwatch analysisTime = new Stopwatch();
             Stopwatch parserStopwatch = new Stopwatch();
 
-            var orchestrator = new Orchestrator<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>();
+            var orchestrator = new Orchestrator();
             /*
             if (Samples<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>.Data == null)
                 Samples<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>.Data = new Dictionary<uint, GIFP.ParsedChIPseqPeaks<int, Interval<int, MChIPSeqPeak>, MChIPSeqPeak>>();
@@ -73,9 +73,9 @@ namespace Genometric.MSPC.CLI
                     var parsedSample = orchestrator.samples[orchestrator.samples.Count - 1];
                     parserStopwatch.Stop();
                     Console.WriteLine("Done...  ET:\t{0}", parserStopwatch.Elapsed.ToString());
-                    Console.WriteLine("Read peaks#:\t{0}", parsedSample.intervalsCount.ToString("N0", CultureInfo.InvariantCulture));
-                    Console.WriteLine("Min p-value:\t{0}", string.Format("{0:E3}", parsedSample.pValueMin.metadata.value));
-                    Console.WriteLine("Max p-value:\t{0}", string.Format("{0:E3}", parsedSample.pValueMax.metadata.value));
+                    Console.WriteLine("Read peaks#:\t{0}", parsedSample.IntervalsCount.ToString("N0", CultureInfo.InvariantCulture));
+                    Console.WriteLine("Min p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMin.Value));
+                    Console.WriteLine("Max p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMax.Value));
                     Console.WriteLine("");
                 }
                 catch (Exception)

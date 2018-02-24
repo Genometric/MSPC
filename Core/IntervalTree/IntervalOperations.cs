@@ -1,21 +1,20 @@
 ﻿
-using Polimi.DEIB.VahidJalili.IGenomics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.Core.IntervalTree
 {
-    internal class IntervalOperations<P, M>
-        where P : IInterval<int, M>, IComparable<P>, new()
-        where M : IChIPSeqPeak, IComparable<M>, new()
+    internal class IntervalOperations<I>
+        where I : IChIPSeqPeak, new()
     {
-        public static bool Intersects(P a, P b)
+        public static bool Intersects(I a, I b)
         {
-            return b.right.CompareTo(a.left) > 0 && b.left.CompareTo(a.right) < 0;
+            return b.Right.CompareTo(a.Left) > 0 && b.Left.CompareTo(a.Right) < 0;
         }
 
-        public static bool Contains(P interval, int point, ContainConstrains constraint)
+        public static bool Contains(I interval, int point, ContainConstrains constraint)
         {
             bool isContained;
 
@@ -34,31 +33,31 @@ namespace Genometric.MSPC.Core.IntervalTree
                     isContained = ContainsWithStartEnd(interval, point);
                     break;
                 default:
-                    throw new ArgumentException("Ivnalid constraint " + constraint);
+                    throw new ArgumentException("Invalid constraint " + constraint);
             }
 
             return isContained;
         }
 
-        public static bool Contains(P interval, int point)
+        public static bool Contains(I interval, int point)
         {
             //return time < end && time > start;
-            return point.CompareTo(interval.right) < 0 && point.CompareTo(interval.left) > 0;
+            return point.CompareTo(interval.Right) < 0 && point.CompareTo(interval.Left) > 0;
         }
 
-        public static bool ContainsWithStart(P interval, int point)
+        public static bool ContainsWithStart(I interval, int point)
         {
-            return point.CompareTo(interval.right) < 0 && point.CompareTo(interval.left) >= 0;
+            return point.CompareTo(interval.Right) < 0 && point.CompareTo(interval.Left) >= 0;
         }
 
-        public static bool ContainsWithEnd(P interval, int point)
+        public static bool ContainsWithEnd(I interval, int point)
         {
-            return point.CompareTo(interval.right) <= 0 && point.CompareTo(interval.left) > 0;
+            return point.CompareTo(interval.Right) <= 0 && point.CompareTo(interval.Left) > 0;
         }
 
-        public static bool ContainsWithStartEnd(P interval, int point)
+        public static bool ContainsWithStartEnd(I interval, int point)
         {
-            return point.CompareTo(interval.right) <= 0 && point.CompareTo(interval.left) >= 0;
+            return point.CompareTo(interval.Right) <= 0 && point.CompareTo(interval.Left) >= 0;
         }
     }
 

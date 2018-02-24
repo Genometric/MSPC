@@ -12,13 +12,13 @@ using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Genometric.MSPC.Core.IntervalTree;
 using System.Collections.ObjectModel;
-using Genometric.MSPC.Core.XSquaredData;
 using System.Threading;
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.GeUtilities.IntervalParsers;
+using Genometric.MSPC.XSquaredData;
+using Genometric.MSPC.IntervalTree;
 
 namespace Genometric.MSPC.Model
 {

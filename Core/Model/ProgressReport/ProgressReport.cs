@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Genometric.MSPC.Core.Model
+namespace Genometric.MSPC.Model
 {
     public struct ProgressReport
     {

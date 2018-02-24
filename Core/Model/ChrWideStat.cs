@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Genometric.MSPC.Model.Classes
+namespace Genometric.MSPC.Model
 {
     public class ChrWideStat
     {

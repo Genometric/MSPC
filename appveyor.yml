@@ -48,7 +48,7 @@ for:
     sonartoken:
       secure: lv4kUp8/VoGY/BYpOlov5AUt5ZCzXIIjSdiN+xHlX/kF9lfG1r7ibe3NB3/voIn5
     codecovtoken:
-      secure: grVzO2tsoeq7B3FFfRjyhirsmD11tXDcKoXOK6zjpqyOco2BSFbQ0J0T5qTZKsx7
+      secure: dKCzX4gNxZYO3rxHOCnB+PzxeJIZZTsQLC5rczdcp/egmD1IN9u+b8srqxrj65jy
   
   build_script:
     - choco install "msbuild-sonarqube-runner" -y

@@ -54,6 +54,10 @@ namespace Genometric.MSPC.XSquaredData
         /// <returns></returns>
         public static double ChiSqrdINVRTP(double probability, int df)
         {
+            // TODO: to be checked.
+            if (probability == 1)
+                return 0;
+
             if (!((df / 2) - 1 > 7 || (df / 2) - 1 < 0))
             {
                 byte num_power = (byte)Math.Ceiling(Math.Abs(Math.Log10(probability)));

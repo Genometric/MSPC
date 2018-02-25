@@ -3,6 +3,7 @@ using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC;
 using Genometric.MSPC.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
@@ -27,7 +28,7 @@ namespace Core.Tests.Base
             var sA = new BED<ChIPSeqPeak>();
             sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20 }, chr, strand);
 
-            if(overlap)
+            if (overlap)
             {
                 int peakCount = 5;
                 while (peakCount-- > 0)
@@ -56,6 +57,7 @@ namespace Core.Tests.Base
 
         [Theory]
         [MemberData(nameof(GetData), parameters: true)]
+        [MemberData(nameof(GetData), parameters: false)]
         public void ConfirmTwoOverlappingPeaks(BED<ChIPSeqPeak> sA, BED<ChIPSeqPeak> sB)
         {
             // Arrange

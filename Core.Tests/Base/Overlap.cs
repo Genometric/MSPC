@@ -29,32 +29,26 @@ namespace Core.Tests.Base
 
             if(overlap)
             {
-                int peakCount = 6;
-                while (peakCount-- > 0)
-                    rtv.Add(new BED<ChIPSeqPeak>[] { sA, new BED<ChIPSeqPeak>() });
-
-                // rtv[0] is intentionally left empty (i.e., with not ChIP-seq peak) so we could
-                // assert confirming a peak that is not co-localized with another peak.
-
-                rtv[1][1].Add(new ChIPSeqPeak() { Left = 5, Right = 15 }, chr, strand);
-                rtv[2][1].Add(new ChIPSeqPeak() { Left = 10, Right = 15 }, chr, strand);
-                rtv[3][1].Add(new ChIPSeqPeak() { Left = 15, Right = 18 }, chr, strand);
-                rtv[4][1].Add(new ChIPSeqPeak() { Left = 15, Right = 25 }, chr, strand);
-                rtv[5][1].Add(new ChIPSeqPeak() { Left = 5, Right = 25 }, chr, strand);
-            }
-            else
-            {
                 int peakCount = 5;
                 while (peakCount-- > 0)
                     rtv.Add(new BED<ChIPSeqPeak>[] { sA, new BED<ChIPSeqPeak>() });
 
-                // rtv[0] is intentionally left empty (i.e., with not ChIP-seq peak) so we could
-                // assert confirming a peak that is not co-localized with another peak.
+                rtv[0][1].Add(new ChIPSeqPeak() { Left = 5, Right = 15 }, chr, strand);
+                rtv[1][1].Add(new ChIPSeqPeak() { Left = 10, Right = 15 }, chr, strand);
+                rtv[2][1].Add(new ChIPSeqPeak() { Left = 15, Right = 18 }, chr, strand);
+                rtv[3][1].Add(new ChIPSeqPeak() { Left = 15, Right = 25 }, chr, strand);
+                rtv[4][1].Add(new ChIPSeqPeak() { Left = 5, Right = 25 }, chr, strand);
+            }
+            else
+            {
+                int peakCount = 4;
+                while (peakCount-- > 0)
+                    rtv.Add(new BED<ChIPSeqPeak>[] { sA, new BED<ChIPSeqPeak>() });
 
-                rtv[1][1].Add(new ChIPSeqPeak() { Left = 1, Right = 8 }, chr, strand);
-                rtv[2][1].Add(new ChIPSeqPeak() { Left = 1, Right = 10 }, chr, strand);
-                rtv[3][1].Add(new ChIPSeqPeak() { Left = 20, Right = 30 }, chr, strand);
-                rtv[4][1].Add(new ChIPSeqPeak() { Left = 25, Right = 30 }, chr, strand);
+                rtv[0][1].Add(new ChIPSeqPeak() { Left = 1, Right = 8 }, chr, strand);
+                rtv[1][1].Add(new ChIPSeqPeak() { Left = 1, Right = 10 }, chr, strand);
+                rtv[2][1].Add(new ChIPSeqPeak() { Left = 20, Right = 30 }, chr, strand);
+                rtv[3][1].Add(new ChIPSeqPeak() { Left = 25, Right = 30 }, chr, strand);
             }
 
             return rtv;

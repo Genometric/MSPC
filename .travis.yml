@@ -1,0 +1,11 @@
+os:
+  - linux
+language: csharp
+solution: MSPC.sln
+mono: none
+dotnet: 2.0.3
+install:
+  - dotnet restore
+script:
+- dotnet build
+- dotnet test Core.Tests/Core.Tests.csproj

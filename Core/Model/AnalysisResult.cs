@@ -8,8 +8,6 @@
  * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
  **/
 
-using Genometric.MSPC.Core.Model;
-using Genometric.MSPC.Model.Classes;
 using System;
 using System.Collections.Generic;
 using Genometric.GeUtilities.IGenomics;
@@ -230,6 +228,8 @@ namespace Genometric.MSPC.Model
 
         public List<string> messages { private set; get; }
 
+        // TODO
+        // THIS MUST NOT BE REQUIRED!
         public void ReadOverallStats()
         {
             total____s = 0;

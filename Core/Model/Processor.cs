@@ -12,13 +12,13 @@ using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Genometric.MSPC.Core.IntervalTree;
 using System.Collections.ObjectModel;
-using Genometric.MSPC.Core.XSquaredData;
 using System.Threading;
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.GeUtilities.IntervalParsers;
+using Genometric.MSPC.XSquaredData;
+using Genometric.MSPC.IntervalTree;
 
 namespace Genometric.MSPC.Model
 {
@@ -516,11 +516,13 @@ namespace Genometric.MSPC.Model
                         var interval = new I();
                         interval.Left = peak.Left;
                         interval.Right = peak.Right;
+                        interval.Name = "aaaa";
 
                         I mergedPeak;
                         I mergingPeak = new I();
                         mergingPeak.Left = peak.Left;
                         mergingPeak.Right = peak.Right;
+                        mergingPeak.Name = "aaaa";
                         mergingPeak.Value =
                             (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E);
 

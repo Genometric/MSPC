@@ -228,6 +228,8 @@ namespace Genometric.MSPC.Model
 
         public List<string> messages { private set; get; }
 
+        // TODO
+        // THIS MUST NOT BE REQUIRED!
         public void ReadOverallStats()
         {
             total____s = 0;

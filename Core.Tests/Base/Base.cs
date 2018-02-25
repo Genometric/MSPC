@@ -14,10 +14,10 @@ namespace Genometric.MSPC.Core.Tests.Base
         {
             // Arrange
             var bed1 = new GeUtilities.IntervalParsers.BED<ChIPSeqPeak>();
-            bed1.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-8 }, "chr1", '*');
+            bed1.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-8, Name = "1" }, "chr1", '*');
 
             var bed2 = new GeUtilities.IntervalParsers.BED<ChIPSeqPeak>();
-            bed2.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-8 }, "chr1", '*');
+            bed2.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-8, Name = "2" }, "chr1", '*');
 
             var mspc = new MSPC<ChIPSeqPeak>();
             mspc.AddSample(1, bed1);
@@ -27,6 +27,9 @@ namespace Genometric.MSPC.Core.Tests.Base
 
             // Act
             var res = mspc.Run(config);
+
+            foreach (var rep in res)
+                rep.Value.ReadOverallStats();
 
             // Assert
             foreach (var rep in res.Values)

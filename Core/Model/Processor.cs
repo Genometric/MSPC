@@ -516,11 +516,13 @@ namespace Genometric.MSPC.Model
                         var interval = new I();
                         interval.Left = peak.Left;
                         interval.Right = peak.Right;
+                        interval.Name = "aaaa";
 
                         I mergedPeak;
                         I mergingPeak = new I();
                         mergingPeak.Left = peak.Left;
                         mergingPeak.Right = peak.Right;
+                        mergingPeak.Name = "aaaa";
                         mergingPeak.Value =
                             (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E);
 

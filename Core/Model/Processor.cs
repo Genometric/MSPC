@@ -105,7 +105,7 @@ namespace Genometric.MSPC.Model
                         foreach (I p in strand.Value.Intervals)
                         {
                             if (cancel) return null;
-                            if (p.Value <= _config.TauW)
+                            if (p.Value < _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
                             else
                                 _analysisResults[sample.Key].R_j__b[chr.Key].Add(p);
@@ -126,7 +126,7 @@ namespace Genometric.MSPC.Model
                             // Initial assessment: classifying peak as strong or weak based on p-value.
                             if (peak.Value <= _config.TauS)
                                 _analysisResults[sample.Key].R_j__s[chr.Key].Add(peak);
-                            else if (peak.Value <= _config.TauW)
+                            else if (peak.Value < _config.TauW)
                                 _analysisResults[sample.Key].R_j__w[chr.Key].Add(peak);
                             else
                                 continue;

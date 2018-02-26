@@ -124,7 +124,7 @@ namespace Genometric.MSPC.Model
                             _xsqrd = 0;
 
                             // Initial assessment: classifying peak as strong or weak based on p-value.
-                            if (peak.Value <= _config.TauS)
+                            if (peak.Value < _config.TauS)
                                 _analysisResults[sample.Key].R_j__s[chr.Key].Add(peak);
                             else if (peak.Value < _config.TauW)
                                 _analysisResults[sample.Key].R_j__w[chr.Key].Add(peak);

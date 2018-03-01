@@ -12,14 +12,14 @@ namespace Core.Tests.Example
 {
     public class Eg1
     {
-        private readonly ChIPSeqPeak r11 = new ChIPSeqPeak() { Left = 3, Right = 13, Value = 1e-6 };
-        private readonly ChIPSeqPeak r12 = new ChIPSeqPeak() { Left = 21, Right = 32, Value = 1e-12 };
-        private readonly ChIPSeqPeak r21 = new ChIPSeqPeak() { Left = 10, Right = 25, Value = 1e-7 };
-        private readonly ChIPSeqPeak r22 = new ChIPSeqPeak() { Left = 30, Right = 37, Value = 1e-5 };
-        private readonly ChIPSeqPeak r23 = new ChIPSeqPeak() { Left = 41, Right = 48, Value = 1e-6 };
-        private readonly ChIPSeqPeak r31 = new ChIPSeqPeak() { Left = 0, Right = 4, Value = 1e-6 };
-        private readonly ChIPSeqPeak r32 = new ChIPSeqPeak() { Left = 8, Right = 17, Value = 1e-12 };
-        private readonly ChIPSeqPeak r33 = new ChIPSeqPeak() { Left = 51, Right = 58, Value = 1e-18 };
+        private readonly ChIPSeqPeak r11 = new ChIPSeqPeak() { Left = 3, Right = 13, Name="11", Value = 1e-6 };
+        private readonly ChIPSeqPeak r12 = new ChIPSeqPeak() { Left = 21, Right = 32, Name="12", Value = 1e-12 };
+        private readonly ChIPSeqPeak r21 = new ChIPSeqPeak() { Left = 10, Right = 25, Name="21", Value = 1e-7 };
+        private readonly ChIPSeqPeak r22 = new ChIPSeqPeak() { Left = 30, Right = 37, Name="22", Value = 1e-5 };
+        private readonly ChIPSeqPeak r23 = new ChIPSeqPeak() { Left = 41, Right = 48, Name="23", Value = 1e-6 };
+        private readonly ChIPSeqPeak r31 = new ChIPSeqPeak() { Left = 0, Right = 4, Name="31", Value = 1e-6 };
+        private readonly ChIPSeqPeak r32 = new ChIPSeqPeak() { Left = 8, Right = 17, Name="32", Value = 1e-12 };
+        private readonly ChIPSeqPeak r33 = new ChIPSeqPeak() { Left = 51, Right = 58, Name="33", Value = 1e-18 };
 
         private MSPC<ChIPSeqPeak> GenerateAndAddEg1Peaks()
         {

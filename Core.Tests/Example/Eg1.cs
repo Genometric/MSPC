@@ -81,5 +81,42 @@ namespace Core.Tests.Example
             Assert.True(s2.R_j__o["chr1"].Count == 0);
             Assert.True(s3.R_j__o["chr1"][0].peak.CompareTo(r32) == 0);
         }
+
+        [Fact]
+        public void AnalyzeBioReps()
+        {
+            // Arrange & Act
+            var mspc = GenerateAndAddEg1Peaks();
+            var config = new Config(ReplicateType.Technical, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
+            var res = mspc.Run(config);
+
+            // TODO: this step should not be necessary; remove it after the Results class is updated.
+            foreach (var rep in res)
+                rep.Value.ReadOverallStats();
+
+            // TODO: check for the counts in sets: if you expect one peak in the set, there must be exactly one peak in that set.
+
+            // Assert
+            var s1 = res[0];
+            Assert.True(s1.R_j__d["chr1"].Count == 0);
+            Assert.True(s1.R_j__c["chr1"][0].peak.CompareTo(r11) == 0 && s1.R_j__c["chr1"][0].classification == PeakClassificationType.WeakConfirmed);
+            Assert.True(s1.R_j__c["chr1"][1].peak.CompareTo(r12) == 0 && s1.R_j__c["chr1"][1].classification == PeakClassificationType.StringentConfirmed);
+
+            var s2 = res[1];
+            Assert.True(s2.R_j__d["chr1"][0].peak.CompareTo(r23) == 0 && s2.R_j__d["chr1"][0].classification == PeakClassificationType.WeakDiscarded);
+            Assert.True(s2.R_j__c["chr1"][0].peak.CompareTo(r21) == 0 && s2.R_j__d["chr1"][1].classification == PeakClassificationType.WeakConfirmed);
+            Assert.True(s2.R_j__c["chr1"][1].peak.CompareTo(r22) == 0 && s2.R_j__d["chr1"][2].classification == PeakClassificationType.WeakConfirmed);
+            // TODO: check for the count of stringent discarded and stringent confirmed.
+
+            var s3 = res[2];
+            Assert.True(s3.total__wdc + s3.total__wdt == 0);
+            Assert.True(s3.R_j__c["chr1"][0].peak.CompareTo(r31) == 0 && s3.R_j__c["chr1"][0].classification == PeakClassificationType.WeakConfirmed);
+            Assert.True(s3.R_j__d["chr1"][0].peak.CompareTo(r33) == 0 && s3.R_j__d["chr1"][0].classification == PeakClassificationType.StringentDiscarded);
+            Assert.True(s3.R_j__c["chr1"][1].peak.CompareTo(r32) == 0 && s3.R_j__c["chr1"][0].classification == PeakClassificationType.StringentConfirmed);
+
+            Assert.True(s1.R_j__o["chr1"].Count == 2);
+            Assert.True(s2.R_j__o["chr1"].Count == 2);
+            Assert.True(s3.R_j__o["chr1"].Count == 2);
+        }
     }
 }

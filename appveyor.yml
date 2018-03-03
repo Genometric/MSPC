@@ -46,7 +46,7 @@ for:
   
   environment:
     sonartoken:
-      secure: lv4kUp8/VoGY/BYpOlov5AUt5ZCzXIIjSdiN+xHlX/kF9lfG1r7ibe3NB3/voIn5
+      secure: kR8M18MAnrL4rIJ7GRLhTrZ7D0kSDB1fYcgVlyunWscK2exbqvqLv+E7nLbPOy3x
     codecovtoken:
       secure: dKCzX4gNxZYO3rxHOCnB+PzxeJIZZTsQLC5rczdcp/egmD1IN9u+b8srqxrj65jy
   

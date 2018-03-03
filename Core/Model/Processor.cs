@@ -261,12 +261,10 @@ namespace Genometric.MSPC.Core.Model
 
                     if (supPeak.peak.metadata.value <= _config.TauS)
                     {
-                        targetSample.R_j___sc[chr]++;
                         anRe.classification = PeakClassificationType.StringentConfirmed;
                     }
                     else
                     {
-                        targetSample.R_j___wc[chr]++;
                         anRe.classification = PeakClassificationType.WeakConfirmed;
                     }
 

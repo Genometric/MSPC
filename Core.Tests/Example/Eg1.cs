@@ -63,11 +63,11 @@ namespace Core.Tests.Example
             var s1 = res[0];
             var qres = s1.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r11) == 0).Value;
             Assert.True(qres != null);
-            Assert.True(qres.classification == PeakClassificationType.WeakDiscarded);
-
-            qres = s1.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r11) == 0).Value;
-            Assert.True(qres != null);
             Assert.True(qres.classification == PeakClassificationType.WeakConfirmed);
+
+            qres = s1.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r11) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.WeakDiscarded);
 
             qres = s1.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r12) == 0).Value;
             Assert.True(qres != null);

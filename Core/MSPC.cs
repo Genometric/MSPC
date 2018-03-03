@@ -56,7 +56,7 @@ namespace Genometric.MSPC
         public ReadOnlyDictionary<uint, AnalysisResult<I>> Run(Config config)
         {
             if (_processor.SamplesCount < 2)
-                throw new InvalidOperationException(String.Format("Minimum two samples are required; {} is given.", _processor.SamplesCount));
+                throw new InvalidOperationException(String.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
 
             _processor.cancel = false;
             _results = _processor.Run(config);

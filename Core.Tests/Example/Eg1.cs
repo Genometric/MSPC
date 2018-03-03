@@ -66,22 +66,19 @@ namespace Core.Tests.Example
             Assert.True(qres.classification == PeakClassificationType.WeakConfirmed);
 
             qres = s1.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r11) == 0).Value;
-            Assert.True(qres != null);
-            Assert.True(qres.classification == PeakClassificationType.WeakDiscarded);
+            Assert.True(qres == null);
 
             qres = s1.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r12) == 0).Value;
             Assert.True(qres != null);
             Assert.True(qres.classification == PeakClassificationType.StringentDiscarded);
 
             qres = s1.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r12) == 0).Value;
-            Assert.True(qres != null);
-            Assert.True(qres.classification == PeakClassificationType.StringentConfirmed);
+            Assert.True(qres == null);
             
 
             var s2 = res[1];
             qres = s2.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r21) == 0).Value;
-            Assert.True(qres != null);
-            Assert.True(qres.classification == PeakClassificationType.WeakDiscarded);
+            Assert.True(qres == null);
 
             qres = s2.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r22) == 0).Value;
             Assert.True(qres != null);
@@ -98,8 +95,7 @@ namespace Core.Tests.Example
 
             var s3 = res[2];
             qres = s3.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r23) == 0).Value;
-            Assert.True(qres != null);
-            Assert.True(qres.classification == PeakClassificationType.WeakDiscarded);
+            Assert.True(qres == null);
 
             qres = s3.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r33) == 0).Value;
             Assert.True(qres != null);
@@ -109,9 +105,9 @@ namespace Core.Tests.Example
             Assert.True(qres != null);
             Assert.True(qres.classification == PeakClassificationType.StringentConfirmed);
 
-            Assert.True(s1.R_j__o["chr1"].Count == 0);
-            Assert.True(s2.R_j__o["chr1"].Count == 0);
-            Assert.True(s3.R_j__o["chr1"][0].peak.CompareTo(r32) == 0);
+            Assert.True(s1.R_j__o["chr1"].Count == 1);
+            Assert.True(s2.R_j__o["chr1"].Count == 1);
+            Assert.True(s3.R_j__o["chr1"].FirstOrDefault(x => x.peak.CompareTo(r32) == 0) != null);
         }
 
         [Fact]

@@ -24,7 +24,7 @@ namespace Core.Tests.Base
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
-            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
+            var config = new Config(ReplicateType.Biological, 1e-3, 1e-8, 1e-8, 2, 1F, MultipleIntersections.UseLowestPValue);
 
             // Act
             var res = mspc.Run(config);

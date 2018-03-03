@@ -131,20 +131,44 @@ namespace Core.Tests.Example
             // Assert
             var s1 = res[0];
             Assert.True(s1.R_j__d["chr1"].Count == 0);
-            Assert.True((s1.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r11) == 0)).Value != null && s1.R_j__c["chr1"][0].classification == PeakClassificationType.WeakConfirmed);
-            Assert.True((s1.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r12) == 0)).Value != null && s1.R_j__c["chr1"][1].classification == PeakClassificationType.StringentConfirmed);
+
+            var qres = s1.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r11) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.WeakConfirmed);
+
+            qres = s1.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r12) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.StringentConfirmed);
+
 
             var s2 = res[1];
-            Assert.True((s2.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r23) == 0)).Value != null && s2.R_j__d["chr1"][0].classification == PeakClassificationType.WeakDiscarded);
-            Assert.True((s2.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r21) == 0)).Value != null && s2.R_j__d["chr1"][1].classification == PeakClassificationType.WeakConfirmed);
-            Assert.True((s2.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r22) == 0)).Value != null && s2.R_j__d["chr1"][2].classification == PeakClassificationType.WeakConfirmed);
+            qres = s2.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r23) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.WeakDiscarded);
+
+            qres = s2.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r21) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.WeakConfirmed);
+
+            qres = s2.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r22) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.WeakConfirmed);
             // TODO: check for the count of stringent discarded and stringent confirmed.
 
             var s3 = res[2];
             Assert.True(s3.total__wdc + s3.total__wdt == 0);
-            Assert.True((s3.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r31) == 0)).Value != null && s3.R_j__c["chr1"][0].classification == PeakClassificationType.WeakConfirmed);
-            Assert.True((s3.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r33) == 0)).Value != null && s3.R_j__d["chr1"][0].classification == PeakClassificationType.StringentDiscarded);
-            Assert.True((s3.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r32) == 0)).Value != null && s3.R_j__c["chr1"][0].classification == PeakClassificationType.StringentConfirmed);
+
+            qres = s3.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r31) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.WeakConfirmed);
+
+            qres = s3.R_j__d["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r33) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.StringentDiscarded);
+
+            qres = s3.R_j__c["chr1"].FirstOrDefault(x => x.Value.peak.CompareTo(r32) == 0).Value;
+            Assert.True(qres != null);
+            Assert.True(qres.classification == PeakClassificationType.StringentConfirmed);
 
             Assert.True(s1.R_j__o["chr1"].Count == 2);
             Assert.True(s2.R_j__o["chr1"].Count == 2);

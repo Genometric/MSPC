@@ -340,7 +340,6 @@ namespace Genometric.MSPC.Model
                     }
                     else
                     {
-                        targetSample.R_j__wdt[chr]++;
                         anRe.classification = PeakClassificationType.WeakDiscarded;
                     }
 

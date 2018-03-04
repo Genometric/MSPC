@@ -3,13 +3,14 @@ using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
 using Genometric.GeUtilities.IGenomics;
+using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC.Comparers
 {
-    class CompareProcessedPeakByValue<I> : IComparer<AnalysisResult<I>.ProcessedPeak<I>>
+    class CompareProcessedPeakByValue<I> : IComparer<ProcessedPeak<I>>
         where I : IChIPSeqPeak, new()
     {
-        public int Compare(AnalysisResult<I>.ProcessedPeak<I> A, AnalysisResult<I>.ProcessedPeak<I> B)
+        public int Compare(ProcessedPeak<I> A, ProcessedPeak<I> B)
         {
             if (A == null)
             {

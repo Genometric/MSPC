@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using Genometric.GeUtilities.IGenomics;
+using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC.Model
 {
@@ -315,115 +316,6 @@ namespace Genometric.MSPC.Model
             R_j__wdc.Add(chromosome, 0);
             R_j__wdt.Add(chromosome, 0);
             R_j___wo.Add(chromosome, 0);
-        }
-
-        public class ProcessedPeak<I> : IComparable<ProcessedPeak<I>>
-            where I:IChIPSeqPeak, new()
-        {
-            public ProcessedPeak()
-            {
-                statisticalClassification = PeakClassificationType.TruePositive;
-            }
-
-            /// <summary>
-            /// Sets and gets the Confirmed I. Is a reference to the original er in cached data.
-            /// </summary>
-            public I peak { set; get; }
-
-            /// <summary>
-            /// Sets and gets X-squared of test
-            /// </summary>
-            public double xSquared { set; get; }
-
-            /// <summary>
-            /// Right tailed probability of x-squared.
-            /// </summary>
-            public double rtp { set; get; }
-
-            /// <summary>
-            /// Sets and gets the set of peaks intersecting with confirmed er
-            /// </summary>
-            public List<SupportingPeak<I>> supportingPeaks { set; get; }
-
-            /// <summary>
-            /// Sets and gets the reason of discarding the er. It points to an index of
-            /// predefined messages.
-            /// </summary>
-            public byte reason { set; get; }
-
-            /// <summary>
-            /// Sets and gets classification type. 
-            /// </summary>
-            public PeakClassificationType classification { set; get; }
-
-            /// <summary>
-            /// Sets and gets adjusted p-value using the multiple testing correction method of choice.
-            /// </summary>
-            public double adjPValue { set; get; }
-
-            /// <summary>
-            /// Set and gets whether the peaks is identified as false-positive or true-positive 
-            /// based on multiple testing correction threshold. 
-            /// </summary>
-            public PeakClassificationType statisticalClassification { set; get; }
-
-            /// <summary>
-            /// Contains different classification types.
-            /// </summary>
-            int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> that)
-            {
-                if (that == null) return 1;
-
-                return this.peak.CompareTo(that.peak);
-            }
-        }
-        public class SupportingPeak<I> : IComparable<SupportingPeak<I>>
-            where I : IChIPSeqPeak, new()
-        {
-            /// <summary>
-            /// Sets and gets the source of the er in cached data. 
-            /// </summary>
-            public UInt32 sampleID { set; get; }
-
-            /// <summary>
-            /// Sets and gets the supporting er.
-            /// </summary>
-            public I peak { set; get; }
-
-            int IComparable<SupportingPeak<I>>.CompareTo(SupportingPeak<I> that)
-            {
-                return CompareWithThis(that);
-            }
-
-            public int CompareTo(object obj)
-            {
-                return CompareWithThis((SupportingPeak<I>)obj);
-            }
-
-            private int CompareWithThis(SupportingPeak<I> that)
-            {
-                if (that == null) return 1;
-
-                if (this.sampleID != that.sampleID)
-                    return this.sampleID.CompareTo(that.sampleID);
-
-                if (this.peak.Left != that.peak.Left)
-                    return this.peak.Left.CompareTo(that.peak.Left);
-
-                if (this.peak.Right != that.peak.Right)
-                    return this.peak.Right.CompareTo(that.peak.Right);
-
-                /*if (this.er.metadata.strand != that.er.metadata.strand)
-                    return this.er.metadata.strand.CompareTo(that.er.metadata.strand);*/
-
-                if (this.peak.Value != that.peak.Value)
-                    return this.peak.Value.CompareTo(that.peak.Value);
-
-                /*if (this.er.metadata.name != that.er.metadata.name)
-                    return this.er.metadata.name.CompareTo(that.er.metadata.name);*/
-
-                return 0;
-            }
         }
     }
 }

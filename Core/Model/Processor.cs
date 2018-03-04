@@ -19,6 +19,7 @@ using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.MSPC.XSquaredData;
 using Genometric.MSPC.IntervalTree;
+using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC.Model
 {
@@ -168,9 +169,9 @@ namespace Genometric.MSPC.Model
             return AnalysisResults;
         }
 
-        private List<AnalysisResult<I>.SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)
+        private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)
         {
-            var supportingPeaks = new List<AnalysisResult<I>.SupportingPeak<I>>();
+            var supportingPeaks = new List<SupportingPeak<I>>();
             foreach(var tree in _trees)
             {
                 if (tree.Key == id)
@@ -185,7 +186,7 @@ namespace Genometric.MSPC.Model
                     case 0: break;
 
                     case 1:
-                        supportingPeaks.Add(new AnalysisResult<I>.SupportingPeak<I>()
+                        supportingPeaks.Add(new SupportingPeak<I>()
                         {
                             peak = sps[0],
                             sampleID = tree.Key
@@ -199,7 +200,7 @@ namespace Genometric.MSPC.Model
                                 (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue && sp.Value > chosenPeak.Value))
                                 chosenPeak = sp;
 
-                        supportingPeaks.Add(new AnalysisResult<I>.SupportingPeak<I>()
+                        supportingPeaks.Add(new SupportingPeak<I>()
                         {
                             peak = chosenPeak,
                             sampleID = tree.Key
@@ -211,9 +212,9 @@ namespace Genometric.MSPC.Model
             return supportingPeaks;
         }
 
-        private void ConfirmPeak(uint id, string chr, I p, List<AnalysisResult<I>.SupportingPeak<I>> supportingPeaks)
+        private void ConfirmPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks)
         {
-            var anRe = new AnalysisResult<I>.ProcessedPeak<I>()
+            var anRe = new ProcessedPeak<I>()
             {
                 peak = p,
                 xSquared = _xsqrd,
@@ -238,21 +239,21 @@ namespace Genometric.MSPC.Model
             ConfirmSupportingPeaks(id, chr, p, supportingPeaks);
         }
 
-        private void ConfirmSupportingPeaks(uint id, string chr, I p, List<AnalysisResult<I>.SupportingPeak<I>> supportingPeaks)
+        private void ConfirmSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks)
         {
             foreach (var supPeak in supportingPeaks)
             {
                 if (!_analysisResults[supPeak.sampleID].R_j__c[chr].ContainsKey(supPeak.peak.HashKey))
                 {
-                    var tSupPeak = new List<AnalysisResult<I>.SupportingPeak<I>>();
+                    var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.sampleID];
-                    tSupPeak.Add(new AnalysisResult<I>.SupportingPeak<I>() { peak = p, sampleID = id });
+                    tSupPeak.Add(new SupportingPeak<I>() { peak = p, sampleID = id });
 
                     foreach (var sP in supportingPeaks)
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new AnalysisResult<I>.ProcessedPeak<I>()
+                    var anRe = new ProcessedPeak<I>()
                     {
                         peak = supPeak.peak,
                         xSquared = _xsqrd,
@@ -274,9 +275,9 @@ namespace Genometric.MSPC.Model
             }
         }
 
-        private void DiscardPeak(uint id, string chr, I p, List<AnalysisResult<I>.SupportingPeak<I>> supportingPeaks, byte discardReason)
+        private void DiscardPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, byte discardReason)
         {
-            var anRe = new AnalysisResult<I>.ProcessedPeak<I>
+            var anRe = new ProcessedPeak<I>
             {
                 peak = p,
                 xSquared = _xsqrd,
@@ -310,21 +311,21 @@ namespace Genometric.MSPC.Model
                 DiscardSupportingPeaks(id, chr, p, supportingPeaks, discardReason);
         }
 
-        private void DiscardSupportingPeaks(uint id, string chr, I p, List<AnalysisResult<I>.SupportingPeak<I>> supportingPeaks, byte discardReason)
+        private void DiscardSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, byte discardReason)
         {
             foreach (var supPeak in supportingPeaks)
             {
                 if (!_analysisResults[supPeak.sampleID].R_j__d[chr].ContainsKey(supPeak.peak.HashKey))
                 {
-                    var tSupPeak = new List<AnalysisResult<I>.SupportingPeak<I>>();
+                    var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.sampleID];
-                    tSupPeak.Add(new AnalysisResult<I>.SupportingPeak<I>() { peak = p, sampleID = id });
+                    tSupPeak.Add(new SupportingPeak<I>() { peak = p, sampleID = id });
 
                     foreach (var sP in supportingPeaks)
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new AnalysisResult<I>.ProcessedPeak<I>()
+                    var anRe = new ProcessedPeak<I>()
                     {
                         peak = supPeak.peak,
                         xSquared = _xsqrd,
@@ -348,7 +349,7 @@ namespace Genometric.MSPC.Model
             }
         }
 
-        private void CalculateXsqrd(I p, List<AnalysisResult<I>.SupportingPeak<I>> supportingPeaks)
+        private void CalculateXsqrd(I p, List<SupportingPeak<I>> supportingPeaks)
         {
             if (p.Value != 0)
                 _xsqrd = Math.Log(p.Value, Math.E);
@@ -425,7 +426,7 @@ namespace Genometric.MSPC.Model
                 {
                     foreach (var confirmedPeak in chr.Value)
                     {
-                        var outputPeak = new AnalysisResult<I>.ProcessedPeak<I>()
+                        var outputPeak = new ProcessedPeak<I>()
                         {
                             peak = confirmedPeak.Value.peak,
                             rtp = confirmedPeak.Value.rtp,

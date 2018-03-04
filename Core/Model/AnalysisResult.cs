@@ -343,7 +343,7 @@ namespace Genometric.MSPC.Model
             /// <summary>
             /// Sets and gets the set of peaks intersecting with confirmed er
             /// </summary>
-            public List<SupportingPeak> supportingPeaks { set; get; }
+            public List<SupportingPeak<I>> supportingPeaks { set; get; }
 
             /// <summary>
             /// Sets and gets the reason of discarding the er. It points to an index of
@@ -377,7 +377,8 @@ namespace Genometric.MSPC.Model
                 return this.peak.CompareTo(that.peak);
             }
         }
-        public class SupportingPeak : IComparable<SupportingPeak>
+        public class SupportingPeak<I> : IComparable<SupportingPeak<I>>
+            where I : IChIPSeqPeak, new()
         {
             /// <summary>
             /// Sets and gets the source of the er in cached data. 
@@ -389,17 +390,17 @@ namespace Genometric.MSPC.Model
             /// </summary>
             public I peak { set; get; }
 
-            int IComparable<SupportingPeak>.CompareTo(SupportingPeak that)
+            int IComparable<SupportingPeak<I>>.CompareTo(SupportingPeak<I> that)
             {
                 return CompareWithThis(that);
             }
 
             public int CompareTo(object obj)
             {
-                return CompareWithThis((SupportingPeak)obj);
+                return CompareWithThis((SupportingPeak<I>)obj);
             }
 
-            private int CompareWithThis(SupportingPeak that)
+            private int CompareWithThis(SupportingPeak<I> that)
             {
                 if (that == null) return 1;
 

@@ -223,15 +223,9 @@ namespace Genometric.MSPC.Model
             };
 
             if (p.Value <= _config.TauS)
-            {
-                _analysisResults[id].R_j___sc[chr]++;
                 anRe.classification = PeakClassificationType.StringentConfirmed;
-            }
             else
-            {
-                _analysisResults[id].R_j___wc[chr]++;
                 anRe.classification = PeakClassificationType.WeakConfirmed;
-            }
 
             _analysisResults[id].Add(chr, anRe, PeakClassificationType.Confirmed);
 

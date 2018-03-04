@@ -16,15 +16,19 @@ namespace Genometric.MSPC.Model
         Weak = 1,
         WeakConfirmed = 2,
         WeakDiscarded = 3,
-        StringentConfirmed = 4,
-        StringentDiscarded = 5,
-        TruePositive = 6,
-        FalsePositive = 7,
-        Input = 8,
-        Output = 9,
-        Background = 10,
-        Confirmed = 11,
-        Discarded = 12
+        WeakDiscardedC = 4,
+        WeakDiscardedT = 5,
+        StringentConfirmed = 6,
+        StringentDiscarded = 7,
+        StringentDiscardedC = 8,
+        StringentDiscardedT = 9,
+        TruePositive = 10,
+        FalsePositive = 11,
+        Input = 12,
+        Output = 13,
+        Background = 14,
+        Confirmed = 15,
+        Discarded = 16
     };
 
     public enum MultipleIntersections : byte

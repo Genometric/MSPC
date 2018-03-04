@@ -326,12 +326,19 @@ namespace Genometric.MSPC.Model
 
                     if (supPeak.peak.Value <= _config.TauS)
                     {
-                        targetSample.R_j__sdt[chr]++;
-                        anRe.classification = PeakClassificationType.StringentDiscarded;
+                        // The cause of discarding the region is :
+                        if (supportingPeaks.Count + 1 >= _config.C)
+                            anRe.classification = PeakClassificationType.StringentDiscardedT;
+                        else
+                            anRe.classification = PeakClassificationType.StringentDiscardedC;
                     }
                     else
                     {
-                        anRe.classification = PeakClassificationType.WeakDiscarded;
+                        // The cause of discarding the region is :
+                        if (supportingPeaks.Count + 1 >= _config.C)
+                            anRe.classification = PeakClassificationType.WeakDiscardedT;
+                        else
+                            anRe.classification = PeakClassificationType.WeakDiscardedC;
                     }
 
                     targetSample.Add(chr, anRe, PeakClassificationType.Discarded);

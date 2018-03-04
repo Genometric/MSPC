@@ -58,7 +58,7 @@ namespace Core.Tests.Base
                 Assert.True(s.Value.R_j__d["chr1"].Count == 1);
             foreach (var s in res)
                 foreach (var p in s.Value.R_j__d["chr1"])
-                    Assert.True(p.Value.classification == PeakClassificationType.WeakDiscarded);
+                    Assert.True(p.Value.classification == PeakClassificationType.WeakDiscardedT);
         }
     }
 }

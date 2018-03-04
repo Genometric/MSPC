@@ -71,6 +71,17 @@ namespace Genometric.MSPC.Model
             }
         }
 
+        public void Add(string chr, ProcessedPeak<I> peak, PeakClassificationType type)
+        {
+            switch(type)
+            {
+                case PeakClassificationType.Confirmed:
+                    if (!R_j__c[chr].ContainsKey(peak.peak.HashKey))
+                        R_j__c[chr].Add(peak.peak.HashKey, peak);
+                    break;
+            }
+        }
+
         /// <summary>
         /// Chromosome-wide stringent peaks of sample j
         /// </summary>

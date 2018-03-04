@@ -444,7 +444,7 @@ namespace Genometric.MSPC.Model
                             result.Value.R_j___wo[chr.Key]++;
                         }
 
-                        result.Value.R_j__o[chr.Key].Add(outputPeak);
+                        result.Value.Add(chr.Key, outputPeak, PeakClassificationType.Output);
                     }
                 }
             }

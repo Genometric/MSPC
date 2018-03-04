@@ -213,7 +213,7 @@ namespace Genometric.MSPC.Model
 
         private void ConfirmPeak(uint id, string chr, I p, List<AnalysisResult<I>.SupportingPeak> supportingPeaks)
         {
-            var anRe = new AnalysisResult<I>.ProcessedPeak()
+            var anRe = new AnalysisResult<I>.ProcessedPeak<I>()
             {
                 peak = p,
                 xSquared = _xsqrd,
@@ -252,7 +252,7 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new AnalysisResult<I>.ProcessedPeak()
+                    var anRe = new AnalysisResult<I>.ProcessedPeak<I>()
                     {
                         peak = supPeak.peak,
                         xSquared = _xsqrd,
@@ -276,7 +276,7 @@ namespace Genometric.MSPC.Model
 
         private void DiscardPeak(uint id, string chr, I p, List<AnalysisResult<I>.SupportingPeak> supportingPeaks, byte discardReason)
         {
-            var anRe = new AnalysisResult<I>.ProcessedPeak
+            var anRe = new AnalysisResult<I>.ProcessedPeak<I>
             {
                 peak = p,
                 xSquared = _xsqrd,
@@ -324,7 +324,7 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new AnalysisResult<I>.ProcessedPeak()
+                    var anRe = new AnalysisResult<I>.ProcessedPeak<I>()
                     {
                         peak = supPeak.peak,
                         xSquared = _xsqrd,
@@ -425,7 +425,7 @@ namespace Genometric.MSPC.Model
                 {
                     foreach (var confirmedPeak in chr.Value)
                     {
-                        var outputPeak = new AnalysisResult<I>.ProcessedPeak()
+                        var outputPeak = new AnalysisResult<I>.ProcessedPeak<I>()
                         {
                             peak = confirmedPeak.Value.peak,
                             rtp = confirmedPeak.Value.rtp,

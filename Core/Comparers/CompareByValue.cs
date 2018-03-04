@@ -6,10 +6,10 @@ using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.Comparers
 {
-    class CompareProcessedPeakByValue<I> : IComparer<AnalysisResult<I>.ProcessedPeak>
+    class CompareProcessedPeakByValue<I> : IComparer<AnalysisResult<I>.ProcessedPeak<I>>
         where I : IChIPSeqPeak, new()
     {
-        public int Compare(AnalysisResult<I>.ProcessedPeak A, AnalysisResult<I>.ProcessedPeak B)
+        public int Compare(AnalysisResult<I>.ProcessedPeak<I> A, AnalysisResult<I>.ProcessedPeak<I> B)
         {
             if (A == null)
             {

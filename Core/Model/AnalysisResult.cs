@@ -29,9 +29,9 @@ namespace Genometric.MSPC.Model
             R_j__w = new Dictionary<string, List<I>>();
             R_j__b = new Dictionary<string, List<I>>();
 
-            R_j__c = new Dictionary<string, Dictionary<UInt64, ProcessedPeak>>();
-            R_j__d = new Dictionary<string, Dictionary<UInt64, ProcessedPeak>>();
-            R_j__o = new Dictionary<string, List<ProcessedPeak>>();
+            R_j__c = new Dictionary<string, Dictionary<UInt64, ProcessedPeak<I>>>();
+            R_j__d = new Dictionary<string, Dictionary<UInt64, ProcessedPeak<I>>>();
+            R_j__o = new Dictionary<string, List<ProcessedPeak<I>>>();
 
             R_j___sc = new Dictionary<string, uint>();
             R_j__sdc = new Dictionary<string, uint>();
@@ -79,20 +79,20 @@ namespace Genometric.MSPC.Model
         /// Chromosome-wide Confirmed peaks of sample j (i.e., the peaks that passed both intersecting
         /// peaks count threshold and X-squared test).
         /// </summary>
-        public Dictionary<string, Dictionary<UInt64, ProcessedPeak>> R_j__c { set; get; }
+        public Dictionary<string, Dictionary<UInt64, ProcessedPeak<I>>> R_j__c { set; get; }
 
         /// <summary>
         /// Chromosome-wide Discarded peaks of sample j (i.e., the peaks that either failed intersecting
         /// peaks count threshold or X-squared test).
         /// </summary>
-        public Dictionary<string, Dictionary<UInt64, ProcessedPeak>> R_j__d { set; get; }
+        public Dictionary<string, Dictionary<UInt64, ProcessedPeak<I>>> R_j__d { set; get; }
 
         /// <summary>
         /// Chromosome-wide set of peaks as the result of the algorithm. The peaks of this set passed
         /// three tests (i.e., intersecting peaks count, X-squared test, and benjamini-hochberg
         /// multiple testing correction).
         /// </summary>
-        public Dictionary<string, List<ProcessedPeak>> R_j__o { set; get; }
+        public Dictionary<string, List<ProcessedPeak<I>>> R_j__o { set; get; }
 
         /// <summary>
         /// Chromosome-wide False-Positive counter.
@@ -299,9 +299,9 @@ namespace Genometric.MSPC.Model
             R_j__w.Add(chromosome, new List<I>());
             R_j__b.Add(chromosome, new List<I>());
 
-            R_j__c.Add(chromosome, new Dictionary<UInt64, ProcessedPeak>());
-            R_j__d.Add(chromosome, new Dictionary<UInt64, ProcessedPeak>());
-            R_j__o.Add(chromosome, new List<ProcessedPeak>());
+            R_j__c.Add(chromosome, new Dictionary<UInt64, ProcessedPeak<I>>());
+            R_j__d.Add(chromosome, new Dictionary<UInt64, ProcessedPeak<I>>());
+            R_j__o.Add(chromosome, new List<ProcessedPeak<I>>());
 
             R_j_FP.Add(chromosome, 0);
             R_j_TP.Add(chromosome, 0);
@@ -317,7 +317,8 @@ namespace Genometric.MSPC.Model
             R_j___wo.Add(chromosome, 0);
         }
 
-        public class ProcessedPeak : IComparable<ProcessedPeak>
+        public class ProcessedPeak<I> : IComparable<ProcessedPeak<I>>
+            where I:IChIPSeqPeak, new()
         {
             public ProcessedPeak()
             {
@@ -369,7 +370,7 @@ namespace Genometric.MSPC.Model
             /// <summary>
             /// Contains different classification types.
             /// </summary>
-            int IComparable<ProcessedPeak>.CompareTo(ProcessedPeak that)
+            int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> that)
             {
                 if (that == null) return 1;
 

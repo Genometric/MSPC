@@ -109,7 +109,7 @@ namespace Genometric.MSPC.Model
                             if (p.Value < _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
                             else
-                                _analysisResults[sample.Key].R_j__b[chr.Key].Add(p);
+                                _analysisResults[sample.Key].Add(chr.Key, p, PeakClassificationType.Background);
                         }
                     }
                 }
@@ -126,9 +126,9 @@ namespace Genometric.MSPC.Model
 
                             // Initial assessment: classifying peak as strong or weak based on p-value.
                             if (peak.Value < _config.TauS)
-                                _analysisResults[sample.Key].R_j__s[chr.Key].Add(peak);
+                                _analysisResults[sample.Key].Add(chr.Key, peak, PeakClassificationType.Stringent);
                             else if (peak.Value < _config.TauW)
-                                _analysisResults[sample.Key].R_j__w[chr.Key].Add(peak);
+                                _analysisResults[sample.Key].Add(chr.Key, peak, PeakClassificationType.Weak);
                             else
                                 continue;
 

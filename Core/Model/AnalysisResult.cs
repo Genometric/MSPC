@@ -53,6 +53,24 @@ namespace Genometric.MSPC.Model
             messages.Add("Intersecting peaks count doesn't comply minimum requirement");
         }
 
+        public void Add(string chr, I peak, PeakClassificationType type)
+        {
+            switch(type)
+            {
+                case PeakClassificationType.Stringent:
+                    R_j__s[chr].Add(peak);
+                    break;
+
+                case PeakClassificationType.Weak:
+                    R_j__w[chr].Add(peak);
+                    break;
+
+                case PeakClassificationType.Background:
+                    R_j__b[chr].Add(peak);
+                    break;
+            }
+        }
+
         /// <summary>
         /// Chromosome-wide stringent peaks of sample j
         /// </summary>
@@ -290,6 +308,9 @@ namespace Genometric.MSPC.Model
         }
         public void AddChromosome(string chromosome)
         {
+            if (R_j__s.ContainsKey(chromosome))
+                return;
+
             R_j__s.Add(chromosome, new List<I>());
             R_j__w.Add(chromosome, new List<I>());
             R_j__b.Add(chromosome, new List<I>());

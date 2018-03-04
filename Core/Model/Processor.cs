@@ -282,19 +282,17 @@ namespace Genometric.MSPC.Model
             {
                 // The cause of discarding the region is :
                 if (supportingPeaks.Count + 1 >= _config.C)
-                    _analysisResults[id].R_j__sdt[chr]++;  // - Test failure
-                else _analysisResults[id].R_j__sdc[chr]++; // - insufficient intersecting regions count
-
-                anRe.classification = PeakClassificationType.StringentDiscarded;
+                    anRe.classification = PeakClassificationType.StringentDiscardedT;
+                else
+                    anRe.classification = PeakClassificationType.StringentDiscardedC;
             }
             else
             {
                 // The cause of discarding the region is :
                 if (supportingPeaks.Count + 1 >= _config.C)
-                    _analysisResults[id].R_j__wdt[chr]++;  // - Test failure
-                else _analysisResults[id].R_j__wdc[chr]++; // - insufficient intersecting regions count
-
-                anRe.classification = PeakClassificationType.WeakDiscarded;
+                    anRe.classification = PeakClassificationType.WeakDiscardedT;
+                else
+                    anRe.classification = PeakClassificationType.WeakDiscardedC;
             }
 
             _analysisResults[id].Add(chr, anRe, PeakClassificationType.Discarded);

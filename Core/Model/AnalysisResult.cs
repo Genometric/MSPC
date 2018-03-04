@@ -88,7 +88,27 @@ namespace Genometric.MSPC.Model
 
                 case PeakClassificationType.Discarded:
                     if (!R_j__d[chr].ContainsKey(peak.peak.HashKey))
+                    {
                         R_j__d[chr].Add(peak.peak.HashKey, peak);
+                        switch(peak.classification)
+                        {
+                            case PeakClassificationType.StringentDiscardedC:
+                                R_j__sdc[chr]++;
+                                break;
+
+                            case PeakClassificationType.StringentDiscardedT:
+                                R_j__sdt[chr]++;
+                                break;
+
+                            case PeakClassificationType.WeakDiscardedC:
+                                R_j__wdc[chr]++;
+                                break;
+
+                            case PeakClassificationType.WeakDiscardedT:
+                                R_j__wdt[chr]++;
+                                break;
+                        }
+                    }
                     break;
 
                 case PeakClassificationType.Output:

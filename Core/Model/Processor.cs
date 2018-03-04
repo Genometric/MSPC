@@ -303,8 +303,7 @@ namespace Genometric.MSPC.Model
                 anRe.classification = PeakClassificationType.WeakDiscarded;
             }
 
-            if (!_analysisResults[id].R_j__d[chr].ContainsKey(p.HashKey))
-                _analysisResults[id].R_j__d[chr].Add(p.HashKey, anRe);
+            _analysisResults[id].Add(chr, anRe, PeakClassificationType.Discarded);
 
             if (supportingPeaks.Count + 1 >= _config.C)
                 DiscardSupportingPeaks(id, chr, p, supportingPeaks, discardReason);
@@ -343,7 +342,7 @@ namespace Genometric.MSPC.Model
                         anRe.classification = PeakClassificationType.WeakDiscarded;
                     }
 
-                    targetSample.R_j__d[chr].Add(supPeak.peak.HashKey, anRe);
+                    targetSample.Add(chr, anRe, PeakClassificationType.Discarded);
                 }
             }
         }

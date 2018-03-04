@@ -79,6 +79,11 @@ namespace Genometric.MSPC.Model
                     if (!R_j__c[chr].ContainsKey(peak.peak.HashKey))
                         R_j__c[chr].Add(peak.peak.HashKey, peak);
                     break;
+
+                case PeakClassificationType.Discarded:
+                    if (!R_j__d[chr].ContainsKey(peak.peak.HashKey))
+                        R_j__d[chr].Add(peak.peak.HashKey, peak);
+                    break;
             }
         }
 

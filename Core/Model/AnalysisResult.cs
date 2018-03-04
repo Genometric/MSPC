@@ -54,12 +54,6 @@ namespace Genometric.MSPC.Model
         }
 
         /// <summary>
-        /// Represents the default value for maximum log of p-value. 
-        /// p-value lower than this value will be truncated. 
-        /// </summary>
-        private const double _defaultMaxLogOfPVvalue = 3300.0;
-
-        /// <summary>
         /// Chromosome-wide stringent peaks of sample j
         /// </summary>
         public Dictionary<string, List<I>> R_j__s { set; get; }

@@ -33,12 +33,15 @@ namespace Genometric.MSPC.Model
             _stats[chr][PeakClassificationType.FalsePositive] = value;
         }
 
+        internal void SetTruePositiveCount(string chr, uint value)
+        {
+            _stats[chr][PeakClassificationType.TruePositive] = value;
+        }
+
         public AnalysisResult()
         {
             total_scom = 0;
             total_wcom = 0;
-
-            R_j_TP = new Dictionary<string, uint>();
 
             R_j__s = new Dictionary<string, List<I>>();
             R_j__w = new Dictionary<string, List<I>>();
@@ -146,10 +149,6 @@ namespace Genometric.MSPC.Model
         /// </summary>
         public Dictionary<string, List<ProcessedPeak<I>>> R_j__o { set; get; }
 
-        /// <summary>
-        /// Chromosome-wide True-Positive counter.
-        /// </summary>
-        public Dictionary<string, UInt32> R_j_TP { set; get; }
 
 
         /// <summary>
@@ -297,7 +296,7 @@ namespace Genometric.MSPC.Model
                 total____g += (UInt32)R_j__b[chr.Key].Count;
                 total____o += (UInt32)R_j__o[chr.Key].Count;
 
-                total___TP += (UInt32)R_j_TP[chr.Key];
+                total___TP += Stats(chr.Key, PeakClassificationType.TruePositive);
                 total___FP += Stats(chr.Key, PeakClassificationType.FalsePositive);
 
                 total___sc += Stats(chr.Key, PeakClassificationType.StringentConfirmed);
@@ -324,8 +323,8 @@ namespace Genometric.MSPC.Model
                     R_j__d_p = (Math.Round((R_j__d[chr.Key].Count * 100) / totalERsCount, 2)).ToString() + " %",
                     R_j__o_c = (UInt32)R_j__o[chr.Key].Count,
                     R_j__o_p = (Math.Round((R_j__o[chr.Key].Count * 100) / totalERsCount, 2)).ToString() + " %",
-                    R_j_TP_c = (UInt32)R_j_TP[chr.Key],
-                    R_j_TP_p = (Math.Round(((double)R_j_TP[chr.Key] * 100) / (double)R_j__o[chr.Key].Count, 2)).ToString() + " %",
+                    R_j_TP_c = Stats(chr.Key, PeakClassificationType.TruePositive),
+                    R_j_TP_p = (Math.Round(((double)Stats(chr.Key, PeakClassificationType.TruePositive) * 100) / (double)R_j__o[chr.Key].Count, 2)).ToString() + " %",
                     R_j_FP_c = Stats(chr.Key, PeakClassificationType.FalsePositive),
                     R_j_FP_p = (Math.Round(((double)Stats(chr.Key, PeakClassificationType.FalsePositive) * 100) / (double)R_j__o[chr.Key].Count, 2)).ToString() + " %"
                 });
@@ -343,8 +342,6 @@ namespace Genometric.MSPC.Model
             R_j__c.Add(chromosome, new Dictionary<UInt64, ProcessedPeak<I>>());
             R_j__d.Add(chromosome, new Dictionary<UInt64, ProcessedPeak<I>>());
             R_j__o.Add(chromosome, new List<ProcessedPeak<I>>());
-
-            R_j_TP.Add(chromosome, 0);
 
             R_j___so.Add(chromosome, 0);
 

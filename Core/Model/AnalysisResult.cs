@@ -53,7 +53,6 @@ namespace Genometric.MSPC.Model
 
             R_j___so = new Dictionary<string, uint>();
 
-            R_j__wdt = new Dictionary<string, uint>();
             R_j___wo = new Dictionary<string, uint>();
 
             _stats = new Dictionary<string, Dictionary<PeakClassificationType, uint>>();
@@ -153,16 +152,6 @@ namespace Genometric.MSPC.Model
         /// </summary>
         public Dictionary<string, UInt32> R_j___so { set; get; }
 
-
-        /// <summary>
-        /// Chromosome-wide Weak-Discarded peaks count
-        /// failing intersecting regions count test
-        /// </summary>
-        public Dictionary<string, UInt32> R_j__wdc { set; get; }
-        /// <summary>
-        /// Chromosome-wide Weak-Discarded peaks count failing x-squared test.
-        /// </summary>
-        public Dictionary<string, UInt32> R_j__wdt { set; get; }
         /// <summary>
         /// Chromosome-wide Weak peaks in output set count.
         /// </summary>
@@ -294,7 +283,7 @@ namespace Genometric.MSPC.Model
 
                 total___wc += Stats(chr.Key, PeakClassificationType.WeakConfirmed);
                 total__wdc += Stats(chr.Key, PeakClassificationType.WeakDiscardedC);
-                total__wdt += (UInt32)R_j__wdt[chr.Key];
+                total__wdt += Stats(chr.Key, PeakClassificationType.WeakDiscardedT);
                 total___wo += (UInt32)R_j___wo[chr.Key];
 
                 totalERsCount = R_j__s[chr.Key].Count + R_j__w[chr.Key].Count;
@@ -333,7 +322,6 @@ namespace Genometric.MSPC.Model
 
             R_j___so.Add(chromosome, 0);
 
-            R_j__wdt.Add(chromosome, 0);
             R_j___wo.Add(chromosome, 0);
 
             _stats.Add(chromosome, new Dictionary<PeakClassificationType, uint>());

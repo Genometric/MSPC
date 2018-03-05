@@ -17,7 +17,7 @@ using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC.Model
 {
-    public class AnalysisResult<I>
+    public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
         private Dictionary<PeakClassificationType, uint> _stats;
@@ -38,7 +38,7 @@ namespace Genometric.MSPC.Model
             _stats[PeakClassificationType.TruePositive] = value;
         }
 
-        public AnalysisResult()
+        public Sets()
         {
             _stats = new Dictionary<PeakClassificationType, uint>();
             foreach (var att in Enum.GetValues(typeof(PeakClassificationType)).Cast<PeakClassificationType>())

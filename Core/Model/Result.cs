@@ -9,16 +9,16 @@ namespace Genometric.MSPC.Core.Model
     public class Result<I>
         where I : IChIPSeqPeak, new()
     {
-        public Dictionary<string, AnalysisResult<I>> Chromosomes { set; get; }
+        public Dictionary<string, Sets<I>> Chromosomes { set; get; }
 
         public Result()
         {
-            Chromosomes = new Dictionary<string, AnalysisResult<I>>();
+            Chromosomes = new Dictionary<string, Sets<I>>();
         }
 
         public void AddChromosome(string chr)
         {
-            Chromosomes.Add(chr, new AnalysisResult<I>());
+            Chromosomes.Add(chr, new Sets<I>());
         }
     }
 }

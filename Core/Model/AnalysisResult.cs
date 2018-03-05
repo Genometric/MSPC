@@ -221,11 +221,6 @@ namespace Genometric.MSPC.Model
         public UInt32 total___wo { private set; get; }
 
 
-        /// <summary>
-        /// Gets Chromosome-wide analysis summary statistics.
-        /// </summary>
-        public Dictionary<string, ChrWideStat> chrwideStats { private set; get; }
-
         public List<string> messages { private set; get; }
 
         // TODO
@@ -251,7 +246,6 @@ namespace Genometric.MSPC.Model
             total___wo = 0;
 
             double totalERsCount = 0;
-            chrwideStats = new Dictionary<string, ChrWideStat>();
             foreach (KeyValuePair<string, List<I>> chr in R_j__s)
             {
                 total____s += (UInt32)R_j__s[chr.Key].Count;
@@ -271,6 +265,8 @@ namespace Genometric.MSPC.Model
                 total__wdt += Stats(chr.Key, PeakClassificationType.WeakDiscardedT);
 
                 totalERsCount = R_j__s[chr.Key].Count + R_j__w[chr.Key].Count;
+
+                /*
                 chrwideStats.Add(chr.Key, new ChrWideStat()
                 {
                     R_j__t_c = (UInt32)totalERsCount,
@@ -288,7 +284,7 @@ namespace Genometric.MSPC.Model
                     R_j_TP_p = (Math.Round(((double)Stats(chr.Key, PeakClassificationType.TruePositive) * 100) / (double)R_j__o[chr.Key].Count, 2)).ToString() + " %",
                     R_j_FP_c = Stats(chr.Key, PeakClassificationType.FalsePositive),
                     R_j_FP_p = (Math.Round(((double)Stats(chr.Key, PeakClassificationType.FalsePositive) * 100) / (double)R_j__o[chr.Key].Count, 2)).ToString() + " %"
-                });
+                });*/
             }
         }
         public void AddChromosome(string chromosome)

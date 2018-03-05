@@ -34,11 +34,11 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            ///foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].R_j__o["chr1"].Count, res[1].R_j__o["chr1"].Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
         }
 
         [Theory]
@@ -63,11 +63,11 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            /// foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].R_j__o["chr1"].Count, res[1].R_j__o["chr1"].Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
         }
 
         [Theory]
@@ -97,11 +97,11 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            ///foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].R_j__o["chr1"].Count, res[1].R_j__o["chr1"].Count, res[2].R_j__o["chr1"].Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count, res[2].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
         }
 
         [Theory]
@@ -131,11 +131,11 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            ///foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].R_j__o["chr1"].Count, res[1].R_j__o["chr1"].Count, res[2].R_j__o["chr1"].Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count, res[2].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
         }
 
         [Theory]
@@ -165,11 +165,11 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            ///foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].R_j__o["chr1"].Count, res[1].R_j__o["chr1"].Count, res[2].R_j__o["chr1"].Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count, res[2].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
         }
 
         [Fact]
@@ -197,11 +197,11 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            ///foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(res[0].R_j__o["chr1"].Count == 0);
+            Assert.True(res[0].Chromosomes["chr1"].R_j__o.Count == 0);
         }
     }
 }

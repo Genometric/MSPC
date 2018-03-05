@@ -40,6 +40,7 @@ namespace Genometric.MSPC.Model
 
         public AnalysisResult()
         {
+            _stats = new Dictionary<PeakClassificationType, uint>();
             foreach (var att in Enum.GetValues(typeof(PeakClassificationType)).Cast<PeakClassificationType>())
                 _stats.Add(att, 0);
 
@@ -53,8 +54,6 @@ namespace Genometric.MSPC.Model
             R_j__c = new Dictionary<UInt64, ProcessedPeak<I>>();
             R_j__d = new Dictionary<UInt64, ProcessedPeak<I>>();
             R_j__o = new List<ProcessedPeak<I>>();
-
-            _stats = new Dictionary<PeakClassificationType, uint>();
 
             messages = new List<string>();
 

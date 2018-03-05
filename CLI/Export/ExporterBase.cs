@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Genometric.GeUtilities.IGenomics;
+using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
@@ -24,7 +25,7 @@ namespace Genometric.MSPC.CLI.Exporter
         public string samplePath { set; get; }
         protected string sessionPath { set; get; }
         protected bool includeBEDHeader { set; get; }
-        protected AnalysisResult<P> data { set; get; }
+        protected Result<P> data { set; get; }
         protected ReadOnlyDictionary<string, SortedList<P, P>> mergedReplicates { set; get; }
 
         protected void Export__R_j__o_BED()
@@ -35,10 +36,10 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
-                foreach (var chr in data.R_j__o)
+                foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.Sort();
-                    foreach (var item in chr.Value)
+                    chr.Value.R_j__o.Sort();
+                    foreach (var item in chr.Value.R_j__o)
                     {
                         if (item.statisticalClassification == PeakClassificationType.TruePositive)
                         {
@@ -61,10 +62,10 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
-                foreach (var chr in data.R_j__o)
+                foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.Sort();
-                    foreach (var item in chr.Value)
+                    chr.Value.R_j__o.Sort();
+                    foreach (var item in chr.Value.R_j__o)
                     {
                         if (item.statisticalClassification == PeakClassificationType.TruePositive && item.classification == PeakClassificationType.StringentConfirmed)
                         {
@@ -87,10 +88,10 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
-                foreach (var chr in data.R_j__o)
+                foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.Sort();
-                    foreach (var item in chr.Value)
+                    chr.Value.R_j__o.Sort();
+                    foreach (var item in chr.Value.R_j__o)
                     {
                         if (item.statisticalClassification == PeakClassificationType.TruePositive && item.classification == PeakClassificationType.WeakConfirmed)
                         {
@@ -114,10 +115,10 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
-                foreach (var chr in data.R_j__o)
+                foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.Sort();
-                    foreach (var item in chr.Value)
+                    chr.Value.R_j__o.Sort();
+                    foreach (var item in chr.Value.R_j__o)
                     {
                         if (item.statisticalClassification == PeakClassificationType.FalsePositive)
                         {
@@ -142,10 +143,10 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))");
 
-                foreach (var chr in data.R_j__s)
+                foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.Sort();
-                    foreach (var item in chr.Value)
+                    chr.Value.R_j__s.Sort();
+                    foreach (var item in chr.Value.R_j__s)
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
@@ -165,10 +166,10 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))");
 
-                foreach (var chr in data.R_j__w)
+                foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.Sort();
-                    foreach (var item in chr.Value)
+                    chr.Value.R_j__w.Sort();
+                    foreach (var item in chr.Value.R_j__w)
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
@@ -188,9 +189,9 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
-                foreach (var chr in data.R_j__c)
+                foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
@@ -212,9 +213,9 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
-                foreach (var chr in data.R_j__c)
+                foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
@@ -239,9 +240,9 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd\t-1xlog10(Right-Tail_Probability)");
 
-                foreach (var chr in data.R_j__c)
+                foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
@@ -268,9 +269,9 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd");
 
-                foreach (var chr in data.R_j__d)
+                foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value)
+                    foreach (var item in chr.Value.R_j__d)
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
@@ -289,9 +290,9 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd");
 
-                foreach (var chr in data.R_j__d)
+                foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value)
+                    foreach (var item in chr.Value.R_j__d)
                     {
                         if (item.Value.classification == PeakClassificationType.StringentDiscarded)
                         {
@@ -313,9 +314,9 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tpValue(-1xlog10(p-value))\txSqrd");
 
-                foreach (var chr in data.R_j__d)
+                foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value)
+                    foreach (var item in chr.Value.R_j__d)
                     {
                         if (item.Value.classification == PeakClassificationType.WeakDiscarded)
                         {

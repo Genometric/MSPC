@@ -10,6 +10,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
 
@@ -18,6 +20,14 @@ namespace Genometric.MSPC.Model
     public class AnalysisResult<I>
         where I : IChIPSeqPeak, new()
     {
+        private Dictionary<string, Dictionary<PeakClassificationType, uint>> _stats;
+
+        // TODO: this function should be replaced by a public property exposing stats as a read-only collection.
+        public uint Stats(string chr, PeakClassificationType attribute)
+        {
+            return _stats[chr][attribute];
+        }
+
         public AnalysisResult()
         {
             total_scom = 0;
@@ -34,15 +44,14 @@ namespace Genometric.MSPC.Model
             R_j__d = new Dictionary<string, Dictionary<UInt64, ProcessedPeak<I>>>();
             R_j__o = new Dictionary<string, List<ProcessedPeak<I>>>();
 
-            R_j___sc = new Dictionary<string, uint>();
-            R_j__sdc = new Dictionary<string, uint>();
-            R_j__sdt = new Dictionary<string, uint>();
             R_j___so = new Dictionary<string, uint>();
 
             R_j___wc = new Dictionary<string, uint>();
             R_j__wdc = new Dictionary<string, uint>();
             R_j__wdt = new Dictionary<string, uint>();
             R_j___wo = new Dictionary<string, uint>();
+
+            _stats = new Dictionary<string, Dictionary<PeakClassificationType, uint>>();
 
             messages = new List<string>();
 
@@ -73,16 +82,13 @@ namespace Genometric.MSPC.Model
 
         public void Add(string chr, ProcessedPeak<I> peak, PeakClassificationType type)
         {
-            switch(type)
+            switch (type)
             {
                 case PeakClassificationType.Confirmed:
                     if (!R_j__c[chr].ContainsKey(peak.peak.HashKey))
                     {
                         R_j__c[chr].Add(peak.peak.HashKey, peak);
-                        if (peak.classification == PeakClassificationType.StringentConfirmed)
-                            R_j___sc[chr]++;
-                        else if (peak.classification == PeakClassificationType.WeakConfirmed)
-                            R_j___wc[chr]++;
+                        _stats[chr][peak.classification]++;
                     }
                     break;
 
@@ -90,24 +96,7 @@ namespace Genometric.MSPC.Model
                     if (!R_j__d[chr].ContainsKey(peak.peak.HashKey))
                     {
                         R_j__d[chr].Add(peak.peak.HashKey, peak);
-                        switch(peak.classification)
-                        {
-                            case PeakClassificationType.StringentDiscardedC:
-                                R_j__sdc[chr]++;
-                                break;
-
-                            case PeakClassificationType.StringentDiscardedT:
-                                R_j__sdt[chr]++;
-                                break;
-
-                            case PeakClassificationType.WeakDiscardedC:
-                                R_j__wdc[chr]++;
-                                break;
-
-                            case PeakClassificationType.WeakDiscardedT:
-                                R_j__wdt[chr]++;
-                                break;
-                        }
+                        _stats[chr][peak.classification]++;
                     }
                     break;
 
@@ -164,15 +153,6 @@ namespace Genometric.MSPC.Model
         public Dictionary<string, UInt32> R_j_TP { set; get; }
 
 
-        /// <summary>
-        /// Chromosome-wide Stringent-Confirmed peaks count.
-        /// </summary>
-        public Dictionary<string, UInt32> R_j___sc { set; get; }
-        /// <summary>
-        /// Chromosome-wide Stringent-Discarded peaks count 
-        /// failing intersecting regions count test
-        /// </summary>
-        public Dictionary<string, UInt32> R_j__sdc { set; get; }
         /// <summary>
         /// Chromosome-wide Stringent-Discarded peaks count failing x-squared test.
         /// </summary>
@@ -321,9 +301,9 @@ namespace Genometric.MSPC.Model
                 total___TP += (UInt32)R_j_TP[chr.Key];
                 total___FP += (UInt32)R_j_FP[chr.Key];
 
-                total___sc += (UInt32)R_j___sc[chr.Key];
-                total__sdc += (UInt32)R_j__sdc[chr.Key];
-                total__sdt += (UInt32)R_j__sdt[chr.Key];
+                total___sc += Stats(chr.Key, PeakClassificationType.StringentConfirmed);
+                total__sdc += Stats(chr.Key, PeakClassificationType.StringentDiscardedC);
+                total__sdt += Stats(chr.Key, PeakClassificationType.StringentDiscardedT);
                 total___so += (UInt32)R_j___so[chr.Key];
 
                 total___wc += (UInt32)R_j___wc[chr.Key];
@@ -368,15 +348,16 @@ namespace Genometric.MSPC.Model
             R_j_FP.Add(chromosome, 0);
             R_j_TP.Add(chromosome, 0);
 
-            R_j___sc.Add(chromosome, 0);
-            R_j__sdc.Add(chromosome, 0);
-            R_j__sdt.Add(chromosome, 0);
             R_j___so.Add(chromosome, 0);
 
             R_j___wc.Add(chromosome, 0);
             R_j__wdc.Add(chromosome, 0);
             R_j__wdt.Add(chromosome, 0);
             R_j___wo.Add(chromosome, 0);
+
+            _stats.Add(chromosome, new Dictionary<PeakClassificationType, uint>());
+            foreach (var att in Enum.GetValues(typeof(PeakClassificationType)).Cast<PeakClassificationType>())
+                _stats[chromosome].Add(att, 0);
         }
     }
 }

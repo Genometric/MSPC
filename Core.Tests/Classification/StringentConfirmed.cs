@@ -44,7 +44,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j___sc["chr1"] == 1);
+                Assert.True(s.Value.Stats("chr1", PeakClassificationType.StringentConfirmed) == 1);
         }
 
         [Fact]

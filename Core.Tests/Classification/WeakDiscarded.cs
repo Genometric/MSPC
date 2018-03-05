@@ -44,7 +44,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j__wdt["chr1"] == 1);
+                Assert.True(s.Value.Stats("chr1", PeakClassificationType.WeakDiscardedT) == 1);
         }
 
         [Fact]

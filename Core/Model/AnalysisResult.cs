@@ -150,11 +150,6 @@ namespace Genometric.MSPC.Model
         public Dictionary<string, List<ProcessedPeak<I>>> R_j__o { set; get; }
 
 
-
-        /// <summary>
-        /// Chromosome-wide Stringent-Discarded peaks count failing x-squared test.
-        /// </summary>
-        public Dictionary<string, UInt32> R_j__sdt { set; get; }
         /// <summary>
         /// Chromosome-wide Stringent peaks in output set count.
         /// </summary>

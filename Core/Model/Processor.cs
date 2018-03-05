@@ -435,12 +435,12 @@ namespace Genometric.MSPC.Model
                         if (confirmedPeak.Value.peak.Value <= _config.TauS)
                         {
                             outputPeak.classification = PeakClassificationType.StringentConfirmed;
-                            result.Value.R_j___so[chr.Key]++;
+                            /// result.Value.R_j___so[chr.Key]++;
                         }
                         else if (confirmedPeak.Value.peak.Value <= _config.TauW)
                         {
                             outputPeak.classification = PeakClassificationType.WeakConfirmed;
-                            result.Value.R_j___wo[chr.Key]++;
+                            /// result.Value.R_j___wo[chr.Key]++;
                         }
 
                         result.Value.Add(chr.Key, outputPeak, PeakClassificationType.Output);

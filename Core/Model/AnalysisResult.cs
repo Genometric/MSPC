@@ -51,10 +51,6 @@ namespace Genometric.MSPC.Model
             R_j__d = new Dictionary<string, Dictionary<UInt64, ProcessedPeak<I>>>();
             R_j__o = new Dictionary<string, List<ProcessedPeak<I>>>();
 
-            R_j___so = new Dictionary<string, uint>();
-
-            R_j___wo = new Dictionary<string, uint>();
-
             _stats = new Dictionary<string, Dictionary<PeakClassificationType, uint>>();
 
             messages = new List<string>();
@@ -146,16 +142,6 @@ namespace Genometric.MSPC.Model
         /// </summary>
         public Dictionary<string, List<ProcessedPeak<I>>> R_j__o { set; get; }
 
-
-        /// <summary>
-        /// Chromosome-wide Stringent peaks in output set count.
-        /// </summary>
-        public Dictionary<string, UInt32> R_j___so { set; get; }
-
-        /// <summary>
-        /// Chromosome-wide Weak peaks in output set count.
-        /// </summary>
-        public Dictionary<string, UInt32> R_j___wo { set; get; }
 
 
         /// <summary>
@@ -279,12 +265,10 @@ namespace Genometric.MSPC.Model
                 total___sc += Stats(chr.Key, PeakClassificationType.StringentConfirmed);
                 total__sdc += Stats(chr.Key, PeakClassificationType.StringentDiscardedC);
                 total__sdt += Stats(chr.Key, PeakClassificationType.StringentDiscardedT);
-                total___so += (UInt32)R_j___so[chr.Key];
 
                 total___wc += Stats(chr.Key, PeakClassificationType.WeakConfirmed);
                 total__wdc += Stats(chr.Key, PeakClassificationType.WeakDiscardedC);
                 total__wdt += Stats(chr.Key, PeakClassificationType.WeakDiscardedT);
-                total___wo += (UInt32)R_j___wo[chr.Key];
 
                 totalERsCount = R_j__s[chr.Key].Count + R_j__w[chr.Key].Count;
                 chrwideStats.Add(chr.Key, new ChrWideStat()
@@ -319,10 +303,6 @@ namespace Genometric.MSPC.Model
             R_j__c.Add(chromosome, new Dictionary<UInt64, ProcessedPeak<I>>());
             R_j__d.Add(chromosome, new Dictionary<UInt64, ProcessedPeak<I>>());
             R_j__o.Add(chromosome, new List<ProcessedPeak<I>>());
-
-            R_j___so.Add(chromosome, 0);
-
-            R_j___wo.Add(chromosome, 0);
 
             _stats.Add(chromosome, new Dictionary<PeakClassificationType, uint>());
             foreach (var att in Enum.GetValues(typeof(PeakClassificationType)).Cast<PeakClassificationType>())

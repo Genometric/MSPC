@@ -459,7 +459,7 @@ namespace Genometric.MSPC.Model
                 foreach(var chr in result.Value.R_j__o)
                 {
                     result.Value.R_j_TP[chr.Key] = (uint)chr.Value.Count;
-                    result.Value.R_j_FP[chr.Key] = 0;
+                    result.Value.SetFalsePositiveCount(chr.Key, 0);
                     var outputSet = result.Value.R_j__o[chr.Key];
                     int m = outputSet.Count();
 
@@ -483,7 +483,7 @@ namespace Genometric.MSPC.Model
                             }
 
                             result.Value.R_j_TP[chr.Key] = (uint)k;
-                            result.Value.R_j_FP[chr.Key] = (uint)(m - k);
+                            result.Value.SetFalsePositiveCount(chr.Key, (uint)(m - k));
                             break;
                         }
                     }

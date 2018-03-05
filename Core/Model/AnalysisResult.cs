@@ -155,11 +155,6 @@ namespace Genometric.MSPC.Model
         public Dictionary<string, UInt32> R_j___so { set; get; }
 
 
-
-        /// <summary>
-        /// Chromosome-wide Weak-Confirmed peaks count.
-        /// </summary>
-        public Dictionary<string, UInt32> R_j___wc { set; get; }
         /// <summary>
         /// Chromosome-wide Weak-Discarded peaks count
         /// failing intersecting regions count test

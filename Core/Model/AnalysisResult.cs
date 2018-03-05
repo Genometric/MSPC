@@ -53,7 +53,6 @@ namespace Genometric.MSPC.Model
 
             R_j___so = new Dictionary<string, uint>();
 
-            R_j___wc = new Dictionary<string, uint>();
             R_j__wdc = new Dictionary<string, uint>();
             R_j__wdt = new Dictionary<string, uint>();
             R_j___wo = new Dictionary<string, uint>();
@@ -299,7 +298,7 @@ namespace Genometric.MSPC.Model
                 total__sdt += Stats(chr.Key, PeakClassificationType.StringentDiscardedT);
                 total___so += (UInt32)R_j___so[chr.Key];
 
-                total___wc += (UInt32)R_j___wc[chr.Key];
+                total___wc += Stats(chr.Key, PeakClassificationType.WeakConfirmed);
                 total__wdc += (UInt32)R_j__wdc[chr.Key];
                 total__wdt += (UInt32)R_j__wdt[chr.Key];
                 total___wo += (UInt32)R_j___wo[chr.Key];
@@ -340,7 +339,6 @@ namespace Genometric.MSPC.Model
 
             R_j___so.Add(chromosome, 0);
 
-            R_j___wc.Add(chromosome, 0);
             R_j__wdc.Add(chromosome, 0);
             R_j__wdt.Add(chromosome, 0);
             R_j___wo.Add(chromosome, 0);

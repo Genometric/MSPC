@@ -67,7 +67,7 @@ namespace Genometric.MSPC.CLI.Exporter
                     chr.Value.R_j__o.Sort();
                     foreach (var item in chr.Value.R_j__o)
                     {
-                        if (item.statisticalClassification == Attributes.TruePositive && item.classification == Attributes.StringentConfirmed)
+                        if (item.statisticalClassification == Attributes.TruePositive && item.classification.Contains(Attributes.StringentConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -93,7 +93,7 @@ namespace Genometric.MSPC.CLI.Exporter
                     chr.Value.R_j__o.Sort();
                     foreach (var item in chr.Value.R_j__o)
                     {
-                        if (item.statisticalClassification == Attributes.TruePositive && item.classification == Attributes.WeakConfirmed)
+                        if (item.statisticalClassification == Attributes.TruePositive && item.classification.Contains(Attributes.WeakConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -219,7 +219,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Value.classification == Attributes.StringentConfirmed)
+                        if (item.Value.classification.Contains(Attributes.StringentConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -246,7 +246,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Value.classification == Attributes.WeakConfirmed)
+                        if (item.Value.classification.Contains(Attributes.WeakConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -294,7 +294,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.R_j__d)
                     {
-                        if (item.Value.classification == Attributes.StringentDiscarded)
+                        if (item.Value.classification.Contains(Attributes.StringentDiscarded))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -318,7 +318,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.R_j__d)
                     {
-                        if (item.Value.classification == Attributes.WeakDiscarded)
+                        if (item.Value.classification.Contains(Attributes.WeakDiscarded))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +

@@ -223,9 +223,9 @@ namespace Genometric.MSPC.Model
             };
 
             if (p.Value <= _config.TauS)
-                anRe.classification = Attributes.StringentConfirmed;
+                anRe.classification.Add(Attributes.StringentConfirmed);
             else
-                anRe.classification = Attributes.WeakConfirmed;
+                anRe.classification.Add(Attributes.WeakConfirmed);
 
             _analysisResults[id].Chromosomes[chr].Add(anRe, Attributes.Confirmed);
 
@@ -256,11 +256,11 @@ namespace Genometric.MSPC.Model
 
                     if (supPeak.peak.Value <= _config.TauS)
                     {
-                        anRe.classification = Attributes.StringentConfirmed;
+                        anRe.classification.Add(Attributes.StringentConfirmed);
                     }
                     else
                     {
-                        anRe.classification = Attributes.WeakConfirmed;
+                        anRe.classification.Add(Attributes.WeakConfirmed);
                     }
 
                     targetSample.Chromosomes[chr].Add(anRe, Attributes.Confirmed);
@@ -282,17 +282,17 @@ namespace Genometric.MSPC.Model
             {
                 // The cause of discarding the region is :
                 if (supportingPeaks.Count + 1 >= _config.C)
-                    anRe.classification = Attributes.StringentDiscardedT;
+                    anRe.classification.Add(Attributes.StringentDiscardedT);
                 else
-                    anRe.classification = Attributes.StringentDiscardedC;
+                    anRe.classification.Add(Attributes.StringentDiscardedC);
             }
             else
             {
                 // The cause of discarding the region is :
                 if (supportingPeaks.Count + 1 >= _config.C)
-                    anRe.classification = Attributes.WeakDiscardedT;
+                    anRe.classification.Add(Attributes.WeakDiscardedT);
                 else
-                    anRe.classification = Attributes.WeakDiscardedC;
+                    anRe.classification.Add(Attributes.WeakDiscardedC);
             }
 
             _analysisResults[id].Chromosomes[chr].Add(anRe, Attributes.Discarded);
@@ -328,17 +328,17 @@ namespace Genometric.MSPC.Model
                     {
                         // The cause of discarding the region is :
                         if (supportingPeaks.Count + 1 >= _config.C)
-                            anRe.classification = Attributes.StringentDiscardedT;
+                            anRe.classification.Add(Attributes.StringentDiscardedT);
                         else
-                            anRe.classification = Attributes.StringentDiscardedC;
+                            anRe.classification.Add(Attributes.StringentDiscardedC);
                     }
                     else
                     {
                         // The cause of discarding the region is :
                         if (supportingPeaks.Count + 1 >= _config.C)
-                            anRe.classification = Attributes.WeakDiscardedT;
+                            anRe.classification.Add(Attributes.WeakDiscardedT);
                         else
-                            anRe.classification = Attributes.WeakDiscardedC;
+                            anRe.classification.Add(Attributes.WeakDiscardedC);
                     }
 
                     targetSample.Chromosomes[chr].Add(anRe, Attributes.Discarded);
@@ -428,18 +428,18 @@ namespace Genometric.MSPC.Model
                             peak = confirmedPeak.Value.peak,
                             rtp = confirmedPeak.Value.rtp,
                             xSquared = confirmedPeak.Value.xSquared,
-                            classification = Attributes.TruePositive,
                             supportingPeaks = confirmedPeak.Value.supportingPeaks,
                         };
+                        outputPeak.classification.Add(Attributes.TruePositive);
 
                         if (confirmedPeak.Value.peak.Value <= _config.TauS)
                         {
-                            outputPeak.classification = Attributes.StringentConfirmed;
+                            outputPeak.classification.Add(Attributes.StringentConfirmed);
                             /// result.Value.R_j___so[chr.Key]++;
                         }
                         else if (confirmedPeak.Value.peak.Value <= _config.TauW)
                         {
-                            outputPeak.classification = Attributes.WeakConfirmed;
+                            outputPeak.classification.Add(Attributes.WeakConfirmed);
                             /// result.Value.R_j___wo[chr.Key]++;
                         }
 

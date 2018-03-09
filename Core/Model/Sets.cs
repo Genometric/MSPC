@@ -82,7 +82,8 @@ namespace Genometric.MSPC.Model
                     if (!R_j__c.ContainsKey(peak.peak.HashKey))
                     {
                         R_j__c.Add(peak.peak.HashKey, peak);
-                        _stats[peak.classification]++;
+                        foreach (var att in peak.classification)
+                            _stats[att]++;
                     }
                     break;
 
@@ -90,7 +91,8 @@ namespace Genometric.MSPC.Model
                     if (!R_j__d.ContainsKey(peak.peak.HashKey))
                     {
                         R_j__d.Add(peak.peak.HashKey, peak);
-                        _stats[peak.classification]++;
+                        foreach (var att in peak.classification)
+                            _stats[att]++;
                     }
                     break;
 

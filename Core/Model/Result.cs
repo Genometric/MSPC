@@ -20,5 +20,13 @@ namespace Genometric.MSPC.Core.Model
         {
             Chromosomes.Add(chr, new Sets<I>());
         }
+
+        public uint Stats(PeakClassificationType type)
+        {
+            uint rtv = 0;
+            foreach (var chr in Chromosomes)
+                rtv += chr.Value.Stats(type);
+            return rtv;
+        }
     }
 }

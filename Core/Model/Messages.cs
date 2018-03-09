@@ -6,7 +6,15 @@ namespace Genometric.MSPC.Core.Model
 {
     internal static class Messages
     {
-        public static string XsqrdBelowGamma { get { return "X-squared is below chi-squared of Gamma"; } }
-        public static string MinimumCNotSatisfied { get { return "Intersecting peaks count doesn't comply minimum requirement"; } }
+        public static string Decode(byte code)
+        {
+            return _messages[code];
+        }
+
+        private static Dictionary<byte, string> _messages = new Dictionary<byte, string>()
+        {
+            { 0, "X-squared is below chi-squared of Gamma" },
+            { 1, "Intersecting peaks count doesn't comply minimum requirement" }
+        };
     }
 }

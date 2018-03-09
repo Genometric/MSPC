@@ -20,28 +20,28 @@ namespace Genometric.MSPC.Model
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
-        private Dictionary<PeakClassificationType, uint> _stats;
+        private Dictionary<Attributes, uint> _stats;
 
         // TODO: this function should be replaced by a public property exposing stats as a read-only collection.
-        public uint Stats(PeakClassificationType attribute)
+        public uint Stats(Attributes attribute)
         {
             return _stats[attribute];
         }
 
         internal void SetFalsePositiveCount(uint value)
         {
-            _stats[PeakClassificationType.FalsePositive] = value;
+            _stats[Attributes.FalsePositive] = value;
         }
 
         internal void SetTruePositiveCount(uint value)
         {
-            _stats[PeakClassificationType.TruePositive] = value;
+            _stats[Attributes.TruePositive] = value;
         }
 
         public Sets()
         {
-            _stats = new Dictionary<PeakClassificationType, uint>();
-            foreach (var att in Enum.GetValues(typeof(PeakClassificationType)).Cast<PeakClassificationType>())
+            _stats = new Dictionary<Attributes, uint>();
+            foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
                 _stats.Add(att, 0);
 
             total_scom = 0;
@@ -56,29 +56,29 @@ namespace Genometric.MSPC.Model
             R_j__o = new List<ProcessedPeak<I>>();
         }
 
-        public void Add(I peak, PeakClassificationType type)
+        public void Add(I peak, Attributes type)
         {
             switch (type)
             {
-                case PeakClassificationType.Stringent:
+                case Attributes.Stringent:
                     R_j__s.Add(peak);
                     break;
 
-                case PeakClassificationType.Weak:
+                case Attributes.Weak:
                     R_j__w.Add(peak);
                     break;
 
-                case PeakClassificationType.Background:
+                case Attributes.Background:
                     R_j__b.Add(peak);
                     break;
             }
         }
 
-        public void Add(ProcessedPeak<I> peak, PeakClassificationType type)
+        public void Add(ProcessedPeak<I> peak, Attributes type)
         {
             switch (type)
             {
-                case PeakClassificationType.Confirmed:
+                case Attributes.Confirmed:
                     if (!R_j__c.ContainsKey(peak.peak.HashKey))
                     {
                         R_j__c.Add(peak.peak.HashKey, peak);
@@ -86,7 +86,7 @@ namespace Genometric.MSPC.Model
                     }
                     break;
 
-                case PeakClassificationType.Discarded:
+                case Attributes.Discarded:
                     if (!R_j__d.ContainsKey(peak.peak.HashKey))
                     {
                         R_j__d.Add(peak.peak.HashKey, peak);
@@ -94,7 +94,7 @@ namespace Genometric.MSPC.Model
                     }
                     break;
 
-                case PeakClassificationType.Output:
+                case Attributes.Output:
                     R_j__o.Add(peak);
                     break;
             }

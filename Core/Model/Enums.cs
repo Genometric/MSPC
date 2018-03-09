@@ -10,7 +10,7 @@
 
 namespace Genometric.MSPC.Model
 {
-    public enum PeakClassificationType : byte
+    public enum Attributes : byte
     {
         Stringent = 0,
         Weak = 1,

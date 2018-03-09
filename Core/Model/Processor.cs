@@ -109,7 +109,7 @@ namespace Genometric.MSPC.Model
                             if (p.Value < _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
                             else
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(p, PeakClassificationType.Background);
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(p, Attributes.Background);
                         }
                     }
                 }
@@ -126,9 +126,9 @@ namespace Genometric.MSPC.Model
 
                             // Initial assessment: classifying peak as strong or weak based on p-value.
                             if (peak.Value < _config.TauS)
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(peak, PeakClassificationType.Stringent);
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(peak, Attributes.Stringent);
                             else if (peak.Value < _config.TauW)
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(peak, PeakClassificationType.Weak);
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(peak, Attributes.Weak);
                             else
                                 continue;
 
@@ -223,11 +223,11 @@ namespace Genometric.MSPC.Model
             };
 
             if (p.Value <= _config.TauS)
-                anRe.classification = PeakClassificationType.StringentConfirmed;
+                anRe.classification = Attributes.StringentConfirmed;
             else
-                anRe.classification = PeakClassificationType.WeakConfirmed;
+                anRe.classification = Attributes.WeakConfirmed;
 
-            _analysisResults[id].Chromosomes[chr].Add(anRe, PeakClassificationType.Confirmed);
+            _analysisResults[id].Chromosomes[chr].Add(anRe, Attributes.Confirmed);
 
             ConfirmSupportingPeaks(id, chr, p, supportingPeaks);
         }
@@ -256,14 +256,14 @@ namespace Genometric.MSPC.Model
 
                     if (supPeak.peak.Value <= _config.TauS)
                     {
-                        anRe.classification = PeakClassificationType.StringentConfirmed;
+                        anRe.classification = Attributes.StringentConfirmed;
                     }
                     else
                     {
-                        anRe.classification = PeakClassificationType.WeakConfirmed;
+                        anRe.classification = Attributes.WeakConfirmed;
                     }
 
-                    targetSample.Chromosomes[chr].Add(anRe, PeakClassificationType.Confirmed);
+                    targetSample.Chromosomes[chr].Add(anRe, Attributes.Confirmed);
                 }
             }
         }
@@ -282,20 +282,20 @@ namespace Genometric.MSPC.Model
             {
                 // The cause of discarding the region is :
                 if (supportingPeaks.Count + 1 >= _config.C)
-                    anRe.classification = PeakClassificationType.StringentDiscardedT;
+                    anRe.classification = Attributes.StringentDiscardedT;
                 else
-                    anRe.classification = PeakClassificationType.StringentDiscardedC;
+                    anRe.classification = Attributes.StringentDiscardedC;
             }
             else
             {
                 // The cause of discarding the region is :
                 if (supportingPeaks.Count + 1 >= _config.C)
-                    anRe.classification = PeakClassificationType.WeakDiscardedT;
+                    anRe.classification = Attributes.WeakDiscardedT;
                 else
-                    anRe.classification = PeakClassificationType.WeakDiscardedC;
+                    anRe.classification = Attributes.WeakDiscardedC;
             }
 
-            _analysisResults[id].Chromosomes[chr].Add(anRe, PeakClassificationType.Discarded);
+            _analysisResults[id].Chromosomes[chr].Add(anRe, Attributes.Discarded);
 
             if (supportingPeaks.Count + 1 >= _config.C)
                 DiscardSupportingPeaks(id, chr, p, supportingPeaks, discardReason);
@@ -328,20 +328,20 @@ namespace Genometric.MSPC.Model
                     {
                         // The cause of discarding the region is :
                         if (supportingPeaks.Count + 1 >= _config.C)
-                            anRe.classification = PeakClassificationType.StringentDiscardedT;
+                            anRe.classification = Attributes.StringentDiscardedT;
                         else
-                            anRe.classification = PeakClassificationType.StringentDiscardedC;
+                            anRe.classification = Attributes.StringentDiscardedC;
                     }
                     else
                     {
                         // The cause of discarding the region is :
                         if (supportingPeaks.Count + 1 >= _config.C)
-                            anRe.classification = PeakClassificationType.WeakDiscardedT;
+                            anRe.classification = Attributes.WeakDiscardedT;
                         else
-                            anRe.classification = PeakClassificationType.WeakDiscardedC;
+                            anRe.classification = Attributes.WeakDiscardedC;
                     }
 
-                    targetSample.Chromosomes[chr].Add(anRe, PeakClassificationType.Discarded);
+                    targetSample.Chromosomes[chr].Add(anRe, Attributes.Discarded);
                 }
             }
         }
@@ -428,22 +428,22 @@ namespace Genometric.MSPC.Model
                             peak = confirmedPeak.Value.peak,
                             rtp = confirmedPeak.Value.rtp,
                             xSquared = confirmedPeak.Value.xSquared,
-                            classification = PeakClassificationType.TruePositive,
+                            classification = Attributes.TruePositive,
                             supportingPeaks = confirmedPeak.Value.supportingPeaks,
                         };
 
                         if (confirmedPeak.Value.peak.Value <= _config.TauS)
                         {
-                            outputPeak.classification = PeakClassificationType.StringentConfirmed;
+                            outputPeak.classification = Attributes.StringentConfirmed;
                             /// result.Value.R_j___so[chr.Key]++;
                         }
                         else if (confirmedPeak.Value.peak.Value <= _config.TauW)
                         {
-                            outputPeak.classification = PeakClassificationType.WeakConfirmed;
+                            outputPeak.classification = Attributes.WeakConfirmed;
                             /// result.Value.R_j___wo[chr.Key]++;
                         }
 
-                        result.Value.Chromosomes[chr.Key].Add(outputPeak, PeakClassificationType.Output);
+                        result.Value.Chromosomes[chr.Key].Add(outputPeak, Attributes.Output);
                     }
                 }
             }
@@ -474,12 +474,12 @@ namespace Genometric.MSPC.Model
                             for (int l = 1; l < k; l++)
                             {
                                 outputSet[l].adjPValue = (((double)k * outputSet[l].peak.Value) / (double)m) * _config.Alpha;
-                                outputSet[l].statisticalClassification = PeakClassificationType.TruePositive;
+                                outputSet[l].statisticalClassification = Attributes.TruePositive;
                             }
                             for (int l = k; l < m; l++)
                             {
                                 outputSet[l].adjPValue = (((double)k * outputSet[l].peak.Value) / (double)m) * _config.Alpha;
-                                outputSet[l].statisticalClassification = PeakClassificationType.FalsePositive;
+                                outputSet[l].statisticalClassification = Attributes.FalsePositive;
                             }
 
                             chr.Value.SetTruePositiveCount((uint)k);

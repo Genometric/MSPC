@@ -41,7 +41,7 @@ namespace Genometric.MSPC.CLI.Exporter
                     chr.Value.R_j__o.Sort();
                     foreach (var item in chr.Value.R_j__o)
                     {
-                        if (item.statisticalClassification == PeakClassificationType.TruePositive)
+                        if (item.statisticalClassification == Attributes.TruePositive)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -67,7 +67,7 @@ namespace Genometric.MSPC.CLI.Exporter
                     chr.Value.R_j__o.Sort();
                     foreach (var item in chr.Value.R_j__o)
                     {
-                        if (item.statisticalClassification == PeakClassificationType.TruePositive && item.classification == PeakClassificationType.StringentConfirmed)
+                        if (item.statisticalClassification == Attributes.TruePositive && item.classification == Attributes.StringentConfirmed)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -93,7 +93,7 @@ namespace Genometric.MSPC.CLI.Exporter
                     chr.Value.R_j__o.Sort();
                     foreach (var item in chr.Value.R_j__o)
                     {
-                        if (item.statisticalClassification == PeakClassificationType.TruePositive && item.classification == PeakClassificationType.WeakConfirmed)
+                        if (item.statisticalClassification == Attributes.TruePositive && item.classification == Attributes.WeakConfirmed)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -120,7 +120,7 @@ namespace Genometric.MSPC.CLI.Exporter
                     chr.Value.R_j__o.Sort();
                     foreach (var item in chr.Value.R_j__o)
                     {
-                        if (item.statisticalClassification == PeakClassificationType.FalsePositive)
+                        if (item.statisticalClassification == Attributes.FalsePositive)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -219,7 +219,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Value.classification == PeakClassificationType.StringentConfirmed)
+                        if (item.Value.classification == Attributes.StringentConfirmed)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -246,7 +246,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Value.classification == PeakClassificationType.WeakConfirmed)
+                        if (item.Value.classification == Attributes.WeakConfirmed)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -294,7 +294,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.R_j__d)
                     {
-                        if (item.Value.classification == PeakClassificationType.StringentDiscarded)
+                        if (item.Value.classification == Attributes.StringentDiscarded)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -318,7 +318,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.R_j__d)
                     {
-                        if (item.Value.classification == PeakClassificationType.WeakDiscarded)
+                        if (item.Value.classification == Attributes.WeakDiscarded)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +

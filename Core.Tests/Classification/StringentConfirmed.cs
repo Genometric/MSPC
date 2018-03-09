@@ -45,7 +45,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Stats(PeakClassificationType.StringentConfirmed) == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].Stats(Attributes.StringentConfirmed) == 1);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Core.Tests.Base
                 Assert.True(s.Value.Chromosomes["chr1"].R_j__c.Count == 1);
             foreach (var s in res)
                 foreach (var p in s.Value.Chromosomes["chr1"].R_j__c)
-                    Assert.True(p.Value.classification == PeakClassificationType.StringentConfirmed);
+                    Assert.True(p.Value.classification == Attributes.StringentConfirmed);
         }
     }
 }

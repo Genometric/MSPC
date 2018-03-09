@@ -45,7 +45,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Stats(PeakClassificationType.WeakDiscardedT) == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].Stats(Attributes.WeakDiscardedT) == 1);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Core.Tests.Base
                 Assert.True(s.Value.Chromosomes["chr1"].R_j__d.Count == 1);
             foreach (var s in res)
                 foreach (var p in s.Value.Chromosomes["chr1"].R_j__d)
-                    Assert.True(p.Value.classification == PeakClassificationType.WeakDiscardedT);
+                    Assert.True(p.Value.classification == Attributes.WeakDiscardedT);
         }
     }
 }

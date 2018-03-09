@@ -17,6 +17,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Genometric.GeUtilities.IGenomics;
+using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
@@ -62,7 +63,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
         public void Export(
             Dictionary<uint, string> fileNames,
-            ReadOnlyDictionary<uint, AnalysisResult<P>> results,
+            ReadOnlyDictionary<uint, Result<P>> results,
             ReadOnlyDictionary<string, SortedList<P, P>> mergedReplicates,
             ExportOptions options)
         {

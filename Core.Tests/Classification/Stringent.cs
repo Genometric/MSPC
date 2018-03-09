@@ -1,6 +1,7 @@
 ﻿using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC;
+using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Core.Tests.Base
 {
     public class Stringent
     {
-        private ReadOnlyDictionary<uint, AnalysisResult<ChIPSeqPeak>> GenerateAndProcessStringentPeaks()
+        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> GenerateAndProcessStringentPeaks()
         {
             var sA = new BED<ChIPSeqPeak>();
             sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 }, "chr1", '*');
@@ -30,8 +31,8 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            ///foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             return res;
         }
@@ -47,7 +48,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j__s["chr1"].Count == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].R_j__s.Count == 1);
         }
     }
 }

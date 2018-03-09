@@ -1,6 +1,7 @@
 ﻿using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC;
+using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Core.Tests.Base
 {
     public class NoisePeaks
     {
-        private ReadOnlyDictionary<uint, AnalysisResult<ChIPSeqPeak>> GenerateAndProcessNoisePeaks()
+        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> GenerateAndProcessNoisePeaks()
         {
             var sA = new BED<ChIPSeqPeak>();
             sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, "chr1", '*');
@@ -28,8 +29,8 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            ///foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             return res;
         }
@@ -45,7 +46,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j__b["chr1"].Count == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].R_j__b.Count == 1);
         }
 
         [Fact]
@@ -56,7 +57,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j__d["chr1"].Count == 0);
+                Assert.True(s.Value.Chromosomes["chr1"].R_j__d.Count == 0);
         }
 
         [Fact]
@@ -67,7 +68,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j__c["chr1"].Count == 0);
+                Assert.True(s.Value.Chromosomes["chr1"].R_j__c.Count == 0);
         }
 
         [Fact]
@@ -78,7 +79,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j__o["chr1"].Count == 0);
+                Assert.True(s.Value.Chromosomes["chr1"].R_j__o.Count == 0);
         }
 
         // TODO check for all the other sets.

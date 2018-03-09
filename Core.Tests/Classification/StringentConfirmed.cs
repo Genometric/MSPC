@@ -1,6 +1,7 @@
 ﻿using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC;
+using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Core.Tests.Base
 {
     public class StringentConfirmed
     {
-        private ReadOnlyDictionary<uint, AnalysisResult<ChIPSeqPeak>> CreateStringentPeaksAndConfirmThem()
+        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> CreateStringentPeaksAndConfirmThem()
         {
             var sA = new BED<ChIPSeqPeak>();
             sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 }, "chr1", '*');
@@ -30,8 +31,8 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // TODO: this step should not be necessary; remove it after the Results class is updated.
-            foreach (var rep in res)
-                rep.Value.ReadOverallStats();
+            ///foreach (var rep in res)
+            ///    rep.Value.ReadOverallStats();
 
             return res;
         }
@@ -44,7 +45,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j___sc["chr1"] == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].Stats(PeakClassificationType.StringentConfirmed) == 1);
         }
 
         [Fact]
@@ -55,9 +56,9 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.R_j__c["chr1"].Count == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].R_j__c.Count == 1);
             foreach (var s in res)
-                foreach (var p in s.Value.R_j__c["chr1"])
+                foreach (var p in s.Value.Chromosomes["chr1"].R_j__c)
                     Assert.True(p.Value.classification == PeakClassificationType.StringentConfirmed);
         }
     }

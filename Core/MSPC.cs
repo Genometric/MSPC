@@ -17,6 +17,7 @@ using System.Threading;
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC
 {
@@ -35,7 +36,7 @@ namespace Genometric.MSPC
         private Processor<I> _processor { set; get; }
         private BackgroundWorker _backgroundProcessor { set; get; }
 
-        private ReadOnlyDictionary<uint, AnalysisResult<I>> _results { set; get; }
+        private ReadOnlyDictionary<uint, Result<I>> _results { set; get; }
 
         public MSPC()
         {
@@ -53,7 +54,7 @@ namespace Genometric.MSPC
             _processor.AddSample(id, sample);
         }
 
-        public ReadOnlyDictionary<uint, AnalysisResult<I>> Run(Config config)
+        public ReadOnlyDictionary<uint, Result<I>> Run(Config config)
         {
             if (_processor.SamplesCount < 2)
                 throw new InvalidOperationException(String.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
@@ -89,7 +90,7 @@ namespace Genometric.MSPC
             _processor.cancel = true;
         }
 
-        public ReadOnlyDictionary<uint, AnalysisResult<I>> GetResults()
+        public ReadOnlyDictionary<uint, Result<I>> GetResults()
         {
             return _results;
         }

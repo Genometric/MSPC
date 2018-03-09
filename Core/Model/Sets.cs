@@ -54,14 +54,6 @@ namespace Genometric.MSPC.Model
             R_j__c = new Dictionary<UInt64, ProcessedPeak<I>>();
             R_j__d = new Dictionary<UInt64, ProcessedPeak<I>>();
             R_j__o = new List<ProcessedPeak<I>>();
-
-            messages = new List<string>();
-
-            /// The analyzer points to these messages by their index,
-            /// hence if the order would change, the indexes will change
-            /// as well resulting in improper messages
-            messages.Add("X-squared is below chi-squared of Gamma");
-            messages.Add("Intersecting peaks count doesn't comply minimum requirement");
         }
 
         public void Add(I peak, PeakClassificationType type)
@@ -156,8 +148,5 @@ namespace Genometric.MSPC.Model
         /// through multiple tests.
         /// </summary>
         public UInt32 total_wcom { set; get; }
-
-
-        public List<string> messages { private set; get; }
     }
 }

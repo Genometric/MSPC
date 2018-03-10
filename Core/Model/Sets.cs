@@ -44,7 +44,7 @@ namespace Genometric.MSPC.Model
             foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
                 _stats.Add(att, 0);
 
-            _sets = new Dictionary<Attributes[], Dictionary<ulong, ProcessedPeak<I>>>();
+            _sets = new Dictionary<Attributes[], Dictionary<ulong, ProcessedPeak<I>>>(comparer: new AttributesComparer());
             _sets.Add(new Attributes[] { Attributes.Confirmed }, new Dictionary<ulong, ProcessedPeak<I>>());
 
             total_scom = 0;

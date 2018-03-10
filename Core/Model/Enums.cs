@@ -35,7 +35,7 @@ namespace Genometric.MSPC.Model
         Discarded = 16
     };
 
-    public class AttributesComparer : IComparer<Attributes[]>
+    public class AttributesComparer : IEqualityComparer<Attributes[]>
     {
         public int Compare(Attributes[] x, Attributes[] y)
         {
@@ -50,6 +50,16 @@ namespace Genometric.MSPC.Model
                 if (c != 0) return c;
             }
             return 0;
+        }
+
+        public bool Equals(Attributes[] x, Attributes[] y)
+        {
+            return Enumerable.SequenceEqual(x, y);
+        }
+
+        public int GetHashCode(Attributes[] obj)
+        {
+            throw new System.NotImplementedException();
         }
     }
 

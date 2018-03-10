@@ -1,13 +1,17 @@
-﻿/** Copyright © 2014-2015 Vahid Jalili
- * 
- * This file is part of MSPC project.
- * MSPC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * MSPC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
- **/
+﻿
 
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+/** Copyright © 2014-2015 Vahid Jalili
+* 
+* This file is part of MSPC project.
+* MSPC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+* either version 3 of the License, or (at your option) any later version.
+* MSPC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+* PARTICULAR PURPOSE. See the GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
+**/
 namespace Genometric.MSPC.Model
 {
     public enum Attributes : byte
@@ -30,6 +34,24 @@ namespace Genometric.MSPC.Model
         Confirmed = 15,
         Discarded = 16
     };
+
+    public class AttributesComparer : IComparer<Attributes[]>
+    {
+        public int Compare(Attributes[] x, Attributes[] y)
+        {
+            if (ReferenceEquals(x, y)) return 0;
+            if (x == null) return -1;
+            if (y == null) return 1;
+            int c = x.Length.CompareTo(y.Length);
+            if (c != 0) return c;
+            for(int i=0;i<x.Length;i++)
+            {
+                c = x[i].CompareTo(y[i]);
+                if (c != 0) return c;
+            }
+            return 0;
+        }
+    }
 
     public enum MultipleIntersections : byte
     {

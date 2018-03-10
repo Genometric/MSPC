@@ -56,8 +56,6 @@ namespace Genometric.MSPC.Model
             R_j__w = new List<I>();
             R_j__b = new List<I>();
 
-            /// R_j__c = new Dictionary<UInt64, ProcessedPeak<I>>();
-            /// R_j__d = new Dictionary<UInt64, ProcessedPeak<I>>();
             R_j__o = new List<ProcessedPeak<I>>();
         }
 
@@ -130,25 +128,11 @@ namespace Genometric.MSPC.Model
         }
 
         /// <summary>
-        /// Chromosome-wide Confirmed peaks of sample j (i.e., the peaks that passed both intersecting
-        /// peaks count threshold and X-squared test).
-        /// </summary>
-        /// public Dictionary<UInt64, ProcessedPeak<I>> R_j__c { set; get; }
-
-        /// <summary>
-        /// Chromosome-wide Discarded peaks of sample j (i.e., the peaks that either failed intersecting
-        /// peaks count threshold or X-squared test).
-        /// </summary>
-        /// public Dictionary<UInt64, ProcessedPeak<I>> R_j__d { set; get; }
-
-        /// <summary>
         /// Chromosome-wide set of peaks as the result of the algorithm. The peaks of this set passed
         /// three tests (i.e., intersecting peaks count, X-squared test, and benjamini-hochberg
         /// multiple testing correction).
         /// </summary>
         public List<ProcessedPeak<I>> R_j__o { set; get; }
-
-
 
         /// <summary>
         /// Total number of stringent peaks that are both validated and discarded

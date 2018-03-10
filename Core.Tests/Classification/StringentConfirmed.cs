@@ -56,9 +56,9 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].R_j__c.Count == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Confirmed }).Count == 1);
             foreach (var s in res)
-                foreach (var p in s.Value.Chromosomes["chr1"].R_j__c)
+                foreach (var p in s.Value.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Confirmed }))
                     Assert.True(p.Value.classification.Contains(Attributes.StringentConfirmed));
         }
     }

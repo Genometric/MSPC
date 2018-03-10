@@ -236,7 +236,7 @@ namespace Genometric.MSPC.Model
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].R_j__c.ContainsKey(supPeak.peak.HashKey))
+                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].Get(new Attributes[] { Attributes.Confirmed }).ContainsKey(supPeak.peak.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.sampleID];
@@ -375,7 +375,7 @@ namespace Genometric.MSPC.Model
                 {
                     foreach(var chr in result.Value.Chromosomes)
                     {
-                        foreach (var confirmedPeak in chr.Value.R_j__c)
+                        foreach (var confirmedPeak in chr.Value.Get(new Attributes[] { Attributes.Confirmed }))
                         {
                             if(chr.Value.R_j__d.ContainsKey(confirmedPeak.Key))
                             {
@@ -400,14 +400,14 @@ namespace Genometric.MSPC.Model
                     {
                         foreach (var discardedPeak in chr.Value.R_j__d)
                         {
-                            if (chr.Value.R_j__c.ContainsKey(discardedPeak.Key))
+                            if (chr.Value.Get(new Attributes[] { Attributes.Confirmed }).ContainsKey(discardedPeak.Key))
                             {
                                 if (discardedPeak.Value.peak.Value <= _config.TauS)
                                     chr.Value.total_scom++;
                                 else if (discardedPeak.Value.peak.Value <= _config.TauW)
                                     chr.Value.total_wcom++;
 
-                                chr.Value.R_j__c.Remove(discardedPeak.Key);
+                                chr.Value.Get(new Attributes[] { Attributes.Confirmed }).Remove(discardedPeak.Key);
                             }
                         }
                     }
@@ -421,7 +421,7 @@ namespace Genometric.MSPC.Model
             {
                 foreach(var chr in result.Value.Chromosomes)
                 {
-                    foreach (var confirmedPeak in chr.Value.R_j__c)
+                    foreach (var confirmedPeak in chr.Value.Get(new Attributes[] { Attributes.Confirmed }))
                     {
                         var outputPeak = new ProcessedPeak<I>()
                         {

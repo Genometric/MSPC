@@ -68,7 +68,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].R_j__c.Count == 0);
+                Assert.True(s.Value.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Confirmed }).Count == 0);
         }
 
         [Fact]

@@ -191,7 +191,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.Get(new Attributes[] { Attributes.Confirmed }) orderby entry.Value ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
@@ -215,7 +215,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.Get(new Attributes[] { Attributes.Confirmed }) orderby entry.Value ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
@@ -242,7 +242,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.Get(new Attributes[] { Attributes.Confirmed }) orderby entry.Value ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {

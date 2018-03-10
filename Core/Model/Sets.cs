@@ -44,6 +44,9 @@ namespace Genometric.MSPC.Model
             foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
                 _stats.Add(att, 0);
 
+            _sets = new Dictionary<Attributes[], Dictionary<ulong, ProcessedPeak<I>>>();
+            _sets.Add(new Attributes[] { Attributes.Confirmed }, new Dictionary<ulong, ProcessedPeak<I>>());
+
             total_scom = 0;
             total_wcom = 0;
 
@@ -51,7 +54,7 @@ namespace Genometric.MSPC.Model
             R_j__w = new List<I>();
             R_j__b = new List<I>();
 
-            R_j__c = new Dictionary<UInt64, ProcessedPeak<I>>();
+            /// R_j__c = new Dictionary<UInt64, ProcessedPeak<I>>();
             R_j__d = new Dictionary<UInt64, ProcessedPeak<I>>();
             R_j__o = new List<ProcessedPeak<I>>();
         }
@@ -79,9 +82,9 @@ namespace Genometric.MSPC.Model
             switch (type)
             {
                 case Attributes.Confirmed:
-                    if (!R_j__c.ContainsKey(peak.peak.HashKey))
+                    if (!_sets[new Attributes[] { Attributes.Confirmed }].ContainsKey(peak.peak.HashKey))
                     {
-                        R_j__c.Add(peak.peak.HashKey, peak);
+                        _sets[new Attributes[] { Attributes.Confirmed }].Add(peak.peak.HashKey, peak);
                         foreach (var att in peak.classification)
                             _stats[att]++;
                     }
@@ -117,13 +120,18 @@ namespace Genometric.MSPC.Model
         /// </summary>
         public List<I> R_j__b { set; get; }
 
+        private Dictionary<Attributes[], Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 
+        public Dictionary<UInt64, ProcessedPeak<I>> Get(Attributes[] attributes)
+        {
+            return _sets[attributes];
+        }
 
         /// <summary>
         /// Chromosome-wide Confirmed peaks of sample j (i.e., the peaks that passed both intersecting
         /// peaks count threshold and X-squared test).
         /// </summary>
-        public Dictionary<UInt64, ProcessedPeak<I>> R_j__c { set; get; }
+        /// public Dictionary<UInt64, ProcessedPeak<I>> R_j__c { set; get; }
 
         /// <summary>
         /// Chromosome-wide Discarded peaks of sample j (i.e., the peaks that either failed intersecting

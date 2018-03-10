@@ -44,7 +44,7 @@ namespace Genometric.MSPC.Model
             if (y == null) return 1;
             int c = x.Length.CompareTo(y.Length);
             if (c != 0) return c;
-            for(int i=0;i<x.Length;i++)
+            for (int i = 0; i < x.Length; i++)
             {
                 c = x[i].CompareTo(y[i]);
                 if (c != 0) return c;
@@ -59,7 +59,15 @@ namespace Genometric.MSPC.Model
 
         public int GetHashCode(Attributes[] obj)
         {
-            throw new System.NotImplementedException();
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + obj.Length.GetHashCode();
+                foreach (var att in obj)
+                    hash = hash * 23 + att.GetHashCode();
+                return hash;
+            }
         }
     }
 

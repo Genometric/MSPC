@@ -305,7 +305,7 @@ namespace Genometric.MSPC.Model
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].R_j__d.ContainsKey(supPeak.peak.HashKey))
+                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].Get(new Attributes[] { Attributes.Discarded }).ContainsKey(supPeak.peak.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.sampleID];
@@ -377,14 +377,14 @@ namespace Genometric.MSPC.Model
                     {
                         foreach (var confirmedPeak in chr.Value.Get(new Attributes[] { Attributes.Confirmed }))
                         {
-                            if(chr.Value.R_j__d.ContainsKey(confirmedPeak.Key))
+                            if(chr.Value.Get(new Attributes[] { Attributes.Discarded }).ContainsKey(confirmedPeak.Key))
                             {
                                 if (confirmedPeak.Value.peak.Value <= _config.TauS)
                                     chr.Value.total_scom++;
                                 else if (confirmedPeak.Value.peak.Value <= _config.TauW)
                                     chr.Value.total_wcom++;
 
-                                chr.Value.R_j__d.Remove(confirmedPeak.Key);
+                                chr.Value.Get(new Attributes[] { Attributes.Discarded }).Remove(confirmedPeak.Key);
                             }
                         }
                     }
@@ -398,7 +398,7 @@ namespace Genometric.MSPC.Model
                 {
                     foreach(var chr in result.Value.Chromosomes)
                     {
-                        foreach (var discardedPeak in chr.Value.R_j__d)
+                        foreach (var discardedPeak in chr.Value.Get(new Attributes[] { Attributes.Discarded }))
                         {
                             if (chr.Value.Get(new Attributes[] { Attributes.Confirmed }).ContainsKey(discardedPeak.Key))
                             {

@@ -45,7 +45,9 @@ namespace Genometric.MSPC.Model
                 _stats.Add(att, 0);
 
             _sets = new Dictionary<Attributes[], Dictionary<ulong, ProcessedPeak<I>>>(comparer: new AttributesComparer());
+            /// TODO: these two keys must be set once a new key is added, not at construction time. 
             _sets.Add(new Attributes[] { Attributes.Confirmed }, new Dictionary<ulong, ProcessedPeak<I>>());
+            _sets.Add(new Attributes[] { Attributes.Discarded }, new Dictionary<ulong, ProcessedPeak<I>>());
 
             total_scom = 0;
             total_wcom = 0;
@@ -55,7 +57,7 @@ namespace Genometric.MSPC.Model
             R_j__b = new List<I>();
 
             /// R_j__c = new Dictionary<UInt64, ProcessedPeak<I>>();
-            R_j__d = new Dictionary<UInt64, ProcessedPeak<I>>();
+            /// R_j__d = new Dictionary<UInt64, ProcessedPeak<I>>();
             R_j__o = new List<ProcessedPeak<I>>();
         }
 
@@ -91,9 +93,9 @@ namespace Genometric.MSPC.Model
                     break;
 
                 case Attributes.Discarded:
-                    if (!R_j__d.ContainsKey(peak.peak.HashKey))
+                    if (!_sets[new Attributes[] { Attributes.Discarded }].ContainsKey(peak.peak.HashKey))
                     {
-                        R_j__d.Add(peak.peak.HashKey, peak);
+                        _sets[new Attributes[] { Attributes.Discarded }].Add(peak.peak.HashKey, peak);
                         foreach (var att in peak.classification)
                             _stats[att]++;
                     }
@@ -137,7 +139,7 @@ namespace Genometric.MSPC.Model
         /// Chromosome-wide Discarded peaks of sample j (i.e., the peaks that either failed intersecting
         /// peaks count threshold or X-squared test).
         /// </summary>
-        public Dictionary<UInt64, ProcessedPeak<I>> R_j__d { set; get; }
+        /// public Dictionary<UInt64, ProcessedPeak<I>> R_j__d { set; get; }
 
         /// <summary>
         /// Chromosome-wide set of peaks as the result of the algorithm. The peaks of this set passed

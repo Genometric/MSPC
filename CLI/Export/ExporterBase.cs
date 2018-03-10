@@ -271,7 +271,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.R_j__d)
+                    foreach (var item in chr.Value.Get(new Attributes[] { Attributes.Discarded }))
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
@@ -292,7 +292,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.R_j__d)
+                    foreach (var item in chr.Value.Get(new Attributes[] { Attributes.Discarded }))
                     {
                         if (item.Value.classification.Contains(Attributes.StringentDiscarded))
                         {
@@ -316,7 +316,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.R_j__d)
+                    foreach (var item in chr.Value.Get(new Attributes[] { Attributes.Discarded }))
                     {
                         if (item.Value.classification.Contains(Attributes.WeakDiscarded))
                         {

@@ -45,7 +45,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Stats(Attributes.WeakConfirmed) == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].Stats[Attributes.WeakConfirmed] == 1);
         }
 
         [Fact]

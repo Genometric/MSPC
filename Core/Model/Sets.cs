@@ -1,4 +1,6 @@
-﻿/** Copyright © 2014-2015 Vahid Jalili
+﻿using Genometric.GeUtilities.IGenomics;
+using Genometric.MSPC.Core.Model;
+/** Copyright © 2014-2015 Vahid Jalili
  * 
  * This file is part of MSPC project.
  * MSPC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
@@ -10,22 +12,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Immutable;
 using System.Linq;
-using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC.Model
 {
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
+        private Dictionary<Attributes[], Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
+
         private Dictionary<Attributes, uint> _stats;
 
-        // TODO: this function should be replaced by a public property exposing stats as a read-only collection.
-        public uint Stats(Attributes attribute)
+        public ImmutableDictionary<Attributes, uint> Stats
         {
-            return _stats[attribute];
+            get { return _stats.ToImmutableDictionary(); }
         }
 
         internal void SetFalsePositiveCount(uint value)
@@ -119,8 +120,6 @@ namespace Genometric.MSPC.Model
         /// Chromosome-wide background peaks of sample j (i.e., the peaks with p-value > T_w ).
         /// </summary>
         public List<I> R_j__b { set; get; }
-
-        private Dictionary<Attributes[], Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 
         public Dictionary<UInt64, ProcessedPeak<I>> Get(Attributes[] attributes)
         {

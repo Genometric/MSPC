@@ -25,7 +25,7 @@ namespace Genometric.MSPC.Core.Model
         {
             uint rtv = 0;
             foreach (var chr in Chromosomes)
-                rtv += chr.Value.Stats(type);
+                rtv += chr.Value.Stats[type];
             return rtv;
         }
     }

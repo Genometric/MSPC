@@ -46,7 +46,6 @@ namespace Genometric.MSPC.Model
                 _stats.Add(att, 0);
 
             _sets = new Dictionary<Attributes[], Dictionary<ulong, ProcessedPeak<I>>>(comparer: new AttributesComparer());
-            /// TODO: these two keys must be set once a new key is added, not at construction time. 
             _sets.Add(new Attributes[] { Attributes.Confirmed }, new Dictionary<ulong, ProcessedPeak<I>>());
             _sets.Add(new Attributes[] { Attributes.Discarded }, new Dictionary<ulong, ProcessedPeak<I>>());
 

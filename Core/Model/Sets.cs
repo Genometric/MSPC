@@ -52,9 +52,9 @@ namespace Genometric.MSPC.Model
             total_scom = 0;
             total_wcom = 0;
 
-            R_j__s = new List<I>();
-            R_j__w = new List<I>();
-            R_j__b = new List<I>();
+            R_j__s = new SortedList<int, I>();
+            R_j__w = new SortedList<int, I>();
+            R_j__b = new SortedList<int, I>();
 
             R_j__o = new List<ProcessedPeak<I>>();
         }
@@ -64,15 +64,15 @@ namespace Genometric.MSPC.Model
             switch (type)
             {
                 case Attributes.Stringent:
-                    R_j__s.Add(peak);
+                    R_j__s.Add(peak.Left, peak);
                     break;
 
                 case Attributes.Weak:
-                    R_j__w.Add(peak);
+                    R_j__w.Add(peak.Left, peak);
                     break;
 
                 case Attributes.Background:
-                    R_j__b.Add(peak);
+                    R_j__b.Add(peak.Left, peak);
                     break;
             }
         }
@@ -108,21 +108,39 @@ namespace Genometric.MSPC.Model
         /// <summary>
         /// Chromosome-wide stringent peaks of sample j
         /// </summary>
-        public List<I> R_j__s { set; get; }
+        private SortedList<int, I> R_j__s { set; get; }
 
         /// <summary>
         /// Chromosome-wide weak peaks of sample j
         /// </summary>
-        public List<I> R_j__w { set; get; }
+        private SortedList<int, I> R_j__w { set; get; }
 
         /// <summary>
         /// Chromosome-wide background peaks of sample j (i.e., the peaks with p-value > T_w ).
         /// </summary>
-        public List<I> R_j__b { set; get; }
+        private SortedList<int, I> R_j__b { set; get; }
 
         public Dictionary<UInt64, ProcessedPeak<I>> Get(Attributes[] attributes)
         {
             return _sets[attributes];
+        }
+
+        public IList<I> Get(Attributes attribute)
+        {
+            switch (attribute)
+            {
+                case Attributes.Stringent:
+                    return R_j__s.Values;
+
+                case Attributes.Weak:
+                    return R_j__w.Values;
+
+                case Attributes.Background:
+                    return R_j__b.Values;
+
+                default:
+                    return new List<I>();
+            }
         }
 
         /// <summary>

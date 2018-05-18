@@ -145,8 +145,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__s.Sort();
-                    foreach (var item in chr.Value.R_j__s)
+                    foreach (var item in chr.Value.Get(Attributes.Stringent))
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
@@ -168,8 +167,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__w.Sort();
-                    foreach (var item in chr.Value.R_j__w)
+                    foreach (var item in chr.Value.Get(Attributes.Weak))
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +

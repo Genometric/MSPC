@@ -20,16 +20,9 @@ namespace Genometric.MSPC.Model
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
-        private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
-
-        private Dictionary<Attributes, SortedList<int, I>> _setsInit { set; get; }
-
         private Dictionary<Attributes, uint> _stats;
-
-        public ImmutableDictionary<Attributes, uint> Stats
-        {
-            get { return _stats.ToImmutableDictionary(); }
-        }
+        private Dictionary<Attributes, SortedList<int, I>> _setsInit { set; get; }
+        private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 
         public Sets()
         {
@@ -37,33 +30,29 @@ namespace Genometric.MSPC.Model
             foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
                 _stats.Add(att, 0);
 
-            _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>();
-            _sets.Add(Attributes.Confirmed, new Dictionary<ulong, ProcessedPeak<I>>());
-            _sets.Add(Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>());
-            _sets.Add(Attributes.Output, new Dictionary<ulong, ProcessedPeak<I>>());
+            _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>
+            {
+                { Attributes.Confirmed, new Dictionary<ulong, ProcessedPeak<I>>() },
+                { Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>() },
+                { Attributes.Output, new Dictionary<ulong, ProcessedPeak<I>>() }
+            };
 
-            _setsInit = new Dictionary<Attributes, SortedList<int, I>>();
-            _setsInit.Add(Attributes.Stringent, new SortedList<int, I>());
-            _setsInit.Add(Attributes.Weak, new SortedList<int, I>());
-            _setsInit.Add(Attributes.Background, new SortedList<int, I>());
+            _setsInit = new Dictionary<Attributes, SortedList<int, I>>
+            {
+                { Attributes.Stringent, new SortedList<int, I>() },
+                { Attributes.Weak, new SortedList<int, I>() },
+                { Attributes.Background, new SortedList<int, I>() }
+            };
         }
 
         public void Add(I peak, Attributes type)
         {
-            switch (type)
-            {
-                case Attributes.Stringent:
-                    _setsInit[Attributes.Stringent].Add(peak.Left, peak);
-                    break;
+            if (type != Attributes.Stringent && type != Attributes.Weak && type != Attributes.Background)
+                throw new ArgumentException(
+                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
+                    Attributes.Stringent.ToString(), Attributes.Weak.ToString(), Attributes.Background.ToString()));
 
-                case Attributes.Weak:
-                    _setsInit[Attributes.Weak].Add(peak.Left, peak);
-                    break;
-
-                case Attributes.Background:
-                    _setsInit[Attributes.Background].Add(peak.Left, peak);
-                    break;
-            }
+            _setsInit[type].Add(peak.Left, peak);
         }
 
         public void Add(ProcessedPeak<I> peak, Attributes type)
@@ -71,27 +60,24 @@ namespace Genometric.MSPC.Model
             switch (type)
             {
                 case Attributes.Confirmed:
-                    if (!_sets[Attributes.Confirmed].ContainsKey(peak.peak.HashKey))
-                    {
-                        _sets[Attributes.Confirmed].Add(peak.peak.HashKey, peak);
-                        foreach (var att in peak.classification)
-                            _stats[att]++;
-                    }
-                    break;
-
                 case Attributes.Discarded:
-                    if (!_sets[Attributes.Discarded].ContainsKey(peak.peak.HashKey))
+                    if (!_sets[type].ContainsKey(peak.peak.HashKey))
                     {
-                        _sets[Attributes.Discarded].Add(peak.peak.HashKey, peak);
+                        _sets[type].Add(peak.peak.HashKey, peak);
                         foreach (var att in peak.classification)
                             _stats[att]++;
                     }
                     break;
 
                 case Attributes.Output:
-                    if (!_sets[Attributes.Output].ContainsKey(peak.peak.HashKey))
-                        _sets[Attributes.Output].Add(peak.peak.HashKey, peak);
+                    if (!_sets[type].ContainsKey(peak.peak.HashKey))
+                        _sets[type].Add(peak.peak.HashKey, peak);
                     break;
+
+                default:
+                    throw new ArgumentException(
+                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
+                    Attributes.Confirmed.ToString(), Attributes.Discarded.ToString(), Attributes.Output.ToString()));
             }
         }
 
@@ -105,22 +91,25 @@ namespace Genometric.MSPC.Model
             return _sets[attributes];
         }
 
-        public IList<I> GetInitialClassifications(Attributes attribute)
+        public IList<I> GetInitialClassifications(Attributes type)
         {
-            switch (attribute)
+            switch (type)
             {
                 case Attributes.Stringent:
-                    return _setsInit[Attributes.Stringent].Values;
-
                 case Attributes.Weak:
-                    return _setsInit[Attributes.Weak].Values;
-
                 case Attributes.Background:
-                    return _setsInit[Attributes.Background].Values;
+                    return _setsInit[type].Values;
 
                 default:
-                    return new List<I>();
+                    throw new ArgumentException(
+                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
+                    Attributes.Stringent.ToString(), Attributes.Weak.ToString(), Attributes.Background.ToString()));
             }
+        }
+
+        public ImmutableDictionary<Attributes, uint> Stats
+        {
+            get { return _stats.ToImmutableDictionary(); }
         }
 
         internal void SetFalsePositiveCount(uint value)

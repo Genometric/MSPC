@@ -48,6 +48,7 @@ namespace Genometric.MSPC.Model
             _sets = new Dictionary<Attributes[], Dictionary<ulong, ProcessedPeak<I>>>(comparer: new AttributesComparer());
             _sets.Add(new Attributes[] { Attributes.Confirmed }, new Dictionary<ulong, ProcessedPeak<I>>());
             _sets.Add(new Attributes[] { Attributes.Discarded }, new Dictionary<ulong, ProcessedPeak<I>>());
+            _sets.Add(new Attributes[] { Attributes.Output }, new Dictionary<ulong, ProcessedPeak<I>>());
 
             total_scom = 0;
             total_wcom = 0;
@@ -100,7 +101,8 @@ namespace Genometric.MSPC.Model
                     break;
 
                 case Attributes.Output:
-                    R_j__o.Add(peak);
+                    if (!_sets[new Attributes[] { Attributes.Output}].ContainsKey(peak.peak.HashKey))
+                        _sets[new Attributes[] { Attributes.Output }].Add(peak.peak.HashKey, peak);
                     break;
             }
         }

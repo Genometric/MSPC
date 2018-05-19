@@ -38,7 +38,7 @@ namespace Core.Tests.Base
             ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count, res[1].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count }.All(x => x == expected));
         }
 
         [Theory]
@@ -67,7 +67,7 @@ namespace Core.Tests.Base
             ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count, res[1].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count }.All(x => x == expected));
         }
 
         [Theory]
@@ -101,7 +101,7 @@ namespace Core.Tests.Base
             ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count, res[2].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count, res[1].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count, res[2].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count }.All(x => x == expected));
         }
 
         [Theory]
@@ -135,7 +135,7 @@ namespace Core.Tests.Base
             ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count, res[2].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count, res[1].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count, res[2].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count }.All(x => x == expected));
         }
 
         [Theory]
@@ -169,7 +169,7 @@ namespace Core.Tests.Base
             ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].R_j__o.Count, res[1].Chromosomes["chr1"].R_j__o.Count, res[2].Chromosomes["chr1"].R_j__o.Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count, res[1].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count, res[2].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count }.All(x => x == expected));
         }
 
         [Fact]
@@ -201,7 +201,7 @@ namespace Core.Tests.Base
             ///    rep.Value.ReadOverallStats();
 
             // Assert
-            Assert.True(res[0].Chromosomes["chr1"].R_j__o.Count == 0);
+            Assert.True(res[0].Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count == 0);
         }
     }
 }

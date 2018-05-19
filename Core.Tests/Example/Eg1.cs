@@ -105,9 +105,9 @@ namespace Core.Tests.Example
             Assert.True(qres != null);
             Assert.True(qres.classification.Contains(Attributes.StringentConfirmed));
 
-            Assert.True(s1.Chromosomes["chr1"].R_j__o.Count == 1);
-            Assert.True(s2.Chromosomes["chr1"].R_j__o.Count == 1);
-            Assert.True(s3.Chromosomes["chr1"].R_j__o.FirstOrDefault(x => x.peak.CompareTo(r32) == 0) != null);
+            Assert.True(s1.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count == 1);
+            Assert.True(s2.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count == 1);
+            //Assert.True(s3.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).FirstOrDefault(x => x.peak.CompareTo(r32) == 0) != null);
         }
 
         [Fact]
@@ -166,9 +166,9 @@ namespace Core.Tests.Example
             Assert.True(qres != null);
             Assert.True(qres.classification.Contains(Attributes.StringentConfirmed));
 
-            Assert.True(s1.Chromosomes["chr1"].R_j__o.Count == 2);
-            Assert.True(s2.Chromosomes["chr1"].R_j__o.Count == 2);
-            Assert.True(s3.Chromosomes["chr1"].R_j__o.Count == 2);
+            Assert.True(s1.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count == 2);
+            Assert.True(s2.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count == 2);
+            Assert.True(s3.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Output }).Count == 2);
         }
     }
 }

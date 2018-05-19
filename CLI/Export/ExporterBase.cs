@@ -38,19 +38,18 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__o.Sort();
-                    foreach (var item in chr.Value.R_j__o)
+                    foreach (var item in chr.Value.Get(new Attributes[] { Attributes.Output }))
                     {
-                        if (item.statisticalClassification == Attributes.TruePositive)
+                        if (item.Value.statisticalClassification == Attributes.TruePositive)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.peak.Left.ToString() + "\t" +
-                                item.peak.Right.ToString() + "\t" +
-                                item.peak.Name + "\t" +
-                                ConvertPValue(item.peak.Value) + "\t" +
-                                Math.Round(item.xSquared, 3) + "\t" +
-                                ConvertPValue(item.rtp));
+                                item.Value.peak.Left.ToString() + "\t" +
+                                item.Value.peak.Right.ToString() + "\t" +
+                                item.Value.peak.Name + "\t" +
+                                ConvertPValue(item.Value.peak.Value) + "\t" +
+                                Math.Round(item.Value.xSquared, 3) + "\t" +
+                                ConvertPValue(item.Value.rtp));
                         }
                     }
                 }
@@ -64,19 +63,18 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__o.Sort();
-                    foreach (var item in chr.Value.R_j__o)
+                    foreach (var item in chr.Value.Get(new Attributes[] { Attributes.Output }))
                     {
-                        if (item.statisticalClassification == Attributes.TruePositive && item.classification.Contains(Attributes.StringentConfirmed))
+                        if (item.Value.statisticalClassification == Attributes.TruePositive && item.Value.classification.Contains(Attributes.StringentConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.peak.Left.ToString() + "\t" +
-                                item.peak.Right.ToString() + "\t" +
-                                item.peak.Name + "\t" +
-                                ConvertPValue(item.peak.Value) + "\t" +
-                                Math.Round(item.xSquared, 3) + "\t" +
-                                ConvertPValue(item.rtp));
+                                item.Value.peak.Left.ToString() + "\t" +
+                                item.Value.peak.Right.ToString() + "\t" +
+                                item.Value.peak.Name + "\t" +
+                                ConvertPValue(item.Value.peak.Value) + "\t" +
+                                Math.Round(item.Value.xSquared, 3) + "\t" +
+                                ConvertPValue(item.Value.rtp));
                         }
                     }
                 }
@@ -90,19 +88,18 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__o.Sort();
-                    foreach (var item in chr.Value.R_j__o)
+                    foreach (var item in chr.Value.Get(new Attributes[] { Attributes.Output }))
                     {
-                        if (item.statisticalClassification == Attributes.TruePositive && item.classification.Contains(Attributes.WeakConfirmed))
+                        if (item.Value.statisticalClassification == Attributes.TruePositive && item.Value.classification.Contains(Attributes.WeakConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.peak.Left.ToString() + "\t" +
-                                item.peak.Right.ToString() + "\t" +
-                                item.peak.Name + "\t" +
-                                ConvertPValue(item.peak.Value) + "\t" +
-                                Math.Round(item.xSquared, 3) + "\t" +
-                                ConvertPValue(item.rtp));
+                                item.Value.peak.Left.ToString() + "\t" +
+                                item.Value.peak.Right.ToString() + "\t" +
+                                item.Value.peak.Name + "\t" +
+                                ConvertPValue(item.Value.peak.Value) + "\t" +
+                                Math.Round(item.Value.xSquared, 3) + "\t" +
+                                ConvertPValue(item.Value.rtp));
                         }
                     }
                 }
@@ -117,19 +114,18 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__o.Sort();
-                    foreach (var item in chr.Value.R_j__o)
+                    foreach (var item in chr.Value.Get(new Attributes[] { Attributes.Output }))
                     {
-                        if (item.statisticalClassification == Attributes.FalsePositive)
+                        if (item.Value.statisticalClassification == Attributes.FalsePositive)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.peak.Left.ToString() + "\t" +
-                                item.peak.Right.ToString() + "\t" +
-                                item.peak.Name + "\t" +
-                                ConvertPValue(item.peak.Value) + "\t" +
-                                Math.Round(item.xSquared, 3) + "\t" +
-                                ConvertPValue(item.rtp));
+                                item.Value.peak.Left.ToString() + "\t" +
+                                item.Value.peak.Right.ToString() + "\t" +
+                                item.Value.peak.Name + "\t" +
+                                ConvertPValue(item.Value.peak.Value) + "\t" +
+                                Math.Round(item.Value.xSquared, 3) + "\t" +
+                                ConvertPValue(item.Value.rtp));
                         }
                     }
                 }

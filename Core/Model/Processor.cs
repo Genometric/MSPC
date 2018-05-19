@@ -454,14 +454,14 @@ namespace Genometric.MSPC.Model
         /// </summary>
         private void PerformMultipleTestingCorrection()
         {
-            foreach(var result in _analysisResults)
+            foreach (var result in _analysisResults)
             {
-                foreach(var chr in result.Value.Chromosomes)
+                foreach (var chr in result.Value.Chromosomes)
                 {
-                    chr.Value.SetTruePositiveCount((uint)chr.Value.R_j__o.Count);
+                    chr.Value.SetTruePositiveCount((uint)chr.Value.Get(new Attributes[] { Attributes.Output }).Count);
                     chr.Value.SetFalsePositiveCount(0);
-                    var outputSet = chr.Value.R_j__o;
-                    int m = outputSet.Count();
+                    var outputSet = chr.Value.Get(new Attributes[] { Attributes.Output }).Values.ToList();
+                    int m = outputSet.Count;
 
                     // Sorts output set based on the values of peaks. 
                     outputSet.Sort(new Comparers.CompareProcessedPeakByValue<I>());
@@ -505,9 +505,9 @@ namespace Genometric.MSPC.Model
                     if (!_mergedReplicates.ContainsKey(chr.Key))
                         _mergedReplicates.Add(chr.Key, new SortedList<I, I>());
 
-                    foreach (var outputER in chr.Value.R_j__o)
+                    foreach (var outputER in chr.Value.Get(new Attributes[] { Attributes.Output }))
                     {
-                        var peak = outputER.peak;
+                        var peak = outputER.Value.peak;
                         var interval = new I();
                         interval.Left = peak.Left;
                         interval.Right = peak.Right;

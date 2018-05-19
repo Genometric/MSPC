@@ -11,7 +11,8 @@ namespace Genometric.MSPC.Core.Model
     {
         public ProcessedPeak()
         {
-            statisticalClassification = PeakClassificationType.TruePositive;
+            statisticalClassification = Attributes.TruePositive;
+            classification = new HashSet<Attributes>();
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Sets and gets classification type. 
         /// </summary>
-        public PeakClassificationType classification { set; get; }
+        public HashSet<Attributes> classification { set; get; }
 
         /// <summary>
         /// Sets and gets adjusted p-value using the multiple testing correction method of choice.
@@ -54,7 +55,7 @@ namespace Genometric.MSPC.Core.Model
         /// Set and gets whether the peaks is identified as false-positive or true-positive 
         /// based on multiple testing correction threshold. 
         /// </summary>
-        public PeakClassificationType statisticalClassification { set; get; }
+        public Attributes statisticalClassification { set; get; }
 
         /// <summary>
         /// Contains different classification types.

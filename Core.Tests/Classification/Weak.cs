@@ -48,7 +48,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].R_j__w.Count == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Weak).Count == 1);
         }
     }
 }

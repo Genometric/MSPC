@@ -38,10 +38,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__o.Sort();
-                    foreach (var item in chr.Value.R_j__o)
+                    foreach (var item in chr.Value.Get(Attributes.Output))
                     {
-                        if (item.statisticalClassification == PeakClassificationType.TruePositive)
+                        if (item.statisticalClassification == Attributes.TruePositive)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -64,10 +63,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__o.Sort();
-                    foreach (var item in chr.Value.R_j__o)
+                    foreach (var item in chr.Value.Get(Attributes.Output))
                     {
-                        if (item.statisticalClassification == PeakClassificationType.TruePositive && item.classification == PeakClassificationType.StringentConfirmed)
+                        if (item.statisticalClassification == Attributes.TruePositive && item.classification.Contains(Attributes.StringentConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -90,10 +88,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__o.Sort();
-                    foreach (var item in chr.Value.R_j__o)
+                    foreach (var item in chr.Value.Get(Attributes.Output))
                     {
-                        if (item.statisticalClassification == PeakClassificationType.TruePositive && item.classification == PeakClassificationType.WeakConfirmed)
+                        if (item.statisticalClassification == Attributes.TruePositive && item.classification.Contains(Attributes.WeakConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -117,10 +114,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__o.Sort();
-                    foreach (var item in chr.Value.R_j__o)
+                    foreach (var item in chr.Value.Get(Attributes.Output))
                     {
-                        if (item.statisticalClassification == PeakClassificationType.FalsePositive)
+                        if (item.statisticalClassification == Attributes.FalsePositive)
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -145,8 +141,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__s.Sort();
-                    foreach (var item in chr.Value.R_j__s)
+                    foreach (var item in chr.Value.GetInitialClassifications(Attributes.Stringent))
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
@@ -168,8 +163,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    chr.Value.R_j__w.Sort();
-                    foreach (var item in chr.Value.R_j__w)
+                    foreach (var item in chr.Value.GetInitialClassifications(Attributes.Weak))
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
@@ -191,18 +185,18 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.Get(Attributes.Confirmed) orderby entry ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
-                            item.Value.peak.Left.ToString() + "\t" +
-                            item.Value.peak.Right.ToString() + "\t" +
-                            item.Value.peak.Name + "\t" +
-                            ConvertPValue(item.Value.peak.Value) + "\t" +
-                            Math.Round(item.Value.xSquared, 3) + "\t" +
-                            ConvertPValue(item.Value.rtp));
+                            item.peak.Left.ToString() + "\t" +
+                            item.peak.Right.ToString() + "\t" +
+                            item.peak.Name + "\t" +
+                            ConvertPValue(item.peak.Value) + "\t" +
+                            Math.Round(item.xSquared, 3) + "\t" +
+                            ConvertPValue(item.rtp));
                     }
                 }
             }
@@ -215,20 +209,20 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.Get(Attributes.Confirmed) orderby entry ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Value.classification == PeakClassificationType.StringentConfirmed)
+                        if (item.classification.Contains(Attributes.StringentConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Value.peak.Left.ToString() + "\t" +
-                                item.Value.peak.Right.ToString() + "\t" +
-                                item.Value.peak.Name + "\t" +
-                                ConvertPValue(item.Value.peak.Value) + "\t" +
-                                Math.Round(item.Value.xSquared, 3) + "\t" +
-                                ConvertPValue(item.Value.rtp));
+                                item.peak.Left.ToString() + "\t" +
+                                item.peak.Right.ToString() + "\t" +
+                                item.peak.Name + "\t" +
+                                ConvertPValue(item.peak.Value) + "\t" +
+                                Math.Round(item.xSquared, 3) + "\t" +
+                                ConvertPValue(item.rtp));
                         }
                     }
                 }
@@ -242,20 +236,20 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value.R_j__c orderby entry.Value ascending select entry;
+                    var sortedDictionary = from entry in chr.Value.Get(Attributes.Confirmed) orderby entry ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Value.classification == PeakClassificationType.WeakConfirmed)
+                        if (item.classification.Contains(Attributes.WeakConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Value.peak.Left.ToString() + "\t" +
-                                item.Value.peak.Right.ToString() + "\t" +
-                                item.Value.peak.Name + "\t" +
-                                ConvertPValue(item.Value.peak.Value) + "\t" +
-                                Math.Round(item.Value.xSquared, 3) + "\t" +
-                                ConvertPValue(item.Value.rtp));
+                                item.peak.Left.ToString() + "\t" +
+                                item.peak.Right.ToString() + "\t" +
+                                item.peak.Name + "\t" +
+                                ConvertPValue(item.peak.Value) + "\t" +
+                                Math.Round(item.xSquared, 3) + "\t" +
+                                ConvertPValue(item.rtp));
                         }
                     }
                 }
@@ -271,15 +265,15 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.R_j__d)
+                    foreach (var item in chr.Value.Get(Attributes.Discarded))
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
-                            item.Value.peak.Left.ToString() + "\t" +
-                            item.Value.peak.Right.ToString() + "\t" +
-                            item.Value.peak.Name + "\t" +
-                            ConvertPValue(item.Value.peak.Value) + "\t" +
-                            Math.Round(item.Value.xSquared, 3));
+                            item.peak.Left.ToString() + "\t" +
+                            item.peak.Right.ToString() + "\t" +
+                            item.peak.Name + "\t" +
+                            ConvertPValue(item.peak.Value) + "\t" +
+                            Math.Round(item.xSquared, 3));
                     }
                 }
             }
@@ -292,17 +286,17 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.R_j__d)
+                    foreach (var item in chr.Value.Get(Attributes.Discarded))
                     {
-                        if (item.Value.classification == PeakClassificationType.StringentDiscarded)
+                        if (item.classification.Contains(Attributes.StringentDiscarded))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Value.peak.Left.ToString() + "\t" +
-                                item.Value.peak.Right.ToString() + "\t" +
-                                item.Value.peak.Name + "\t" +
-                                ConvertPValue(item.Value.peak.Value) + "\t" +
-                                Math.Round(item.Value.xSquared, 3));
+                                item.peak.Left.ToString() + "\t" +
+                                item.peak.Right.ToString() + "\t" +
+                                item.peak.Name + "\t" +
+                                ConvertPValue(item.peak.Value) + "\t" +
+                                Math.Round(item.xSquared, 3));
                         }
                     }
                 }
@@ -316,17 +310,17 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.R_j__d)
+                    foreach (var item in chr.Value.Get(Attributes.Discarded))
                     {
-                        if (item.Value.classification == PeakClassificationType.WeakDiscarded)
+                        if (item.classification.Contains(Attributes.WeakDiscarded))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Value.peak.Left.ToString() + "\t" +
-                                item.Value.peak.Right.ToString() + "\t" +
-                                item.Value.peak.Name + "\t" +
-                                ConvertPValue(item.Value.peak.Value) + "\t" +
-                                Math.Round(item.Value.xSquared, 3));
+                                item.peak.Left.ToString() + "\t" +
+                                item.peak.Right.ToString() + "\t" +
+                                item.peak.Name + "\t" +
+                                ConvertPValue(item.peak.Value) + "\t" +
+                                Math.Round(item.xSquared, 3));
                         }
                     }
                 }

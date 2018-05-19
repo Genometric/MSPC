@@ -8,145 +8,118 @@
  * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
  **/
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 
 namespace Genometric.MSPC.Model
 {
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
-        private Dictionary<PeakClassificationType, uint> _stats;
+        private readonly Dictionary<Attributes, uint> _stats;
+        private Dictionary<Attributes, SortedList<int, I>> _setsInit { set; get; }
+        private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 
-        // TODO: this function should be replaced by a public property exposing stats as a read-only collection.
-        public uint Stats(PeakClassificationType attribute)
+        public Sets()
         {
-            return _stats[attribute];
+            _stats = new Dictionary<Attributes, uint>();
+            foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
+                _stats.Add(att, 0);
+
+            _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>
+            {
+                { Attributes.Confirmed, new Dictionary<ulong, ProcessedPeak<I>>() },
+                { Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>() },
+                { Attributes.Output, new Dictionary<ulong, ProcessedPeak<I>>() }
+            };
+
+            _setsInit = new Dictionary<Attributes, SortedList<int, I>>
+            {
+                { Attributes.Stringent, new SortedList<int, I>() },
+                { Attributes.Weak, new SortedList<int, I>() },
+                { Attributes.Background, new SortedList<int, I>() }
+            };
+        }
+
+        public void Add(I peak, Attributes type)
+        {
+            if (type != Attributes.Stringent && type != Attributes.Weak && type != Attributes.Background)
+                throw new ArgumentException(
+                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
+                    Attributes.Stringent.ToString(), Attributes.Weak.ToString(), Attributes.Background.ToString()));
+
+            _setsInit[type].Add(peak.Left, peak);
+        }
+
+        public void Add(ProcessedPeak<I> peak, Attributes type)
+        {
+            switch (type)
+            {
+                case Attributes.Confirmed:
+                case Attributes.Discarded:
+                    if (!_sets[type].ContainsKey(peak.peak.HashKey))
+                    {
+                        _sets[type].Add(peak.peak.HashKey, peak);
+                        foreach (var att in peak.classification)
+                            _stats[att]++;
+                    }
+                    break;
+
+                case Attributes.Output:
+                    if (!_sets[type].ContainsKey(peak.peak.HashKey))
+                        _sets[type].Add(peak.peak.HashKey, peak);
+                    break;
+
+                default:
+                    throw new ArgumentException(
+                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
+                    Attributes.Confirmed.ToString(), Attributes.Discarded.ToString(), Attributes.Output.ToString()));
+            }
+        }
+
+        public List<ProcessedPeak<I>> Get(Attributes attributes)
+        {
+            return _sets[attributes].Values.ToList();
+        }
+
+        public Dictionary<UInt64, ProcessedPeak<I>> GetDict(Attributes attributes)
+        {
+            return _sets[attributes];
+        }
+
+        public IList<I> GetInitialClassifications(Attributes type)
+        {
+            switch (type)
+            {
+                case Attributes.Stringent:
+                case Attributes.Weak:
+                case Attributes.Background:
+                    return _setsInit[type].Values;
+
+                default:
+                    throw new ArgumentException(
+                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
+                    Attributes.Stringent.ToString(), Attributes.Weak.ToString(), Attributes.Background.ToString()));
+            }
+        }
+
+        public ImmutableDictionary<Attributes, uint> Stats
+        {
+            get { return _stats.ToImmutableDictionary(); }
         }
 
         internal void SetFalsePositiveCount(uint value)
         {
-            _stats[PeakClassificationType.FalsePositive] = value;
+            _stats[Attributes.FalsePositive] = value;
         }
 
         internal void SetTruePositiveCount(uint value)
         {
-            _stats[PeakClassificationType.TruePositive] = value;
+            _stats[Attributes.TruePositive] = value;
         }
-
-        public Sets()
-        {
-            _stats = new Dictionary<PeakClassificationType, uint>();
-            foreach (var att in Enum.GetValues(typeof(PeakClassificationType)).Cast<PeakClassificationType>())
-                _stats.Add(att, 0);
-
-            total_scom = 0;
-            total_wcom = 0;
-
-            R_j__s = new List<I>();
-            R_j__w = new List<I>();
-            R_j__b = new List<I>();
-
-            R_j__c = new Dictionary<UInt64, ProcessedPeak<I>>();
-            R_j__d = new Dictionary<UInt64, ProcessedPeak<I>>();
-            R_j__o = new List<ProcessedPeak<I>>();
-        }
-
-        public void Add(I peak, PeakClassificationType type)
-        {
-            switch (type)
-            {
-                case PeakClassificationType.Stringent:
-                    R_j__s.Add(peak);
-                    break;
-
-                case PeakClassificationType.Weak:
-                    R_j__w.Add(peak);
-                    break;
-
-                case PeakClassificationType.Background:
-                    R_j__b.Add(peak);
-                    break;
-            }
-        }
-
-        public void Add(ProcessedPeak<I> peak, PeakClassificationType type)
-        {
-            switch (type)
-            {
-                case PeakClassificationType.Confirmed:
-                    if (!R_j__c.ContainsKey(peak.peak.HashKey))
-                    {
-                        R_j__c.Add(peak.peak.HashKey, peak);
-                        _stats[peak.classification]++;
-                    }
-                    break;
-
-                case PeakClassificationType.Discarded:
-                    if (!R_j__d.ContainsKey(peak.peak.HashKey))
-                    {
-                        R_j__d.Add(peak.peak.HashKey, peak);
-                        _stats[peak.classification]++;
-                    }
-                    break;
-
-                case PeakClassificationType.Output:
-                    R_j__o.Add(peak);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Chromosome-wide stringent peaks of sample j
-        /// </summary>
-        public List<I> R_j__s { set; get; }
-
-        /// <summary>
-        /// Chromosome-wide weak peaks of sample j
-        /// </summary>
-        public List<I> R_j__w { set; get; }
-
-        /// <summary>
-        /// Chromosome-wide background peaks of sample j (i.e., the peaks with p-value > T_w ).
-        /// </summary>
-        public List<I> R_j__b { set; get; }
-
-
-
-        /// <summary>
-        /// Chromosome-wide Confirmed peaks of sample j (i.e., the peaks that passed both intersecting
-        /// peaks count threshold and X-squared test).
-        /// </summary>
-        public Dictionary<UInt64, ProcessedPeak<I>> R_j__c { set; get; }
-
-        /// <summary>
-        /// Chromosome-wide Discarded peaks of sample j (i.e., the peaks that either failed intersecting
-        /// peaks count threshold or X-squared test).
-        /// </summary>
-        public Dictionary<UInt64, ProcessedPeak<I>> R_j__d { set; get; }
-
-        /// <summary>
-        /// Chromosome-wide set of peaks as the result of the algorithm. The peaks of this set passed
-        /// three tests (i.e., intersecting peaks count, X-squared test, and benjamini-hochberg
-        /// multiple testing correction).
-        /// </summary>
-        public List<ProcessedPeak<I>> R_j__o { set; get; }
-
-
-
-        /// <summary>
-        /// Total number of stringent peaks that are both validated and discarded
-        /// through multiple tests.
-        /// </summary>
-        public UInt32 total_scom { set; get; }
-        /// <summary>
-        /// Total number of weak peaks that are both validated and discarded
-        /// through multiple tests.
-        /// </summary>
-        public UInt32 total_wcom { set; get; }
     }
 }

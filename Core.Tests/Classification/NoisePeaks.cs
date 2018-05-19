@@ -46,7 +46,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].R_j__b.Count == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Background).Count == 1);
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].R_j__d.Count == 0);
+                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Discarded).Count == 0);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].R_j__c.Count == 0);
+                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0);
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].R_j__o.Count == 0);
+                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Output).Count == 0);
         }
 
         // TODO check for all the other sets.

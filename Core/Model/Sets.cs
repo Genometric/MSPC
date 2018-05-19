@@ -1,6 +1,4 @@
-﻿using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Core.Model;
-/** Copyright © 2014-2015 Vahid Jalili
+﻿/** Copyright © 2014-2015 Vahid Jalili
  * 
  * This file is part of MSPC project.
  * MSPC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
@@ -10,6 +8,8 @@ using Genometric.MSPC.Core.Model;
  * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
  **/
 
+using Genometric.GeUtilities.IGenomics;
+using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -20,7 +20,7 @@ namespace Genometric.MSPC.Model
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
-        private Dictionary<Attributes, uint> _stats;
+        private readonly Dictionary<Attributes, uint> _stats;
         private Dictionary<Attributes, SortedList<int, I>> _setsInit { set; get; }
         private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 

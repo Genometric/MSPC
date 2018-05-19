@@ -48,7 +48,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Stringent).Count == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Stringent).Count == 1);
         }
     }
 }

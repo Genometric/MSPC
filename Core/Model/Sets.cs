@@ -20,7 +20,7 @@ namespace Genometric.MSPC.Model
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
-        private Dictionary<Attributes[], Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
+        private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 
         private Dictionary<Attributes, uint> _stats;
 
@@ -45,10 +45,10 @@ namespace Genometric.MSPC.Model
             foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
                 _stats.Add(att, 0);
 
-            _sets = new Dictionary<Attributes[], Dictionary<ulong, ProcessedPeak<I>>>(comparer: new AttributesComparer());
-            _sets.Add(new Attributes[] { Attributes.Confirmed }, new Dictionary<ulong, ProcessedPeak<I>>());
-            _sets.Add(new Attributes[] { Attributes.Discarded }, new Dictionary<ulong, ProcessedPeak<I>>());
-            _sets.Add(new Attributes[] { Attributes.Output }, new Dictionary<ulong, ProcessedPeak<I>>());
+            _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>();
+            _sets.Add( Attributes.Confirmed , new Dictionary<ulong, ProcessedPeak<I>>());
+            _sets.Add( Attributes.Discarded , new Dictionary<ulong, ProcessedPeak<I>>());
+            _sets.Add(Attributes.Output, new Dictionary<ulong, ProcessedPeak<I>>());
 
             R_j__s = new SortedList<int, I>();
             R_j__w = new SortedList<int, I>();
@@ -78,26 +78,26 @@ namespace Genometric.MSPC.Model
             switch (type)
             {
                 case Attributes.Confirmed:
-                    if (!_sets[new Attributes[] { Attributes.Confirmed }].ContainsKey(peak.peak.HashKey))
+                    if (!_sets[Attributes.Confirmed].ContainsKey(peak.peak.HashKey))
                     {
-                        _sets[new Attributes[] { Attributes.Confirmed }].Add(peak.peak.HashKey, peak);
+                        _sets[Attributes.Confirmed].Add(peak.peak.HashKey, peak);
                         foreach (var att in peak.classification)
                             _stats[att]++;
                     }
                     break;
 
                 case Attributes.Discarded:
-                    if (!_sets[new Attributes[] { Attributes.Discarded }].ContainsKey(peak.peak.HashKey))
+                    if (!_sets[Attributes.Discarded].ContainsKey(peak.peak.HashKey))
                     {
-                        _sets[new Attributes[] { Attributes.Discarded }].Add(peak.peak.HashKey, peak);
+                        _sets[Attributes.Discarded].Add(peak.peak.HashKey, peak);
                         foreach (var att in peak.classification)
                             _stats[att]++;
                     }
                     break;
 
                 case Attributes.Output:
-                    if (!_sets[new Attributes[] { Attributes.Output}].ContainsKey(peak.peak.HashKey))
-                        _sets[new Attributes[] { Attributes.Output }].Add(peak.peak.HashKey, peak);
+                    if (!_sets[Attributes.Output].ContainsKey(peak.peak.HashKey))
+                        _sets[Attributes.Output].Add(peak.peak.HashKey, peak);
                     break;
             }
         }
@@ -117,12 +117,17 @@ namespace Genometric.MSPC.Model
         /// </summary>
         private SortedList<int, I> R_j__b { set; get; }
 
-        public Dictionary<UInt64, ProcessedPeak<I>> Get(Attributes[] attributes)
+        public List<ProcessedPeak<I>> Get(Attributes attributes)
+        {
+            return _sets[attributes].Values.ToList();
+        }
+
+        public Dictionary<UInt64, ProcessedPeak<I>> GetDict(Attributes attributes)
         {
             return _sets[attributes];
         }
 
-        public IList<I> Get(Attributes attribute)
+        public IList<I> GetInitialClassifications(Attributes attribute)
         {
             switch (attribute)
             {

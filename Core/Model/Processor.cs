@@ -172,7 +172,7 @@ namespace Genometric.MSPC.Model
         private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)
         {
             var supportingPeaks = new List<SupportingPeak<I>>();
-            foreach(var tree in _trees)
+            foreach (var tree in _trees)
             {
                 if (tree.Key == id)
                     continue;
@@ -236,7 +236,7 @@ namespace Genometric.MSPC.Model
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].Get(new Attributes[] { Attributes.Confirmed }).ContainsKey(supPeak.peak.HashKey))
+                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].GetDict(Attributes.Confirmed).ContainsKey(supPeak.peak.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.sampleID];
@@ -305,7 +305,7 @@ namespace Genometric.MSPC.Model
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].Get(new Attributes[] { Attributes.Discarded }).ContainsKey(supPeak.peak.HashKey))
+                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].GetDict(Attributes.Discarded).ContainsKey(supPeak.peak.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.sampleID];
@@ -371,15 +371,15 @@ namespace Genometric.MSPC.Model
             {
                 // Performe : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
 
-                foreach(var result in _analysisResults)
+                foreach (var result in _analysisResults)
                 {
-                    foreach(var chr in result.Value.Chromosomes)
+                    foreach (var chr in result.Value.Chromosomes)
                     {
-                        foreach (var confirmedPeak in chr.Value.Get(new Attributes[] { Attributes.Confirmed }))
+                        foreach (var confirmedPeak in chr.Value.GetDict(Attributes.Confirmed))
                         {
-                            if(chr.Value.Get(new Attributes[] { Attributes.Discarded }).ContainsKey(confirmedPeak.Key))
+                            if (chr.Value.GetDict(Attributes.Discarded).ContainsKey(confirmedPeak.Key))
                             {
-                                chr.Value.Get(new Attributes[] { Attributes.Discarded }).Remove(confirmedPeak.Key);
+                                chr.Value.GetDict(Attributes.Discarded).Remove(confirmedPeak.Key);
                             }
                         }
                     }
@@ -389,15 +389,15 @@ namespace Genometric.MSPC.Model
             {
                 // Performe : R_j__c = R_j__c \ { R_j__c intersection R_j__d }
 
-                foreach(var result in _analysisResults)
+                foreach (var result in _analysisResults)
                 {
-                    foreach(var chr in result.Value.Chromosomes)
+                    foreach (var chr in result.Value.Chromosomes)
                     {
-                        foreach (var discardedPeak in chr.Value.Get(new Attributes[] { Attributes.Discarded }))
+                        foreach (var discardedPeak in chr.Value.GetDict(Attributes.Discarded))
                         {
-                            if (chr.Value.Get(new Attributes[] { Attributes.Confirmed }).ContainsKey(discardedPeak.Key))
+                            if (chr.Value.GetDict(Attributes.Confirmed).ContainsKey(discardedPeak.Key))
                             {
-                                chr.Value.Get(new Attributes[] { Attributes.Confirmed }).Remove(discardedPeak.Key);
+                                chr.Value.GetDict(Attributes.Confirmed).Remove(discardedPeak.Key);
                             }
                         }
                     }
@@ -407,27 +407,27 @@ namespace Genometric.MSPC.Model
 
         private void CreateOuputSet()
         {
-            foreach(var result in _analysisResults)
+            foreach (var result in _analysisResults)
             {
-                foreach(var chr in result.Value.Chromosomes)
+                foreach (var chr in result.Value.Chromosomes)
                 {
-                    foreach (var confirmedPeak in chr.Value.Get(new Attributes[] { Attributes.Confirmed }))
+                    foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
                         var outputPeak = new ProcessedPeak<I>()
                         {
-                            peak = confirmedPeak.Value.peak,
-                            rtp = confirmedPeak.Value.rtp,
-                            xSquared = confirmedPeak.Value.xSquared,
-                            supportingPeaks = confirmedPeak.Value.supportingPeaks,
+                            peak = confirmedPeak.peak,
+                            rtp = confirmedPeak.rtp,
+                            xSquared = confirmedPeak.xSquared,
+                            supportingPeaks = confirmedPeak.supportingPeaks,
                         };
                         outputPeak.classification.Add(Attributes.TruePositive);
 
-                        if (confirmedPeak.Value.peak.Value <= _config.TauS)
+                        if (confirmedPeak.peak.Value <= _config.TauS)
                         {
                             outputPeak.classification.Add(Attributes.StringentConfirmed);
                             /// result.Value.R_j___so[chr.Key]++;
                         }
-                        else if (confirmedPeak.Value.peak.Value <= _config.TauW)
+                        else if (confirmedPeak.peak.Value <= _config.TauW)
                         {
                             outputPeak.classification.Add(Attributes.WeakConfirmed);
                             /// result.Value.R_j___wo[chr.Key]++;
@@ -448,9 +448,9 @@ namespace Genometric.MSPC.Model
             {
                 foreach (var chr in result.Value.Chromosomes)
                 {
-                    chr.Value.SetTruePositiveCount((uint)chr.Value.Get(new Attributes[] { Attributes.Output }).Count);
+                    chr.Value.SetTruePositiveCount((uint)chr.Value.Get(Attributes.Output).Count);
                     chr.Value.SetFalsePositiveCount(0);
-                    var outputSet = chr.Value.Get(new Attributes[] { Attributes.Output }).Values.ToList();
+                    var outputSet = chr.Value.Get(Attributes.Output);
                     int m = outputSet.Count;
 
                     // Sorts output set based on the values of peaks. 
@@ -495,9 +495,9 @@ namespace Genometric.MSPC.Model
                     if (!_mergedReplicates.ContainsKey(chr.Key))
                         _mergedReplicates.Add(chr.Key, new SortedList<I, I>());
 
-                    foreach (var outputER in chr.Value.Get(new Attributes[] { Attributes.Output }))
+                    foreach (var outputER in chr.Value.Get(Attributes.Output))
                     {
-                        var peak = outputER.Value.peak;
+                        var peak = outputER.peak;
                         var interval = new I();
                         interval.Left = peak.Left;
                         interval.Right = peak.Right;
@@ -523,7 +523,7 @@ namespace Genometric.MSPC.Model
 
                         if (mergingPeak.Value >= Math.Abs(Config.defaultMaxLogOfPVvalue))
                             mergingPeak.Value = Math.Abs(Config.defaultMaxLogOfPVvalue);
-                        
+
                         _mergedReplicates[chr.Key].Add(interval, mergingPeak);
                     }
                 }

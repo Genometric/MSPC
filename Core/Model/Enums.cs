@@ -35,42 +35,6 @@ namespace Genometric.MSPC.Model
         Discarded = 16
     };
 
-    public class AttributesComparer : IEqualityComparer<Attributes[]>
-    {
-        public int Compare(Attributes[] x, Attributes[] y)
-        {
-            if (ReferenceEquals(x, y)) return 0;
-            if (x == null) return -1;
-            if (y == null) return 1;
-            int c = x.Length.CompareTo(y.Length);
-            if (c != 0) return c;
-            for (int i = 0; i < x.Length; i++)
-            {
-                c = x[i].CompareTo(y[i]);
-                if (c != 0) return c;
-            }
-            return 0;
-        }
-
-        public bool Equals(Attributes[] x, Attributes[] y)
-        {
-            return Enumerable.SequenceEqual(x, y);
-        }
-
-        public int GetHashCode(Attributes[] obj)
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hash = 17;
-                // Suitable nullity checks etc, of course :)
-                hash = hash * 23 + obj.Length.GetHashCode();
-                foreach (var att in obj)
-                    hash = hash * 23 + att.GetHashCode();
-                return hash;
-            }
-        }
-    }
-
     public enum MultipleIntersections : byte
     {
         UseLowestPValue = 0,

@@ -56,10 +56,10 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Confirmed }).Count == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 1);
             foreach (var s in res)
-                foreach (var p in s.Value.Chromosomes["chr1"].Get(new Attributes[] { Attributes.Confirmed }))
-                    Assert.True(p.Value.classification.Contains(Attributes.WeakConfirmed));
+                foreach (var p in s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed))
+                    Assert.True(p.classification.Contains(Attributes.WeakConfirmed));
         }
     }
 }

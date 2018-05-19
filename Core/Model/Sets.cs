@@ -56,8 +56,6 @@ namespace Genometric.MSPC.Model
             R_j__s = new SortedList<int, I>();
             R_j__w = new SortedList<int, I>();
             R_j__b = new SortedList<int, I>();
-
-            R_j__o = new List<ProcessedPeak<I>>();
         }
 
         public void Add(I peak, Attributes type)
@@ -144,13 +142,6 @@ namespace Genometric.MSPC.Model
                     return new List<I>();
             }
         }
-
-        /// <summary>
-        /// Chromosome-wide set of peaks as the result of the algorithm. The peaks of this set passed
-        /// three tests (i.e., intersecting peaks count, X-squared test, and benjamini-hochberg
-        /// multiple testing correction).
-        /// </summary>
-        public List<ProcessedPeak<I>> R_j__o { set; get; }
 
         /// <summary>
         /// Total number of stringent peaks that are both validated and discarded

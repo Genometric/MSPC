@@ -50,9 +50,6 @@ namespace Genometric.MSPC.Model
             _sets.Add(new Attributes[] { Attributes.Discarded }, new Dictionary<ulong, ProcessedPeak<I>>());
             _sets.Add(new Attributes[] { Attributes.Output }, new Dictionary<ulong, ProcessedPeak<I>>());
 
-            total_scom = 0;
-            total_wcom = 0;
-
             R_j__s = new SortedList<int, I>();
             R_j__w = new SortedList<int, I>();
             R_j__b = new SortedList<int, I>();
@@ -142,16 +139,5 @@ namespace Genometric.MSPC.Model
                     return new List<I>();
             }
         }
-
-        /// <summary>
-        /// Total number of stringent peaks that are both validated and discarded
-        /// through multiple tests.
-        /// </summary>
-        public UInt32 total_scom { set; get; }
-        /// <summary>
-        /// Total number of weak peaks that are both validated and discarded
-        /// through multiple tests.
-        /// </summary>
-        public UInt32 total_wcom { set; get; }
     }
 }

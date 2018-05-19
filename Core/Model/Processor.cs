@@ -379,11 +379,6 @@ namespace Genometric.MSPC.Model
                         {
                             if(chr.Value.Get(new Attributes[] { Attributes.Discarded }).ContainsKey(confirmedPeak.Key))
                             {
-                                if (confirmedPeak.Value.peak.Value <= _config.TauS)
-                                    chr.Value.total_scom++;
-                                else if (confirmedPeak.Value.peak.Value <= _config.TauW)
-                                    chr.Value.total_wcom++;
-
                                 chr.Value.Get(new Attributes[] { Attributes.Discarded }).Remove(confirmedPeak.Key);
                             }
                         }
@@ -402,11 +397,6 @@ namespace Genometric.MSPC.Model
                         {
                             if (chr.Value.Get(new Attributes[] { Attributes.Confirmed }).ContainsKey(discardedPeak.Key))
                             {
-                                if (discardedPeak.Value.peak.Value <= _config.TauS)
-                                    chr.Value.total_scom++;
-                                else if (discardedPeak.Value.peak.Value <= _config.TauW)
-                                    chr.Value.total_wcom++;
-
                                 chr.Value.Get(new Attributes[] { Attributes.Confirmed }).Remove(discardedPeak.Key);
                             }
                         }

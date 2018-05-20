@@ -142,11 +142,11 @@ namespace Genometric.MSPC.Model
                                 if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                                     ConfirmPeak(sample.Key, chr.Key, peak, supportingPeaks);
                                 else
-                                    DiscardPeak(sample.Key, chr.Key, peak, supportingPeaks, 0);
+                                    DiscardPeak(sample.Key, chr.Key, peak, supportingPeaks, Messages.Codes.M001);
                             }
                             else
                             {
-                                DiscardPeak(sample.Key, chr.Key, peak, supportingPeaks, 1);
+                                DiscardPeak(sample.Key, chr.Key, peak, supportingPeaks, Messages.Codes.M002);
                             }
                         }
 
@@ -256,12 +256,9 @@ namespace Genometric.MSPC.Model
             }
         }
 
-        private void DiscardPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, byte discardReason)
+        private void DiscardPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, Messages.Codes discardReason)
         {
-            var anRe = new ProcessedPeak<I>(p, _xsqrd, supportingPeaks)
-            {
-                Reason = discardReason
-            };
+            var anRe = new ProcessedPeak<I>(p, _xsqrd, supportingPeaks, discardReason);
 
             if (p.Value <= _config.TauS)
             {
@@ -286,7 +283,7 @@ namespace Genometric.MSPC.Model
                 DiscardSupportingPeaks(id, chr, p, supportingPeaks, discardReason);
         }
 
-        private void DiscardSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, byte discardReason)
+        private void DiscardSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, Messages.Codes discardReason)
         {
             foreach (var supPeak in supportingPeaks)
             {
@@ -300,10 +297,7 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd, tSupPeak)
-                    {
-                        Reason = discardReason
-                    };
+                    var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd, tSupPeak, discardReason);
 
                     if (supPeak.peak.Value <= _config.TauS)
                     {

@@ -14,22 +14,24 @@ using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using static Genometric.MSPC.Core.Model.Messages;
 
 namespace Genometric.MSPC.Core.Model
 {
     public class ProcessedPeak<I> : IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        public ProcessedPeak(I peak, double xSquared, List<SupportingPeak<I>> supportingPeaks) :
-            this(peak, xSquared, supportingPeaks.AsReadOnly())
+        internal ProcessedPeak(I peak, double xSquared, List<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000) :
+            this(peak, xSquared, supportingPeaks.AsReadOnly(), reason)
         { }
             
-        public ProcessedPeak(I peak, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks)
+        internal ProcessedPeak(I peak, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000)
         {
             Peak = peak;
             XSquared = xSquared;
             RTP = ChiSquaredCache.ChiSqrdDistRTP(xSquared, 2 + (supportingPeaks.Count * 2));
             SupportingPeaks = supportingPeaks;
+            _reason = reason;
             StatisticalClassification = Attributes.TruePositive;
             Classification = new HashSet<Attributes>();
         }
@@ -55,10 +57,11 @@ namespace Genometric.MSPC.Core.Model
         public ReadOnlyCollection<SupportingPeak<I>> SupportingPeaks { private set; get; }
 
         /// <summary>
-        /// Sets and gets the reason of discarding the er. It points to an index of
-        /// predefined messages.
+        /// Gets the reason of discarding this ER. It returns an empty string if 
+        /// this ER is confirmed. 
         /// </summary>
-        public byte Reason { internal set; get; }
+        public string Reason { get { return Decode(_reason); } }
+        private readonly Codes _reason;
 
         /// <summary>
         /// Sets and gets classification type. 

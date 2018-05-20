@@ -18,8 +18,9 @@ namespace Genometric.MSPC.Core.Model
     public class ProcessedPeak<I> : IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        public ProcessedPeak()
+        public ProcessedPeak(I peak)
         {
+            Peak = peak;
             StatisticalClassification = Attributes.TruePositive;
             Classification = new HashSet<Attributes>();
         }
@@ -27,44 +28,44 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Sets and gets the Confirmed I. Is a reference to the original er in cached data.
         /// </summary>
-        public I Peak { set; get; }
+        public I Peak { private set; get; }
 
         /// <summary>
         /// Sets and gets X-squared of test
         /// </summary>
-        public double XSquared { set; get; }
+        public double XSquared { internal set; get; }
 
         /// <summary>
         /// Right tailed probability of x-squared.
         /// </summary>
-        public double RTP { set; get; }
+        public double RTP { internal set; get; }
 
         /// <summary>
         /// Sets and gets the set of peaks intersecting with confirmed er
         /// </summary>
-        public List<SupportingPeak<I>> SupportingPeaks { set; get; }
+        public List<SupportingPeak<I>> SupportingPeaks { internal set; get; }
 
         /// <summary>
         /// Sets and gets the reason of discarding the er. It points to an index of
         /// predefined messages.
         /// </summary>
-        public byte Reason { set; get; }
+        public byte Reason { internal set; get; }
 
         /// <summary>
         /// Sets and gets classification type. 
         /// </summary>
-        public HashSet<Attributes> Classification { set; get; }
+        public HashSet<Attributes> Classification { internal set; get; }
 
         /// <summary>
         /// Sets and gets adjusted p-value using the multiple testing correction method of choice.
         /// </summary>
-        public double AdjPValue { set; get; }
+        public double AdjPValue { internal set; get; }
 
         /// <summary>
         /// Set and gets whether the peaks is identified as false-positive or true-positive 
         /// based on multiple testing correction threshold. 
         /// </summary>
-        public Attributes StatisticalClassification { set; get; }
+        public Attributes StatisticalClassification { internal set; get; }
 
         /// <summary>
         /// Contains different classification types.

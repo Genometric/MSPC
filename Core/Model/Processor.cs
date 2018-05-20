@@ -214,9 +214,8 @@ namespace Genometric.MSPC.Model
 
         private void ConfirmPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks)
         {
-            var anRe = new ProcessedPeak<I>()
+            var anRe = new ProcessedPeak<I>(p)
             {
-                Peak = p,
                 XSquared = _xsqrd,
                 RTP = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
                 SupportingPeaks = supportingPeaks
@@ -246,9 +245,8 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>()
+                    var anRe = new ProcessedPeak<I>(supPeak.peak)
                     {
-                        Peak = supPeak.peak,
                         XSquared = _xsqrd,
                         RTP = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
                         SupportingPeaks = tSupPeak
@@ -270,9 +268,8 @@ namespace Genometric.MSPC.Model
 
         private void DiscardPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, byte discardReason)
         {
-            var anRe = new ProcessedPeak<I>
+            var anRe = new ProcessedPeak<I>(p)
             {
-                Peak = p,
                 XSquared = _xsqrd,
                 Reason = discardReason,
                 SupportingPeaks = supportingPeaks
@@ -315,9 +312,8 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>()
+                    var anRe = new ProcessedPeak<I>(supPeak.peak)
                     {
-                        Peak = supPeak.peak,
                         XSquared = _xsqrd,
                         Reason = discardReason,
                         RTP = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
@@ -413,9 +409,8 @@ namespace Genometric.MSPC.Model
                 {
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
-                        var outputPeak = new ProcessedPeak<I>()
+                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Peak)
                         {
-                            Peak = confirmedPeak.Peak,
                             RTP = confirmedPeak.RTP,
                             XSquared = confirmedPeak.XSquared,
                             SupportingPeaks = confirmedPeak.SupportingPeaks,

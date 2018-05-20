@@ -1,8 +1,17 @@
-﻿using Genometric.GeUtilities.IGenomics;
+﻿/** Copyright © 2014-2015 Vahid Jalili
+ * 
+ * This file is part of MSPC project.
+ * MSPC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * MSPC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
+ **/
+
+using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Genometric.MSPC.Core.Model
 {
@@ -11,60 +20,60 @@ namespace Genometric.MSPC.Core.Model
     {
         public ProcessedPeak()
         {
-            statisticalClassification = Attributes.TruePositive;
-            classification = new HashSet<Attributes>();
+            StatisticalClassification = Attributes.TruePositive;
+            Classification = new HashSet<Attributes>();
         }
 
         /// <summary>
         /// Sets and gets the Confirmed I. Is a reference to the original er in cached data.
         /// </summary>
-        public I peak { set; get; }
+        public I Peak { set; get; }
 
         /// <summary>
         /// Sets and gets X-squared of test
         /// </summary>
-        public double xSquared { set; get; }
+        public double XSquared { set; get; }
 
         /// <summary>
         /// Right tailed probability of x-squared.
         /// </summary>
-        public double rtp { set; get; }
+        public double RTP { set; get; }
 
         /// <summary>
         /// Sets and gets the set of peaks intersecting with confirmed er
         /// </summary>
-        public List<SupportingPeak<I>> supportingPeaks { set; get; }
+        public List<SupportingPeak<I>> SupportingPeaks { set; get; }
 
         /// <summary>
         /// Sets and gets the reason of discarding the er. It points to an index of
         /// predefined messages.
         /// </summary>
-        public byte reason { set; get; }
+        public byte Reason { set; get; }
 
         /// <summary>
         /// Sets and gets classification type. 
         /// </summary>
-        public HashSet<Attributes> classification { set; get; }
+        public HashSet<Attributes> Classification { set; get; }
 
         /// <summary>
         /// Sets and gets adjusted p-value using the multiple testing correction method of choice.
         /// </summary>
-        public double adjPValue { set; get; }
+        public double AdjPValue { set; get; }
 
         /// <summary>
         /// Set and gets whether the peaks is identified as false-positive or true-positive 
         /// based on multiple testing correction threshold. 
         /// </summary>
-        public Attributes statisticalClassification { set; get; }
+        public Attributes StatisticalClassification { set; get; }
 
         /// <summary>
         /// Contains different classification types.
         /// </summary>
-        int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> that)
+        int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> other)
         {
-            if (that == null) return 1;
+            if (other == null) return 1;
 
-            return this.peak.CompareTo(that.peak);
+            return Peak.CompareTo(other.Peak);
         }
     }
 }

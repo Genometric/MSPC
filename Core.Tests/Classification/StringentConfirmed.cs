@@ -59,7 +59,7 @@ namespace Core.Tests.Base
                 Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 1);
             foreach (var s in res)
                 foreach (var p in s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed))
-                    Assert.True(p.classification.Contains(Attributes.StringentConfirmed));
+                    Assert.True(p.Classification.Contains(Attributes.StringentConfirmed));
         }
     }
 }

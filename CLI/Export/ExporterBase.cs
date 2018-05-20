@@ -40,7 +40,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.Get(Attributes.Output))
                     {
-                        if (item.StatisticalClassification == Attributes.TruePositive)
+                        if (item.Classification.Contains(Attributes.TruePositive))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -65,7 +65,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.Get(Attributes.Output))
                     {
-                        if (item.StatisticalClassification == Attributes.TruePositive && item.Classification.Contains(Attributes.StringentConfirmed))
+                        if (item.Classification.Contains(Attributes.TruePositive) && item.Classification.Contains(Attributes.StringentConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -90,7 +90,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.Get(Attributes.Output))
                     {
-                        if (item.StatisticalClassification == Attributes.TruePositive && item.Classification.Contains(Attributes.WeakConfirmed))
+                        if (item.Classification.Contains(Attributes.TruePositive) && item.Classification.Contains(Attributes.WeakConfirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -116,7 +116,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.Get(Attributes.Output))
                     {
-                        if (item.StatisticalClassification == Attributes.FalsePositive)
+                        if (item.Classification.Contains(Attributes.FalsePositive))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +

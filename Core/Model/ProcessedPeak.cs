@@ -32,8 +32,10 @@ namespace Genometric.MSPC.Core.Model
             RTP = ChiSquaredCache.ChiSqrdDistRTP(xSquared, 2 + (supportingPeaks.Count * 2));
             SupportingPeaks = supportingPeaks;
             _reason = reason;
-            StatisticalClassification = Attributes.TruePositive;
-            Classification = new HashSet<Attributes>();
+            Classification = new HashSet<Attributes>
+            {
+                Attributes.TruePositive
+            };
         }
 
         /// <summary>
@@ -74,12 +76,6 @@ namespace Genometric.MSPC.Core.Model
         public double AdjPValue { internal set; get; }
 
         /// <summary>
-        /// Set and gets whether the peaks is identified as false-positive or true-positive 
-        /// based on multiple testing correction threshold. 
-        /// </summary>
-        public Attributes StatisticalClassification { internal set; get; }
-
-        /// <summary>
         /// Contains different classification types.
         /// </summary>
         int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> other)
@@ -87,6 +83,17 @@ namespace Genometric.MSPC.Core.Model
             if (other == null) return 1;
 
             return Peak.CompareTo(other.Peak);
+        }
+
+        internal void SetStatisticalClassification(Attributes attribute)
+        {
+            if (attribute != Attributes.TruePositive && attribute != Attributes.FalsePositive)
+                throw new ArgumentException(
+                    String.Format("Invalid attribute; accepted values are: {0} and {1}.",
+                    Attributes.TruePositive.ToString(), Attributes.FalsePositive.ToString()));
+
+            if (!Classification.Remove(attribute))
+                Classification.Add(attribute);
         }
     }
 }

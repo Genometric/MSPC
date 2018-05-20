@@ -433,12 +433,12 @@ namespace Genometric.MSPC.Model
                             for (int l = 1; l < k; l++)
                             {
                                 outputSet[l].AdjPValue = (((double)k * outputSet[l].Peak.Value) / (double)m) * _config.Alpha;
-                                outputSet[l].StatisticalClassification = Attributes.TruePositive;
+                                outputSet[l].SetStatisticalClassification(Attributes.TruePositive);
                             }
                             for (int l = k; l < m; l++)
                             {
                                 outputSet[l].AdjPValue = (((double)k * outputSet[l].Peak.Value) / (double)m) * _config.Alpha;
-                                outputSet[l].StatisticalClassification = Attributes.FalsePositive;
+                                outputSet[l].SetStatisticalClassification(Attributes.FalsePositive);
                             }
 
                             chr.Value.SetTruePositiveCount((uint)k);

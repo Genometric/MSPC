@@ -216,7 +216,6 @@ namespace Genometric.MSPC.Model
         {
             var anRe = new ProcessedPeak<I>(p, _xsqrd)
             {
-                RTP = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
                 SupportingPeaks = supportingPeaks
             };
 
@@ -246,7 +245,6 @@ namespace Genometric.MSPC.Model
 
                     var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd)
                     {
-                        RTP = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
                         SupportingPeaks = tSupPeak
                     };
 
@@ -312,7 +310,6 @@ namespace Genometric.MSPC.Model
                     var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd)
                     {
                         Reason = discardReason,
-                        RTP = ChiSquaredCache.ChiSqrdDistRTP(_xsqrd, 2 + (supportingPeaks.Count * 2)),
                         SupportingPeaks = tSupPeak
                     };
 
@@ -407,7 +404,6 @@ namespace Genometric.MSPC.Model
                     {
                         var outputPeak = new ProcessedPeak<I>(confirmedPeak.Peak, confirmedPeak.XSquared)
                         {
-                            RTP = confirmedPeak.RTP,
                             SupportingPeaks = confirmedPeak.SupportingPeaks,
                         };
                         outputPeak.Classification.Add(Attributes.TruePositive);

@@ -10,6 +10,7 @@
 
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Model;
+using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
 
@@ -22,6 +23,7 @@ namespace Genometric.MSPC.Core.Model
         {
             Peak = peak;
             XSquared = xSquared;
+            //RTP = ChiSquaredCache.ChiSqrdDistRTP(xSquared, 2 + (supportingPeaks.Count * 2);
             StatisticalClassification = Attributes.TruePositive;
             Classification = new HashSet<Attributes>();
         }
@@ -39,7 +41,7 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Right tailed probability of x-squared.
         /// </summary>
-        public double RTP { internal set; get; }
+        public double RTP { private set; get; }
 
         /// <summary>
         /// Sets and gets the set of peaks intersecting with confirmed er

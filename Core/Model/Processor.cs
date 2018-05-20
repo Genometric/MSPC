@@ -214,10 +214,7 @@ namespace Genometric.MSPC.Model
 
         private void ConfirmPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks)
         {
-            var anRe = new ProcessedPeak<I>(p, _xsqrd)
-            {
-                SupportingPeaks = supportingPeaks
-            };
+            var anRe = new ProcessedPeak<I>(p, _xsqrd, supportingPeaks);
 
             if (p.Value <= _config.TauS)
                 anRe.Classification.Add(Attributes.StringentConfirmed);
@@ -243,10 +240,7 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd)
-                    {
-                        SupportingPeaks = tSupPeak
-                    };
+                    var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd, tSupPeak);
 
                     if (supPeak.peak.Value <= _config.TauS)
                     {
@@ -264,10 +258,9 @@ namespace Genometric.MSPC.Model
 
         private void DiscardPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, byte discardReason)
         {
-            var anRe = new ProcessedPeak<I>(p, _xsqrd)
+            var anRe = new ProcessedPeak<I>(p, _xsqrd, supportingPeaks)
             {
-                Reason = discardReason,
-                SupportingPeaks = supportingPeaks
+                Reason = discardReason
             };
 
             if (p.Value <= _config.TauS)
@@ -307,10 +300,9 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd)
+                    var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd, tSupPeak)
                     {
-                        Reason = discardReason,
-                        SupportingPeaks = tSupPeak
+                        Reason = discardReason
                     };
 
                     if (supPeak.peak.Value <= _config.TauS)
@@ -402,10 +394,7 @@ namespace Genometric.MSPC.Model
                 {
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
-                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Peak, confirmedPeak.XSquared)
-                        {
-                            SupportingPeaks = confirmedPeak.SupportingPeaks,
-                        };
+                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Peak, confirmedPeak.XSquared, confirmedPeak.SupportingPeaks);
                         outputPeak.Classification.Add(Attributes.TruePositive);
 
                         if (confirmedPeak.Peak.Value <= _config.TauS)

@@ -13,17 +13,23 @@ using Genometric.MSPC.Model;
 using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Genometric.MSPC.Core.Model
 {
     public class ProcessedPeak<I> : IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        public ProcessedPeak(I peak, double xSquared)
+        public ProcessedPeak(I peak, double xSquared, List<SupportingPeak<I>> supportingPeaks) :
+            this(peak, xSquared, supportingPeaks.AsReadOnly())
+        { }
+            
+        public ProcessedPeak(I peak, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks)
         {
             Peak = peak;
             XSquared = xSquared;
-            //RTP = ChiSquaredCache.ChiSqrdDistRTP(xSquared, 2 + (supportingPeaks.Count * 2);
+            RTP = ChiSquaredCache.ChiSqrdDistRTP(xSquared, 2 + (supportingPeaks.Count * 2));
+            SupportingPeaks = supportingPeaks;
             StatisticalClassification = Attributes.TruePositive;
             Classification = new HashSet<Attributes>();
         }
@@ -46,7 +52,7 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Sets and gets the set of peaks intersecting with confirmed er
         /// </summary>
-        public List<SupportingPeak<I>> SupportingPeaks { internal set; get; }
+        public ReadOnlyCollection<SupportingPeak<I>> SupportingPeaks { private set; get; }
 
         /// <summary>
         /// Sets and gets the reason of discarding the er. It points to an index of

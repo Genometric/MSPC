@@ -44,10 +44,10 @@ namespace Genometric.MSPC.CLI.Exporter
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Peak.Left.ToString() + "\t" +
-                                item.Peak.Right.ToString() + "\t" +
-                                item.Peak.Name + "\t" +
-                                ConvertPValue(item.Peak.Value) + "\t" +
+                                item.Source.Left.ToString() + "\t" +
+                                item.Source.Right.ToString() + "\t" +
+                                item.Source.Name + "\t" +
+                                ConvertPValue(item.Source.Value) + "\t" +
                                 Math.Round(item.XSquared, 3) + "\t" +
                                 ConvertPValue(item.RTP));
                         }
@@ -69,10 +69,10 @@ namespace Genometric.MSPC.CLI.Exporter
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Peak.Left.ToString() + "\t" +
-                                item.Peak.Right.ToString() + "\t" +
-                                item.Peak.Name + "\t" +
-                                ConvertPValue(item.Peak.Value) + "\t" +
+                                item.Source.Left.ToString() + "\t" +
+                                item.Source.Right.ToString() + "\t" +
+                                item.Source.Name + "\t" +
+                                ConvertPValue(item.Source.Value) + "\t" +
                                 Math.Round(item.XSquared, 3) + "\t" +
                                 ConvertPValue(item.RTP));
                         }
@@ -94,10 +94,10 @@ namespace Genometric.MSPC.CLI.Exporter
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Peak.Left.ToString() + "\t" +
-                                item.Peak.Right.ToString() + "\t" +
-                                item.Peak.Name + "\t" +
-                                ConvertPValue(item.Peak.Value) + "\t" +
+                                item.Source.Left.ToString() + "\t" +
+                                item.Source.Right.ToString() + "\t" +
+                                item.Source.Name + "\t" +
+                                ConvertPValue(item.Source.Value) + "\t" +
                                 Math.Round(item.XSquared, 3) + "\t" +
                                 ConvertPValue(item.RTP));
                         }
@@ -120,10 +120,10 @@ namespace Genometric.MSPC.CLI.Exporter
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Peak.Left.ToString() + "\t" +
-                                item.Peak.Right.ToString() + "\t" +
-                                item.Peak.Name + "\t" +
-                                ConvertPValue(item.Peak.Value) + "\t" +
+                                item.Source.Left.ToString() + "\t" +
+                                item.Source.Right.ToString() + "\t" +
+                                item.Source.Name + "\t" +
+                                ConvertPValue(item.Source.Value) + "\t" +
                                 Math.Round(item.XSquared, 3) + "\t" +
                                 ConvertPValue(item.RTP));
                         }
@@ -191,10 +191,10 @@ namespace Genometric.MSPC.CLI.Exporter
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
-                            item.Peak.Left.ToString() + "\t" +
-                            item.Peak.Right.ToString() + "\t" +
-                            item.Peak.Name + "\t" +
-                            ConvertPValue(item.Peak.Value) + "\t" +
+                            item.Source.Left.ToString() + "\t" +
+                            item.Source.Right.ToString() + "\t" +
+                            item.Source.Name + "\t" +
+                            ConvertPValue(item.Source.Value) + "\t" +
                             Math.Round(item.XSquared, 3) + "\t" +
                             ConvertPValue(item.RTP));
                     }
@@ -217,10 +217,10 @@ namespace Genometric.MSPC.CLI.Exporter
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Peak.Left.ToString() + "\t" +
-                                item.Peak.Right.ToString() + "\t" +
-                                item.Peak.Name + "\t" +
-                                ConvertPValue(item.Peak.Value) + "\t" +
+                                item.Source.Left.ToString() + "\t" +
+                                item.Source.Right.ToString() + "\t" +
+                                item.Source.Name + "\t" +
+                                ConvertPValue(item.Source.Value) + "\t" +
                                 Math.Round(item.XSquared, 3) + "\t" +
                                 ConvertPValue(item.RTP));
                         }
@@ -244,10 +244,10 @@ namespace Genometric.MSPC.CLI.Exporter
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Peak.Left.ToString() + "\t" +
-                                item.Peak.Right.ToString() + "\t" +
-                                item.Peak.Name + "\t" +
-                                ConvertPValue(item.Peak.Value) + "\t" +
+                                item.Source.Left.ToString() + "\t" +
+                                item.Source.Right.ToString() + "\t" +
+                                item.Source.Name + "\t" +
+                                ConvertPValue(item.Source.Value) + "\t" +
                                 Math.Round(item.XSquared, 3) + "\t" +
                                 ConvertPValue(item.RTP));
                         }
@@ -269,10 +269,10 @@ namespace Genometric.MSPC.CLI.Exporter
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
-                            item.Peak.Left.ToString() + "\t" +
-                            item.Peak.Right.ToString() + "\t" +
-                            item.Peak.Name + "\t" +
-                            ConvertPValue(item.Peak.Value) + "\t" +
+                            item.Source.Left.ToString() + "\t" +
+                            item.Source.Right.ToString() + "\t" +
+                            item.Source.Name + "\t" +
+                            ConvertPValue(item.Source.Value) + "\t" +
                             Math.Round(item.XSquared, 3));
                     }
                 }
@@ -292,10 +292,10 @@ namespace Genometric.MSPC.CLI.Exporter
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Peak.Left.ToString() + "\t" +
-                                item.Peak.Right.ToString() + "\t" +
-                                item.Peak.Name + "\t" +
-                                ConvertPValue(item.Peak.Value) + "\t" +
+                                item.Source.Left.ToString() + "\t" +
+                                item.Source.Right.ToString() + "\t" +
+                                item.Source.Name + "\t" +
+                                ConvertPValue(item.Source.Value) + "\t" +
                                 Math.Round(item.XSquared, 3));
                         }
                     }
@@ -316,10 +316,10 @@ namespace Genometric.MSPC.CLI.Exporter
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
-                                item.Peak.Left.ToString() + "\t" +
-                                item.Peak.Right.ToString() + "\t" +
-                                item.Peak.Name + "\t" +
-                                ConvertPValue(item.Peak.Value) + "\t" +
+                                item.Source.Left.ToString() + "\t" +
+                                item.Source.Right.ToString() + "\t" +
+                                item.Source.Name + "\t" +
+                                ConvertPValue(item.Source.Value) + "\t" +
                                 Math.Round(item.XSquared, 3));
                         }
                     }

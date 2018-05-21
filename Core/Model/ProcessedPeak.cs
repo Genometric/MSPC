@@ -18,16 +18,16 @@ using static Genometric.MSPC.Core.Model.Messages;
 
 namespace Genometric.MSPC.Core.Model
 {
-    public class ProcessedPeak<I> : IComparable<ProcessedPeak<I>>
+    public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
         internal ProcessedPeak(I peak, double xSquared, List<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000) :
             this(peak, xSquared, supportingPeaks.AsReadOnly(), reason)
         { }
 
-        internal ProcessedPeak(I peak, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000)
+        internal ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000):
+            base(source)
         {
-            Peak = peak;
             XSquared = xSquared;
             RTP = ChiSquaredCache.ChiSqrdDistRTP(xSquared, 2 + (supportingPeaks.Count * 2));
             SupportingPeaks = supportingPeaks;
@@ -37,11 +37,6 @@ namespace Genometric.MSPC.Core.Model
                 Attributes.TruePositive
             };
         }
-
-        /// <summary>
-        /// Sets and gets the Confirmed I. Is a reference to the original er in cached data.
-        /// </summary>
-        public I Peak { private set; get; }
 
         /// <summary>
         /// Sets and gets X-squared of test
@@ -75,16 +70,6 @@ namespace Genometric.MSPC.Core.Model
         /// </summary>
         public double AdjPValue { internal set; get; }
 
-        /// <summary>
-        /// Contains different classification types.
-        /// </summary>
-        int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> other)
-        {
-            if (other == null) return 1;
-
-            return Peak.CompareTo(other.Peak);
-        }
-
         internal void SetStatisticalClassification(Attributes attribute)
         {
             if (attribute != Attributes.TruePositive && attribute != Attributes.FalsePositive)
@@ -96,10 +81,16 @@ namespace Genometric.MSPC.Core.Model
                 Classification.Add(attribute);
         }
 
+        int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> other)
+        {
+            if (other == null) return 1;
+            return CompareTo(other);
+        }
+
         public override bool Equals(object obj)
         {
             return obj is ProcessedPeak<I> peak &&
-                   EqualityComparer<I>.Default.Equals(Peak, peak.Peak) &&
+                   EqualityComparer<I>.Default.Equals(Source, peak.Source) &&
                    XSquared == peak.XSquared &&
                    RTP == peak.RTP &&
                    EqualityComparer<ReadOnlyCollection<SupportingPeak<I>>>.Default.Equals(SupportingPeaks, peak.SupportingPeaks) &&
@@ -110,7 +101,7 @@ namespace Genometric.MSPC.Core.Model
 
         public override int GetHashCode()
         {
-            string key = Peak.GetHashCode() + "_" + XSquared + "_" + RTP + "_" + SupportingPeaks.Count;
+            string key = base.GetHashCode() + "_" + XSquared + "_" + RTP + "_" + SupportingPeaks.Count;
             int l = key.Length;
 
             int hashKey = 0;
@@ -130,22 +121,22 @@ namespace Genometric.MSPC.Core.Model
 
         public static bool operator >(ProcessedPeak<I> operand1, ProcessedPeak<I> operand2)
         {
-            return operand1.Peak.CompareTo(operand2.Peak) == 1;
+            return operand1.CompareTo(operand2) == 1;
         }
 
         public static bool operator <(ProcessedPeak<I> operand1, ProcessedPeak<I> operand2)
         {
-            return operand1.Peak.CompareTo(operand2.Peak) == -1;
+            return operand1.CompareTo(operand2) == -1;
         }
 
         public static bool operator >=(ProcessedPeak<I> operand1, ProcessedPeak<I> operand2)
         {
-            return operand1.Peak.CompareTo(operand2.Peak) >= 0;
+            return operand1.CompareTo(operand2) >= 0;
         }
 
         public static bool operator <=(ProcessedPeak<I> operand1, ProcessedPeak<I> operand2)
         {
-            return operand1.Peak.CompareTo(operand2.Peak) <= 0;
+            return operand1.CompareTo(operand2) <= 0;
         }
 
         public static bool operator ==(ProcessedPeak<I> operand1, ProcessedPeak<I> operand2)

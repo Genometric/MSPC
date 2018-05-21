@@ -186,11 +186,7 @@ namespace Genometric.MSPC.Model
                     case 0: break;
 
                     case 1:
-                        supportingPeaks.Add(new SupportingPeak<I>()
-                        {
-                            peak = sps[0],
-                            sampleID = tree.Key
-                        });
+                        supportingPeaks.Add(new SupportingPeak<I>(sps[0], tree.Key));
                         break;
 
                     default:
@@ -200,11 +196,7 @@ namespace Genometric.MSPC.Model
                                 (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue && sp.Value > chosenPeak.Value))
                                 chosenPeak = sp;
 
-                        supportingPeaks.Add(new SupportingPeak<I>()
-                        {
-                            peak = chosenPeak,
-                            sampleID = tree.Key
-                        });
+                        supportingPeaks.Add(new SupportingPeak<I>(chosenPeak, tree.Key));
                         break;
                 }
             }
@@ -230,19 +222,19 @@ namespace Genometric.MSPC.Model
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].GetDict(Attributes.Confirmed).ContainsKey(supPeak.peak.HashKey))
+                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].GetDict(Attributes.Confirmed).ContainsKey(supPeak.Source.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
-                    var targetSample = _analysisResults[supPeak.sampleID];
-                    tSupPeak.Add(new SupportingPeak<I>() { peak = p, sampleID = id });
+                    var targetSample = _analysisResults[supPeak.SampleID];
+                    tSupPeak.Add(new SupportingPeak<I>(p, id));
 
                     foreach (var sP in supportingPeaks)
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd, tSupPeak);
+                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
 
-                    if (supPeak.peak.Value <= _config.TauS)
+                    if (supPeak.Source.Value <= _config.TauS)
                     {
                         anRe.Classification.Add(Attributes.StringentConfirmed);
                     }
@@ -287,19 +279,19 @@ namespace Genometric.MSPC.Model
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.sampleID].Chromosomes[chr].GetDict(Attributes.Discarded).ContainsKey(supPeak.peak.HashKey))
+                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].GetDict(Attributes.Discarded).ContainsKey(supPeak.Source.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
-                    var targetSample = _analysisResults[supPeak.sampleID];
-                    tSupPeak.Add(new SupportingPeak<I>() { peak = p, sampleID = id });
+                    var targetSample = _analysisResults[supPeak.SampleID];
+                    tSupPeak.Add(new SupportingPeak<I>(p, id));
 
                     foreach (var sP in supportingPeaks)
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.peak, _xsqrd, tSupPeak, discardReason);
+                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak, discardReason);
 
-                    if (supPeak.peak.Value <= _config.TauS)
+                    if (supPeak.Source.Value <= _config.TauS)
                     {
                         // The cause of discarding the region is :
                         if (supportingPeaks.Count + 1 >= _config.C)
@@ -329,8 +321,8 @@ namespace Genometric.MSPC.Model
                 _xsqrd = Math.Log(Config.default0PValue, Math.E);
 
             foreach (var supPeak in supportingPeaks)
-                if (supPeak.peak.Value != 0)
-                    _xsqrd += Math.Log(supPeak.peak.Value, Math.E);
+                if (supPeak.Source.Value != 0)
+                    _xsqrd += Math.Log(supPeak.Source.Value, Math.E);
                 else
                     _xsqrd += Math.Log(Config.default0PValue, Math.E);
 
@@ -388,18 +380,16 @@ namespace Genometric.MSPC.Model
                 {
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
-                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Peak, confirmedPeak.XSquared, confirmedPeak.SupportingPeaks);
+                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Source, confirmedPeak.XSquared, confirmedPeak.SupportingPeaks);
                         outputPeak.Classification.Add(Attributes.TruePositive);
 
-                        if (confirmedPeak.Peak.Value <= _config.TauS)
+                        if (confirmedPeak.Source.Value <= _config.TauS)
                         {
                             outputPeak.Classification.Add(Attributes.StringentConfirmed);
-                            /// result.Value.R_j___so[chr.Key]++;
                         }
-                        else if (confirmedPeak.Peak.Value <= _config.TauW)
+                        else if (confirmedPeak.Source.Value <= _config.TauW)
                         {
                             outputPeak.Classification.Add(Attributes.WeakConfirmed);
-                            /// result.Value.R_j___wo[chr.Key]++;
                         }
 
                         result.Value.Chromosomes[chr.Key].Add(outputPeak, Attributes.Output);
@@ -427,17 +417,17 @@ namespace Genometric.MSPC.Model
 
                     for (int k = 1; k <= m; k++)
                     {
-                        if (outputSet[k - 1].Peak.Value > ((double)k / (double)m) * _config.Alpha)
+                        if (outputSet[k - 1].Source.Value > ((double)k / (double)m) * _config.Alpha)
                         {
                             k--;
                             for (int l = 1; l < k; l++)
                             {
-                                outputSet[l].AdjPValue = (((double)k * outputSet[l].Peak.Value) / (double)m) * _config.Alpha;
+                                outputSet[l].AdjPValue = (((double)k * outputSet[l].Source.Value) / (double)m) * _config.Alpha;
                                 outputSet[l].SetStatisticalClassification(Attributes.TruePositive);
                             }
                             for (int l = k; l < m; l++)
                             {
-                                outputSet[l].AdjPValue = (((double)k * outputSet[l].Peak.Value) / (double)m) * _config.Alpha;
+                                outputSet[l].AdjPValue = (((double)k * outputSet[l].Source.Value) / (double)m) * _config.Alpha;
                                 outputSet[l].SetStatisticalClassification(Attributes.FalsePositive);
                             }
 
@@ -466,7 +456,7 @@ namespace Genometric.MSPC.Model
 
                     foreach (var outputER in chr.Value.Get(Attributes.Output))
                     {
-                        var peak = outputER.Peak;
+                        var peak = outputER.Source;
                         var interval = new I();
                         interval.Left = peak.Left;
                         interval.Right = peak.Right;

@@ -61,17 +61,17 @@ namespace Genometric.MSPC.Model
             {
                 case Attributes.Confirmed:
                 case Attributes.Discarded:
-                    if (!_sets[type].ContainsKey(peak.peak.HashKey))
+                    if (!_sets[type].ContainsKey(peak.Source.HashKey))
                     {
-                        _sets[type].Add(peak.peak.HashKey, peak);
-                        foreach (var att in peak.classification)
+                        _sets[type].Add(peak.Source.HashKey, peak);
+                        foreach (var att in peak.Classification)
                             _stats[att]++;
                     }
                     break;
 
                 case Attributes.Output:
-                    if (!_sets[type].ContainsKey(peak.peak.HashKey))
-                        _sets[type].Add(peak.peak.HashKey, peak);
+                    if (!_sets[type].ContainsKey(peak.Source.HashKey))
+                        _sets[type].Add(peak.Source.HashKey, peak);
                     break;
 
                 default:

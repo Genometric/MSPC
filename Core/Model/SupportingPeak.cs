@@ -1,56 +1,33 @@
-﻿using Genometric.GeUtilities.IGenomics;
+﻿/** Copyright © 2014-2015 Vahid Jalili
+ * 
+ * This file is part of MSPC project.
+ * MSPC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * MSPC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
+ **/
+
+using Genometric.GeUtilities.IGenomics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Genometric.MSPC.Core.Model
 {
-    public class SupportingPeak<I> : IComparable<SupportingPeak<I>>
+    public class SupportingPeak<I> : Peak<I>, IComparable<SupportingPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        /// <summary>
-        /// Sets and gets the source of the er in cached data. 
-        /// </summary>
-        public UInt32 sampleID { set; get; }
-
-        /// <summary>
-        /// Sets and gets the supporting er.
-        /// </summary>
-        public I peak { set; get; }
-
-        int IComparable<SupportingPeak<I>>.CompareTo(SupportingPeak<I> that)
+        public SupportingPeak(I source, UInt32 sampleID):
+            base(source)
         {
-            return CompareWithThis(that);
+            SampleID = sampleID;
         }
 
-        public int CompareTo(object obj)
+        public UInt32 SampleID { private set; get; }
+
+        int IComparable<SupportingPeak<I>>.CompareTo(SupportingPeak<I> other)
         {
-            return CompareWithThis((SupportingPeak<I>)obj);
-        }
-
-        private int CompareWithThis(SupportingPeak<I> that)
-        {
-            if (that == null) return 1;
-
-            if (this.sampleID != that.sampleID)
-                return this.sampleID.CompareTo(that.sampleID);
-
-            if (this.peak.Left != that.peak.Left)
-                return this.peak.Left.CompareTo(that.peak.Left);
-
-            if (this.peak.Right != that.peak.Right)
-                return this.peak.Right.CompareTo(that.peak.Right);
-
-            /*if (this.er.metadata.strand != that.er.metadata.strand)
-                return this.er.metadata.strand.CompareTo(that.er.metadata.strand);*/
-
-            if (this.peak.Value != that.peak.Value)
-                return this.peak.Value.CompareTo(that.peak.Value);
-
-            /*if (this.er.metadata.name != that.er.metadata.name)
-                return this.er.metadata.name.CompareTo(that.er.metadata.name);*/
-
-            return 0;
+            if (other == null) return 1;
+            return CompareTo(other);
         }
     }
 }

@@ -22,12 +22,12 @@ namespace Genometric.MSPC.Comparers
                 if (B == null) return 1; // A is greater
                 else
                 {
-                    if (A.peak.Value != B.peak.Value)
-                        return A.peak.Value.CompareTo(B.peak.Value);
-                    else if (A.peak.Left != B.peak.Left)
-                        return A.peak.Left.CompareTo(B.peak.Left);
+                    if (A.Source.Value != B.Source.Value)
+                        return A.Source.Value.CompareTo(B.Source.Value);
+                    else if (A.Source.Left != B.Source.Left)
+                        return A.Source.Left.CompareTo(B.Source.Left);
                     else
-                        return A.peak.Right.CompareTo(B.peak.Right);
+                        return A.Source.Right.CompareTo(B.Source.Right);
                 }
             }
         }

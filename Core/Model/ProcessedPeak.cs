@@ -21,8 +21,8 @@ namespace Genometric.MSPC.Core.Model
     public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        internal ProcessedPeak(I peak, double xSquared, List<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000) :
-            this(peak, xSquared, supportingPeaks.AsReadOnly(), reason)
+        internal ProcessedPeak(I source, double xSquared, List<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000) :
+            this(source, xSquared, supportingPeaks.AsReadOnly(), reason)
         { }
 
         internal ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000):

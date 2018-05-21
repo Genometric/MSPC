@@ -81,6 +81,35 @@ namespace Genometric.MSPC.Model
             }
         }
 
+        public void Add(ProcessedPeak<I> peak)
+        {
+            foreach(var attribute in peak.Classification)
+            {
+                switch(attribute)
+                {
+                    case Attributes.Stringent:
+                    case Attributes.Weak:
+                    case Attributes.Background:
+                        if (!_setsInit[attribute].ContainsKey(peak.Source.Left))
+                        {
+                            _setsInit[attribute].Add(peak.Source.Left, peak.Source);
+                            _stats[attribute]++;
+                        }
+                        break;
+
+                    case Attributes.Confirmed:
+                    case Attributes.Discarded:
+                    case Attributes.Output:
+                        if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
+                        {
+                            _sets[attribute].Add(peak.Source.HashKey, peak);
+                            _stats[attribute]++;
+                        }
+                        break;
+                }
+            }
+        }
+
         public List<ProcessedPeak<I>> Get(Attributes attributes)
         {
             return _sets[attributes].Values.ToList();

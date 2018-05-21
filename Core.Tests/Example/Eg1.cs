@@ -63,14 +63,14 @@ namespace Core.Tests.Example
             var s1 = res[0];
             var qres = s1.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r11) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Confirmed));
 
             qres = s1.Chromosomes["chr1"].Get(Attributes.Discarded).FirstOrDefault(x => x.Source.CompareTo(r11) == 0);
             Assert.True(qres == null);
 
             qres = s1.Chromosomes["chr1"].Get(Attributes.Discarded).FirstOrDefault(x => x.Source.CompareTo(r12) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.StringentDiscardedC));
+            Assert.True(qres.Classification.Contains(Attributes.Stringent) && qres.Classification.Contains(Attributes.Discarded));
 
             qres = s1.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r12) == 0);
             Assert.True(qres == null);
@@ -82,15 +82,15 @@ namespace Core.Tests.Example
 
             qres = s2.Chromosomes["chr1"].Get(Attributes.Discarded).FirstOrDefault(x => x.Source.CompareTo(r22) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakDiscardedC));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Discarded));
 
             qres = s2.Chromosomes["chr1"].Get(Attributes.Discarded).FirstOrDefault(x => x.Source.CompareTo(r23) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakDiscardedC));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Discarded));
 
             qres = s2.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r21) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Confirmed));
             // TODO: check for the count of stringent discarded and stringent confirmed.
 
             var s3 = res[2];
@@ -99,11 +99,11 @@ namespace Core.Tests.Example
 
             qres = s3.Chromosomes["chr1"].Get(Attributes.Discarded).FirstOrDefault(x => x.Source.CompareTo(r33) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.StringentDiscardedC));
+            Assert.True(qres.Classification.Contains(Attributes.Stringent) && qres.Classification.Contains(Attributes.Discarded));
 
             qres = s3.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r32) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.StringentConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Stringent) && qres.Classification.Contains(Attributes.Confirmed));
 
             Assert.True(s1.Chromosomes["chr1"].Get(Attributes.Output).Count == 1);
             Assert.True(s2.Chromosomes["chr1"].Get(Attributes.Output).Count == 1);
@@ -130,25 +130,25 @@ namespace Core.Tests.Example
 
             var qres = s1.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r11) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Confirmed));
 
             qres = s1.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r12) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.StringentConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Stringent) && qres.Classification.Contains(Attributes.Confirmed));
 
 
             var s2 = res[1];
             qres = s2.Chromosomes["chr1"].Get(Attributes.Discarded).FirstOrDefault(x => x.Source.CompareTo(r23) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakDiscardedC));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Discarded));
 
             qres = s2.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r21) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Confirmed));
 
             qres = s2.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r22) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Confirmed));
             // TODO: check for the count of stringent discarded and stringent confirmed.
 
             var s3 = res[2];
@@ -156,15 +156,15 @@ namespace Core.Tests.Example
 
             qres = s3.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r31) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.WeakConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Weak) && qres.Classification.Contains(Attributes.Confirmed));
 
             qres = s3.Chromosomes["chr1"].Get(Attributes.Discarded).FirstOrDefault(x => x.Source.CompareTo(r33) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.StringentDiscardedC));
+            Assert.True(qres.Classification.Contains(Attributes.Stringent) && qres.Classification.Contains(Attributes.Discarded));
 
             qres = s3.Chromosomes["chr1"].Get(Attributes.Confirmed).FirstOrDefault(x => x.Source.CompareTo(r32) == 0);
             Assert.True(qres != null);
-            Assert.True(qres.Classification.Contains(Attributes.StringentConfirmed));
+            Assert.True(qres.Classification.Contains(Attributes.Stringent) && qres.Classification.Contains(Attributes.Confirmed));
 
             Assert.True(s1.Chromosomes["chr1"].Get(Attributes.Output).Count == 2);
             Assert.True(s2.Chromosomes["chr1"].Get(Attributes.Output).Count == 2);

@@ -21,12 +21,11 @@ namespace Genometric.MSPC.Core.Model
     public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        internal ProcessedPeak(I source, double xSquared, Codes reason = Codes.M000):
+        internal ProcessedPeak(I source, double xSquared):
             base(source)
         {
             XSquared = xSquared;
-            RTP = ChiSquaredCache.ChiSqrdDistRTP(xSquared, 2 + (supportingPeaks.Count * 2));
-            _reason = reason;
+            
             Classification = new HashSet<Attributes>
             {
                 Attributes.TruePositive
@@ -42,19 +41,25 @@ namespace Genometric.MSPC.Core.Model
         /// Right tailed probability of x-squared.
         /// </summary>
         public double RTP { private set; get; }
-
-        /// <summary>
-        /// Sets and gets the set of peaks intersecting with confirmed er
-        /// </summary>
+        
+        private List<SupportingPeak<I>> _supportingPeaks;
+        internal List<SupportingPeak<I>> supportingPeaks
+        {
+            get { return _supportingPeaks; }
+            set
+            {
+                _supportingPeaks = value;
+                RTP = ChiSquaredCache.ChiSqrdDistRTP(XSquared, 2 + (value.Count * 2));
+            }
+        }
         public ReadOnlyCollection<SupportingPeak<I>> SupportingPeaks { get { return supportingPeaks.AsReadOnly(); } }
-        internal List<SupportingPeak<I>> supportingPeaks;
 
         /// <summary>
         /// Gets the reason of discarding this ER. It returns an empty string if 
         /// this ER is confirmed. 
         /// </summary>
-        public string Reason { get { return Decode(_reason); } }
-        private readonly Codes _reason;
+        public string Reason { get { return Decode(reason); } }
+        internal Codes reason = Codes.M000;
 
         /// <summary>
         /// Sets and gets classification type. 

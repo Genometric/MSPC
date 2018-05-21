@@ -21,16 +21,11 @@ namespace Genometric.MSPC.Core.Model
     public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        internal ProcessedPeak(I source, double xSquared, List<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000) :
-            this(source, xSquared, supportingPeaks.AsReadOnly(), reason)
-        { }
-
-        internal ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks, Codes reason = Codes.M000):
+        internal ProcessedPeak(I source, double xSquared, Codes reason = Codes.M000):
             base(source)
         {
             XSquared = xSquared;
             RTP = ChiSquaredCache.ChiSqrdDistRTP(xSquared, 2 + (supportingPeaks.Count * 2));
-            SupportingPeaks = supportingPeaks;
             _reason = reason;
             Classification = new HashSet<Attributes>
             {
@@ -51,7 +46,8 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Sets and gets the set of peaks intersecting with confirmed er
         /// </summary>
-        public ReadOnlyCollection<SupportingPeak<I>> SupportingPeaks { private set; get; }
+        public ReadOnlyCollection<SupportingPeak<I>> SupportingPeaks { get { return supportingPeaks.AsReadOnly(); } }
+        internal List<SupportingPeak<I>> supportingPeaks;
 
         /// <summary>
         /// Gets the reason of discarding this ER. It returns an empty string if 

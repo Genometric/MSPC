@@ -102,7 +102,6 @@ namespace Genometric.MSPC.Model
                     _analysisResults[sample.Key].AddChromosome(chr.Key);
                     foreach (var strand in chr.Value.Strands)
                     {
-                        if (cancel) return null;
                         foreach (I p in strand.Value.Intervals)
                         {
                             if (cancel) return null;

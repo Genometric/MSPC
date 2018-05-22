@@ -143,14 +143,14 @@ namespace Genometric.MSPC.Model
                                 {
                                     pp.Classification.Add(Attributes.Confirmed);
                                     _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
-                                    ConfirmSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks);
+                                    ProcessSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks, Attributes.Confirmed, Messages.Codes.M000);
                                 }
                                 else
                                 {
                                     pp.reason = Messages.Codes.M001;
                                     pp.Classification.Add(Attributes.Discarded);
                                     _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
-                                    DiscardSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks, Messages.Codes.M001);
+                                    ProcessSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks, Attributes.Discarded, Messages.Codes.M001);
                                 }
                             }
                             else
@@ -217,11 +217,11 @@ namespace Genometric.MSPC.Model
             return supportingPeaks;
         }
 
-        private void ConfirmSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks)
+        private void ProcessSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, Attributes attribute, Messages.Codes message)
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].GetDict(Attributes.Confirmed).ContainsKey(supPeak.Source.HashKey))
+                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].GetDict(attribute).ContainsKey(supPeak.Source.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.SampleID];
@@ -232,35 +232,8 @@ namespace Genometric.MSPC.Model
                             tSupPeak.Add(sP);
 
                     var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
-                    anRe.Classification.Add(Attributes.Confirmed);
-
-                    if (supPeak.Source.Value <= _config.TauS)
-                        anRe.Classification.Add(Attributes.Stringent);
-                    else
-                        anRe.Classification.Add(Attributes.Weak);
-
-                    targetSample.Chromosomes[chr].Add(anRe);
-                }
-            }
-        }
-
-        private void DiscardSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, Messages.Codes discardReason)
-        {
-            foreach (var supPeak in supportingPeaks)
-            {
-                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].GetDict(Attributes.Discarded).ContainsKey(supPeak.Source.HashKey))
-                {
-                    var tSupPeak = new List<SupportingPeak<I>>();
-                    var targetSample = _analysisResults[supPeak.SampleID];
-                    tSupPeak.Add(new SupportingPeak<I>(p, id));
-
-                    foreach (var sP in supportingPeaks)
-                        if (supPeak.CompareTo(sP) != 0)
-                            tSupPeak.Add(sP);
-
-                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
-                    anRe.Classification.Add(Attributes.Discarded);
-                    anRe.reason = discardReason;
+                    anRe.Classification.Add(attribute);
+                    anRe.reason = message;
 
                     if (supPeak.Source.Value <= _config.TauS)
                         anRe.Classification.Add(Attributes.Stringent);

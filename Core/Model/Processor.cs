@@ -108,8 +108,6 @@ namespace Genometric.MSPC.Model
                             if (cancel) return null;
                             if (p.Value < _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
-                            else
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(p, Attributes.Background);
                         }
                     }
                 }

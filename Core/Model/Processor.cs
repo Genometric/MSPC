@@ -113,31 +113,32 @@ namespace Genometric.MSPC.Model
             }
 
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
+            Attributes attribute;
             foreach (var sample in _samples)
                 foreach (var chr in sample.Value.Chromosomes)
                     foreach (var strand in chr.Value.Strands)
                         foreach (I peak in strand.Value.Intervals)
                         {
                             if (cancel) return null;
-                            var pp = new ProcessedPeak<I>(peak);
+                            _xsqrd = 0;
                             if (peak.Value < _config.TauS)
-                                pp.Classification.Add(Attributes.Stringent);
+                                attribute = Attributes.Stringent;
                             else if (peak.Value < _config.TauW)
-                                pp.Classification.Add(Attributes.Weak);
+                                attribute = Attributes.Weak;
                             else
                             {
+                                var pp = new ProcessedPeak<I>(peak, _xsqrd, new List<SupportingPeak<I>>());
                                 pp.Classification.Add(Attributes.Background);
                                 _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
                                 continue;
                             }
 
-                            _xsqrd = 0;
                             var supportingPeaks = FindSupportingPeaks(sample.Key, chr.Key, peak);
-                            pp.supportingPeaks = supportingPeaks;
                             if (supportingPeaks.Count + 1 >= _config.C)
                             {
                                 CalculateXsqrd(peak, supportingPeaks);
-                                pp.XSquared = _xsqrd;
+                                var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
+                                pp.Classification.Add(attribute);
                                 if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                                 {
                                     pp.Classification.Add(Attributes.Confirmed);
@@ -154,8 +155,10 @@ namespace Genometric.MSPC.Model
                             }
                             else
                             {
-                                pp.reason = Messages.Codes.M002;
+                                var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
+                                pp.Classification.Add(attribute);
                                 pp.Classification.Add(Attributes.Discarded);
+                                pp.reason = Messages.Codes.M002;
                                 _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
                             }
                         }
@@ -228,9 +231,7 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.Source);
-                    anRe.XSquared = _xsqrd;
-                    anRe.supportingPeaks = tSupPeak;
+                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
                     anRe.Classification.Add(Attributes.Confirmed);
 
                     if (supPeak.Source.Value <= _config.TauS)
@@ -257,11 +258,9 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.Source);
-                    anRe.XSquared = _xsqrd;
-                    anRe.supportingPeaks = tSupPeak;
-                    anRe.reason = discardReason;
+                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
                     anRe.Classification.Add(Attributes.Discarded);
+                    anRe.reason = discardReason;
 
                     if (supPeak.Source.Value <= _config.TauS)
                         anRe.Classification.Add(Attributes.Stringent);
@@ -340,9 +339,7 @@ namespace Genometric.MSPC.Model
                 {
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
-                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Source);
-                        outputPeak.XSquared = confirmedPeak.XSquared;
-                        outputPeak.supportingPeaks = confirmedPeak.supportingPeaks;
+                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Source, confirmedPeak.XSquared, confirmedPeak.SupportingPeaks);
                         outputPeak.Classification.Add(Attributes.TruePositive);
                         outputPeak.Classification.Add(Attributes.Confirmed);
 

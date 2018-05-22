@@ -21,9 +21,16 @@ namespace Genometric.MSPC.Core.Model
     public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        internal ProcessedPeak(I source):
+        internal ProcessedPeak(I source, double xSquared, List<SupportingPeak<I>> supportingPeaks) :
+            this(source, xSquared, supportingPeaks.AsReadOnly())
+        { }
+
+        internal ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks):
             base(source)
-        {            
+        {
+            XSquared = xSquared;
+            SupportingPeaks = supportingPeaks;
+            RTP = ChiSquaredCache.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaks.Count * 2));
             Classification = new HashSet<Attributes>
             {
                 Attributes.TruePositive
@@ -33,24 +40,14 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Sets and gets X-squared of test
         /// </summary>
-        public double XSquared { internal set; get; }
+        public double XSquared { private set; get; }
 
         /// <summary>
         /// Right tailed probability of x-squared.
         /// </summary>
         public double RTP { private set; get; }
         
-        private List<SupportingPeak<I>> _supportingPeaks;
-        internal List<SupportingPeak<I>> supportingPeaks
-        {
-            get { return _supportingPeaks; }
-            set
-            {
-                _supportingPeaks = value;
-                RTP = ChiSquaredCache.ChiSqrdDistRTP(XSquared, 2 + (value.Count * 2));
-            }
-        }
-        public ReadOnlyCollection<SupportingPeak<I>> SupportingPeaks { get { return supportingPeaks.AsReadOnly(); } }
+        public ReadOnlyCollection<SupportingPeak<I>> SupportingPeaks { private set; get; }
 
         /// <summary>
         /// Gets the reason of discarding this ER. It returns an empty string if 

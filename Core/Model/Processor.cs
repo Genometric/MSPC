@@ -119,43 +119,43 @@ namespace Genometric.MSPC.Model
                         foreach (I peak in strand.Value.Intervals)
                         {
                             if (cancel) return null;
-                            var ppeak = new ProcessedPeak<I>(peak, _xsqrd);
+                            var pp = new ProcessedPeak<I>(peak, _xsqrd);
                             if (peak.Value < _config.TauS)
-                                ppeak.Classification.Add(Attributes.Stringent);
+                                pp.Classification.Add(Attributes.Stringent);
                             else if (peak.Value < _config.TauW)
-                                ppeak.Classification.Add(Attributes.Weak);
+                                pp.Classification.Add(Attributes.Weak);
                             else
                             {
-                                ppeak.Classification.Add(Attributes.Background);
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(ppeak);
+                                pp.Classification.Add(Attributes.Background);
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
                                 continue;
                             }
 
                             _xsqrd = 0;
                             var supportingPeaks = FindSupportingPeaks(sample.Key, chr.Key, peak);
-                            ppeak.supportingPeaks = supportingPeaks;
+                            pp.supportingPeaks = supportingPeaks;
                             if (supportingPeaks.Count + 1 >= _config.C)
                             {
                                 CalculateXsqrd(peak, supportingPeaks);
                                 if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                                 {
-                                    ppeak.Classification.Add(Attributes.Confirmed);
-                                    _analysisResults[sample.Key].Chromosomes[chr.Key].Add(ppeak);
-                                    ConfirmSupportingPeaks(sample.Key, chr.Key, ppeak.Source, supportingPeaks);
+                                    pp.Classification.Add(Attributes.Confirmed);
+                                    _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
+                                    ConfirmSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks);
                                 }
                                 else
                                 {
-                                    ppeak.reason = Messages.Codes.M001;
-                                    ppeak.Classification.Add(Attributes.Discarded);
-                                    _analysisResults[sample.Key].Chromosomes[chr.Key].Add(ppeak);
-                                    DiscardSupportingPeaks(sample.Key, chr.Key, ppeak.Source, supportingPeaks, Messages.Codes.M001);
+                                    pp.reason = Messages.Codes.M001;
+                                    pp.Classification.Add(Attributes.Discarded);
+                                    _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
+                                    DiscardSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks, Messages.Codes.M001);
                                 }
                             }
                             else
                             {
-                                ppeak.reason = Messages.Codes.M002;
-                                ppeak.Classification.Add(Attributes.Discarded);
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(ppeak);
+                                pp.reason = Messages.Codes.M002;
+                                pp.Classification.Add(Attributes.Discarded);
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
                             }
                         }
 

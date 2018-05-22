@@ -119,7 +119,7 @@ namespace Genometric.MSPC.Model
                         foreach (I peak in strand.Value.Intervals)
                         {
                             if (cancel) return null;
-                            var pp = new ProcessedPeak<I>(peak, _xsqrd);
+                            var pp = new ProcessedPeak<I>(peak);
                             if (peak.Value < _config.TauS)
                                 pp.Classification.Add(Attributes.Stringent);
                             else if (peak.Value < _config.TauW)
@@ -137,6 +137,7 @@ namespace Genometric.MSPC.Model
                             if (supportingPeaks.Count + 1 >= _config.C)
                             {
                                 CalculateXsqrd(peak, supportingPeaks);
+                                pp.XSquared = _xsqrd;
                                 if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                                 {
                                     pp.Classification.Add(Attributes.Confirmed);
@@ -227,7 +228,8 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd);
+                    var anRe = new ProcessedPeak<I>(supPeak.Source);
+                    anRe.XSquared = _xsqrd;
                     anRe.supportingPeaks = tSupPeak;
                     anRe.Classification.Add(Attributes.Confirmed);
 
@@ -255,7 +257,8 @@ namespace Genometric.MSPC.Model
                         if (supPeak.CompareTo(sP) != 0)
                             tSupPeak.Add(sP);
 
-                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd);
+                    var anRe = new ProcessedPeak<I>(supPeak.Source);
+                    anRe.XSquared = _xsqrd;
                     anRe.supportingPeaks = tSupPeak;
                     anRe.reason = discardReason;
                     anRe.Classification.Add(Attributes.Discarded);
@@ -337,7 +340,8 @@ namespace Genometric.MSPC.Model
                 {
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
-                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Source, confirmedPeak.XSquared);
+                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Source);
+                        outputPeak.XSquared = confirmedPeak.XSquared;
                         outputPeak.supportingPeaks = confirmedPeak.supportingPeaks;
                         outputPeak.Classification.Add(Attributes.TruePositive);
                         outputPeak.Classification.Add(Attributes.Confirmed);

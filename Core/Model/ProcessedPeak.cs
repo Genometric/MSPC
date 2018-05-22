@@ -21,11 +21,9 @@ namespace Genometric.MSPC.Core.Model
     public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        internal ProcessedPeak(I source, double xSquared):
+        internal ProcessedPeak(I source):
             base(source)
-        {
-            XSquared = xSquared;
-            
+        {            
             Classification = new HashSet<Attributes>
             {
                 Attributes.TruePositive
@@ -35,7 +33,7 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Sets and gets X-squared of test
         /// </summary>
-        public double XSquared { private set; get; }
+        public double XSquared { internal set; get; }
 
         /// <summary>
         /// Right tailed probability of x-squared.

@@ -21,7 +21,7 @@ namespace Genometric.MSPC.Model
         where I : IChIPSeqPeak, new()
     {
         private readonly Dictionary<Attributes, uint> _stats;
-        private Dictionary<Attributes, SortedList<int, I>> _setsInit { set; get; }
+        private Dictionary<Attributes, Dictionary<UInt64, I>> _setsInit { set; get; }
         private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 
         public Sets()
@@ -37,11 +37,11 @@ namespace Genometric.MSPC.Model
                 { Attributes.Output, new Dictionary<ulong, ProcessedPeak<I>>() }
             };
 
-            _setsInit = new Dictionary<Attributes, SortedList<int, I>>
+            _setsInit = new Dictionary<Attributes, Dictionary<UInt64, I>>
             {
-                { Attributes.Stringent, new SortedList<int, I>() },
-                { Attributes.Weak, new SortedList<int, I>() },
-                { Attributes.Background, new SortedList<int, I>() }
+                { Attributes.Stringent, new Dictionary<UInt64, I>() },
+                { Attributes.Weak, new Dictionary<UInt64, I>() },
+                { Attributes.Background, new Dictionary<UInt64, I>() }
             };
         }
 
@@ -52,7 +52,7 @@ namespace Genometric.MSPC.Model
                     String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
                     Attributes.Stringent.ToString(), Attributes.Weak.ToString(), Attributes.Background.ToString()));
 
-            _setsInit[type].Add(peak.Left, peak);
+            _setsInit[type].Add(peak.HashKey, peak);
         }
 
         public void Add(ProcessedPeak<I> peak, Attributes type)
@@ -90,9 +90,9 @@ namespace Genometric.MSPC.Model
                     case Attributes.Stringent:
                     case Attributes.Weak:
                     case Attributes.Background:
-                        if (!_setsInit[attribute].ContainsKey(peak.Source.Left))
+                        if (!_setsInit[attribute].ContainsKey(peak.Source.HashKey))
                         {
-                            _setsInit[attribute].Add(peak.Source.Left, peak.Source);
+                            _setsInit[attribute].Add(peak.Source.HashKey, peak.Source);
                             _stats[attribute]++;
                         }
                         break;
@@ -150,7 +150,7 @@ namespace Genometric.MSPC.Model
                 case Attributes.Stringent:
                 case Attributes.Weak:
                 case Attributes.Background:
-                    return _setsInit[type].Values;
+                    return _setsInit[type].Values.ToList();
 
                 default:
                     throw new ArgumentException(

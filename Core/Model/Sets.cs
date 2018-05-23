@@ -45,15 +45,16 @@ namespace Genometric.MSPC.Model
             };
         }
 
-        public void Add(I peak, Attributes type)
+        public void Add(I peak, Attributes attribute)
         {
-            switch (type)
+            switch (attribute)
             {
                 case Attributes.Stringent:
                 case Attributes.Weak:
                 case Attributes.Background:
-                    _setsInit[type].Add(peak.HashKey, peak);
+                    _setsInit[attribute].Add(peak.HashKey, peak);
                     break;
+
                 default:
                     throw new ArgumentException(
                     String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
@@ -61,23 +62,23 @@ namespace Genometric.MSPC.Model
             }
         }
 
-        public void Add(ProcessedPeak<I> peak, Attributes type)
+        public void Add(ProcessedPeak<I> peak, Attributes attribute)
         {
-            switch (type)
+            switch (attribute)
             {
                 case Attributes.Confirmed:
                 case Attributes.Discarded:
-                    if (!_sets[type].ContainsKey(peak.Source.HashKey))
+                    if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
                     {
-                        _sets[type].Add(peak.Source.HashKey, peak);
+                        _sets[attribute].Add(peak.Source.HashKey, peak);
                         foreach (var att in peak.Classification)
                             _stats[att]++;
                     }
                     break;
 
                 case Attributes.Output:
-                    if (!_sets[type].ContainsKey(peak.Source.HashKey))
-                        _sets[type].Add(peak.Source.HashKey, peak);
+                    if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
+                        _sets[attribute].Add(peak.Source.HashKey, peak);
                     break;
 
                 default:
@@ -149,14 +150,14 @@ namespace Genometric.MSPC.Model
             }
         }
 
-        public IList<I> GetInitialClassifications(Attributes type)
+        public IList<I> GetInitialClassifications(Attributes attribute)
         {
-            switch (type)
+            switch (attribute)
             {
                 case Attributes.Stringent:
                 case Attributes.Weak:
                 case Attributes.Background:
-                    return _setsInit[type].Values.ToList();
+                    return _setsInit[attribute].Values.ToList();
 
                 default:
                     throw new ArgumentException(

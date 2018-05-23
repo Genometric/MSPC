@@ -326,17 +326,17 @@ namespace Genometric.MSPC.Model
 
                     for (int k = 1; k <= m; k++)
                     {
-                        if (outputSet[k - 1].Source.Value > ((double)k / (double)m) * _config.Alpha)
+                        if (outputSet[k - 1].Source.Value > (k / (double)m) * _config.Alpha)
                         {
                             k--;
                             for (int l = 1; l < k; l++)
                             {
-                                outputSet[l].AdjPValue = (((double)k * outputSet[l].Source.Value) / (double)m) * _config.Alpha;
+                                outputSet[l].AdjPValue = ((k * outputSet[l].Source.Value) / m) * _config.Alpha;
                                 outputSet[l].SetStatisticalClassification(Attributes.TruePositive);
                             }
                             for (int l = k; l < m; l++)
                             {
-                                outputSet[l].AdjPValue = (((double)k * outputSet[l].Source.Value) / (double)m) * _config.Alpha;
+                                outputSet[l].AdjPValue = ((k * outputSet[l].Source.Value) / m) * _config.Alpha;
                                 outputSet[l].SetStatisticalClassification(Attributes.FalsePositive);
                             }
 

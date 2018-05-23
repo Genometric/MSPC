@@ -47,12 +47,18 @@ namespace Genometric.MSPC.Model
 
         public void Add(I peak, Attributes type)
         {
-            if (type != Attributes.Stringent && type != Attributes.Weak && type != Attributes.Background)
-                throw new ArgumentException(
+            switch (type)
+            {
+                case Attributes.Stringent:
+                case Attributes.Weak:
+                case Attributes.Background:
+                    _setsInit[type].Add(peak.HashKey, peak);
+                    break;
+                default:
+                    throw new ArgumentException(
                     String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
                     Attributes.Stringent.ToString(), Attributes.Weak.ToString(), Attributes.Background.ToString()));
-
-            _setsInit[type].Add(peak.HashKey, peak);
+            }
         }
 
         public void Add(ProcessedPeak<I> peak, Attributes type)

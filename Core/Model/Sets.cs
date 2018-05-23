@@ -115,9 +115,32 @@ namespace Genometric.MSPC.Model
             return _sets[attributes].Values.ToList();
         }
 
-        public Dictionary<UInt64, ProcessedPeak<I>> GetDict(Attributes attributes)
+        public bool Contains(Attributes attribute, UInt64 hashkey)
         {
-            return _sets[attributes];
+            switch (attribute)
+            {
+                case Attributes.Stringent:
+                case Attributes.Weak:
+                case Attributes.Background:
+                    return _setsInit[attribute].ContainsKey(0);
+
+                default:
+                    return _sets[attribute].ContainsKey(hashkey);
+            }
+        }
+
+        internal bool Remove(Attributes attribute, UInt64 hashkey)
+        {
+            switch (attribute)
+            {
+                case Attributes.Stringent:
+                case Attributes.Weak:
+                case Attributes.Background:
+                    return _setsInit[attribute].Remove(0);
+
+                default:
+                    return _sets[attribute].Remove(hashkey);
+            }
         }
 
         public IList<I> GetInitialClassifications(Attributes type)

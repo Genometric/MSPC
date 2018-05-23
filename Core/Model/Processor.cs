@@ -221,7 +221,7 @@ namespace Genometric.MSPC.Model
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].GetDict(attribute).ContainsKey(supPeak.Source.HashKey))
+                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].Contains(attribute, supPeak.Source.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.SampleID];
@@ -267,41 +267,17 @@ namespace Genometric.MSPC.Model
         private void ProcessIntermediaSets()
         {
             if (_config.ReplicateType == ReplicateType.Biological)
-            {
-                // Performe : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
-
+                /// Performe : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
                 foreach (var result in _analysisResults)
-                {
                     foreach (var chr in result.Value.Chromosomes)
-                    {
-                        foreach (var confirmedPeak in chr.Value.GetDict(Attributes.Confirmed))
-                        {
-                            if (chr.Value.GetDict(Attributes.Discarded).ContainsKey(confirmedPeak.Key))
-                            {
-                                chr.Value.GetDict(Attributes.Discarded).Remove(confirmedPeak.Key);
-                            }
-                        }
-                    }
-                }
-            }
+                        foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
+                            chr.Value.Remove(Attributes.Discarded, confirmedPeak.Source.HashKey);
             else
-            {
-                // Performe : R_j__c = R_j__c \ { R_j__c intersection R_j__d }
-
+                /// Performe : R_j__c = R_j__c \ { R_j__c intersection R_j__d }
                 foreach (var result in _analysisResults)
-                {
                     foreach (var chr in result.Value.Chromosomes)
-                    {
-                        foreach (var discardedPeak in chr.Value.GetDict(Attributes.Discarded))
-                        {
-                            if (chr.Value.GetDict(Attributes.Confirmed).ContainsKey(discardedPeak.Key))
-                            {
-                                chr.Value.GetDict(Attributes.Confirmed).Remove(discardedPeak.Key);
-                            }
-                        }
-                    }
-                }
-            }
+                        foreach (var discardedPeak in chr.Value.Get(Attributes.Discarded))
+                            chr.Value.Remove(Attributes.Confirmed, discardedPeak.Source.HashKey);
         }
 
         private void CreateOuputSet()

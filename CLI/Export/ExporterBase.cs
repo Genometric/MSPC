@@ -38,7 +38,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.Get(Attributes.Output))
+                    foreach (var item in chr.Value.Get(Attributes.Confirmed))
                     {
                         if (item.Classification.Contains(Attributes.TruePositive))
                         {
@@ -63,7 +63,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.Get(Attributes.Output))
+                    foreach (var item in chr.Value.Get(Attributes.Confirmed))
                     {
                         if (item.Classification.Contains(Attributes.TruePositive) && item.Classification.Contains(Attributes.Stringent) && item.Classification.Contains(Attributes.Confirmed))
                         {
@@ -88,7 +88,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.Get(Attributes.Output))
+                    foreach (var item in chr.Value.Get(Attributes.Confirmed))
                     {
                         if (item.Classification.Contains(Attributes.TruePositive) && item.Classification.Contains(Attributes.Weak) && item.Classification.Contains(Attributes.Confirmed))
                         {
@@ -114,7 +114,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.Get(Attributes.Output))
+                    foreach (var item in chr.Value.Get(Attributes.Confirmed))
                     {
                         if (item.Classification.Contains(Attributes.FalsePositive))
                         {

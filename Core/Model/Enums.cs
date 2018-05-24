@@ -17,7 +17,6 @@ namespace Genometric.MSPC.Model
         TruePositive = 10,
         FalsePositive = 11,
         Input = 12,
-        Output = 13,
         Background = 14,
         Confirmed = 15,
         Discarded = 16

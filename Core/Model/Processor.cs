@@ -80,7 +80,7 @@ namespace Genometric.MSPC.Model
 
         internal ReadOnlyDictionary<uint, Result<I>> Run(Config config)
         {
-            int step = 1, stepCount = 6;
+            int step = 1, stepCount = 5;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
 
             _config = config;
@@ -166,10 +166,6 @@ namespace Genometric.MSPC.Model
             if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
             ProcessIntermediaSets();
-
-            if (cancel) return null;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating output set"));
-            CreateOuputSet();
 
             if (cancel) return null;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
@@ -280,33 +276,6 @@ namespace Genometric.MSPC.Model
                             chr.Value.Remove(Attributes.Confirmed, discardedPeak.Source.HashKey);
         }
 
-        private void CreateOuputSet()
-        {
-            foreach (var result in _analysisResults)
-            {
-                foreach (var chr in result.Value.Chromosomes)
-                {
-                    foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
-                    {
-                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Source, confirmedPeak.XSquared, confirmedPeak.SupportingPeaks);
-                        outputPeak.Classification.Add(Attributes.TruePositive);
-                        outputPeak.Classification.Add(Attributes.Confirmed);
-
-                        if (confirmedPeak.Source.Value <= _config.TauS)
-                        {
-                            outputPeak.Classification.Add(Attributes.Stringent);
-                        }
-                        else if (confirmedPeak.Source.Value <= _config.TauW)
-                        {
-                            outputPeak.Classification.Add(Attributes.Weak);
-                        }
-
-                        result.Value.Chromosomes[chr.Key].Add(outputPeak, Attributes.Output);
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Benjamini–Hochberg procedure (step-up procedure)
         /// </summary>
@@ -316,28 +285,28 @@ namespace Genometric.MSPC.Model
             {
                 foreach (var chr in result.Value.Chromosomes)
                 {
-                    chr.Value.SetTruePositiveCount((uint)chr.Value.Get(Attributes.Output).Count);
+                    chr.Value.SetTruePositiveCount((uint)chr.Value.Get(Attributes.Confirmed).Count);
                     chr.Value.SetFalsePositiveCount(0);
-                    var outputSet = chr.Value.Get(Attributes.Output);
-                    int m = outputSet.Count;
+                    var confirmedPeaks = chr.Value.Get(Attributes.Confirmed);
+                    int m = confirmedPeaks.Count;
 
-                    // Sorts output set based on the values of peaks. 
-                    outputSet.Sort(new Comparers.CompareProcessedPeakByValue<I>());
+                    // Sorts confirmed peaks set based on their p-values.
+                    confirmedPeaks.Sort(new Comparers.CompareProcessedPeakByValue<I>());
 
                     for (int k = 1; k <= m; k++)
                     {
-                        if (outputSet[k - 1].Source.Value > (k / (double)m) * _config.Alpha)
+                        if (confirmedPeaks[k - 1].Source.Value > (k / (double)m) * _config.Alpha)
                         {
                             k--;
                             for (int l = 1; l < k; l++)
                             {
-                                outputSet[l].AdjPValue = ((k * outputSet[l].Source.Value) / m) * _config.Alpha;
-                                outputSet[l].SetStatisticalClassification(Attributes.TruePositive);
+                                confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
+                                confirmedPeaks[l].SetStatisticalClassification(Attributes.TruePositive);
                             }
                             for (int l = k; l < m; l++)
                             {
-                                outputSet[l].AdjPValue = ((k * outputSet[l].Source.Value) / m) * _config.Alpha;
-                                outputSet[l].SetStatisticalClassification(Attributes.FalsePositive);
+                                confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
+                                confirmedPeaks[l].SetStatisticalClassification(Attributes.FalsePositive);
                             }
 
                             chr.Value.SetTruePositiveCount((uint)k);
@@ -346,9 +315,8 @@ namespace Genometric.MSPC.Model
                         }
                     }
 
-                    // Sorts output set using default comparer. 
-                    // The default sorter gives higher priority to two ends than values. 
-                    outputSet.Sort();
+                    // Sorts confirmed peaks set based on coordinates using default comparer.
+                    confirmedPeaks.Sort();
                 }
             }
         }
@@ -363,9 +331,9 @@ namespace Genometric.MSPC.Model
                     if (!_mergedReplicates.ContainsKey(chr.Key))
                         _mergedReplicates.Add(chr.Key, new SortedList<I, I>());
 
-                    foreach (var outputER in chr.Value.Get(Attributes.Output))
+                    foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
-                        var peak = outputER.Source;
+                        var peak = confirmedPeak.Source;
                         var interval = new I();
                         interval.Left = peak.Left;
                         interval.Right = peak.Right;

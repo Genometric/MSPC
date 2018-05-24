@@ -33,8 +33,7 @@ namespace Genometric.MSPC.Model
             _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>
             {
                 { Attributes.Confirmed, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.Output, new Dictionary<ulong, ProcessedPeak<I>>() }
+                { Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>() }
             };
 
             _setsInit = new Dictionary<Attributes, Dictionary<UInt64, I>>
@@ -76,15 +75,10 @@ namespace Genometric.MSPC.Model
                     }
                     break;
 
-                case Attributes.Output:
-                    if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
-                        _sets[attribute].Add(peak.Source.HashKey, peak);
-                    break;
-
                 default:
                     throw new ArgumentException(
-                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
-                    Attributes.Confirmed.ToString(), Attributes.Discarded.ToString(), Attributes.Output.ToString()));
+                    String.Format("Invalid attribute; accepted values are: {0} and {1}.",
+                    Attributes.Confirmed.ToString(), Attributes.Discarded.ToString()));
             }
         }
 
@@ -106,7 +100,6 @@ namespace Genometric.MSPC.Model
 
                     case Attributes.Confirmed:
                     case Attributes.Discarded:
-                    case Attributes.Output:
                         if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
                         {
                             _sets[attribute].Add(peak.Source.HashKey, peak);

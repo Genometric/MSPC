@@ -301,12 +301,12 @@ namespace Genometric.MSPC.Model
                             for (int l = 1; l < k; l++)
                             {
                                 confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
-                                confirmedPeaks[l].SetStatisticalClassification(Attributes.TruePositive);
+                                confirmedPeaks[l].Classification.Add(Attributes.TruePositive);
                             }
                             for (int l = k; l < m; l++)
                             {
                                 confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
-                                confirmedPeaks[l].SetStatisticalClassification(Attributes.FalsePositive);
+                                confirmedPeaks[l].Classification.Add(Attributes.FalsePositive);
                             }
 
                             chr.Value.SetTruePositiveCount((uint)k);

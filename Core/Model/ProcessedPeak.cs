@@ -31,10 +31,7 @@ namespace Genometric.MSPC.Core.Model
             XSquared = xSquared;
             SupportingPeaks = supportingPeaks;
             RTP = ChiSquaredCache.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaks.Count * 2));
-            Classification = new HashSet<Attributes>
-            {
-                Attributes.TruePositive
-            };
+            Classification = new HashSet<Attributes>();
         }
 
         /// <summary>
@@ -65,17 +62,6 @@ namespace Genometric.MSPC.Core.Model
         /// Sets and gets adjusted p-value using the multiple testing correction method of choice.
         /// </summary>
         public double AdjPValue { internal set; get; }
-
-        internal void SetStatisticalClassification(Attributes attribute)
-        {
-            if (attribute != Attributes.TruePositive && attribute != Attributes.FalsePositive)
-                throw new ArgumentException(
-                    String.Format("Invalid attribute; accepted values are: {0} and {1}.",
-                    Attributes.TruePositive.ToString(), Attributes.FalsePositive.ToString()));
-
-            if (!Classification.Remove(attribute))
-                Classification.Add(attribute);
-        }
 
         int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> other)
         {

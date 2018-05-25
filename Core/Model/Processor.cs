@@ -1,25 +1,16 @@
-﻿/** Copyright © 2014-2015 Vahid Jalili
- * 
- * This file is part of MSPC project.
- * MSPC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * MSPC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
- **/
+﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
+// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
+// See the LICENSE file in the project root for more information.
 
-using Genometric.MSPC.Model;
+using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.IntervalParsers;
+using Genometric.MSPC.Core.Model;
+using Genometric.MSPC.IntervalTree;
+using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Collections.ObjectModel;
-using System.Threading;
-using Genometric.GeUtilities.IGenomics;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.MSPC.XSquaredData;
-using Genometric.MSPC.IntervalTree;
-using Genometric.MSPC.Core.Model;
+using System.Linq;
 
 namespace Genometric.MSPC.Model
 {
@@ -51,19 +42,6 @@ namespace Genometric.MSPC.Model
 
         private Config _config { set; get; }
 
-        /// <summary>
-        /// <list type="bullet">
-        /// <item><description>
-        ///     uint: sample ID.
-        /// </description></item>
-        /// <item><description>
-        ///     string: chromosome label.
-        /// </description></item>
-        /// <item><description>
-        ///     char: chromosome strand.
-        /// </description></item>
-        /// </list>
-        /// </summary>
         private Dictionary<uint, BED<I>> _samples { set; get; }
 
         internal int SamplesCount { get { return _samples.Count; } }
@@ -263,13 +241,13 @@ namespace Genometric.MSPC.Model
         private void ProcessIntermediaSets()
         {
             if (_config.ReplicateType == ReplicateType.Biological)
-                /// Performe : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
+                /// Perform : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
                 foreach (var result in _analysisResults)
                     foreach (var chr in result.Value.Chromosomes)
                         foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                             chr.Value.Remove(Attributes.Discarded, confirmedPeak.Source.HashKey);
             else
-                /// Performe : R_j__c = R_j__c \ { R_j__c intersection R_j__d }
+                /// Perform : R_j__c = R_j__c \ { R_j__c intersection R_j__d }
                 foreach (var result in _analysisResults)
                     foreach (var chr in result.Value.Chromosomes)
                         foreach (var discardedPeak in chr.Value.Get(Attributes.Discarded))

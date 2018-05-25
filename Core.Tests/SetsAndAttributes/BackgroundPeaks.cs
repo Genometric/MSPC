@@ -61,27 +61,5 @@ namespace Core.Tests.Base
                     s.Value.Chromosomes["chr1"].Get(Attributes.TruePositive).Count == 0 &&
                     s.Value.Chromosomes["chr1"].Get(Attributes.FalsePositive).Count == 0);
         }
-
-        [Fact]
-        public void BackgroundPeakAreNotConsideredDiscarded()
-        {
-            // Arrange & Act
-            var res = GenerateAndProcessBackgroundPeaks();
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Discarded).Count == 0);
-        }
-
-        [Fact]
-        public void BackgroundPeaksAreNotConsideredConfirmed()
-        {
-            // Arrange & Act
-            var res = GenerateAndProcessBackgroundPeaks();
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0);
-        }
     }
 }

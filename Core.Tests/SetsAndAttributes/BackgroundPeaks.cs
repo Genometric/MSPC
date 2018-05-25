@@ -61,5 +61,28 @@ namespace Core.Tests.Base
                     s.Value.Chromosomes["chr1"].Get(Attributes.TruePositive).Count == 0 &&
                     s.Value.Chromosomes["chr1"].Get(Attributes.FalsePositive).Count == 0);
         }
+
+        [Fact]
+        public void NonOverlappingBackgroundPeaks()
+        {
+            // Arrange
+            var sA = new BED<ChIPSeqPeak>();
+            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, "chr1", '*');
+
+            var sB = new BED<ChIPSeqPeak>();
+            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-4 }, "chr1", '*');
+
+            var mspc = new MSPC<ChIPSeqPeak>();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+
+            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            foreach(var s in res)
+                Assert.True(s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Background).Count == 1);
+        }
     }
 }

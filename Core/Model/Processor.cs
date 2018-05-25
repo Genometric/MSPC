@@ -58,13 +58,29 @@ namespace Genometric.MSPC.Model
 
         internal void Run(Config config)
         {
+            _config = config;
             int step = 1, stepCount = 5;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
+            BuildDataStructures();
 
-            _config = config;
+            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
+            ProcessSamples();
+
+            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
+            ProcessIntermediaSets();
+
+            OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
+            PerformMultipleTestingCorrection();
+
+            OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
+            CreateConsensusPeaks();
+        }
+
+        private void BuildDataStructures()
+        {
             _cachedChiSqrd = new List<double>();
             for (int i = 1; i <= _samples.Count; i++)
-                _cachedChiSqrd.Add(Math.Round(ChiSquaredCache.ChiSqrdINVRTP(config.Gamma, (byte)(i * 2)), 3));
+                _cachedChiSqrd.Add(Math.Round(ChiSquaredCache.ChiSqrdINVRTP(_config.Gamma, (byte)(i * 2)), 3));
 
             _trees = new Dictionary<uint, Dictionary<string, Tree<I>>>();
             _analysisResults = new Dictionary<uint, Result<I>>();
@@ -96,8 +112,10 @@ namespace Genometric.MSPC.Model
                     }
                 }
             }
+        }
 
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
+        private void ProcessSamples()
+        {
             Attributes attribute;
             foreach (var sample in _samples)
                 foreach (var chr in sample.Value.Chromosomes)
@@ -151,30 +169,6 @@ namespace Genometric.MSPC.Model
                                 _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
                             }
                         }
-
-            if (cancel)
-            {
-                _analysisResults = new Dictionary<uint, Result<I>>();
-                return;
-            }
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
-            ProcessIntermediaSets();
-
-            if (cancel)
-            {
-                _analysisResults = new Dictionary<uint, Result<I>>();
-                return;
-            }
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
-            PerformMultipleTestingCorrection();
-
-            if (cancel)
-            {
-                _analysisResults = new Dictionary<uint, Result<I>>();
-                return;
-            }
-            OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
-            CreateConsensusPeaks();
         }
 
         private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)
@@ -261,6 +255,12 @@ namespace Genometric.MSPC.Model
 
         private void ProcessIntermediaSets()
         {
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
+
             if (_config.ReplicateType == ReplicateType.Biological)
                 /// Perform : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
                 foreach (var result in _analysisResults)
@@ -280,6 +280,12 @@ namespace Genometric.MSPC.Model
         /// </summary>
         private void PerformMultipleTestingCorrection()
         {
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
+
             foreach (var result in _analysisResults)
             {
                 foreach (var chr in result.Value.Chromosomes)
@@ -322,6 +328,12 @@ namespace Genometric.MSPC.Model
 
         private void CreateConsensusPeaks()
         {
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
+
             _mergedReplicates = new Dictionary<string, SortedList<I, I>>();
             foreach (var result in _analysisResults)
             {

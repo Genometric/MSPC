@@ -334,20 +334,23 @@ namespace Genometric.MSPC.Model
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
                         var peak = confirmedPeak.Source;
-                        var interval = new I();
-                        interval.Left = peak.Left;
-                        interval.Right = peak.Right;
-                        interval.Name = "aaaa";
+                        var interval = new I
+                        {
+                            Left = peak.Left,
+                            Right = peak.Right,
+                            Name = "MSPC"
+                        };
 
-                        I mergedPeak;
-                        I mergingPeak = new I();
-                        mergingPeak.Left = peak.Left;
-                        mergingPeak.Right = peak.Right;
-                        mergingPeak.Name = "aaaa";
-                        mergingPeak.Value =
-                            (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E);
+                        I mergingPeak = new I
+                        {
+                            Left = peak.Left,
+                            Right = peak.Right,
+                            Name = "MSPC",
+                            Value =
+                            (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E)
+                        };
 
-                        while (_mergedReplicates[chr.Key].TryGetValue(interval, out mergedPeak))
+                        while (_mergedReplicates[chr.Key].TryGetValue(interval, out I mergedPeak))
                         {
                             _mergedReplicates[chr.Key].Remove(interval);
                             interval.Left = Math.Min(interval.Left, mergedPeak.Left);

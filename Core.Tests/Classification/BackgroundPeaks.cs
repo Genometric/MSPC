@@ -13,9 +13,9 @@ using Xunit;
 
 namespace Core.Tests.Base
 {
-    public class NoisePeaks
+    public class BackgroundPeaks
     {
-        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> GenerateAndProcessNoisePeaks()
+        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> GenerateAndProcessBackgroundPeaks()
         {
             var sA = new BED<ChIPSeqPeak>();
             sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, "chr1", '*');
@@ -40,13 +40,13 @@ namespace Core.Tests.Base
         }
 
         /// <summary>
-        /// Asserts if noise peaks are correctly separated in R_j^b sets.
+        /// Asserts if background peaks are correctly separated in R_j^b sets.
         /// </summary>
         [Fact]
         public void Separate()
         {
             // Arrange & Act
-            var res = GenerateAndProcessNoisePeaks();
+            var res = GenerateAndProcessBackgroundPeaks();
 
             // Assert
             foreach (var s in res)
@@ -54,10 +54,10 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void NoisePeakAreNotConsideredDiscarded()
+        public void BackgroundPeakAreNotConsideredDiscarded()
         {
             // Arrange & Act
-            var res = GenerateAndProcessNoisePeaks();
+            var res = GenerateAndProcessBackgroundPeaks();
 
             // Assert
             foreach (var s in res)
@@ -65,10 +65,10 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void NoisePeaksAreNotConsideredConfirmed()
+        public void BackgroundPeaksAreNotConsideredConfirmed()
         {
             // Arrange & Act
-            var res = GenerateAndProcessNoisePeaks();
+            var res = GenerateAndProcessBackgroundPeaks();
 
             // Assert
             foreach (var s in res)
@@ -76,10 +76,10 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void NoisePeaksAreNotOutputed()
+        public void BackgroundPeaksAreNotOutputed()
         {
             // Arrange & Act
-            var res = GenerateAndProcessNoisePeaks();
+            var res = GenerateAndProcessBackgroundPeaks();
 
             // Assert
             foreach (var s in res)

@@ -8,7 +8,6 @@ using Genometric.MSPC;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Xunit;
 
 namespace Core.Tests.Base
@@ -31,10 +30,6 @@ namespace Core.Tests.Base
 
             // Act
             var res = mspc.Run(config);
-
-            // TODO: this step should not be necessary; remove it after the Results class is updated.
-            ///foreach (var rep in res)
-            ///    rep.Value.ReadOverallStats();
 
             return res;
         }
@@ -74,18 +69,5 @@ namespace Core.Tests.Base
             foreach (var s in res)
                 Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0);
         }
-
-        [Fact]
-        public void BackgroundPeaksAreNotOutputed()
-        {
-            // Arrange & Act
-            var res = GenerateAndProcessBackgroundPeaks();
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0);
-        }
-
-        // TODO check for all the other sets.
     }
 }

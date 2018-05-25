@@ -56,7 +56,7 @@ namespace Genometric.MSPC.Model
             _samples.Add(id, peaks);
         }
 
-        internal ReadOnlyDictionary<uint, Result<I>> Run(Config config)
+        internal void Run(Config config)
         {
             int step = 1, stepCount = 5;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
@@ -70,19 +70,26 @@ namespace Genometric.MSPC.Model
             _analysisResults = new Dictionary<uint, Result<I>>();
             foreach (var sample in _samples)
             {
-                if (cancel) return null;
+                if (cancel)
+                {
+                    _analysisResults = new Dictionary<uint, Result<I>>();
+                    return;
+                }
                 _trees.Add(sample.Key, new Dictionary<string, Tree<I>>());
                 _analysisResults.Add(sample.Key, new Result<I>());
                 foreach (var chr in sample.Value.Chromosomes)
                 {
-                    if (cancel) return null;
                     _trees[sample.Key].Add(chr.Key, new Tree<I>());
                     _analysisResults[sample.Key].AddChromosome(chr.Key);
                     foreach (var strand in chr.Value.Strands)
                     {
                         foreach (I p in strand.Value.Intervals)
                         {
-                            if (cancel) return null;
+                            if (cancel)
+                            {
+                                _analysisResults = new Dictionary<uint, Result<I>>();
+                                return;
+                            }
                             if (p.Value < _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
                         }
@@ -97,7 +104,11 @@ namespace Genometric.MSPC.Model
                     foreach (var strand in chr.Value.Strands)
                         foreach (I peak in strand.Value.Intervals)
                         {
-                            if (cancel) return null;
+                            if (cancel)
+                            {
+                                _analysisResults = new Dictionary<uint, Result<I>>();
+                                return;
+                            }
                             _xsqrd = 0;
                             if (peak.Value < _config.TauS)
                                 attribute = Attributes.Stringent;
@@ -141,19 +152,29 @@ namespace Genometric.MSPC.Model
                             }
                         }
 
-            if (cancel) return null;
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
             ProcessIntermediaSets();
 
-            if (cancel) return null;
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
             PerformMultipleTestingCorrection();
 
-            if (cancel) return null;
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
             OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
             CreateConsensusPeaks();
-
-            return AnalysisResults;
         }
 
         private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)

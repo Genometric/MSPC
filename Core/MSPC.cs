@@ -60,7 +60,8 @@ namespace Genometric.MSPC
                 throw new InvalidOperationException(String.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
 
             _processor.cancel = false;
-            _results = _processor.Run(config);
+            _processor.Run(config);
+            _results = _processor.AnalysisResults;
             return GetResults();
         }
 
@@ -102,7 +103,8 @@ namespace Genometric.MSPC
 
         private void _doWork(object sender, DoWorkEventArgs e)
         {
-            _results = _processor.Run((Config)e.Argument);
+            _processor.Run((Config)e.Argument);
+            _results = _processor.AnalysisResults;
         }
 
         private void _runWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

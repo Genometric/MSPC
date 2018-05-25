@@ -38,7 +38,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.Get(Attributes.Output))
+                    foreach (var item in chr.Value.Get(Attributes.Confirmed))
                     {
                         if (item.Classification.Contains(Attributes.TruePositive))
                         {
@@ -63,9 +63,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.Get(Attributes.Output))
+                    foreach (var item in chr.Value.Get(Attributes.Confirmed))
                     {
-                        if (item.Classification.Contains(Attributes.TruePositive) && item.Classification.Contains(Attributes.StringentConfirmed))
+                        if (item.Classification.Contains(Attributes.TruePositive) && item.Classification.Contains(Attributes.Stringent) && item.Classification.Contains(Attributes.Confirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -88,9 +88,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.Get(Attributes.Output))
+                    foreach (var item in chr.Value.Get(Attributes.Confirmed))
                     {
-                        if (item.Classification.Contains(Attributes.TruePositive) && item.Classification.Contains(Attributes.WeakConfirmed))
+                        if (item.Classification.Contains(Attributes.TruePositive) && item.Classification.Contains(Attributes.Weak) && item.Classification.Contains(Attributes.Confirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -114,7 +114,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.Get(Attributes.Output))
+                    foreach (var item in chr.Value.Get(Attributes.Confirmed))
                     {
                         if (item.Classification.Contains(Attributes.FalsePositive))
                         {
@@ -213,7 +213,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Classification.Contains(Attributes.StringentConfirmed))
+                        if (item.Classification.Contains(Attributes.Stringent) && item.Classification.Contains(Attributes.Confirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -240,7 +240,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
                     foreach (var item in sortedDictionary)
                     {
-                        if (item.Classification.Contains(Attributes.WeakConfirmed))
+                        if (item.Classification.Contains(Attributes.Weak) && item.Classification.Contains(Attributes.Confirmed))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -288,7 +288,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.Get(Attributes.Discarded))
                     {
-                        if (item.Classification.Contains(Attributes.StringentDiscarded))
+                        if (item.Classification.Contains(Attributes.Stringent) && item.Classification.Contains(Attributes.Discarded))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +
@@ -312,7 +312,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 {
                     foreach (var item in chr.Value.Get(Attributes.Discarded))
                     {
-                        if (item.Classification.Contains(Attributes.WeakDiscarded))
+                        if (item.Classification.Contains(Attributes.Weak) && item.Classification.Contains(Attributes.Discarded))
                         {
                             writter.WriteLine(
                                 chr.Key + "\t" +

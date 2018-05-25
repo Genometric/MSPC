@@ -79,7 +79,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Output).Count == 0);
+                Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0);
         }
 
         // TODO check for all the other sets.

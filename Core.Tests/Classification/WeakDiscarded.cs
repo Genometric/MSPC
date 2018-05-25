@@ -45,7 +45,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].Stats[Attributes.WeakDiscardedT] == 1);
+                Assert.True(s.Value.Chromosomes["chr1"].Stats[Attributes.Weak] == 1 && s.Value.Chromosomes["chr1"].Stats[Attributes.Discarded] == 1);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Core.Tests.Base
                 Assert.True(s.Value.Chromosomes["chr1"].Get(Attributes.Discarded).Count == 1);
             foreach (var s in res)
                 foreach (var p in s.Value.Chromosomes["chr1"].Get(Attributes.Discarded))
-                    Assert.True(p.Classification.Contains(Attributes.WeakDiscardedT));
+                    Assert.True(p.Classification.Contains(Attributes.Weak) && p.Classification.Contains(Attributes.Discarded));
         }
     }
 }

@@ -1,25 +1,16 @@
-﻿/** Copyright © 2014-2015 Vahid Jalili
- * 
- * This file is part of MSPC project.
- * MSPC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * MSPC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with Foobar. If not, see http://www.gnu.org/licenses/.
- **/
+﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
+// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
+// See the LICENSE file in the project root for more information.
 
-using Genometric.MSPC.Model;
+using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.IntervalParsers;
+using Genometric.MSPC.Core.Model;
+using Genometric.MSPC.IntervalTree;
+using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Collections.ObjectModel;
-using System.Threading;
-using Genometric.GeUtilities.IGenomics;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.MSPC.XSquaredData;
-using Genometric.MSPC.IntervalTree;
-using Genometric.MSPC.Core.Model;
+using System.Linq;
 
 namespace Genometric.MSPC.Model
 {
@@ -51,19 +42,6 @@ namespace Genometric.MSPC.Model
 
         private Config _config { set; get; }
 
-        /// <summary>
-        /// <list type="bullet">
-        /// <item><description>
-        ///     uint: sample ID.
-        /// </description></item>
-        /// <item><description>
-        ///     string: chromosome label.
-        /// </description></item>
-        /// <item><description>
-        ///     char: chromosome strand.
-        /// </description></item>
-        /// </list>
-        /// </summary>
         private Dictionary<uint, BED<I>> _samples { set; get; }
 
         internal int SamplesCount { get { return _samples.Count; } }
@@ -78,95 +56,119 @@ namespace Genometric.MSPC.Model
             _samples.Add(id, peaks);
         }
 
-        internal ReadOnlyDictionary<uint, Result<I>> Run(Config config)
+        internal void Run(Config config)
         {
-            int step = 1, stepCount = 6;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
-
             _config = config;
+            int step = 1, stepCount = 5;
+            OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
+            BuildDataStructures();
+
+            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
+            ProcessSamples();
+
+            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
+            ProcessIntermediaSets();
+
+            OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
+            PerformMultipleTestingCorrection();
+
+            OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
+            CreateConsensusPeaks();
+        }
+
+        private void BuildDataStructures()
+        {
             _cachedChiSqrd = new List<double>();
             for (int i = 1; i <= _samples.Count; i++)
-                _cachedChiSqrd.Add(Math.Round(ChiSquaredCache.ChiSqrdINVRTP(config.Gamma, (byte)(i * 2)), 3));
+                _cachedChiSqrd.Add(Math.Round(ChiSquaredCache.ChiSqrdINVRTP(_config.Gamma, (byte)(i * 2)), 3));
 
             _trees = new Dictionary<uint, Dictionary<string, Tree<I>>>();
             _analysisResults = new Dictionary<uint, Result<I>>();
             foreach (var sample in _samples)
             {
-                if (cancel) return null;
+                if (cancel)
+                {
+                    _analysisResults = new Dictionary<uint, Result<I>>();
+                    return;
+                }
                 _trees.Add(sample.Key, new Dictionary<string, Tree<I>>());
                 _analysisResults.Add(sample.Key, new Result<I>());
                 foreach (var chr in sample.Value.Chromosomes)
                 {
-                    if (cancel) return null;
                     _trees[sample.Key].Add(chr.Key, new Tree<I>());
                     _analysisResults[sample.Key].AddChromosome(chr.Key);
                     foreach (var strand in chr.Value.Strands)
                     {
-                        if (cancel) return null;
                         foreach (I p in strand.Value.Intervals)
                         {
-                            if (cancel) return null;
+                            if (cancel)
+                            {
+                                _analysisResults = new Dictionary<uint, Result<I>>();
+                                return;
+                            }
                             if (p.Value < _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
-                            else
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(p, Attributes.Background);
                         }
                     }
                 }
             }
+        }
 
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
+        private void ProcessSamples()
+        {
+            Attributes attribute;
             foreach (var sample in _samples)
                 foreach (var chr in sample.Value.Chromosomes)
                     foreach (var strand in chr.Value.Strands)
                         foreach (I peak in strand.Value.Intervals)
                         {
-                            if (cancel) return null;
+                            if (cancel)
+                            {
+                                _analysisResults = new Dictionary<uint, Result<I>>();
+                                return;
+                            }
                             _xsqrd = 0;
-
-                            // Initial assessment: classifying peak as strong or weak based on p-value.
                             if (peak.Value < _config.TauS)
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(peak, Attributes.Stringent);
+                                attribute = Attributes.Stringent;
                             else if (peak.Value < _config.TauW)
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(peak, Attributes.Weak);
+                                attribute = Attributes.Weak;
                             else
+                            {
+                                var pp = new ProcessedPeak<I>(peak, _xsqrd, new List<SupportingPeak<I>>());
+                                pp.Classification.Add(Attributes.Background);
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
                                 continue;
+                            }
 
-                            // Combined stringency assessment: confirming or discarding a peak based on
-                            // (a) the number of peaks it overlaps with, and (b) the combined p-value of
-                            // the overlapping peaks calculated using Fisher's combined probability test.
                             var supportingPeaks = FindSupportingPeaks(sample.Key, chr.Key, peak);
                             if (supportingPeaks.Count + 1 >= _config.C)
                             {
                                 CalculateXsqrd(peak, supportingPeaks);
+                                var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
+                                pp.Classification.Add(attribute);
                                 if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
-                                    ConfirmPeak(sample.Key, chr.Key, peak, supportingPeaks);
+                                {
+                                    pp.Classification.Add(Attributes.Confirmed);
+                                    _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
+                                    ProcessSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks, Attributes.Confirmed, Messages.Codes.M000);
+                                }
                                 else
-                                    DiscardPeak(sample.Key, chr.Key, peak, supportingPeaks, Messages.Codes.M001);
+                                {
+                                    pp.reason = Messages.Codes.M001;
+                                    pp.Classification.Add(Attributes.Discarded);
+                                    _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
+                                    ProcessSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks, Attributes.Discarded, Messages.Codes.M001);
+                                }
                             }
                             else
                             {
-                                DiscardPeak(sample.Key, chr.Key, peak, supportingPeaks, Messages.Codes.M002);
+                                var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
+                                pp.Classification.Add(attribute);
+                                pp.Classification.Add(Attributes.Discarded);
+                                pp.reason = Messages.Codes.M002;
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
                             }
                         }
-
-            if (cancel) return null;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
-            ProcessIntermediaSets();
-
-            if (cancel) return null;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating output set"));
-            CreateOuputSet();
-
-            if (cancel) return null;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
-            PerformMultipleTestingCorrection();
-
-            if (cancel) return null;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating consensus peaks set"));
-            CreateConsensusPeaks();
-
-            return AnalysisResults;
         }
 
         private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)
@@ -204,25 +206,11 @@ namespace Genometric.MSPC.Model
             return supportingPeaks;
         }
 
-        private void ConfirmPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks)
-        {
-            var anRe = new ProcessedPeak<I>(p, _xsqrd, supportingPeaks);
-
-            if (p.Value <= _config.TauS)
-                anRe.Classification.Add(Attributes.StringentConfirmed);
-            else
-                anRe.Classification.Add(Attributes.WeakConfirmed);
-
-            _analysisResults[id].Chromosomes[chr].Add(anRe, Attributes.Confirmed);
-
-            ConfirmSupportingPeaks(id, chr, p, supportingPeaks);
-        }
-
-        private void ConfirmSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks)
+        private void ProcessSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, Attributes attribute, Messages.Codes message)
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].GetDict(Attributes.Confirmed).ContainsKey(supPeak.Source.HashKey))
+                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].Contains(attribute, supPeak.Source.HashKey))
                 {
                     var tSupPeak = new List<SupportingPeak<I>>();
                     var targetSample = _analysisResults[supPeak.SampleID];
@@ -233,82 +221,15 @@ namespace Genometric.MSPC.Model
                             tSupPeak.Add(sP);
 
                     var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
+                    anRe.Classification.Add(attribute);
+                    anRe.reason = message;
 
                     if (supPeak.Source.Value <= _config.TauS)
-                    {
-                        anRe.Classification.Add(Attributes.StringentConfirmed);
-                    }
+                        anRe.Classification.Add(Attributes.Stringent);
                     else
-                    {
-                        anRe.Classification.Add(Attributes.WeakConfirmed);
-                    }
+                        anRe.Classification.Add(Attributes.Weak);
 
-                    targetSample.Chromosomes[chr].Add(anRe, Attributes.Confirmed);
-                }
-            }
-        }
-
-        private void DiscardPeak(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, Messages.Codes discardReason)
-        {
-            var anRe = new ProcessedPeak<I>(p, _xsqrd, supportingPeaks, discardReason);
-
-            if (p.Value <= _config.TauS)
-            {
-                // The cause of discarding the region is :
-                if (supportingPeaks.Count + 1 >= _config.C)
-                    anRe.Classification.Add(Attributes.StringentDiscardedT);
-                else
-                    anRe.Classification.Add(Attributes.StringentDiscardedC);
-            }
-            else
-            {
-                // The cause of discarding the region is :
-                if (supportingPeaks.Count + 1 >= _config.C)
-                    anRe.Classification.Add(Attributes.WeakDiscardedT);
-                else
-                    anRe.Classification.Add(Attributes.WeakDiscardedC);
-            }
-
-            _analysisResults[id].Chromosomes[chr].Add(anRe, Attributes.Discarded);
-
-            if (supportingPeaks.Count + 1 >= _config.C)
-                DiscardSupportingPeaks(id, chr, p, supportingPeaks, discardReason);
-        }
-
-        private void DiscardSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, Messages.Codes discardReason)
-        {
-            foreach (var supPeak in supportingPeaks)
-            {
-                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].GetDict(Attributes.Discarded).ContainsKey(supPeak.Source.HashKey))
-                {
-                    var tSupPeak = new List<SupportingPeak<I>>();
-                    var targetSample = _analysisResults[supPeak.SampleID];
-                    tSupPeak.Add(new SupportingPeak<I>(p, id));
-
-                    foreach (var sP in supportingPeaks)
-                        if (supPeak.CompareTo(sP) != 0)
-                            tSupPeak.Add(sP);
-
-                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak, discardReason);
-
-                    if (supPeak.Source.Value <= _config.TauS)
-                    {
-                        // The cause of discarding the region is :
-                        if (supportingPeaks.Count + 1 >= _config.C)
-                            anRe.Classification.Add(Attributes.StringentDiscardedT);
-                        else
-                            anRe.Classification.Add(Attributes.StringentDiscardedC);
-                    }
-                    else
-                    {
-                        // The cause of discarding the region is :
-                        if (supportingPeaks.Count + 1 >= _config.C)
-                            anRe.Classification.Add(Attributes.WeakDiscardedT);
-                        else
-                            anRe.Classification.Add(Attributes.WeakDiscardedC);
-                    }
-
-                    targetSample.Chromosomes[chr].Add(anRe, Attributes.Discarded);
+                    targetSample.Chromosomes[chr].Add(anRe);
                 }
             }
         }
@@ -334,68 +255,24 @@ namespace Genometric.MSPC.Model
 
         private void ProcessIntermediaSets()
         {
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
+
             if (_config.ReplicateType == ReplicateType.Biological)
-            {
-                // Performe : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
-
+                /// Perform : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
                 foreach (var result in _analysisResults)
-                {
                     foreach (var chr in result.Value.Chromosomes)
-                    {
-                        foreach (var confirmedPeak in chr.Value.GetDict(Attributes.Confirmed))
-                        {
-                            if (chr.Value.GetDict(Attributes.Discarded).ContainsKey(confirmedPeak.Key))
-                            {
-                                chr.Value.GetDict(Attributes.Discarded).Remove(confirmedPeak.Key);
-                            }
-                        }
-                    }
-                }
-            }
+                        foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
+                            chr.Value.Remove(Attributes.Discarded, confirmedPeak.Source.HashKey);
             else
-            {
-                // Performe : R_j__c = R_j__c \ { R_j__c intersection R_j__d }
-
+                /// Perform : R_j__c = R_j__c \ { R_j__c intersection R_j__d }
                 foreach (var result in _analysisResults)
-                {
                     foreach (var chr in result.Value.Chromosomes)
-                    {
-                        foreach (var discardedPeak in chr.Value.GetDict(Attributes.Discarded))
-                        {
-                            if (chr.Value.GetDict(Attributes.Confirmed).ContainsKey(discardedPeak.Key))
-                            {
-                                chr.Value.GetDict(Attributes.Confirmed).Remove(discardedPeak.Key);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void CreateOuputSet()
-        {
-            foreach (var result in _analysisResults)
-            {
-                foreach (var chr in result.Value.Chromosomes)
-                {
-                    foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
-                    {
-                        var outputPeak = new ProcessedPeak<I>(confirmedPeak.Source, confirmedPeak.XSquared, confirmedPeak.SupportingPeaks);
-                        outputPeak.Classification.Add(Attributes.TruePositive);
-
-                        if (confirmedPeak.Source.Value <= _config.TauS)
-                        {
-                            outputPeak.Classification.Add(Attributes.StringentConfirmed);
-                        }
-                        else if (confirmedPeak.Source.Value <= _config.TauW)
-                        {
-                            outputPeak.Classification.Add(Attributes.WeakConfirmed);
-                        }
-
-                        result.Value.Chromosomes[chr.Key].Add(outputPeak, Attributes.Output);
-                    }
-                }
-            }
+                        foreach (var discardedPeak in chr.Value.Get(Attributes.Discarded))
+                            chr.Value.Remove(Attributes.Confirmed, discardedPeak.Source.HashKey);
         }
 
         /// <summary>
@@ -403,32 +280,38 @@ namespace Genometric.MSPC.Model
         /// </summary>
         private void PerformMultipleTestingCorrection()
         {
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
+
             foreach (var result in _analysisResults)
             {
                 foreach (var chr in result.Value.Chromosomes)
                 {
-                    chr.Value.SetTruePositiveCount((uint)chr.Value.Get(Attributes.Output).Count);
+                    chr.Value.SetTruePositiveCount((uint)chr.Value.Get(Attributes.Confirmed).Count);
                     chr.Value.SetFalsePositiveCount(0);
-                    var outputSet = chr.Value.Get(Attributes.Output);
-                    int m = outputSet.Count;
+                    var confirmedPeaks = chr.Value.Get(Attributes.Confirmed);
+                    int m = confirmedPeaks.Count;
 
-                    // Sorts output set based on the values of peaks. 
-                    outputSet.Sort(new Comparers.CompareProcessedPeakByValue<I>());
+                    // Sorts confirmed peaks set based on their p-values.
+                    confirmedPeaks.Sort(new Comparers.CompareProcessedPeakByValue<I>());
 
                     for (int k = 1; k <= m; k++)
                     {
-                        if (outputSet[k - 1].Source.Value > ((double)k / (double)m) * _config.Alpha)
+                        if (confirmedPeaks[k - 1].Source.Value > (k / (double)m) * _config.Alpha)
                         {
                             k--;
                             for (int l = 1; l < k; l++)
                             {
-                                outputSet[l].AdjPValue = (((double)k * outputSet[l].Source.Value) / (double)m) * _config.Alpha;
-                                outputSet[l].SetStatisticalClassification(Attributes.TruePositive);
+                                confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
+                                confirmedPeaks[l].Classification.Add(Attributes.TruePositive);
                             }
                             for (int l = k; l < m; l++)
                             {
-                                outputSet[l].AdjPValue = (((double)k * outputSet[l].Source.Value) / (double)m) * _config.Alpha;
-                                outputSet[l].SetStatisticalClassification(Attributes.FalsePositive);
+                                confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
+                                confirmedPeaks[l].Classification.Add(Attributes.FalsePositive);
                             }
 
                             chr.Value.SetTruePositiveCount((uint)k);
@@ -437,15 +320,20 @@ namespace Genometric.MSPC.Model
                         }
                     }
 
-                    // Sorts output set using default comparer. 
-                    // The default sorter gives higher priority to two ends than values. 
-                    outputSet.Sort();
+                    // Sorts confirmed peaks set based on coordinates using default comparer.
+                    confirmedPeaks.Sort();
                 }
             }
         }
 
         private void CreateConsensusPeaks()
         {
+            if (cancel)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                return;
+            }
+
             _mergedReplicates = new Dictionary<string, SortedList<I, I>>();
             foreach (var result in _analysisResults)
             {
@@ -454,23 +342,26 @@ namespace Genometric.MSPC.Model
                     if (!_mergedReplicates.ContainsKey(chr.Key))
                         _mergedReplicates.Add(chr.Key, new SortedList<I, I>());
 
-                    foreach (var outputER in chr.Value.Get(Attributes.Output))
+                    foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
-                        var peak = outputER.Source;
-                        var interval = new I();
-                        interval.Left = peak.Left;
-                        interval.Right = peak.Right;
-                        interval.Name = "aaaa";
+                        var peak = confirmedPeak.Source;
+                        var interval = new I
+                        {
+                            Left = peak.Left,
+                            Right = peak.Right,
+                            Name = "MSPC"
+                        };
 
-                        I mergedPeak;
-                        I mergingPeak = new I();
-                        mergingPeak.Left = peak.Left;
-                        mergingPeak.Right = peak.Right;
-                        mergingPeak.Name = "aaaa";
-                        mergingPeak.Value =
-                            (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E);
+                        I mergingPeak = new I
+                        {
+                            Left = peak.Left,
+                            Right = peak.Right,
+                            Name = "MSPC",
+                            Value =
+                            (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E)
+                        };
 
-                        while (_mergedReplicates[chr.Key].TryGetValue(interval, out mergedPeak))
+                        while (_mergedReplicates[chr.Key].TryGetValue(interval, out I mergedPeak))
                         {
                             _mergedReplicates[chr.Key].Remove(interval);
                             interval.Left = Math.Min(interval.Left, mergedPeak.Left);

@@ -27,7 +27,9 @@ namespace Genometric.MSPC.Model
             _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>
             {
                 { Attributes.Confirmed, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>() }
+                { Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>() },
+                { Attributes.TruePositive, new Dictionary<ulong, ProcessedPeak<I>>() },
+                { Attributes.FalsePositive, new Dictionary<ulong, ProcessedPeak<I>>() }
             };
 
             _setsInit = new Dictionary<Attributes, Dictionary<UInt64, I>>

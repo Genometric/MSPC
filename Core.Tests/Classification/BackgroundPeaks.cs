@@ -34,11 +34,8 @@ namespace Core.Tests.Base
             return res;
         }
 
-        /// <summary>
-        /// Asserts if background peaks are correctly separated in R_j^b sets.
-        /// </summary>
         [Fact]
-        public void Separate()
+        public void AssignBackgroundAttribute()
         {
             // Arrange & Act
             var res = GenerateAndProcessBackgroundPeaks();
@@ -46,6 +43,23 @@ namespace Core.Tests.Base
             // Assert
             foreach (var s in res)
                 Assert.True(s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Background).Count == 1);
+        }
+
+        [Fact]
+        public void BackgroundPeaksShouldNotHaveAnyOtherAttributes()
+        {
+            // Arrange & Act
+            var res = GenerateAndProcessBackgroundPeaks();
+
+            // Assert
+            foreach (var s in res)
+                Assert.True(
+                    s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Weak).Count == 0 &&
+                    s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Stringent).Count == 0 &&
+                    s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0 &&
+                    s.Value.Chromosomes["chr1"].Get(Attributes.Discarded).Count == 0 &&
+                    s.Value.Chromosomes["chr1"].Get(Attributes.TruePositive).Count == 0 &&
+                    s.Value.Chromosomes["chr1"].Get(Attributes.FalsePositive).Count == 0);
         }
 
         [Fact]

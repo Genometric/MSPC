@@ -172,7 +172,7 @@ namespace Genometric.MSPC.Model
             PerformMultipleTestingCorrection();
 
             if (cancel) return null;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Creating consensus peaks set"));
+            OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
             CreateConsensusPeaks();
 
             return AnalysisResults;

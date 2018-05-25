@@ -14,13 +14,16 @@ namespace Core.Tests.Base
 {
     public class BackgroundPeaks
     {
+        private readonly string _chr = "chr1";
+        private readonly char _strand = '*';
+
         private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> GenerateAndProcessBackgroundPeaks()
         {
             var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, "chr1", '*');
+            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, _chr, _strand);
 
             var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4 }, "chr1", '*');
+            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4 }, _chr, _strand);
 
             var mspc = new MSPC<ChIPSeqPeak>();
             mspc.AddSample(0, sA);
@@ -42,7 +45,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Background).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 1);
         }
 
         [Fact]
@@ -54,12 +57,12 @@ namespace Core.Tests.Base
             // Assert
             foreach (var s in res)
                 Assert.True(
-                    s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Weak).Count == 0 &&
-                    s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Stringent).Count == 0 &&
-                    s.Value.Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0 &&
-                    s.Value.Chromosomes["chr1"].Get(Attributes.Discarded).Count == 0 &&
-                    s.Value.Chromosomes["chr1"].Get(Attributes.TruePositive).Count == 0 &&
-                    s.Value.Chromosomes["chr1"].Get(Attributes.FalsePositive).Count == 0);
+                    s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Weak).Count == 0 &&
+                    s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Stringent).Count == 0 &&
+                    s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count == 0 &&
+                    s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Count == 0 &&
+                    s.Value.Chromosomes[_chr].Get(Attributes.TruePositive).Count == 0 &&
+                    s.Value.Chromosomes[_chr].Get(Attributes.FalsePositive).Count == 0);
         }
 
         [Fact]
@@ -67,10 +70,10 @@ namespace Core.Tests.Base
         {
             // Arrange
             var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, "chr1", '*');
+            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, _chr, _strand);
 
             var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-4 }, "chr1", '*');
+            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-4 }, _chr, _strand);
 
             var mspc = new MSPC<ChIPSeqPeak>();
             mspc.AddSample(0, sA);
@@ -82,7 +85,7 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             foreach(var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Background).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 1);
         }
     }
 }

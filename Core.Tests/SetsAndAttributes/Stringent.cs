@@ -7,23 +7,23 @@ using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using Xunit;
 
 namespace Core.Tests.Base
 {
     public class Stringent
     {
+        private readonly string _chr = "chr1";
+        private readonly char _strand = '*';
+
         private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> GenerateAndProcessStringentPeaks()
         {
             var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 }, "chr1", '*');
+            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 }, _chr, _strand);
 
             var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-12 }, "chr1", '*');
+            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-12 }, _chr, _strand);
 
             var mspc = new MSPC<ChIPSeqPeak>();
             mspc.AddSample(0, sA);
@@ -34,25 +34,92 @@ namespace Core.Tests.Base
             // Act
             var res = mspc.Run(config);
 
-            // TODO: this step should not be necessary; remove it after the Results class is updated.
-            ///foreach (var rep in res)
-            ///    rep.Value.ReadOverallStats();
-
             return res;
         }
 
-        /// <summary>
-        /// Asserts if noise peaks are correctly separated in R_j^b sets.
-        /// </summary>
         [Fact]
-        public void Separate()
+        public void AssignStringentAttribute()
         {
             // Arrange & Act
             var res = GenerateAndProcessStringentPeaks();
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes["chr1"].GetInitialClassifications(Attributes.Stringent).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Stringent).Count == 1);
+        }
+
+        [Fact]
+        public void StringentPeaksShouldNotHaveWeakAttribute()
+        {
+            // Arrange & Act
+            var res = GenerateAndProcessStringentPeaks();
+
+            // Assert
+            foreach (var s in res)
+                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Weak).Count == 0);
+        }
+
+        [Fact]
+        public void StringentPeaksShouldNotHaveBackgroundAttribute()
+        {
+            // Arrange & Act
+            var res = GenerateAndProcessStringentPeaks();
+
+            // Assert
+            foreach (var s in res)
+                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 0);
+        }
+
+        [Fact]
+        public void StringentNonOverlappingPeaks()
+        {
+            // Arrange
+            var sA = new BED<ChIPSeqPeak>();
+            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 }, _chr, _strand);
+
+            var sB = new BED<ChIPSeqPeak>();
+            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-12 }, _chr, _strand);
+
+            var mspc = new MSPC<ChIPSeqPeak>();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+
+            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+            foreach (var s in res)
+                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Stringent).Count == 1);
+        }
+
+        [Fact]
+        public void ProcessedStringentPeakEqualsInput()
+        {
+            // Arrange
+            var sA = new BED<ChIPSeqPeak>();
+            var sAP = new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 };
+            sA.Add(sAP, _chr, _strand);
+
+            var sB = new BED<ChIPSeqPeak>();
+            var sBP = new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-12 };
+            sB.Add(sBP, _chr, _strand);
+
+            var mspc = new MSPC<ChIPSeqPeak>();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+
+            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+
+            Assert.True(
+                res[0].Chromosomes[_chr].GetInitialClassifications(Attributes.Stringent)[0].Equals(sAP) &&
+                res[1].Chromosomes[_chr].GetInitialClassifications(Attributes.Stringent)[0].Equals(sBP));
         }
     }
 }

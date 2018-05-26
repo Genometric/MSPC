@@ -111,5 +111,33 @@ namespace Core.Tests.Base
                 res[0].Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 1 &&
                 res[1].Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 0);
         }
+
+        [Fact]
+        public void ProcessedBackgroundPeakEqualsInput()
+        {
+            // Arrange
+            var sA = new BED<ChIPSeqPeak>();
+            var sAP = new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 };
+            sA.Add(sAP, _chr, _strand);
+
+            var sB = new BED<ChIPSeqPeak>();
+            var sBP = new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-4 };
+            sB.Add(sBP, _chr, _strand);
+
+            var mspc = new MSPC<ChIPSeqPeak>();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+
+            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+
+            Assert.True(
+                res[0].Chromosomes[_chr].GetInitialClassifications(Attributes.Background)[0].Equals(sAP) &&
+                res[1].Chromosomes[_chr].GetInitialClassifications(Attributes.Background)[0].Equals(sBP));
+        }
     }
 }

@@ -45,6 +45,17 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count == 1);
+        }
+
+        [Fact]
+        public void CountConfirmedAttributes()
+        {
+            // Arrange & Act
+            var res = CreateStringentPeaksAndConfirmThem();
+
+            // Assert
+            foreach (var s in res)
                 Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Confirmed] == 1);
         }
 
@@ -73,6 +84,30 @@ namespace Core.Tests.Base
         }
 
         [Fact]
+        public void CountConfirmedTwoOverlappingWeakPeaks()
+        {
+            // Arrange
+            var sA = new BED<ChIPSeqPeak>();
+            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 7e-5 }, _chr, _strand);
+
+            var sB = new BED<ChIPSeqPeak>();
+            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 7e-5 }, _chr, _strand);
+
+            var mspc = new MSPC<ChIPSeqPeak>();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+
+            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-7, 2, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+            foreach (var s in res)
+                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Confirmed] == 1);
+        }
+
+        [Fact]
         public void ConfirmTwoNonOverlappingWeakPeaks()
         {
             // Arrange
@@ -97,6 +132,30 @@ namespace Core.Tests.Base
         }
 
         [Fact]
+        public void CountConfirmTwoNonOverlappingWeakPeaks()
+        {
+            // Arrange
+            var sA = new BED<ChIPSeqPeak>();
+            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-6 }, _chr, _strand);
+
+            var sB = new BED<ChIPSeqPeak>();
+            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-6 }, _chr, _strand);
+
+            var mspc = new MSPC<ChIPSeqPeak>();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+
+            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-6, 1, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+            foreach (var s in res)
+                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Confirmed] == 1);
+        }
+
+        [Fact]
         public void NoDiscardedAttributeForConfirmedPeaks()
         {
             // Arrange & Act
@@ -105,6 +164,17 @@ namespace Core.Tests.Base
             // Assert
             foreach (var s in res)
                 Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Count == 0);
+        }
+
+        [Fact]
+        public void CountNoDiscardedAttributeForConfirmedPeaks()
+        {
+            // Arrange & Act
+            var res = CreateStringentPeaksAndConfirmThem();
+
+            // Assert
+            foreach (var s in res)
+                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Discarded] == 0);
         }
 
         [Fact]

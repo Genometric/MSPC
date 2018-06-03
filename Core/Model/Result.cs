@@ -4,9 +4,7 @@
 
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Model;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Genometric.MSPC.Core.Model
 {
@@ -23,14 +21,6 @@ namespace Genometric.MSPC.Core.Model
         public void AddChromosome(string chr)
         {
             Chromosomes.Add(chr, new Sets<I>());
-        }
-
-        public uint Stats(Attributes type)
-        {
-            uint rtv = 0;
-            foreach (var chr in Chromosomes)
-                rtv += chr.Value.Stats[type];
-            return rtv;
         }
     }
 }

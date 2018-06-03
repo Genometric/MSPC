@@ -49,17 +49,6 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void CountWeakAttribute()
-        {
-            // Arrange & Act
-            var res = GenerateAndProcessWeakPeaks();
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Weak] == 1);
-        }
-
-        [Fact]
         public void WeakPeaksShouldNotHaveStringentAttribute()
         {
             // Arrange & Act
@@ -71,17 +60,6 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void CountWeakPeaksShouldNotHaveStringentAttribute()
-        {
-            // Arrange & Act
-            var res = GenerateAndProcessWeakPeaks();
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Stringent] == 0);
-        }
-
-        [Fact]
         public void WeakPeaksShouldNotHaveBackgroundAttribute()
         {
             // Arrange & Act
@@ -90,17 +68,6 @@ namespace Core.Tests.Base
             // Assert
             foreach (var s in res)
                 Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 0);
-        }
-
-        [Fact]
-        public void CountWeakPeaksShouldNotHaveBackgroundAttribute()
-        {
-            // Arrange & Act
-            var res = GenerateAndProcessWeakPeaks();
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Background] == 0);
         }
 
         [Fact]
@@ -125,30 +92,6 @@ namespace Core.Tests.Base
             // Assert
             foreach (var s in res)
                 Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Weak).Count == 1);
-        }
-
-        [Fact]
-        public void CountWeakNonOverlappingPeaks()
-        {
-            // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-5 }, _chr, _strand);
-
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-6 }, _chr, _strand);
-
-            var mspc = new MSPC<ChIPSeqPeak>();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-
-            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
-
-            // Act
-            var res = mspc.Run(config);
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Weak] == 1);
         }
 
         [Fact]

@@ -135,14 +135,14 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.GetInitialClassifications(Attributes.Stringent))
+                    foreach (var item in chr.Value.Get(Attributes.Stringent))
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
-                            item.Left.ToString() + "\t" +
-                            item.Right.ToString() + "\t" +
-                            item.Name + "\t" +
-                            ConvertPValue(item.Value));
+                            item.Source.Left.ToString() + "\t" +
+                            item.Source.Right.ToString() + "\t" +
+                            item.Source.Name + "\t" +
+                            ConvertPValue(item.Source.Value));
                     }
                 }
             }
@@ -157,14 +157,14 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    foreach (var item in chr.Value.GetInitialClassifications(Attributes.Weak))
+                    foreach (var item in chr.Value.Get(Attributes.Weak))
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
-                            item.Left.ToString() + "\t" +
-                            item.Right.ToString() + "\t" +
-                            item.Name + "\t" +
-                            ConvertPValue(item.Value));
+                            item.Source.Left.ToString() + "\t" +
+                            item.Source.Right.ToString() + "\t" +
+                            item.Source.Name + "\t" +
+                            ConvertPValue(item.Source.Value));
                     }
                 }
             }

@@ -6,7 +6,6 @@ using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC;
 using Genometric.MSPC.Model;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -113,20 +112,6 @@ namespace Core.Tests.Example
         [InlineData(ReplicateType.Technical, 3, 2, Attributes.Background, 0)]
         [InlineData(ReplicateType.Technical, 3, 2, Attributes.Weak, 1)]
         [InlineData(ReplicateType.Technical, 3, 2, Attributes.Stringent, 2)]
-        public void AssertSetsCountInitialSets(ReplicateType replicateType, byte c, uint sampleIndex, Attributes attribute, int expectedCount)
-        {
-            // Arrange
-            var mspc = InitializeMSPC();
-
-            // Act
-            var res = mspc.Run(new Config(replicateType, 1e-4, 1e-8, 1e-4, c, 1F, MultipleIntersections.UseLowestPValue));
-            var qres = res[sampleIndex].Chromosomes["chr1"].GetInitialClassifications(attribute);
-
-            // Assert
-            Assert.True(qres.Count == expectedCount);
-        }
-
-        [Theory]
         [InlineData(ReplicateType.Technical, 3, 0, Attributes.Confirmed, 1)]
         [InlineData(ReplicateType.Technical, 3, 0, Attributes.Discarded, 1)]
         [InlineData(ReplicateType.Technical, 3, 1, Attributes.Confirmed, 1)]

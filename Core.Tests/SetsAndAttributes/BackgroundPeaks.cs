@@ -45,7 +45,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Background).Count == 1);
         }
 
         [Fact]
@@ -57,8 +57,8 @@ namespace Core.Tests.Base
             // Assert
             foreach (var s in res)
                 Assert.True(
-                    s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Weak).Count == 0 &&
-                    s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Stringent).Count == 0 &&
+                    s.Value.Chromosomes[_chr].Get(Attributes.Weak).Count == 0 &&
+                    s.Value.Chromosomes[_chr].Get(Attributes.Stringent).Count == 0 &&
                     s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count == 0 &&
                     s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Count == 0 &&
                     s.Value.Chromosomes[_chr].Get(Attributes.TruePositive).Count == 0 &&
@@ -85,7 +85,7 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             foreach(var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Background).Count == 1);
         }
 
         [Fact]
@@ -108,8 +108,8 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             Assert.True(
-                res[0].Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 1 &&
-                res[1].Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 0);
+                res[0].Chromosomes[_chr].Get(Attributes.Background).Count == 1 &&
+                res[1].Chromosomes[_chr].Get(Attributes.Background).Count == 0);
         }
 
         [Fact]
@@ -136,8 +136,8 @@ namespace Core.Tests.Base
             // Assert
 
             Assert.True(
-                res[0].Chromosomes[_chr].GetInitialClassifications(Attributes.Background)[0].Equals(sAP) &&
-                res[1].Chromosomes[_chr].GetInitialClassifications(Attributes.Background)[0].Equals(sBP));
+                res[0].Chromosomes[_chr].Get(Attributes.Background)[0].Source.Equals(sAP) &&
+                res[1].Chromosomes[_chr].Get(Attributes.Background)[0].Source.Equals(sBP));
         }
     }
 }

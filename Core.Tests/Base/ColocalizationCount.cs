@@ -6,10 +6,7 @@ using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC;
 using Genometric.MSPC.Model;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Core.Tests.Base
@@ -37,10 +34,6 @@ namespace Core.Tests.Base
             // Act
             var res = mspc.Run(config);
 
-            // TODO: this step should not be necessary; remove it after the Results class is updated.
-            ///foreach (var rep in res)
-            ///    rep.Value.ReadOverallStats();
-
             // Assert
             Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
         }
@@ -65,10 +58,6 @@ namespace Core.Tests.Base
 
             // Act
             var res = mspc.Run(config);
-
-            // TODO: this step should not be necessary; remove it after the Results class is updated.
-            /// foreach (var rep in res)
-            ///    rep.Value.ReadOverallStats();
 
             // Assert
             Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
@@ -100,10 +89,6 @@ namespace Core.Tests.Base
             // Act
             var res = mspc.Run(config);
 
-            // TODO: this step should not be necessary; remove it after the Results class is updated.
-            ///foreach (var rep in res)
-            ///    rep.Value.ReadOverallStats();
-
             // Assert
             Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
         }
@@ -133,10 +118,6 @@ namespace Core.Tests.Base
 
             // Act
             var res = mspc.Run(config);
-
-            // TODO: this step should not be necessary; remove it after the Results class is updated.
-            ///foreach (var rep in res)
-            ///    rep.Value.ReadOverallStats();
 
             // Assert
             Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
@@ -168,10 +149,6 @@ namespace Core.Tests.Base
             // Act
             var res = mspc.Run(config);
 
-            // TODO: this step should not be necessary; remove it after the Results class is updated.
-            ///foreach (var rep in res)
-            ///    rep.Value.ReadOverallStats();
-
             // Assert
             Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
         }
@@ -199,10 +176,6 @@ namespace Core.Tests.Base
 
             // Act
             var res = mspc.Run(config);
-
-            // TODO: this step should not be necessary; remove it after the Results class is updated.
-            ///foreach (var rep in res)
-            ///    rep.Value.ReadOverallStats();
 
             // Assert
             Assert.True(res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0);

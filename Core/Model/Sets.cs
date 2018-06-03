@@ -15,81 +15,27 @@ namespace Genometric.MSPC.Model
     {
         private uint _fpCount;
         private uint _tpCount;
-        private Dictionary<Attributes, Dictionary<UInt64, I>> _setsInit { set; get; }
         private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 
         public Sets()
         {
             _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>
             {
+                { Attributes.Stringent, new Dictionary<ulong, ProcessedPeak<I>>() },
+                { Attributes.Weak, new Dictionary<ulong, ProcessedPeak<I>>() },
+                { Attributes.Background, new Dictionary<ulong, ProcessedPeak<I>>() },
                 { Attributes.Confirmed, new Dictionary<ulong, ProcessedPeak<I>>() },
                 { Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>() },
                 { Attributes.TruePositive, new Dictionary<ulong, ProcessedPeak<I>>() },
                 { Attributes.FalsePositive, new Dictionary<ulong, ProcessedPeak<I>>() }
             };
-
-            _setsInit = new Dictionary<Attributes, Dictionary<UInt64, I>>
-            {
-                { Attributes.Stringent, new Dictionary<UInt64, I>() },
-                { Attributes.Weak, new Dictionary<UInt64, I>() },
-                { Attributes.Background, new Dictionary<UInt64, I>() }
-            };
-        }
-
-        public void Add(I peak, Attributes attribute)
-        {
-            switch (attribute)
-            {
-                case Attributes.Stringent:
-                case Attributes.Weak:
-                case Attributes.Background:
-                    _setsInit[attribute].Add(peak.HashKey, peak);
-                    break;
-
-                default:
-                    throw new ArgumentException(
-                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
-                    Attributes.Stringent.ToString(), Attributes.Weak.ToString(), Attributes.Background.ToString()));
-            }
-        }
-
-        public void Add(ProcessedPeak<I> peak, Attributes attribute)
-        {
-            switch (attribute)
-            {
-                case Attributes.Confirmed:
-                case Attributes.Discarded:
-                    if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
-                        _sets[attribute].Add(peak.Source.HashKey, peak);
-                    break;
-
-                default:
-                    throw new ArgumentException(
-                    String.Format("Invalid attribute; accepted values are: {0} and {1}.",
-                    Attributes.Confirmed.ToString(), Attributes.Discarded.ToString()));
-            }
         }
 
         public void Add(ProcessedPeak<I> peak)
         {
-            foreach(var attribute in peak.Classification)
-            {
-                switch(attribute)
-                {
-                    case Attributes.Stringent:
-                    case Attributes.Weak:
-                    case Attributes.Background:
-                        if (!_setsInit[attribute].ContainsKey(peak.Source.HashKey))
-                            _setsInit[attribute].Add(peak.Source.HashKey, peak.Source);
-                        break;
-
-                    case Attributes.Confirmed:
-                    case Attributes.Discarded:
-                        if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
-                            _sets[attribute].Add(peak.Source.HashKey, peak);
-                        break;
-                }
-            }
+            foreach (var attribute in peak.Classification)
+                if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
+                    _sets[attribute].Add(peak.Source.HashKey, peak);
         }
 
         public List<ProcessedPeak<I>> Get(Attributes attributes)
@@ -99,46 +45,12 @@ namespace Genometric.MSPC.Model
 
         public bool Contains(Attributes attribute, UInt64 hashkey)
         {
-            switch (attribute)
-            {
-                case Attributes.Stringent:
-                case Attributes.Weak:
-                case Attributes.Background:
-                    return _setsInit[attribute].ContainsKey(0);
-
-                default:
-                    return _sets[attribute].ContainsKey(hashkey);
-            }
+            return _sets[attribute].ContainsKey(hashkey);
         }
 
         internal bool Remove(Attributes attribute, UInt64 hashkey)
         {
-            switch (attribute)
-            {
-                case Attributes.Stringent:
-                case Attributes.Weak:
-                case Attributes.Background:
-                    return _setsInit[attribute].Remove(0);
-
-                default:
-                    return _sets[attribute].Remove(hashkey);
-            }
-        }
-
-        public IList<I> GetInitialClassifications(Attributes attribute)
-        {
-            switch (attribute)
-            {
-                case Attributes.Stringent:
-                case Attributes.Weak:
-                case Attributes.Background:
-                    return _setsInit[attribute].Values.ToList();
-
-                default:
-                    throw new ArgumentException(
-                    String.Format("Invalid attribute; accepted values are: {0}, {1}, and {2}.",
-                    Attributes.Stringent.ToString(), Attributes.Weak.ToString(), Attributes.Background.ToString()));
-            }
+            return _sets[attribute].Remove(hashkey);
         }
 
         internal void SetFalsePositiveCount(uint value)

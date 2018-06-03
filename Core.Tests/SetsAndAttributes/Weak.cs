@@ -45,7 +45,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Weak).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Weak).Count == 1);
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Stringent).Count == 0);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Stringent).Count == 0);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 0);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Background).Count == 0);
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].GetInitialClassifications(Attributes.Weak).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Weak).Count == 1);
         }
 
         [Fact]
@@ -118,8 +118,8 @@ namespace Core.Tests.Base
             // Assert
 
             Assert.True(
-                res[0].Chromosomes[_chr].GetInitialClassifications(Attributes.Weak)[0].Equals(sAP) &&
-                res[1].Chromosomes[_chr].GetInitialClassifications(Attributes.Weak)[0].Equals(sBP));
+                res[0].Chromosomes[_chr].Get(Attributes.Weak)[0].Source.Equals(sAP) &&
+                res[1].Chromosomes[_chr].Get(Attributes.Weak)[0].Source.Equals(sBP));
         }
     }
 }

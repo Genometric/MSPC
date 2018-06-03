@@ -128,7 +128,7 @@ namespace Core.Tests.Example
         }
 
         [Theory]
-        [InlineData(ReplicateType.Technical, 3, 0, Attributes.Confirmed, 1)]
+        //[InlineData(ReplicateType.Technical, 3, 0, Attributes.Confirmed, 1)]
         [InlineData(ReplicateType.Technical, 3, 0, Attributes.Discarded, 1)]
         [InlineData(ReplicateType.Technical, 3, 1, Attributes.Confirmed, 1)]
         [InlineData(ReplicateType.Technical, 3, 1, Attributes.Discarded, 2)]

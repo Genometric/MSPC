@@ -6,7 +6,6 @@ using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace Genometric.MSPC.Model
@@ -14,16 +13,13 @@ namespace Genometric.MSPC.Model
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
-        private readonly Dictionary<Attributes, uint> _stats;
+        private uint _fpCount;
+        private uint _tpCount;
         private Dictionary<Attributes, Dictionary<UInt64, I>> _setsInit { set; get; }
         private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
 
         public Sets()
         {
-            _stats = new Dictionary<Attributes, uint>();
-            foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
-                _stats.Add(att, 0);
-
             _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>
             {
                 { Attributes.Confirmed, new Dictionary<ulong, ProcessedPeak<I>>() },
@@ -64,11 +60,7 @@ namespace Genometric.MSPC.Model
                 case Attributes.Confirmed:
                 case Attributes.Discarded:
                     if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
-                    {
                         _sets[attribute].Add(peak.Source.HashKey, peak);
-                        foreach (var att in peak.Classification)
-                            _stats[att]++;
-                    }
                     break;
 
                 default:
@@ -88,19 +80,13 @@ namespace Genometric.MSPC.Model
                     case Attributes.Weak:
                     case Attributes.Background:
                         if (!_setsInit[attribute].ContainsKey(peak.Source.HashKey))
-                        {
                             _setsInit[attribute].Add(peak.Source.HashKey, peak.Source);
-                            _stats[attribute]++;
-                        }
                         break;
 
                     case Attributes.Confirmed:
                     case Attributes.Discarded:
                         if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
-                        {
                             _sets[attribute].Add(peak.Source.HashKey, peak);
-                            _stats[attribute]++;
-                        }
                         break;
                 }
             }
@@ -155,19 +141,14 @@ namespace Genometric.MSPC.Model
             }
         }
 
-        public ImmutableDictionary<Attributes, uint> Stats
-        {
-            get { return _stats.ToImmutableDictionary(); }
-        }
-
         internal void SetFalsePositiveCount(uint value)
         {
-            _stats[Attributes.FalsePositive] = value;
+            _fpCount = value;
         }
 
         internal void SetTruePositiveCount(uint value)
         {
-            _stats[Attributes.TruePositive] = value;
+            _tpCount = value;
         }
     }
 }

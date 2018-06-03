@@ -124,11 +124,10 @@ namespace Core.Tests.Example
 
             // Assert
             Assert.True(qres.Count == expectedCount);
-            Assert.True(res[sampleIndex].Chromosomes["chr1"].Stats[attribute] == expectedCount);
         }
 
         [Theory]
-        //[InlineData(ReplicateType.Technical, 3, 0, Attributes.Confirmed, 1)]
+        [InlineData(ReplicateType.Technical, 3, 0, Attributes.Confirmed, 1)]
         [InlineData(ReplicateType.Technical, 3, 0, Attributes.Discarded, 1)]
         [InlineData(ReplicateType.Technical, 3, 1, Attributes.Confirmed, 1)]
         [InlineData(ReplicateType.Technical, 3, 1, Attributes.Discarded, 2)]
@@ -151,7 +150,6 @@ namespace Core.Tests.Example
 
             // Assert
             Assert.True(qres.Count == expectedCount);
-            Assert.True(res[sampleIndex].Chromosomes["chr1"].Stats[attribute] == expectedCount);
         }
     }
 }

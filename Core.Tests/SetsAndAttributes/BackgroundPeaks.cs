@@ -49,17 +49,6 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void CountBackgroundAttribute()
-        {
-            // Arrange & Act
-            var res = GenerateAndProcessBackgroundPeaks();
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Background] == 1);
-        }
-
-        [Fact]
         public void BackgroundPeaksShouldNotHaveAnyOtherAttributes()
         {
             // Arrange & Act
@@ -74,23 +63,6 @@ namespace Core.Tests.Base
                     s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Count == 0 &&
                     s.Value.Chromosomes[_chr].Get(Attributes.TruePositive).Count == 0 &&
                     s.Value.Chromosomes[_chr].Get(Attributes.FalsePositive).Count == 0);
-        }
-
-        [Fact]
-        public void CountBackgroundPeaksShouldNotHaveAnyOtherAttributes()
-        {
-            // Arrange & Act
-            var res = GenerateAndProcessBackgroundPeaks();
-
-            // Assert
-            foreach (var s in res)
-                Assert.True(
-                    s.Value.Chromosomes[_chr].Stats[Attributes.Weak] == 0 &&
-                    s.Value.Chromosomes[_chr].Stats[Attributes.Stringent] == 0 &&
-                    s.Value.Chromosomes[_chr].Stats[Attributes.Confirmed] == 0 &&
-                    s.Value.Chromosomes[_chr].Stats[Attributes.Discarded] == 0 &&
-                    s.Value.Chromosomes[_chr].Stats[Attributes.TruePositive] == 0 &&
-                    s.Value.Chromosomes[_chr].Stats[Attributes.FalsePositive] == 0);
         }
 
         [Fact]
@@ -117,29 +89,6 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void CountNonOverlappingBackgroundPeaks()
-        {
-            // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, _chr, _strand);
-
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-4 }, _chr, _strand);
-
-            var mspc = new MSPC<ChIPSeqPeak>();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-
-            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
-
-            // Act
-            var res = mspc.Run(config);
-
-            foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Stats[Attributes.Background] == 1);
-        }
-
-        [Fact]
         public void BackgroundOverlappingNonBackground()
         {
             // Arrange
@@ -161,30 +110,6 @@ namespace Core.Tests.Base
             Assert.True(
                 res[0].Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 1 &&
                 res[1].Chromosomes[_chr].GetInitialClassifications(Attributes.Background).Count == 0);
-        }
-
-        [Fact]
-        public void CountBackgroundOverlappingNonBackground()
-        {
-            // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-2 }, _chr, _strand);
-
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-8 }, _chr, _strand);
-
-            var mspc = new MSPC<ChIPSeqPeak>();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-
-            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 1F, MultipleIntersections.UseLowestPValue);
-
-            // Act
-            var res = mspc.Run(config);
-
-            Assert.True(
-                res[0].Chromosomes[_chr].Stats[Attributes.Background] == 1 &&
-                res[1].Chromosomes[_chr].Stats[Attributes.Background] == 0);
         }
 
         [Fact]

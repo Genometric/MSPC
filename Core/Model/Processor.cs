@@ -134,7 +134,7 @@ namespace Genometric.MSPC.Model
                                 attribute = Attributes.Weak;
                             else
                             {
-                                var pp = new ProcessedPeak<I>(peak, _xsqrd, new List<SupportingPeak<I>>());
+                                var pp = new ProcessedPeak<I>(peak, double.NaN, new List<SupportingPeak<I>>());
                                 pp.Classification.Add(Attributes.Background);
                                 _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
                                 continue;

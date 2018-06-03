@@ -24,7 +24,10 @@ namespace Genometric.MSPC.Core.Model
         {
             XSquared = xSquared;
             SupportingPeaks = supportingPeaks;
-            RTP = ChiSquaredCache.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaks.Count * 2));
+            if (double.IsNaN(xSquared))
+                RTP = double.NaN;
+            else
+                RTP = ChiSquaredCache.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaks.Count * 2));
             Classification = new HashSet<Attributes>();
         }
 

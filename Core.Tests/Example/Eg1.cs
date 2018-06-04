@@ -134,7 +134,7 @@ namespace Core.Tests.Example
             var qres = res[sampleIndex].Chromosomes["chr1"].Get(attribute);
 
             // Assert
-            Assert.True(qres.Count == expectedCount);
+            Assert.True(qres.Count() == expectedCount);
         }
     }
 }

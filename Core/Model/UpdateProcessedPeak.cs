@@ -3,26 +3,23 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Model;
+using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Genometric.MSPC.Core.Model
 {
-    public class Result<I>
+    internal static class UpdateProcessedPeak<I>
         where I : IChIPSeqPeak, new()
     {
-        private ReplicateType _replicateType;
-        public Dictionary<string, Sets<I>> Chromosomes { set; get; }
-
-        internal Result(ReplicateType replicateType)
+        public static ProcessedPeak<I> AsTecRep(ProcessedPeak<I> input)
         {
-            _replicateType = replicateType;
-            Chromosomes = new Dictionary<string, Sets<I>>();
+            return input;
         }
 
-        public void AddChromosome(string chr, int capacity)
+        public static ProcessedPeak<I> AsBioRep(ProcessedPeak<I> input)
         {
-            Chromosomes.Add(chr, new Sets<I>(capacity, _replicateType));
+            return input;
         }
     }
 }

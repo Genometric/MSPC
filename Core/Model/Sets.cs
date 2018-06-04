@@ -13,52 +13,70 @@ namespace Genometric.MSPC.Model
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
-        private uint _fpCount;
-        private uint _tpCount;
-        private Dictionary<Attributes, Dictionary<UInt64, ProcessedPeak<I>>> _sets { set; get; }
+        private int _fpCount;
+        private int _tpCount;
+        private readonly ReplicateType _replicateType;
+        private readonly Dictionary<UInt64, ProcessedPeak<I>> _peaks;
 
-        public Sets()
+        internal Sets(int capacity, ReplicateType replicateType)
         {
-            _sets = new Dictionary<Attributes, Dictionary<ulong, ProcessedPeak<I>>>
-            {
-                { Attributes.Stringent, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.Weak, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.Background, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.Confirmed, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.Discarded, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.TruePositive, new Dictionary<ulong, ProcessedPeak<I>>() },
-                { Attributes.FalsePositive, new Dictionary<ulong, ProcessedPeak<I>>() }
-            };
+            _replicateType = replicateType;
+            _peaks = new Dictionary<ulong, ProcessedPeak<I>>(capacity: capacity);
         }
 
         public void Add(ProcessedPeak<I> peak)
         {
-            foreach (var attribute in peak.Classification)
-                if (!_sets[attribute].ContainsKey(peak.Source.HashKey))
-                    _sets[attribute].Add(peak.Source.HashKey, peak);
+            _peaks.Add(peak.Source.HashKey, peak);
         }
 
-        public List<ProcessedPeak<I>> Get(Attributes attributes)
+        public void AddOrUpdate(I source, Attributes attribute)
         {
-            return _sets[attributes].Values.ToList();
+            if(_peaks.ContainsKey(source.HashKey))
+            {
+                _peaks[source.HashKey].Classification.Add(attribute);
+            }
+            else
+            {
+                var pp = new ProcessedPeak<I>(source, double.NaN, new List<SupportingPeak<I>>());
+                pp.Classification.Add(attribute);
+                _peaks.Add(source.HashKey, pp);
+            }
         }
 
-        public bool Contains(Attributes attribute, UInt64 hashkey)
+        public void AddOrUpdate(ProcessedPeak<I> processedPeak)
         {
-            return _sets[attribute].ContainsKey(hashkey);
+            if (_peaks.TryGetValue(processedPeak.Source.HashKey, out ProcessedPeak<I> oldValue))
+            {
+                if (_replicateType == ReplicateType.Biological)
+                {
+                    if ((oldValue.Classification.Contains(Attributes.Discarded) && processedPeak.Classification.Contains(Attributes.Confirmed)) ||
+                        (!oldValue.Classification.Contains(Attributes.Confirmed) && !oldValue.Classification.Contains(Attributes.Discarded)))
+                        _peaks[processedPeak.Source.HashKey] = processedPeak;
+                }
+                else
+                {
+                    if (oldValue.Classification.Contains(Attributes.Confirmed) && processedPeak.Classification.Contains(Attributes.Discarded) ||
+                        (!oldValue.Classification.Contains(Attributes.Confirmed) && !oldValue.Classification.Contains(Attributes.Discarded)))
+                        _peaks[processedPeak.Source.HashKey] = processedPeak;
+                }
+            }
+            else
+            {
+                _peaks.Add(processedPeak.Source.HashKey, processedPeak);
+            }
         }
 
-        internal bool Remove(Attributes attribute, UInt64 hashkey)
+        public IEnumerable<ProcessedPeak<I>> Get(Attributes attributes)
         {
-            return _sets[attribute].Remove(hashkey);
+            return _peaks.Where(kvp => kvp.Value.Classification.Contains(attributes)).Select(kvp => kvp.Value);
         }
 
-        internal void SetFalsePositiveCount(uint value)
+        internal void SetFalsePositiveCount(int value)
         {
             _fpCount = value;
         }
 
-        internal void SetTruePositiveCount(uint value)
+        internal void SetTruePositiveCount(int value)
         {
             _tpCount = value;
         }

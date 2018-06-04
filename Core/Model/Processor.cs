@@ -59,15 +59,12 @@ namespace Genometric.MSPC.Model
         internal void Run(Config config)
         {
             _config = config;
-            int step = 1, stepCount = 5;
+            int step = 1, stepCount = 4;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
             BuildDataStructures();
 
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
             ProcessSamples();
-
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing intermediate sets"));
-            ProcessIntermediaSets();
 
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
             PerformMultipleTestingCorrection();
@@ -92,11 +89,11 @@ namespace Genometric.MSPC.Model
                     return;
                 }
                 _trees.Add(sample.Key, new Dictionary<string, Tree<I>>());
-                _analysisResults.Add(sample.Key, new Result<I>());
+                _analysisResults.Add(sample.Key, new Result<I>(_config.ReplicateType));
                 foreach (var chr in sample.Value.Chromosomes)
                 {
                     _trees[sample.Key].Add(chr.Key, new Tree<I>());
-                    _analysisResults[sample.Key].AddChromosome(chr.Key);
+                    _analysisResults[sample.Key].AddChromosome(chr.Key, chr.Value.Statistics.Count);
                     foreach (var strand in chr.Value.Strands)
                     {
                         foreach (I p in strand.Value.Intervals)
@@ -136,7 +133,7 @@ namespace Genometric.MSPC.Model
                             {
                                 var pp = new ProcessedPeak<I>(peak, double.NaN, new List<SupportingPeak<I>>());
                                 pp.Classification.Add(Attributes.Background);
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].AddOrUpdate(pp);
                                 continue;
                             }
 
@@ -149,15 +146,15 @@ namespace Genometric.MSPC.Model
                                 if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                                 {
                                     pp.Classification.Add(Attributes.Confirmed);
-                                    _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
-                                    ProcessSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks, Attributes.Confirmed, Messages.Codes.M000);
+                                    _analysisResults[sample.Key].Chromosomes[chr.Key].AddOrUpdate(pp);
+                                    ProcessSupportingPeaks(sample.Key, chr.Key, peak, supportingPeaks, Attributes.Confirmed, Messages.Codes.M000);
                                 }
                                 else
                                 {
                                     pp.reason = Messages.Codes.M001;
                                     pp.Classification.Add(Attributes.Discarded);
-                                    _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
-                                    ProcessSupportingPeaks(sample.Key, chr.Key, pp.Source, supportingPeaks, Attributes.Discarded, Messages.Codes.M001);
+                                    _analysisResults[sample.Key].Chromosomes[chr.Key].AddOrUpdate(pp);
+                                    ProcessSupportingPeaks(sample.Key, chr.Key, peak, supportingPeaks, Attributes.Discarded, Messages.Codes.M001);
                                 }
                             }
                             else
@@ -166,7 +163,7 @@ namespace Genometric.MSPC.Model
                                 pp.Classification.Add(attribute);
                                 pp.Classification.Add(Attributes.Discarded);
                                 pp.reason = Messages.Codes.M002;
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].Add(pp);
+                                _analysisResults[sample.Key].Chromosomes[chr.Key].AddOrUpdate(pp);
                             }
                         }
         }
@@ -210,27 +207,22 @@ namespace Genometric.MSPC.Model
         {
             foreach (var supPeak in supportingPeaks)
             {
-                if (!_analysisResults[supPeak.SampleID].Chromosomes[chr].Contains(attribute, supPeak.Source.HashKey))
-                {
-                    var tSupPeak = new List<SupportingPeak<I>>();
-                    var targetSample = _analysisResults[supPeak.SampleID];
-                    tSupPeak.Add(new SupportingPeak<I>(p, id));
+                var tSupPeak = new List<SupportingPeak<I>>();
+                tSupPeak.Add(new SupportingPeak<I>(p, id));
+                foreach (var sP in supportingPeaks)
+                    if (supPeak.CompareTo(sP) != 0)
+                        tSupPeak.Add(sP);
 
-                    foreach (var sP in supportingPeaks)
-                        if (supPeak.CompareTo(sP) != 0)
-                            tSupPeak.Add(sP);
+                var pp = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
+                pp.Classification.Add(attribute);
+                pp.reason = message;
 
-                    var anRe = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
-                    anRe.Classification.Add(attribute);
-                    anRe.reason = message;
+                if (supPeak.Source.Value <= _config.TauS)
+                    pp.Classification.Add(Attributes.Stringent);
+                else
+                    pp.Classification.Add(Attributes.Weak);
 
-                    if (supPeak.Source.Value <= _config.TauS)
-                        anRe.Classification.Add(Attributes.Stringent);
-                    else
-                        anRe.Classification.Add(Attributes.Weak);
-
-                    targetSample.Chromosomes[chr].Add(anRe);
-                }
+                _analysisResults[supPeak.SampleID].Chromosomes[chr].AddOrUpdate(pp);
             }
         }
 
@@ -253,28 +245,6 @@ namespace Genometric.MSPC.Model
                 _xsqrd = Math.Abs(Config.defaultMaxLogOfPVvalue);
         }
 
-        private void ProcessIntermediaSets()
-        {
-            if (cancel)
-            {
-                _analysisResults = new Dictionary<uint, Result<I>>();
-                return;
-            }
-
-            if (_config.ReplicateType == ReplicateType.Biological)
-                /// Perform : R_j__d = R_j__d \ { R_j__d intersection R_j__c }
-                foreach (var result in _analysisResults)
-                    foreach (var chr in result.Value.Chromosomes)
-                        foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
-                            chr.Value.Remove(Attributes.Discarded, confirmedPeak.Source.HashKey);
-            else
-                /// Perform : R_j__c = R_j__c \ { R_j__c intersection R_j__d }
-                foreach (var result in _analysisResults)
-                    foreach (var chr in result.Value.Chromosomes)
-                        foreach (var discardedPeak in chr.Value.Get(Attributes.Discarded))
-                            chr.Value.Remove(Attributes.Confirmed, discardedPeak.Source.HashKey);
-        }
-
         /// <summary>
         /// Benjamini–Hochberg procedure (step-up procedure)
         /// </summary>
@@ -290,9 +260,9 @@ namespace Genometric.MSPC.Model
             {
                 foreach (var chr in result.Value.Chromosomes)
                 {
-                    chr.Value.SetTruePositiveCount((uint)chr.Value.Get(Attributes.Confirmed).Count);
+                    var confirmedPeaks = chr.Value.Get(Attributes.Confirmed).ToList();
+                    chr.Value.SetTruePositiveCount(confirmedPeaks.Count);
                     chr.Value.SetFalsePositiveCount(0);
-                    var confirmedPeaks = chr.Value.Get(Attributes.Confirmed);
                     int m = confirmedPeaks.Count;
 
                     // Sorts confirmed peaks set based on their p-values.
@@ -314,8 +284,8 @@ namespace Genometric.MSPC.Model
                                 confirmedPeaks[l].Classification.Add(Attributes.FalsePositive);
                             }
 
-                            chr.Value.SetTruePositiveCount((uint)k);
-                            chr.Value.SetFalsePositiveCount((uint)(m - k));
+                            chr.Value.SetTruePositiveCount(k);
+                            chr.Value.SetFalsePositiveCount(m - k);
                             break;
                         }
                     }

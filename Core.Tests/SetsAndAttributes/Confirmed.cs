@@ -8,6 +8,7 @@ using Genometric.MSPC;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Xunit;
 
 namespace Core.Tests.Base
@@ -45,7 +46,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
         }
 
         [Fact]
@@ -69,7 +70,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
         }
 
         [Fact]
@@ -93,7 +94,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count == 1);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
         }
 
         [Fact]
@@ -104,7 +105,7 @@ namespace Core.Tests.Base
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Count == 0);
+                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Count() == 0);
         }
 
         [Fact]
@@ -131,8 +132,8 @@ namespace Core.Tests.Base
             // Assert
 
             Assert.True(
-                res[0].Chromosomes[_chr].Get(Attributes.Confirmed)[0].Source.Equals(sAP) &&
-                res[1].Chromosomes[_chr].Get(Attributes.Confirmed)[0].Source.Equals(sBP));
+                res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.Equals(sAP) &&
+                res[1].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.Equals(sBP));
         }
     }
 }

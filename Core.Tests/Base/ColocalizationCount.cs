@@ -35,7 +35,7 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(), res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count() }.All(x => x == expected));
         }
 
         [Theory]
@@ -60,7 +60,7 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(), res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count() }.All(x => x == expected));
         }
 
         [Theory]
@@ -90,7 +90,7 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(), res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(), res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count() }.All(x => x == expected));
         }
 
         [Theory]
@@ -120,7 +120,7 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(), res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(), res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count() }.All(x => x == expected));
         }
 
         [Theory]
@@ -150,7 +150,7 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count, res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count }.All(x => x == expected));
+            Assert.True(new[] { res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(), res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(), res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count() }.All(x => x == expected));
         }
 
         [Fact]
@@ -178,7 +178,7 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count == 0);
+            Assert.True(res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count() == 0);
         }
     }
 }

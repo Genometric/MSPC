@@ -68,13 +68,13 @@ namespace Core.Tests.Base
         {
             // Arrange
             var sA = new BED<ChIPSeqPeak>();
-            var r11 = new ChIPSeqPeak() { Left = 10, Right = 26, Value = 1e-4, Name = "r11" };
+            var r11 = new ChIPSeqPeak() { Left = 10, Right = 26, Value = 1e-4, Name = "r11", HashKey = 0 };
             sA.Add(r11, _chr, _strand);
 
             var sB = new BED<ChIPSeqPeak>();
-            var r21 = new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21" };
-            var r22 = new ChIPSeqPeak() { Left = 16, Right = 18, Value = 1e-7, Name = "r22" };
-            var r23 = new ChIPSeqPeak() { Left = 22, Right = 28, Value = 1e-4, Name = "r23" };
+            var r21 = new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21", HashKey = 1 };
+            var r22 = new ChIPSeqPeak() { Left = 16, Right = 18, Value = 1e-7, Name = "r22", HashKey = 2 };
+            var r23 = new ChIPSeqPeak() { Left = 22, Right = 28, Value = 1e-4, Name = "r23", HashKey = 3 };
             sB.Add(r21, _chr, _strand);
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);

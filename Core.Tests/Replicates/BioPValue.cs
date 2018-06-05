@@ -11,14 +11,13 @@ using Xunit;
 
 namespace Core.Tests.Base
 {
-    public class MultipleConfirmDiscard
+    public class BioPValue
     {
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
 
         /// <summary>
-        /// Assuming samples are biological replicates,
-        /// this test asserts if MSPC correctly discards a weak peak
+        /// This test asserts if MSPC correctly discards a weak peak
         /// from a sample that overlaps 2 weak peaks from another sample.
         /// 
         ///                        r11

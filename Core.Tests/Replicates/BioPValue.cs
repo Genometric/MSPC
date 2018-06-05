@@ -68,13 +68,16 @@ namespace Core.Tests.Base
         {
             // Arrange
             var sA = new BED<ChIPSeqPeak>();
-            var p1 = new ChIPSeqPeak() { Left = 10, Right = 26, Value = 1e-4, Name = "r11" };
-            sA.Add(p1, _chr, _strand);
+            var r11 = new ChIPSeqPeak() { Left = 10, Right = 26, Value = 1e-4, Name = "r11" };
+            sA.Add(r11, _chr, _strand);
 
             var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21" }, _chr, _strand);
-            sB.Add(new ChIPSeqPeak() { Left = 16, Right = 18, Value = 1e-7, Name = "r22" }, _chr, _strand);
-            sB.Add(new ChIPSeqPeak() { Left = 22, Right = 28, Value = 1e-4, Name = "r23" }, _chr, _strand);
+            var r21 = new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21" };
+            var r22 = new ChIPSeqPeak() { Left = 16, Right = 18, Value = 1e-7, Name = "r22" };
+            var r23 = new ChIPSeqPeak() { Left = 22, Right = 28, Value = 1e-4, Name = "r23" };
+            sB.Add(r21, _chr, _strand);
+            sB.Add(r22, _chr, _strand);
+            sB.Add(r23, _chr, _strand);
 
             var mspc = new MSPC<ChIPSeqPeak>();
             mspc.AddSample(0, sA);
@@ -88,7 +91,13 @@ namespace Core.Tests.Base
             // Assert
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 0);
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.CompareTo(p1) == 0);
+            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.CompareTo(r11) == 0);
+
+            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
+            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 2);
+            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.CompareTo(r22) == 0);
+            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r21) == 0);
+            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[1].Source.CompareTo(r23) == 0);
         }
     }
 }

@@ -52,5 +52,43 @@ namespace Core.Tests.Base
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 0);
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(p1) == 0);
         }
+
+        /// <summary>
+        /// This test asserts if MSPC correctly confirms a weak peak, which
+        /// is confirmed by at least one test, and discarded in multiple tests.
+        /// 
+        ///                           r11
+        /// Sample 1: ---------█████████████████---------
+        ///                  r21     r22     r23
+        /// Sample 2: ----████████---███---███████-------
+        ///
+        /// </summary>
+        [Fact]
+        public void T2()
+        {
+            // Arrange
+            var sA = new BED<ChIPSeqPeak>();
+            var p1 = new ChIPSeqPeak() { Left = 10, Right = 26, Value = 1e-4, Name = "r11" };
+            sA.Add(p1, _chr, _strand);
+
+            var sB = new BED<ChIPSeqPeak>();
+            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21" }, _chr, _strand);
+            sB.Add(new ChIPSeqPeak() { Left = 16, Right = 18, Value = 1e-7, Name = "r22" }, _chr, _strand);
+            sB.Add(new ChIPSeqPeak() { Left = 22, Right = 28, Value = 1e-4, Name = "r23" }, _chr, _strand);
+
+            var mspc = new MSPC<ChIPSeqPeak>();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+
+            var config = new Config(ReplicateType.Biological, 1e-3, 1e-8, 1e-8, 2, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
+            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 0);
+            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.CompareTo(p1) == 0);
+        }
     }
 }

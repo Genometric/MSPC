@@ -31,12 +31,12 @@ namespace Core.Tests.Base
         {
             // Arrange
             var sA = new BED<ChIPSeqPeak>();
-            var p1 = new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-4, Name = "r11" };
-            sA.Add(p1, _chr, _strand);
+            var r11 = new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-4, Name = "r11", HashKey = 0 };
+            sA.Add(r11, _chr, _strand);
 
             var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21" }, _chr, _strand);
-            sB.Add(new ChIPSeqPeak() { Left = 18, Right = 25, Value = 1e-4, Name = "r22" }, _chr, _strand);
+            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21", HashKey = 1 }, _chr, _strand);
+            sB.Add(new ChIPSeqPeak() { Left = 18, Right = 25, Value = 1e-4, Name = "r22", HashKey = 2 }, _chr, _strand);
 
             var mspc = new MSPC<ChIPSeqPeak>();
             mspc.AddSample(0, sA);
@@ -50,7 +50,7 @@ namespace Core.Tests.Base
             // Assert
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 1);
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 0);
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(p1) == 0);
+            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r11) == 0);
         }
 
         /// <summary>

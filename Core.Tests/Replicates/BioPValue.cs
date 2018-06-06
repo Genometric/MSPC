@@ -21,10 +21,12 @@ namespace Core.Tests.Base
         /// from a sample that overlaps 2 weak peaks from another sample.
         /// 
         ///                        r11
-        /// Sample 1: ---------███████████----------
+        /// Sample 1: ---------▒▒▒▒▒▒▒▒▒▒▒----------
         ///                  r21          r22
-        /// Sample 2: ----████████-----████████-----
+        /// Sample 2: ----▒▒▒▒▒▒▒▒-----▒▒▒▒▒▒▒▒-----
         ///
+        /// 
+        /// Legend: [▒▒ Weak peak], [██ Stringent peak]
         /// </summary>
         [Fact]
         public void T1()
@@ -58,10 +60,12 @@ namespace Core.Tests.Base
         /// is confirmed by at least one test, and discarded in multiple tests.
         /// 
         ///                           r11
-        /// Sample 1: ---------█████████████████---------
+        /// Sample 1: ---------▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒---------
         ///                  r21     r22     r23
-        /// Sample 2: ----████████---███---███████-------
+        /// Sample 2: ----▒▒▒▒▒▒▒▒---▒▒▒---▒▒▒▒▒▒▒-------
         ///
+        /// 
+        /// Legend: [▒▒ Weak peak], [██ Stringent peak]
         /// </summary>
         [Fact]
         public void T2()

@@ -29,20 +29,6 @@ namespace Genometric.MSPC.Model
             _peaks.Add(peak.Source.HashKey, peak);
         }
 
-        public void AddOrUpdate(I source, Attributes attribute)
-        {
-            if(_peaks.ContainsKey(source.HashKey))
-            {
-                _peaks[source.HashKey].Classification.Add(attribute);
-            }
-            else
-            {
-                var pp = new ProcessedPeak<I>(source, double.NaN, new List<SupportingPeak<I>>());
-                pp.Classification.Add(attribute);
-                _peaks.Add(source.HashKey, pp);
-            }
-        }
-
         public void AddOrUpdate(ProcessedPeak<I> processedPeak)
         {
             if (_peaks.TryGetValue(processedPeak.Source.HashKey, out ProcessedPeak<I> oldValue))

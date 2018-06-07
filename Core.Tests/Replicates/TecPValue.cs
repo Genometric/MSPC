@@ -57,7 +57,9 @@ namespace Core.Tests.Base
 
         /// <summary>
         /// This test asserts if MSPC correctly discards a weak peak, which
-        /// is confirmed by at least one test, and discarded in multiple tests.
+        /// is confirmed by multiple tests, and discarded in at least one test.
+        /// In other words, for a peak to be confirmed in technical replicates,
+        /// it must pass all the tests, and do not fail any test.
         /// 
         ///                           r11
         /// Sample 1: ---------▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒---------

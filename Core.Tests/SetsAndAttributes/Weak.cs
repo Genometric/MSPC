@@ -33,9 +33,7 @@ namespace Core.Tests.Base
             var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-8, 2, 1F, MultipleIntersections.UseLowestPValue);
 
             // Act
-            var res = mspc.Run(config);
-
-            return res;
+            return mspc.Run(config);
         }
 
         [Fact]

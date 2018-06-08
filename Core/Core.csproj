@@ -5,6 +5,11 @@
     <RootNamespace>Genometric.MSPC.Core</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Genometric.GeUtilities" Version="4.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />

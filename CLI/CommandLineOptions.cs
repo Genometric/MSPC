@@ -84,6 +84,7 @@ namespace Genometric.MSPC.CLI
         private static int AssertArguments()
         {
             var missingArgs = new List<string>();
+            if (!_input.HasValue()) missingArgs.Add(_input.ShortName + "|" + _input.LongName);
             if (!_replicate.HasValue()) missingArgs.Add(_replicate.ShortName + "|" + _replicate.LongName);
             if (!_tauS.HasValue()) missingArgs.Add(_tauS.ShortName + "|" + _tauS.LongName);
             if (!_tauW.HasValue()) missingArgs.Add(_tauW.ShortName + "|" + _tauW.LongName);
@@ -96,8 +97,6 @@ namespace Genometric.MSPC.CLI
                 msgBuilder.Append(".");
                 throw new ArgumentException(msgBuilder.ToString());
             }
-
-            // TODO: check arguments value type. 
 
             return 0;
         }

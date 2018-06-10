@@ -6,6 +6,7 @@ using Genometric.MSPC.Model;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Genometric.MSPC.CLI
 {
@@ -86,10 +87,15 @@ namespace Genometric.MSPC.CLI
             if (!_replicate.HasValue()) missingArgs.Add(_replicate.ShortName + "|" + _replicate.LongName);
             if (!_tauS.HasValue()) missingArgs.Add(_tauS.ShortName + "|" + _tauS.LongName);
             if (!_tauW.HasValue()) missingArgs.Add(_tauW.ShortName + "|" + _tauW.LongName);
-            
-            // TODO: throw a more informative exception.
+
             if (missingArgs.Count > 0)
-                throw new Exception();
+            {
+                var msgBuilder = new StringBuilder("The following required arguments are missing: ");
+                foreach (var item in missingArgs)
+                    msgBuilder.Append(item + "; ");
+                msgBuilder.Append(".");
+                throw new ArgumentException(msgBuilder.ToString());
+            }
 
             // TODO: check arguments value type. 
 

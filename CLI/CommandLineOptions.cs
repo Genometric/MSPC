@@ -111,10 +111,31 @@ namespace Genometric.MSPC.CLI
                     break;
 
                 default:
-                    throw new ArgumentException("Invalid value given for the " + _replicate.LongName + " argument.");
+                    ThrowInvalidException(_replicate.LongName);
+                    break;
             }
 
+            if (!double.TryParse(_tauS.Value(), out _vtauS))
+                ThrowInvalidException(_tauS.LongName);
+
+            if (!double.TryParse(_tauW.Value(), out _vtauW))
+                ThrowInvalidException(_tauW.LongName);
+
+            if (!double.TryParse(_gamma.Value(), out _vgamma))
+                ThrowInvalidException(_gamma.LongName);
+
+            if (!float.TryParse(_alpha.Value(), out _valpha))
+                ThrowInvalidException(_alpha.LongName);
+
+            if (!byte.TryParse(_c.Value(), out _vc))
+                ThrowInvalidException(_c.LongName);
+
             return 0;
+        }
+
+        private void ThrowInvalidException(string commandOption)
+        {
+            throw new ArgumentException("Invalid value given for the " + commandOption + " argument.");
         }
 
         private Config Parse(string[] args)

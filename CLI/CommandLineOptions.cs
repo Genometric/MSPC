@@ -81,7 +81,7 @@ namespace Genometric.MSPC.CLI
             _cla.OnExecute(assertArguments);
         }
 
-        private static int AssertArguments()
+        private int AssertArguments()
         {
             var missingArgs = new List<string>();
             if (!_input.HasValue()) missingArgs.Add(_input.ShortName + "|" + _input.LongName);
@@ -96,6 +96,22 @@ namespace Genometric.MSPC.CLI
                     msgBuilder.Append(item + "; ");
                 msgBuilder.Append(".");
                 throw new ArgumentException(msgBuilder.ToString());
+            }
+
+            switch (_replicate.Value().ToLower())
+            {
+                case "bio":
+                case "biological":
+                    _vreplicate = ReplicateType.Biological;
+                    break;
+
+                case "tec":
+                case "Technical":
+                    _vreplicate = ReplicateType.Technical;
+                    break;
+
+                default:
+                    throw new ArgumentException("Invalid value given for the " + _replicate.LongName + " argument.");
             }
 
             return 0;

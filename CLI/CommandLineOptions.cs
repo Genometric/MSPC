@@ -130,6 +130,21 @@ namespace Genometric.MSPC.CLI
             if (!byte.TryParse(_c.Value(), out _vc))
                 ThrowInvalidException(_c.LongName);
 
+            switch (_m.Value().ToLower())
+            {
+                case "lowest":
+                    _vm = MultipleIntersections.UseLowestPValue;
+                    break;
+
+                case "highest":
+                    _vm = MultipleIntersections.UseHighestPValue;
+                    break;
+
+                default:
+                    ThrowInvalidException(_m.LongName);
+                    break;
+            }
+
             return 0;
         }
 

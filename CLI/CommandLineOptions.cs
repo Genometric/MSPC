@@ -6,8 +6,10 @@ using Genometric.MSPC.Model;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
+[assembly: InternalsVisibleTo("Genometric.MSPC.CLI.Tests")]
 namespace Genometric.MSPC.CLI
 {
     internal class CommandLineOptions
@@ -153,7 +155,7 @@ namespace Genometric.MSPC.CLI
             throw new ArgumentException("Invalid value given for the " + commandOption + " argument.");
         }
 
-        private Config Parse(string[] args)
+        public Config Parse(string[] args)
         {
             _cla.Execute(args);
             Options = new Config(_vreplicate, _vtauW, _vtauS, _vgamma, _vc, _valpha, _vm);

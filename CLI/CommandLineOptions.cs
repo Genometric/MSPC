@@ -69,7 +69,7 @@ namespace Genometric.MSPC.CLI
 
         public Config Options { private set; get; }
 
-
+        public IReadOnlyList<string> Input { get { return _cInput.Values.AsReadOnly(); } }
 
         public CommandLineOptions()
         {

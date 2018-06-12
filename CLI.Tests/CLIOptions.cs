@@ -19,24 +19,24 @@ namespace Genometric.MSPC.CLI.Tests
         private const double _gamma = 1E-12;
         private const float _alpha = 0.0005F;
         private const byte _c = 2;
-        private const MultipleIntersections _m = MultipleIntersections.UseLowestPValue;
+        private const string _m = "lowest";
         private const ReplicateType _r = ReplicateType.Biological;
 
         private string GenerateShortNameArguments(
             string rep1 = _rep1, string rep2 = _rep2, string rep3 = _rep3, double tauW = _tauW, double tauS = _tauS,
-            double gamma = _gamma, float alpha = _alpha, byte c = _c, MultipleIntersections m = _m, ReplicateType r = _r)
+            double gamma = _gamma, float alpha = _alpha, byte c = _c, string m = _m, ReplicateType r = _r)
         {
             var builder = new StringBuilder();
             if (rep1 != null) builder.Append("-i " + rep1 + " ");
             if (rep2 != null) builder.Append("-i " + rep2 + " ");
             if (rep3 != null) builder.Append("-i " + rep3 + " ");
-            if (Double.IsNaN(tauW)) builder.Append("-w " + tauW + " ");
-            if (Double.IsNaN(tauS)) builder.Append("-s " + tauS + " ");
-            if (Double.IsNaN(gamma)) builder.Append("-g " + gamma + " ");
-            if (float.IsNaN(alpha)) builder.Append("-a " + alpha + " ");
+            if (!Double.IsNaN(tauW)) builder.Append("-w " + tauW + " ");
+            if (!Double.IsNaN(tauS)) builder.Append("-s " + tauS + " ");
+            if (!Double.IsNaN(gamma)) builder.Append("-g " + gamma + " ");
+            if (!float.IsNaN(alpha)) builder.Append("-a " + alpha + " ");
             builder.Append("-c " + c + " ");
             builder.Append("-m " + m + " ");
-            builder.Append("-r " + r + " ");
+            builder.Append("-r " + r);
             return builder.ToString();
         }
 

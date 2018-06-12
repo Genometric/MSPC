@@ -16,42 +16,42 @@ namespace Genometric.MSPC.CLI
     {
         private readonly CommandLineApplication _cla;
 
-        private static CommandOption _input = new CommandOption("-i | --input <value>", CommandOptionType.MultipleValue)
+        private static CommandOption _cInput = new CommandOption("-i | --input <value>", CommandOptionType.MultipleValue)
         {
             Description = "Input samples to be processed in Browser Extensible Data (BED) Format."
         };
 
-        private static CommandOption _replicate = new CommandOption("-r | --replicate <value>", CommandOptionType.SingleValue)
+        private static CommandOption _cReplicate = new CommandOption("-r | --replicate <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets the replicate type of samples. Possible values are: { Bio, Biological, Tec, Technical }"
         };
 
-        private static CommandOption _tauS = new CommandOption("-s | --tauS <value>", CommandOptionType.SingleValue)
+        private static CommandOption _cTauS = new CommandOption("-s | --tauS <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets stringency threshold. All peaks with p-values lower than this value are considered as stringent peaks."
         };
 
-        private static CommandOption _tauW = new CommandOption("-w | --tauW <value>", CommandOptionType.SingleValue)
+        private static CommandOption _cTauW = new CommandOption("-w | --tauW <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets weak threshold. All peaks with p-values higher than this value are considered as weak peaks."
         };
 
-        private static CommandOption _gamma = new CommandOption("-g | --gamma <value>", CommandOptionType.SingleValue)
+        private static CommandOption _cGamma = new CommandOption("-g | --gamma <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets combined stringency threshold. The peaks with their combined p-values satisfying this threshold will be confirmed."
         };
 
-        private static CommandOption _alpha = new CommandOption("-a | --alpha <value>", CommandOptionType.SingleValue)
+        private static CommandOption _cAlpha = new CommandOption("-a | --alpha <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets false discovery rate of Benjamini–Hochberg step-up procedure."
         };
 
-        private static CommandOption _c = new CommandOption("-c <value>", CommandOptionType.SingleValue)
+        private static CommandOption _cC = new CommandOption("-c <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets minimum number of overlapping peaks before combining p-values."
         };
 
-        private static CommandOption _m = new CommandOption("-m | --multipleIntersections <value>", CommandOptionType.SingleValue)
+        private static CommandOption _cM = new CommandOption("-m | --multipleIntersections <value>", CommandOptionType.SingleValue)
         {
             Description = "When multiple peaks from a sample overlap with a given peak, " +
                 "this argument defines which of the peaks to be considered: the one with lowest p-value, or " +
@@ -69,17 +69,19 @@ namespace Genometric.MSPC.CLI
 
         public Config Options { private set; get; }
 
+
+
         public CommandLineOptions()
         {
             _cla = new CommandLineApplication();
-            _cla.Options.Add(_input);
-            _cla.Options.Add(_replicate);
-            _cla.Options.Add(_tauS);
-            _cla.Options.Add(_tauW);
-            _cla.Options.Add(_gamma);
-            _cla.Options.Add(_alpha);
-            _cla.Options.Add(_c);
-            _cla.Options.Add(_m);
+            _cla.Options.Add(_cInput);
+            _cla.Options.Add(_cReplicate);
+            _cla.Options.Add(_cTauS);
+            _cla.Options.Add(_cTauW);
+            _cla.Options.Add(_cGamma);
+            _cla.Options.Add(_cAlpha);
+            _cla.Options.Add(_cC);
+            _cla.Options.Add(_cM);
             Func<int> assertArguments = AssertArguments;
             _cla.OnExecute(assertArguments);
         }
@@ -87,10 +89,10 @@ namespace Genometric.MSPC.CLI
         private int AssertArguments()
         {
             var missingArgs = new List<string>();
-            if (!_input.HasValue()) missingArgs.Add(_input.ShortName + "|" + _input.LongName);
-            if (!_replicate.HasValue()) missingArgs.Add(_replicate.ShortName + "|" + _replicate.LongName);
-            if (!_tauS.HasValue()) missingArgs.Add(_tauS.ShortName + "|" + _tauS.LongName);
-            if (!_tauW.HasValue()) missingArgs.Add(_tauW.ShortName + "|" + _tauW.LongName);
+            if (!_cInput.HasValue()) missingArgs.Add(_cInput.ShortName + "|" + _cInput.LongName);
+            if (!_cReplicate.HasValue()) missingArgs.Add(_cReplicate.ShortName + "|" + _cReplicate.LongName);
+            if (!_cTauS.HasValue()) missingArgs.Add(_cTauS.ShortName + "|" + _cTauS.LongName);
+            if (!_cTauW.HasValue()) missingArgs.Add(_cTauW.ShortName + "|" + _cTauW.LongName);
 
             if (missingArgs.Count > 0)
             {
@@ -101,7 +103,7 @@ namespace Genometric.MSPC.CLI
                 throw new ArgumentException(msgBuilder.ToString());
             }
 
-            switch (_replicate.Value().ToLower())
+            switch (_cReplicate.Value().ToLower())
             {
                 case "bio":
                 case "biological":
@@ -114,26 +116,26 @@ namespace Genometric.MSPC.CLI
                     break;
 
                 default:
-                    ThrowInvalidException(_replicate.LongName);
+                    ThrowInvalidException(_cReplicate.LongName);
                     break;
             }
 
-            if (!double.TryParse(_tauS.Value(), out _vtauS))
-                ThrowInvalidException(_tauS.LongName);
+            if (!double.TryParse(_cTauS.Value(), out _vtauS))
+                ThrowInvalidException(_cTauS.LongName);
 
-            if (!double.TryParse(_tauW.Value(), out _vtauW))
-                ThrowInvalidException(_tauW.LongName);
+            if (!double.TryParse(_cTauW.Value(), out _vtauW))
+                ThrowInvalidException(_cTauW.LongName);
 
-            if (!double.TryParse(_gamma.Value(), out _vgamma))
-                ThrowInvalidException(_gamma.LongName);
+            if (!double.TryParse(_cGamma.Value(), out _vgamma))
+                ThrowInvalidException(_cGamma.LongName);
 
-            if (!float.TryParse(_alpha.Value(), out _valpha))
-                ThrowInvalidException(_alpha.LongName);
+            if (!float.TryParse(_cAlpha.Value(), out _valpha))
+                ThrowInvalidException(_cAlpha.LongName);
 
-            if (!byte.TryParse(_c.Value(), out _vc))
-                ThrowInvalidException(_c.LongName);
+            if (!byte.TryParse(_cC.Value(), out _vc))
+                ThrowInvalidException(_cC.LongName);
 
-            switch (_m.Value().ToLower())
+            switch (_cM.Value().ToLower())
             {
                 case "lowest":
                     _vm = MultipleIntersections.UseLowestPValue;
@@ -144,7 +146,7 @@ namespace Genometric.MSPC.CLI
                     break;
 
                 default:
-                    ThrowInvalidException(_m.LongName);
+                    ThrowInvalidException(_cM.LongName);
                     break;
             }
 

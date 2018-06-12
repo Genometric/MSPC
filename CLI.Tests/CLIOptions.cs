@@ -27,16 +27,16 @@ namespace Genometric.MSPC.CLI.Tests
             double gamma = _gamma, float alpha = _alpha, byte c = _c, MultipleIntersections m = _m, ReplicateType r = _r)
         {
             var builder = new StringBuilder();
-            if (rep1 != null) builder.Append("-i " + rep1);
-            if (rep2 != null) builder.Append("-i " + rep2);
-            if (rep3 != null) builder.Append("-i " + rep3);
-            if (Double.IsNaN(tauW)) builder.Append("-w " + tauW);
-            if (Double.IsNaN(tauS)) builder.Append("-s " + tauS);
-            if (Double.IsNaN(gamma)) builder.Append("-g " + gamma);
-            if (float.IsNaN(alpha)) builder.Append("-a " + alpha);
-            builder.Append("-c " + c);
-            builder.Append("-m " + m);
-            builder.Append("-r " + r);
+            if (rep1 != null) builder.Append("-i " + rep1 + " ");
+            if (rep2 != null) builder.Append("-i " + rep2 + " ");
+            if (rep3 != null) builder.Append("-i " + rep3 + " ");
+            if (Double.IsNaN(tauW)) builder.Append("-w " + tauW + " ");
+            if (Double.IsNaN(tauS)) builder.Append("-s " + tauS + " ");
+            if (Double.IsNaN(gamma)) builder.Append("-g " + gamma + " ");
+            if (float.IsNaN(alpha)) builder.Append("-a " + alpha + " ");
+            builder.Append("-c " + c + " ");
+            builder.Append("-m " + m + " ");
+            builder.Append("-r " + r + " ");
             return builder.ToString();
         }
 

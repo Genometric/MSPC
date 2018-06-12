@@ -72,6 +72,7 @@ namespace Genometric.MSPC.CLI
         public CommandLineOptions()
         {
             _cla = new CommandLineApplication();
+            _cla.Options.Add(_input);
             _cla.Options.Add(_replicate);
             _cla.Options.Add(_tauS);
             _cla.Options.Add(_tauW);

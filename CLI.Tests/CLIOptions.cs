@@ -40,6 +40,24 @@ namespace Genometric.MSPC.CLI.Tests
             return builder.ToString();
         }
 
+        [Theory]
+        [InlineData("rep_1.bed", "rep_2.bed", "rep_3.bed", 3)]
+        [InlineData("rep_1.bed", "rep_2.bed", null, 2)]
+        [InlineData("C:\\TestPath\\replicate_1", "C:\\AnotherTestPath\\replicate_2", "C:\\YetAnotherTestPath\\replicate_3", 3)]
+        public void ReadInput(string rep1, string rep2, string rep3, int validInputCount)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(GenerateShortNameArguments(rep1: rep1, rep2: rep2, rep3: rep3).Split(' '));
+
+            // Assert
+            Assert.True(options.Input.Count == validInputCount);
+            Assert.True(options.Input[0] == rep1);
+            Assert.True(options.Input[1] == rep2);
+            if (rep3 != null)
+                Assert.True(options.Input[2] == rep3);
+        }
+
         [Fact]
         public void ReadTauS()
         {

@@ -2,38 +2,33 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.ComponentModel;
-using System.IO;
-using System.Collections.Generic;
-using Genometric.MSPC.CLI.Exporter;
-using Genometric.MSPC.Model;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.MSPC.CLI.Exporter;
+using Genometric.MSPC.Model;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
 
 namespace Genometric.MSPC.CLI
 {
     internal class Orchestrator
     {
+        private readonly Config _options;
         private BackgroundWorker _analysisBGW { set; get; }
         internal MSPC<ChIPSeqPeak> _mspc { set; get; }
         internal Exporter<ChIPSeqPeak> exporter { set; get; }
-        internal string replicateType { set; get; }
-        internal double tauS { set; get; }
-        internal double tauW { set; get; }
-        internal double gamma { set; get; }
-        internal byte C { set; get; }
-        internal float alpha { set; get; }
 
         private List<BED<ChIPSeqPeak>> _samples { set; get; }
         internal ReadOnlyCollection<BED<ChIPSeqPeak>> samples { get { return _samples.AsReadOnly(); } }
 
-        internal Orchestrator()
+
+        internal Orchestrator(Config options, IReadOnlyList<string> input)
         {
+            _options = options;
             _mspc = new MSPC<ChIPSeqPeak>();
             _mspc.StatusChanged += _mspc_statusChanged;
             _samples = new List<BED<ChIPSeqPeak>>();
@@ -47,19 +42,9 @@ namespace Genometric.MSPC.CLI
 
         internal void Run()
         {
-            var config = new Config(
-                replicateType: (replicateType.ToLower() == "tec" || replicateType.ToLower() == "technical") ? ReplicateType.Technical : ReplicateType.Biological,
-                tauW: tauW,
-                tauS: tauS,
-                gamma: gamma,
-                C: C,
-                alpha: alpha,
-                multipleIntersections: MultipleIntersections.UseLowestPValue);
-
-
             foreach (var sample in _samples)
                 _mspc.AddSample(sample.FileHashKey, sample);
-            _mspc.RunAsync(config);
+            _mspc.RunAsync(_options);
             _mspc.done.WaitOne();
         }
         private void _mspc_statusChanged(object sender, ValueEventArgs e)

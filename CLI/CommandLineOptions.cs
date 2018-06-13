@@ -16,42 +16,42 @@ namespace Genometric.MSPC.CLI
     {
         private readonly CommandLineApplication _cla;
 
-        private static CommandOption _cInput = new CommandOption("-i | --input <value>", CommandOptionType.MultipleValue)
+        private readonly CommandOption _cInput = new CommandOption("-i | --input <value>", CommandOptionType.MultipleValue)
         {
             Description = "Input samples to be processed in Browser Extensible Data (BED) Format."
         };
 
-        private static CommandOption _cReplicate = new CommandOption("-r | --replicate <value>", CommandOptionType.SingleValue)
+        private readonly CommandOption _cReplicate = new CommandOption("-r | --replicate <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets the replicate type of samples. Possible values are: { Bio, Biological, Tec, Technical }"
         };
 
-        private static CommandOption _cTauS = new CommandOption("-s | --tauS <value>", CommandOptionType.SingleValue)
+        private readonly CommandOption _cTauS = new CommandOption("-s | --tauS <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets stringency threshold. All peaks with p-values lower than this value are considered as stringent peaks."
         };
 
-        private static CommandOption _cTauW = new CommandOption("-w | --tauW <value>", CommandOptionType.SingleValue)
+        private readonly CommandOption _cTauW = new CommandOption("-w | --tauW <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets weak threshold. All peaks with p-values higher than this value are considered as weak peaks."
         };
 
-        private static CommandOption _cGamma = new CommandOption("-g | --gamma <value>", CommandOptionType.SingleValue)
+        private readonly CommandOption _cGamma = new CommandOption("-g | --gamma <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets combined stringency threshold. The peaks with their combined p-values satisfying this threshold will be confirmed."
         };
 
-        private static CommandOption _cAlpha = new CommandOption("-a | --alpha <value>", CommandOptionType.SingleValue)
+        private readonly CommandOption _cAlpha = new CommandOption("-a | --alpha <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets false discovery rate of Benjamini–Hochberg step-up procedure."
         };
 
-        private static CommandOption _cC = new CommandOption("-c <value>", CommandOptionType.SingleValue)
+        private readonly CommandOption _cC = new CommandOption("-c <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets minimum number of overlapping peaks before combining p-values."
         };
 
-        private static CommandOption _cM = new CommandOption("-m | --multipleIntersections <value>", CommandOptionType.SingleValue)
+        private readonly CommandOption _cM = new CommandOption("-m | --multipleIntersections <value>", CommandOptionType.SingleValue)
         {
             Description = "When multiple peaks from a sample overlap with a given peak, " +
                 "this argument defines which of the peaks to be considered: the one with lowest p-value, or " +

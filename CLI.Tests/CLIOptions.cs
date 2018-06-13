@@ -58,15 +58,49 @@ namespace Genometric.MSPC.CLI.Tests
                 Assert.True(options.Input[2] == rep3);
         }
 
-        [Fact]
-        public void ReadTauS()
+        [Theory]
+        [InlineData(_tauS)]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(1.1E-53)]
+        public void ReadTauS(double tauS)
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments().Split(' '));
+            var po = options.Parse(GenerateShortNameArguments(tauS: tauS).Split(' '));
 
             // Assert
-            Assert.True(po.TauS == _tauS);
+            Assert.True(po.TauS == tauS);
+        }
+
+        [Theory]
+        [InlineData(_tauW)]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(1.1E-53)]
+        public void ReadTauW(double tauW)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(GenerateShortNameArguments(tauW: tauW).Split(' '));
+
+            // Assert
+            Assert.True(po.TauW == tauW);
+        }
+
+        [Theory]
+        [InlineData(_gamma)]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(1.1E-53)]
+        public void ReadGamma(double gamma)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(GenerateShortNameArguments(gamma: gamma).Split(' '));
+
+            // Assert
+            Assert.True(po.Gamma == gamma);
         }
     }
 }

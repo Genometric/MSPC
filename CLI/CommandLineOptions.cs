@@ -111,7 +111,7 @@ namespace Genometric.MSPC.CLI
                     break;
 
                 case "tec":
-                case "Technical":
+                case "technical":
                     _vreplicate = ReplicateType.Technical;
                     break;
 

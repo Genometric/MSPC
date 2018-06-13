@@ -20,11 +20,11 @@ namespace Genometric.MSPC.CLI.Tests
         private const float _alpha = 0.0005F;
         private const byte _c = 2;
         private const string _m = "lowest";
-        private const ReplicateType _r = ReplicateType.Biological;
+        private const string _r = "bio";
 
         private string GenerateShortNameArguments(
             string rep1 = _rep1, string rep2 = _rep2, string rep3 = _rep3, double tauW = _tauW, double tauS = _tauS,
-            double gamma = _gamma, float alpha = _alpha, byte c = _c, string m = _m, ReplicateType r = _r)
+            double gamma = _gamma, float alpha = _alpha, byte c = _c, string m = _m, string r = _r)
         {
             var builder = new StringBuilder();
             if (rep1 != null) builder.Append("-i " + rep1 + " ");
@@ -101,6 +101,64 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.True(po.Gamma == gamma);
+        }
+
+        [Theory]
+        [InlineData(_alpha)]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(1.1E-53)]
+        public void ReadAlpha(float alpha)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(GenerateShortNameArguments(alpha: alpha).Split(' '));
+
+            // Assert
+            Assert.True(po.Alpha == alpha);
+        }
+
+        [Theory]
+        [InlineData(_c)]
+        [InlineData(1)]
+        [InlineData(5)]
+        public void ReadC(byte c)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(GenerateShortNameArguments(c: c).Split(' '));
+
+            // Assert
+            Assert.True(po.C == c);
+        }
+
+        [Theory]
+        [InlineData("lowest", MultipleIntersections.UseLowestPValue)]
+        [InlineData("LowEST", MultipleIntersections.UseLowestPValue)]
+        [InlineData("highest", MultipleIntersections.UseHighestPValue)]
+        public void ReadM(string m, MultipleIntersections expectedValue)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(GenerateShortNameArguments(m: m).Split(' '));
+
+            // Assert
+            Assert.True(po.MultipleIntersections == expectedValue);
+        }
+
+        [Theory]
+        [InlineData("bio", ReplicateType.Biological)]
+        [InlineData("tec", ReplicateType.Technical)]
+        [InlineData("BioloGicAl", ReplicateType.Biological)]
+        [InlineData("Technical", ReplicateType.Technical)]
+        public void ReadR(string r, ReplicateType expectedValue)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(GenerateShortNameArguments(r: r).Split(' '));
+
+            // Assert
+            Assert.True(po.ReplicateType == expectedValue);
         }
     }
 }

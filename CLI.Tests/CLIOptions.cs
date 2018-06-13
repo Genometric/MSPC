@@ -194,7 +194,117 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            string[] arguments = "-w 1E-2 -s 1E-8 -g 1E-16 -r bio".Split(' ');
+            string[] arguments = "-w 1E-2 -s 1E-8 -r bio".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForMissingTauS()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -r bio".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForMissingTauW()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -s 1E-8 -r bio".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForMissingReplicateType()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidTauW()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w ABC -s 1E-8 -r bio".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidTauS()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s ABC -r bio".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidReplicateType()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r biooo".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidGamma()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -g ABC".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidAlpha()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -a ABC".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidC()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c ABC".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidMultipleIntersection()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -m ABC".Split(' ');
 
             // Assert
             Assert.Throws<ArgumentException>(() => options.Parse(arguments));

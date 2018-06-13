@@ -126,29 +126,30 @@ namespace Genometric.MSPC.CLI
             if (!double.TryParse(_cTauW.Value(), out _vtauW))
                 ThrowInvalidException(_cTauW.LongName);
 
-            if (!double.TryParse(_cGamma.Value(), out _vgamma))
+            if (_cGamma.HasValue() && !double.TryParse(_cGamma.Value(), out _vgamma))
                 ThrowInvalidException(_cGamma.LongName);
 
-            if (!float.TryParse(_cAlpha.Value(), out _valpha))
+            if (_cAlpha.HasValue() && !float.TryParse(_cAlpha.Value(), out _valpha))
                 ThrowInvalidException(_cAlpha.LongName);
 
-            if (!byte.TryParse(_cC.Value(), out _vc))
+            if (_cC.HasValue() && !byte.TryParse(_cC.Value(), out _vc))
                 ThrowInvalidException(_cC.LongName);
 
-            switch (_cM.Value().ToLower())
-            {
-                case "lowest":
-                    _vm = MultipleIntersections.UseLowestPValue;
-                    break;
+            if(_cM.HasValue())
+                switch (_cM.Value().ToLower())
+                {
+                    case "lowest":
+                        _vm = MultipleIntersections.UseLowestPValue;
+                        break;
 
-                case "highest":
-                    _vm = MultipleIntersections.UseHighestPValue;
-                    break;
+                    case "highest":
+                        _vm = MultipleIntersections.UseHighestPValue;
+                        break;
 
-                default:
-                    ThrowInvalidException(_cM.LongName);
-                    break;
-            }
+                    default:
+                        ThrowInvalidException(_cM.LongName);
+                        break;
+                }
 
             return 0;
         }

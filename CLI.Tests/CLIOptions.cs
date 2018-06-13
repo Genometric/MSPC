@@ -162,6 +162,20 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void NoExceptionIfOnlyRequiredArgumentsAreGiven()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            var po = options.Parse("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+
+            // Assert
+            Assert.True(options.Input.Count == 2);
+            Assert.True(po.ReplicateType == ReplicateType.Biological);
+            Assert.True(po.TauW == 1E-2);
+            Assert.True(po.TauS == 1E-8);
+        }
+
+        [Fact]
         public void ThrowExceptionForMissingInput()
         {
             // Arrange & Act

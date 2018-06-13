@@ -48,7 +48,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments(rep1: rep1, rep2: rep2, rep3: rep3).Split(' '));
+            options.Parse(GenerateShortNameArguments(rep1: rep1, rep2: rep2, rep3: rep3).Split(' '));
 
             // Assert
             Assert.True(options.Input.Count == validInputCount);

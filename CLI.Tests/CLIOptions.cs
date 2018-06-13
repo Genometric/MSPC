@@ -160,5 +160,16 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.True(po.ReplicateType == expectedValue);
         }
+
+        [Fact]
+        public void ThrowExceptionForMissingInput()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-w 1E-2 -s 1E-8 -g 1E-16 -r bio".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+        }
     }
 }

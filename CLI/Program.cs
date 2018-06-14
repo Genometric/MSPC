@@ -9,7 +9,7 @@ using System.IO;
 
 namespace Genometric.MSPC.CLI
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
@@ -18,42 +18,29 @@ namespace Genometric.MSPC.CLI
             {
                 cliOptions.Parse(args);
             }
-            catch (ArgumentException e)
-            {
-                Console.WriteLine(e.Message);
-                Environment.Exit(0);
-            }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Environment.Exit(0);
+                ShowMessageAndExit(e.Message);
             }
 
             if (cliOptions.Input.Count < 2)
-            {
-                Console.WriteLine(String.Format("At least two samples are required; {0} is given.", cliOptions.Input.Count));
-                Environment.Exit(0);
-            }
+                ShowMessageAndExit(String.Format("At least two samples are required; {0} is given.", cliOptions.Input.Count));
 
             foreach (var file in cliOptions.Input)
                 if (!File.Exists(file))
-                {
-                    Console.WriteLine("Missing file: {0}", file);
-                    Console.WriteLine("MSPC can not continue.");
-                    Environment.Exit(0);
-                }
+                    ShowMessageAndExit(String.Format("Missing file: {0}", file));
 
             var orchestrator = new Orchestrator(cliOptions.Options, cliOptions.Input);
 
             var et = new Stopwatch();
             foreach (var file in cliOptions.Input)
             {
-                Console.WriteLine("Parsing sample : {0}", file);
+                Console.WriteLine(String.Format("Parsing sample : {0}", file));
                 et.Restart();
 
                 try
                 {
-                    orchestrator.LoadSample(file);
+                    orchestrator.ParseSample(file);
                     var parsedSample = orchestrator.samples[orchestrator.samples.Count - 1];
                     et.Stop();
                     Console.WriteLine("Done...  ET:\t{0}", et.Elapsed.ToString());
@@ -62,23 +49,21 @@ namespace Genometric.MSPC.CLI
                     Console.WriteLine("Max p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMax.Value));
                     Console.WriteLine("");
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Console.WriteLine(" ---! an unknown Exception occurred while parsing BED files; MSPC can not continue.");
-                    Environment.Exit(0);
+                    ShowMessageAndExit("The following exception has occurred while parsing input files: " + e.Message);
                 }
             }
 
-            //if (options.gamma == -1)
-            //options.gamma = options.tauS;
-
             Console.WriteLine("Analysis started ...");
             et.Restart();
-            try { orchestrator.Run(); }
+            try
+            {
+                orchestrator.Run();
+            }
             catch (Exception e)
             {
-                Console.WriteLine(" ---! an unknown Exception occurred while processing samples, program will terminate." + e.Message);
-                Environment.Exit(0);
+                ShowMessageAndExit("The following exception has occurred while processing the samples: " + e.Message);
             }
 
             try
@@ -88,14 +73,20 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Console.WriteLine(" ---! an unknown Exception occurred while exporting analysis results, program will terminate." + e.Message);
-                Environment.Exit(0);
+                ShowMessageAndExit("The following exception has occurred while saving analysis results: " + e.Message);
             }
 
             et.Stop();
             Console.WriteLine(" ");
-            Console.WriteLine("All processes successfully finished [Analysis ET: {0}", et.Elapsed.ToString() + "]");
+            Console.WriteLine(String.Format("All processes successfully finished [Analysis ET: {0}]", et.Elapsed.ToString()));
             Console.WriteLine(" ");
+        }
+
+        private static void ShowMessageAndExit(string msg)
+        {
+            Console.WriteLine(msg);
+            Console.WriteLine("MSPC cannot continue.");
+            Environment.Exit(0);
         }
     }
 }

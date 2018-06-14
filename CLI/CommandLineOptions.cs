@@ -128,6 +128,7 @@ namespace Genometric.MSPC.CLI
 
             if (_cGamma.HasValue() && !double.TryParse(_cGamma.Value(), out _vgamma))
                 ThrowInvalidException(_cGamma.LongName);
+            _vgamma = _vgamma == -1 ? _vtauS : _vgamma;
 
             if (_cAlpha.HasValue() && !float.TryParse(_cAlpha.Value(), out _valpha))
                 ThrowInvalidException(_cAlpha.LongName);

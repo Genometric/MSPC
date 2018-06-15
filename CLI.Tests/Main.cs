@@ -39,5 +39,19 @@ namespace Genometric.MSPC.CLI.Tests
                 Assert.Equal("The following required arguments are missing: r|replicate; \r\nMSPC cannot continue.\r\n", sw.ToString());
             }
         }
+
+        [Fact]
+        public void ErrorIfASpecifiedFileIsMissing()
+        {
+            // Arrange & Act
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Program.Main("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+
+                // Assert
+                Assert.Equal("Missing file: rep1.bed\r\nMSPC cannot continue.\r\n", sw.ToString());
+            }
+        }
     }
 }

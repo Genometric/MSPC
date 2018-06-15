@@ -25,5 +25,19 @@ namespace Genometric.MSPC.CLI.Tests
                 Assert.Equal("At least two samples are required; 1 is given.\r\nMSPC cannot continue.\r\n", sw.ToString());
             }
         }
+
+        [Fact]
+        public void ErrorIfARequiredArgumentIsMissing()
+        {
+            // Arrange & Act
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Program.Main("-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' '));
+
+                // Assert
+                Assert.Equal("The following required arguments are missing: r|replicate; \r\nMSPC cannot continue.\r\n", sw.ToString());
+            }
+        }
     }
 }

@@ -99,6 +99,20 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void AssertInformingMaxPValue()
+        {
+            // Arrange
+            CreateTempSamples(out string rep1, out string rep2);
+
+            // Act
+            string msg = RunMSPC(rep1, rep2);
+
+            // Assert
+            Assert.Contains("Max p-value:\t1.000E-003\r\n", msg);
+            Assert.Contains("Max p-value:\t1.000E-002\r\n", msg);
+        }
+
+        [Fact]
         public void SuccessfulAnalysis()
         {
             // Arrange

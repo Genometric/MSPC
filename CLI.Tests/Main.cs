@@ -21,14 +21,15 @@ namespace Genometric.MSPC.CLI.Tests
             using (StreamWriter writter = new StreamWriter(stream))
             {
                 writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t0.001");
-                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t0.00001");
+                writter.WriteLine("chr1\t25\t35\tmspc_peak_1\t0.00001");
             }
 
             stream = File.Create(rep2Path);
             using (StreamWriter writter = new StreamWriter(stream))
             {
-                writter.WriteLine("chr1\t8\t22\tmspc_peak_2\t0.01");
-                writter.WriteLine("chr1\t8\t22\tmspc_peak_2\t0.0000001");
+                writter.WriteLine("chr1\t11\t18\tmspc_peak_2\t0.01");
+                writter.WriteLine("chr1\t22\t28\tmspc_peak_2\t0.0001");
+                writter.WriteLine("chr1\t30\t40\tmspc_peak_2\t0.0000001");
             }
         }
 
@@ -82,6 +83,20 @@ namespace Genometric.MSPC.CLI.Tests
                 // Assert
                 Assert.Equal("Missing file: rep1.bed\r\nMSPC cannot continue.\r\n", sw.ToString());
             }
+        }
+
+        [Fact]
+        public void AssertInformingPeaksCount()
+        {
+            // Arrange
+            CreateTempSamples(out string rep1, out string rep2);
+
+            // Act
+            string msg = RunMSPC(rep1, rep2);
+
+            // Assert
+            Assert.Contains("Read peaks#:\t2\r\n", msg);
+            Assert.Contains("Read peaks#:\t3\r\n", msg);
         }
 
         [Fact]

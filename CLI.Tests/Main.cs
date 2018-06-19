@@ -12,6 +12,36 @@ namespace Genometric.MSPC.CLI.Tests
 {
     public class Main
     {
+        private void CreateTempSamples(out string rep1Path, out string rep2Path)
+        {
+            rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            FileStream stream = File.Create(rep1Path);
+            using (StreamWriter writter = new StreamWriter(stream))
+            {
+                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t0.001");
+                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t0.00001");
+            }
+
+            stream = File.Create(rep2Path);
+            using (StreamWriter writter = new StreamWriter(stream))
+            {
+                writter.WriteLine("chr1\t8\t22\tmspc_peak_2\t0.01");
+                writter.WriteLine("chr1\t8\t22\tmspc_peak_2\t0.0000001");
+            }
+        }
+
+        private string RunMSPC(string rep1, string rep2)
+        {
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Program.Main(String.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", rep1, rep2).Split(' '));
+                return sw.ToString();
+            }
+        }
+
         [Fact]
         public void ErrorIfLessThanTwoSamplesAreGiven()
         {
@@ -58,30 +88,10 @@ namespace Genometric.MSPC.CLI.Tests
         public void AssertInformingMinPValue()
         {
             // Arrange
-            var rep1 = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            FileStream stream = File.Create(rep1);
-            using (StreamWriter writter = new StreamWriter(stream))
-            {
-                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t0.001");
-                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t0.00001");
-            }
-
-            var rep2 = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            stream = File.Create(rep2);
-            using (StreamWriter writter = new StreamWriter(stream))
-            {
-                writter.WriteLine("chr1\t8\t22\tmspc_peak_2\t0.01");
-                writter.WriteLine("chr1\t8\t22\tmspc_peak_2\t0.0000001");
-            }
+            CreateTempSamples(out string rep1, out string rep2);
 
             // Act
-            string msg;
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main(String.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", rep1, rep2).Split(' '));
-                msg = sw.ToString();
-            }
+            string msg = RunMSPC(rep1, rep2);
 
             // Assert
             Assert.Contains("Min p-value:\t1.000E-005\r\n", msg);
@@ -92,24 +102,10 @@ namespace Genometric.MSPC.CLI.Tests
         public void SuccessfulAnalysis()
         {
             // Arrange
-            var rep1 = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            FileStream stream = File.Create(rep1);
-            using (StreamWriter writter = new StreamWriter(stream))
-                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t100.0");
-
-            var rep2 = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            stream = File.Create(rep2);
-            using (StreamWriter writter = new StreamWriter(stream))
-                writter.WriteLine("chr1\t8\t22\tmspc_peak_2\t110.0");
+            CreateTempSamples(out string rep1, out string rep2);
 
             // Act
-            string msg;
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main(String.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", rep1, rep2).Split(' '));
-                msg = sw.ToString();
-            }
+            string msg = RunMSPC(rep1, rep2);
 
             // Assert
             Assert.Contains("All processes successfully finished [Analysis ET: ", msg);

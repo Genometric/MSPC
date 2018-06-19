@@ -2,10 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.MSPC.Model;
 using System;
 using System.IO;
-using System.Text;
 using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests

@@ -51,7 +51,7 @@ namespace Genometric.MSPC.CLI
                 try
                 {
                     orchestrator.ParseSample(file);
-                    var parsedSample = orchestrator.samples[orchestrator.samples.Count - 1];
+                    var parsedSample = orchestrator.Samples[orchestrator.Samples.Count - 1];
                     et.Stop();
                     Console.WriteLine("Done...  ET:\t{0}", et.Elapsed.ToString());
                     Console.WriteLine("Read peaks#:\t{0}", parsedSample.IntervalsCount.ToString("N0", CultureInfo.InvariantCulture));

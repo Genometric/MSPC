@@ -9,7 +9,6 @@ using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -18,13 +17,9 @@ namespace Genometric.MSPC.CLI
     internal class Orchestrator
     {
         private readonly Config _options;
-        private BackgroundWorker _analysisBGW { set; get; }
-        internal MSPC<ChIPSeqPeak> _mspc { set; get; }
-        internal Exporter<ChIPSeqPeak> exporter { set; get; }
-
-        private List<BED<ChIPSeqPeak>> _samples { set; get; }
-        internal ReadOnlyCollection<BED<ChIPSeqPeak>> samples { get { return _samples.AsReadOnly(); } }
-
+        private readonly MSPC<ChIPSeqPeak> _mspc;
+        private readonly List<BED<ChIPSeqPeak>> _samples;
+        internal ReadOnlyCollection<BED<ChIPSeqPeak>> Samples { get { return _samples.AsReadOnly(); } }
 
         internal Orchestrator(Config options, IReadOnlyList<string> input)
         {
@@ -54,7 +49,7 @@ namespace Genometric.MSPC.CLI
 
         internal void Export()
         {
-            exporter = new Exporter<ChIPSeqPeak>();
+            var exporter = new Exporter<ChIPSeqPeak>();
             var options = new ExportOptions(
                 sessionPath: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
                              DateTime.Now.Year +

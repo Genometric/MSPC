@@ -8,7 +8,6 @@ using Genometric.MSPC.CLI.Exporter;
 using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -19,7 +18,6 @@ namespace Genometric.MSPC.CLI
         private readonly Config _options;
         private readonly MSPC<ChIPSeqPeak> _mspc;
         private readonly List<BED<ChIPSeqPeak>> _samples;
-        internal ReadOnlyCollection<BED<ChIPSeqPeak>> Samples { get { return _samples.AsReadOnly(); } }
 
         internal Orchestrator(Config options, IReadOnlyList<string> input)
         {
@@ -29,10 +27,12 @@ namespace Genometric.MSPC.CLI
             _samples = new List<BED<ChIPSeqPeak>>();
         }
 
-        public void ParseSample(string fileName)
+        public BED<ChIPSeqPeak> LoadSample(string fileName)
         {
             var bedParser = new BEDParser();
-            _samples.Add(bedParser.Parse(fileName));
+            var parsedSample = bedParser.Parse(fileName);
+            _samples.Add(parsedSample);
+            return parsedSample;
         }
 
         internal void Run()

@@ -18,8 +18,6 @@ namespace Genometric.MSPC.CLI.Exporter
     public class Exporter<P>
         where P : IChIPSeqPeak, new()
     {
-        private string _samplePath;
-        private Result<P> _data;
         private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
         private ExportOptions _options;
 
@@ -79,31 +77,30 @@ namespace Genometric.MSPC.CLI.Exporter
                 int duplicationExtension = 0;
                 FileProgress = 0;
                 SampleProgress++;
-                _data = result.Value;
 
-                _samplePath = _options.sessionPath + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
-                while (Directory.Exists(_samplePath))
-                    _samplePath = _options.sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
-                Directory.CreateDirectory(_samplePath);
+                string samplePath = _options.sessionPath + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
+                while (Directory.Exists(samplePath))
+                    samplePath = _options.sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
+                Directory.CreateDirectory(samplePath);
 
-                if (options.Export_R_j__o_BED) { FileProgress++; Export(Attributes.TruePositive); }
-                if (options.Export_R_j__s_BED) { FileProgress++; Export(Attributes.Stringent); }
-                if (options.Export_R_j__w_BED) { FileProgress++; Export(Attributes.Weak); }
-                if (options.Export_R_j__c_BED) { FileProgress++; Export(Attributes.Confirmed); }
-                if (options.Export_R_j__d_BED) { FileProgress++; Export(Attributes.Discarded); }
+                if (options.Export_R_j__o_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.TruePositive); }
+                if (options.Export_R_j__s_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.Stringent); }
+                if (options.Export_R_j__w_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.Weak); }
+                if (options.Export_R_j__c_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.Confirmed); }
+                if (options.Export_R_j__d_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.Discarded); }
             }
         }
 
-        private void Export(Attributes attribute)
+        private void Export(string samplePath, Result<P> data, Attributes attribute)
         {
-            string fileName = _samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
+            string fileName = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
             using (File.Create(fileName))
             using (StreamWriter writter = new StreamWriter(fileName))
             {
                 if (_options.includeBEDHeader)
                     writter.WriteLine(_header);
 
-                foreach (var chr in _data.Chromosomes)
+                foreach (var chr in data.Chromosomes)
                 {
                     var sortedDictionary = from entry in chr.Value.Get(attribute) orderby entry ascending select entry;
 

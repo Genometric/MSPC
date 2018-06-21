@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
+using Genometric.MSPC.Model;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
@@ -85,11 +86,11 @@ namespace Genometric.MSPC.CLI.Exporter
                     samplePath = sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
                 Directory.CreateDirectory(samplePath);
 
-                if (options.Export_R_j__o_BED) { FileProgress++; Export__R_j__o_BED(); }
-                if (options.Export_R_j__s_BED) { FileProgress++; Export__R_j__s_BED(); }
-                if (options.Export_R_j__w_BED) { FileProgress++; Export__R_j__w_BED(); }
-                if (options.Export_R_j__c_BED) { FileProgress++; Export__R_j__c_BED(); }
-                if (options.Export_R_j__d_BED) { FileProgress++; Export__R_j__d_BED(); }
+                if (options.Export_R_j__o_BED) { FileProgress++; Export(Attributes.TruePositive); }
+                if (options.Export_R_j__s_BED) { FileProgress++; Export(Attributes.Stringent); }
+                if (options.Export_R_j__w_BED) { FileProgress++; Export(Attributes.Weak); }
+                if (options.Export_R_j__c_BED) { FileProgress++; Export(Attributes.Confirmed); }
+                if (options.Export_R_j__d_BED) { FileProgress++; Export(Attributes.Discarded); }
             }
         }
     }

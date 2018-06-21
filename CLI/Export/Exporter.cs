@@ -96,7 +96,7 @@ namespace Genometric.MSPC.CLI.Exporter
             }
         }
 
-        protected void Export(Attributes attribute)
+        private void Export(Attributes attribute)
         {
             string fileName = _samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
             using (File.Create(fileName))
@@ -124,7 +124,7 @@ namespace Genometric.MSPC.CLI.Exporter
             }
         }
 
-        protected void ExportConsensusPeaks()
+        private void ExportConsensusPeaks()
         {
             using (File.Create(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed")) { }
             using (StreamWriter writter = new StreamWriter(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))

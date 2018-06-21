@@ -121,8 +121,8 @@ namespace Genometric.MSPC.CLI.Exporter
 
         private void ExportConsensusPeaks(ReadOnlyDictionary<string, SortedList<P, P>> peaks)
         {
-            using (File.Create(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))
-            using (StreamWriter writter = new StreamWriter(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))
+            using (File.Create(_options.sessionPath + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+            using (StreamWriter writter = new StreamWriter(_options.sessionPath + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
             {
                 if (_options.includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tX-squared");

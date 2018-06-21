@@ -26,7 +26,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
         protected void Export(Attributes attribute)
         {
-            string fileName = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed");
+            string fileName = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
             using (File.Create(fileName))
             using (StreamWriter writter = new StreamWriter(fileName))
             {

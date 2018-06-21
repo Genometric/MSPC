@@ -52,7 +52,7 @@ namespace Genometric.MSPC.CLI.Exporter
             }
         }
         
-        protected void Export__MergedReps()
+        protected void ExportConsensusPeaks()
         {
             using (File.Create(sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed")) { }
             using (StreamWriter writter = new StreamWriter(sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))

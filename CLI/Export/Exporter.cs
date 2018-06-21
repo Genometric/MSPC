@@ -56,7 +56,7 @@ namespace Genometric.MSPC.CLI.Exporter
         public void Export(
             Dictionary<uint, string> fileNames,
             ReadOnlyDictionary<uint, Result<P>> results,
-            ReadOnlyDictionary<string, SortedList<P, P>> mergedReplicates,
+            ReadOnlyDictionary<string, SortedList<P, P>> consensusPeaks,
             ExportOptions options)
         {
             includeBEDHeader = options.includeBEDHeader;
@@ -71,8 +71,8 @@ namespace Genometric.MSPC.CLI.Exporter
                 "_m" + DateTime.Now.TimeOfDay.Minutes.ToString() +
                 "_s" + DateTime.Now.TimeOfDay.Seconds.ToString() + "__";
 
-            base.mergedReplicates = mergedReplicates;
-            Export__MergedReps();
+            mergedReplicates = consensusPeaks;
+            ExportConsensusPeaks();
 
             foreach (var result in results)
             {

@@ -83,11 +83,11 @@ namespace Genometric.MSPC.CLI.Exporter
                     samplePath = _options.sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
                 Directory.CreateDirectory(samplePath);
 
-                if (options.Export_R_j__o_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.TruePositive); }
-                if (options.Export_R_j__s_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.Stringent); }
-                if (options.Export_R_j__w_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.Weak); }
-                if (options.Export_R_j__c_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.Confirmed); }
-                if (options.Export_R_j__d_BED) { FileProgress++; Export(samplePath, result.Value, Attributes.Discarded); }
+                foreach(var attribute in options.AttributesToExport)
+                {
+                    FileProgress++;
+                    Export(samplePath, result.Value, Attributes.TruePositive);
+                }
             }
         }
 

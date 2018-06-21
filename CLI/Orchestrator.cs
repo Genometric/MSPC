@@ -49,6 +49,10 @@ namespace Genometric.MSPC.CLI
 
         internal void Export()
         {
+            var a2E = new List<Attributes>();
+            foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
+                a2E.Add(att);
+
             var exporter = new Exporter<ChIPSeqPeak>();
             var options = new ExportOptions(
                 sessionPath: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
@@ -59,11 +63,7 @@ namespace Genometric.MSPC.CLI
                              DateTime.Now.Minute +
                              DateTime.Now.Second,
                 includeBEDHeader: true,
-                Export_R_j__o_BED: true,
-                Export_R_j__s_BED: true,
-                Export_R_j__w_BED: true,
-                Export_R_j__c_BED: true,
-                Export_R_j__d_BED: true,
+                attributesToExport: a2E,
                 Export_Chromosomewide_stats: false);
 
             exporter.Export(_samples.ToDictionary(x => x.FileHashKey, x => x.FileName), _mspc.GetResults(), _mspc.GetMergedReplicates(), options);

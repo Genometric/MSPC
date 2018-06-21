@@ -22,6 +22,36 @@ namespace Genometric.MSPC.CLI.Exporter
         protected Result<P> data { set; get; }
         protected ReadOnlyDictionary<string, SortedList<P, P>> mergedReplicates { set; get; }
 
+        private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
+
+        protected void Export(Attributes attribute)
+        {
+            string fileName = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed");
+            using (File.Create(fileName))
+            using (StreamWriter writter = new StreamWriter(fileName))
+            {
+                if (includeBEDHeader)
+                    writter.WriteLine(_header);
+
+                foreach (var chr in data.Chromosomes)
+                {
+                    var sortedDictionary = from entry in chr.Value.Get(attribute) orderby entry ascending select entry;
+
+                    foreach (var item in sortedDictionary)
+                    {
+                        writter.WriteLine(
+                            chr.Key + "\t" +
+                            item.Source.Left.ToString() + "\t" +
+                            item.Source.Right.ToString() + "\t" +
+                            item.Source.Name + "\t" +
+                            ConvertPValue(item.Source.Value) + "\t" +
+                            Math.Round(item.XSquared, 3) + "\t" +
+                            ConvertPValue(item.RTP));
+                    }
+                }
+            }
+        }
+
         protected void Export__R_j__o_BED()
         {
             using (File.Create(samplePath + Path.DirectorySeparatorChar + "AOutputSet.bed")) { }

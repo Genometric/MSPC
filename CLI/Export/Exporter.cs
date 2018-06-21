@@ -3,13 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 
-using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
 
@@ -22,7 +20,7 @@ namespace Genometric.MSPC.CLI.Exporter
         {
         }
 
-        public int fileProgress
+        public int FileProgress
         {
             set
             {
@@ -35,11 +33,10 @@ namespace Genometric.MSPC.CLI.Exporter
         public event EventHandler<ExporterEventArgs> FileProgressChanged;
         private void OnFileProgressChanged(int value)
         {
-            if (FileProgressChanged != null)
-                FileProgressChanged(this, new ExporterEventArgs(value));
+            FileProgressChanged?.Invoke(this, new ExporterEventArgs(value));
         }
 
-        public int sampleProgress
+        public int SampleProgress
         {
             set
             {
@@ -79,8 +76,8 @@ namespace Genometric.MSPC.CLI.Exporter
             foreach (var result in results)
             {
                 int duplicationExtension = 0;
-                fileProgress = 0;
-                sampleProgress++;
+                FileProgress = 0;
+                SampleProgress++;
                 data = result.Value;
 
                 samplePath = sessionPath + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
@@ -88,11 +85,11 @@ namespace Genometric.MSPC.CLI.Exporter
                     samplePath = sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
                 Directory.CreateDirectory(samplePath);
 
-                if (options.Export_R_j__o_BED) { fileProgress++; Export__R_j__o_BED(); }
-                if (options.Export_R_j__s_BED) { fileProgress++; Export__R_j__s_BED(); }
-                if (options.Export_R_j__w_BED) { fileProgress++; Export__R_j__w_BED(); }
-                if (options.Export_R_j__c_BED) { fileProgress++; Export__R_j__c_BED(); }
-                if (options.Export_R_j__d_BED) { fileProgress++; Export__R_j__d_BED(); }
+                if (options.Export_R_j__o_BED) { FileProgress++; Export__R_j__o_BED(); }
+                if (options.Export_R_j__s_BED) { FileProgress++; Export__R_j__s_BED(); }
+                if (options.Export_R_j__w_BED) { FileProgress++; Export__R_j__w_BED(); }
+                if (options.Export_R_j__c_BED) { FileProgress++; Export__R_j__c_BED(); }
+                if (options.Export_R_j__d_BED) { FileProgress++; Export__R_j__d_BED(); }
             }
         }
     }

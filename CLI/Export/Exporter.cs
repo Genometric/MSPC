@@ -61,8 +61,8 @@ namespace Genometric.MSPC.CLI.Exporter
         {
             _options = options;
 
-            if (!Directory.Exists(_options.sessionPath))
-                Directory.CreateDirectory(_options.sessionPath);
+            if (!Directory.Exists(_options.SessionPath))
+                Directory.CreateDirectory(_options.SessionPath);
 
             string date =
                 DateTime.Now.Date.ToString("dd'_'MM'_'yyyy", CultureInfo.InvariantCulture) +
@@ -78,9 +78,9 @@ namespace Genometric.MSPC.CLI.Exporter
                 FileProgress = 0;
                 SampleProgress++;
 
-                string samplePath = _options.sessionPath + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
+                string samplePath = _options.SessionPath + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
                 while (Directory.Exists(samplePath))
-                    samplePath = _options.sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
+                    samplePath = _options.SessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
                 Directory.CreateDirectory(samplePath);
 
                 foreach(var attribute in options.AttributesToExport)
@@ -97,7 +97,7 @@ namespace Genometric.MSPC.CLI.Exporter
             using (File.Create(fileName))
             using (StreamWriter writter = new StreamWriter(fileName))
             {
-                if (_options.includeBEDHeader)
+                if (_options.IncludeBEDHeader)
                     writter.WriteLine(_header);
 
                 foreach (var chr in data.Chromosomes)
@@ -121,10 +121,10 @@ namespace Genometric.MSPC.CLI.Exporter
 
         private void ExportConsensusPeaks(ReadOnlyDictionary<string, SortedList<P, P>> peaks)
         {
-            using (File.Create(_options.sessionPath + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
-            using (StreamWriter writter = new StreamWriter(_options.sessionPath + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+            using (File.Create(_options.SessionPath + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+            using (StreamWriter writter = new StreamWriter(_options.SessionPath + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
             {
-                if (_options.includeBEDHeader)
+                if (_options.IncludeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tX-squared");
 
                 foreach (var chr in peaks)

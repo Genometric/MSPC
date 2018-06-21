@@ -19,11 +19,10 @@ namespace Genometric.MSPC.CLI.Exporter
         where P : IChIPSeqPeak, new()
     {
         private string _samplePath;
-        private string _sessionPath;
-        private bool _includeHeader;
         private Result<P> _data;
         private ReadOnlyDictionary<string, SortedList<P, P>> _consensusPeaks;
         private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
+        private ExportOptions _options;
 
         public int FileProgress
         {
@@ -63,11 +62,10 @@ namespace Genometric.MSPC.CLI.Exporter
             ReadOnlyDictionary<string, SortedList<P, P>> consensusPeaks,
             ExportOptions options)
         {
-            _includeHeader = options.includeBEDHeader;
-            _sessionPath = options.sessionPath;
+            _options = options;
 
-            if (!Directory.Exists(_sessionPath))
-                Directory.CreateDirectory(_sessionPath);
+            if (!Directory.Exists(_options.sessionPath))
+                Directory.CreateDirectory(_options.sessionPath);
 
             string date =
                 DateTime.Now.Date.ToString("dd'_'MM'_'yyyy", CultureInfo.InvariantCulture) +
@@ -85,9 +83,9 @@ namespace Genometric.MSPC.CLI.Exporter
                 SampleProgress++;
                 _data = result.Value;
 
-                _samplePath = _sessionPath + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
+                _samplePath = _options.sessionPath + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
                 while (Directory.Exists(_samplePath))
-                    _samplePath = _sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
+                    _samplePath = _options.sessionPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
                 Directory.CreateDirectory(_samplePath);
 
                 if (options.Export_R_j__o_BED) { FileProgress++; Export(Attributes.TruePositive); }
@@ -104,7 +102,7 @@ namespace Genometric.MSPC.CLI.Exporter
             using (File.Create(fileName))
             using (StreamWriter writter = new StreamWriter(fileName))
             {
-                if (_includeHeader)
+                if (_options.includeBEDHeader)
                     writter.WriteLine(_header);
 
                 foreach (var chr in _data.Chromosomes)
@@ -128,10 +126,10 @@ namespace Genometric.MSPC.CLI.Exporter
 
         protected void ExportConsensusPeaks()
         {
-            using (File.Create(_sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed")) { }
-            using (StreamWriter writter = new StreamWriter(_sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))
+            using (File.Create(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed")) { }
+            using (StreamWriter writter = new StreamWriter(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))
             {
-                if (_includeHeader)
+                if (_options.includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tX-squared");
 
                 foreach (var chr in _consensusPeaks)

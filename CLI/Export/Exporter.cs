@@ -20,7 +20,6 @@ namespace Genometric.MSPC.CLI.Exporter
     {
         private string _samplePath;
         private Result<P> _data;
-        private ReadOnlyDictionary<string, SortedList<P, P>> _consensusPeaks;
         private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
         private ExportOptions _options;
 
@@ -73,8 +72,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 "_m" + DateTime.Now.TimeOfDay.Minutes.ToString() +
                 "_s" + DateTime.Now.TimeOfDay.Seconds.ToString() + "__";
 
-            _consensusPeaks = consensusPeaks;
-            ExportConsensusPeaks();
+            ExportConsensusPeaks(consensusPeaks);
 
             foreach (var result in results)
             {
@@ -124,15 +122,15 @@ namespace Genometric.MSPC.CLI.Exporter
             }
         }
 
-        private void ExportConsensusPeaks()
+        private void ExportConsensusPeaks(ReadOnlyDictionary<string, SortedList<P, P>> peaks)
         {
-            using (File.Create(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed")) { }
+            using (File.Create(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))
             using (StreamWriter writter = new StreamWriter(_options.sessionPath + Path.DirectorySeparatorChar + "MergedReplicates.bed"))
             {
                 if (_options.includeBEDHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tX-squared");
 
-                foreach (var chr in _consensusPeaks)
+                foreach (var chr in peaks)
                 {
                     foreach (var item in chr.Value)
                     {

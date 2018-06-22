@@ -84,8 +84,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
         private void ExportConsensusPeaks(ReadOnlyDictionary<string, SortedList<P, P>> peaks)
         {
-            File.Create(_options.Path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed").Dispose();
-            using (StreamWriter writter = new StreamWriter(_options.Path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+            string filename = _options.Path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed";
+            File.Create(filename).Dispose();
+            using (StreamWriter writter = new StreamWriter(filename))
             {
                 if (_options.IncludeHeader)
                     writter.WriteLine("chr\tstart\tstop\tname\tX-squared");

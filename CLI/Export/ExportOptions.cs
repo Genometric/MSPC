@@ -8,16 +8,16 @@ using System.Collections.ObjectModel;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
-    public class ExportOptions
+    public class Options
     {
-        public ExportOptions(
-            string sessionPath,
-            bool includeBEDHeader,
+        public Options(
+            string path,
+            bool includeHeader,
             List<Attributes> attributesToExport,
             bool Export_Chromosomewide_stats)
         {
-            SessionPath = sessionPath;
-            IncludeBEDHeader = includeBEDHeader;
+            Path = path;
+            IncludeHeader = includeHeader;
             ExportChromosomewideStats = Export_Chromosomewide_stats;
             _attributesToExport = new List<Attributes>(attributesToExport);
         }
@@ -26,7 +26,7 @@ namespace Genometric.MSPC.CLI.Exporter
         public ReadOnlyCollection<Attributes> AttributesToExport { get { return _attributesToExport.AsReadOnly(); } }
 
         public bool ExportChromosomewideStats { private set; get; }
-        public bool IncludeBEDHeader { private set; get; }
-        public string SessionPath { private set; get; }
+        public bool IncludeHeader { private set; get; }
+        public string Path { private set; get; }
     }
 }

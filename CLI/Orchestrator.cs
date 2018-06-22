@@ -54,15 +54,15 @@ namespace Genometric.MSPC.CLI
                 a2E.Add(att);
 
             var exporter = new Exporter<ChIPSeqPeak>();
-            var options = new ExportOptions(
-                sessionPath: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
+            var options = new Options(
+                path: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
                              DateTime.Now.Year +
                              DateTime.Now.Month +
                              DateTime.Now.Day +
                              DateTime.Now.Hour +
                              DateTime.Now.Minute +
                              DateTime.Now.Second,
-                includeBEDHeader: true,
+                includeHeader: true,
                 attributesToExport: a2E,
                 Export_Chromosomewide_stats: false);
 

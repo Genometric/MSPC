@@ -56,9 +56,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
         private void WriteToFile(string samplePath, Result<P> data, Attributes attribute)
         {
-            string fileName = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
-            File.Create(fileName).Dispose();
-            using (StreamWriter writter = new StreamWriter(fileName))
+            string filename = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
+            File.Create(filename).Dispose();
+            using (StreamWriter writter = new StreamWriter(filename))
             {
                 if (_options.IncludeHeader)
                     writter.WriteLine(_header);

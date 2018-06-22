@@ -86,7 +86,7 @@ namespace Genometric.MSPC.CLI.Exporter
                 foreach(var attribute in options.AttributesToExport)
                 {
                     FileProgress++;
-                    Export(samplePath, result.Value, Attributes.TruePositive);
+                    Export(samplePath, result.Value, attribute);
                 }
             }
         }

@@ -50,11 +50,11 @@ namespace Genometric.MSPC.CLI.Exporter
                 Directory.CreateDirectory(samplePath);
 
                 foreach(var attribute in options.AttributesToExport)
-                    Export(samplePath, result.Value, attribute);
+                    WriteToFile(samplePath, result.Value, attribute);
             }
         }
 
-        private void Export(string samplePath, Result<P> data, Attributes attribute)
+        private void WriteToFile(string samplePath, Result<P> data, Attributes attribute)
         {
             string fileName = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
             using (File.Create(fileName))

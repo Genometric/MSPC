@@ -21,22 +21,6 @@ namespace Genometric.MSPC.CLI.Exporter
         private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
         private Options _options;
 
-        public int SampleProgress
-        {
-            set
-            {
-                _sampleProgress = value;
-                OnSampleProgressChanged(value);
-            }
-            get { return _sampleProgress; }
-        }
-        private int _sampleProgress;
-        public event EventHandler<ExporterEventArgs> SampleProgressChanged;
-        private void OnSampleProgressChanged(int value)
-        {
-            SampleProgressChanged?.Invoke(this, new ExporterEventArgs(value));
-        }
-
         public void Export(
             Dictionary<uint, string> fileNames,
             ReadOnlyDictionary<uint, Result<P>> results,
@@ -59,7 +43,6 @@ namespace Genometric.MSPC.CLI.Exporter
             foreach (var result in results)
             {
                 int duplicationExtension = 0;
-                SampleProgress++;
 
                 string samplePath = _options.Path + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
                 while (Directory.Exists(samplePath))

@@ -57,7 +57,7 @@ namespace Genometric.MSPC.CLI.Exporter
         private void WriteToFile(string samplePath, Result<P> data, Attributes attribute)
         {
             string fileName = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
-            using (File.Create(fileName))
+            File.Create(fileName).Dispose();
             using (StreamWriter writter = new StreamWriter(fileName))
             {
                 if (_options.IncludeHeader)
@@ -84,7 +84,7 @@ namespace Genometric.MSPC.CLI.Exporter
 
         private void ExportConsensusPeaks(ReadOnlyDictionary<string, SortedList<P, P>> peaks)
         {
-            using (File.Create(_options.Path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+            File.Create(_options.Path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed").Dispose();
             using (StreamWriter writter = new StreamWriter(_options.Path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
             {
                 if (_options.IncludeHeader)

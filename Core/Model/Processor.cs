@@ -268,26 +268,20 @@ namespace Genometric.MSPC.Model
                     // Sorts confirmed peaks set based on their p-values.
                     confirmedPeaks.Sort(new Comparers.CompareProcessedPeakByValue<I>());
 
-                    for (int k = 1; k <= m; k++)
-                    {
-                        if (confirmedPeaks[k - 1].Source.Value > (k / (double)m) * _config.Alpha)
-                        {
-                            k--;
-                            for (int l = 1; l < k; l++)
-                            {
-                                confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
-                                confirmedPeaks[l].Classification.Add(Attributes.TruePositive);
-                            }
-                            for (int l = k; l < m; l++)
-                            {
-                                confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
-                                confirmedPeaks[l].Classification.Add(Attributes.FalsePositive);
-                            }
-
-                            chr.Value.SetTruePositiveCount(k);
-                            chr.Value.SetFalsePositiveCount(m - k);
+                    int k;
+                    for (k = 0; k < m; k++)
+                        if (confirmedPeaks[k].Source.Value <= (k / (double)m) * _config.Alpha)
                             break;
-                        }
+
+                    for (int l = 0; l < k; l++)
+                    {
+                        confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
+                        confirmedPeaks[l].Classification.Add(Attributes.TruePositive);
+                    }
+                    for (int l = k + 1; l < m; l++)
+                    {
+                        confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
+                        confirmedPeaks[l].Classification.Add(Attributes.FalsePositive);
                     }
 
                     // Sorts confirmed peaks set based on coordinates using default comparer.

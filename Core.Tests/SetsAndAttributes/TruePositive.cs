@@ -37,7 +37,7 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void AssignTruePositiveAttribute()
+        public void AssignTruePositiveAttributeWhenThereIsOnlyOnePeak()
         {
             // Arrange & Act
             var res = GenerateAndProcessBackgroundPeaks();

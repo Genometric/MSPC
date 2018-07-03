@@ -268,33 +268,14 @@ namespace Genometric.MSPC.Model
                     // Sorts confirmed peaks set based on their p-values.
                     confirmedPeaks.Sort(new Comparers.CompareProcessedPeakByValue<I>());
 
-                    for (int k = 0; k < m; k++)
-                    {
-                        if (confirmedPeaks[k].Source.Value <= ((k + 1) / (double)m) * _config.Alpha)
-                        {
-                            for (int i = 0; i <= k; i++)
-                            {
-                                confirmedPeaks[i].Classification.Add(Attributes.TruePositive);
-                                confirmedPeaks[i].AdjPValue = ((k * confirmedPeaks[i].Source.Value) / m) * _config.Alpha;
-                            }
-                            for (int i = k + 1; i < m; i++)
-                            {
-                                confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
-                                confirmedPeaks[i].AdjPValue = ((k * confirmedPeaks[i].Source.Value) / m) * _config.Alpha;
-                            }
-
-                            // Sorts confirmed peaks set based on coordinates using default comparer.
-                            confirmedPeaks.Sort();
-                            return;
-                        }
-                    }
-
                     for (int i = 0; i < m; i++)
                     {
-                        confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
-                        confirmedPeaks[i].AdjPValue = (confirmedPeaks[i].Source.Value / m) * _config.Alpha;
+                        if (confirmedPeaks[i].Source.Value <= ((i + 1) / (double)m) * _config.Alpha)
+                            confirmedPeaks[i].Classification.Add(Attributes.TruePositive);
+                        else
+                            confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
+                        confirmedPeaks[i].AdjPValue = confirmedPeaks[i].Source.Value * (m / (i + 1));
                     }
-
                     // Sorts confirmed peaks set based on coordinates using default comparer.
                     confirmedPeaks.Sort();
                 }

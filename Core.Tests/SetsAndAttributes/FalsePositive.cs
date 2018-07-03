@@ -71,7 +71,8 @@ namespace Core.Tests.Base
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.FalsePositive).Count() == 2);
+            foreach (var sample in res)
+                Assert.True(sample.Value.Chromosomes[_chr].Get(Attributes.FalsePositive).Count() == 2);
         }
     }
 }

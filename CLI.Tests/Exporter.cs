@@ -171,5 +171,19 @@ namespace Genometric.MSPC.CLI.Tests
             // Clean up
             Directory.Delete(path, true);
         }
+
+        [Fact]
+        public void NotWriteHeaderFileToAllExportedData()
+        {
+            // Arrange & Act
+            string path = RunMSPCAndExportResults();
+            foreach (var sampleFolder in Directory.GetDirectories(path))
+                foreach (var file in Directory.GetFiles(sampleFolder))
+                    using (StreamReader reader = new StreamReader(file))
+                        Assert.NotEqual("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)", reader.ReadLine());
+
+            // Clean up
+            Directory.Delete(path, true);
+        }
     }
 }

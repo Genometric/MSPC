@@ -79,7 +79,7 @@ namespace Genometric.MSPC.CLI.Tests
             return mspc;
         }
 
-        private string RunMSPCAndExportResults()
+        private string RunMSPCAndExportResults(bool includeHeader = false)
         {
             var mspc = InitializeMSPC();
             mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 0.05F, MultipleIntersections.UseLowestPValue));
@@ -87,7 +87,7 @@ namespace Genometric.MSPC.CLI.Tests
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
 
             var exporter = new Exporter<ChIPSeqPeak>();
-            var options = new Options(path, false, _attributes, false);            
+            var options = new Options(path, includeHeader, _attributes, false);
 
             exporter.Export(_sidfm, mspc.GetResults(), mspc.GetMergedReplicates(), options);
 
@@ -161,7 +161,15 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void WriteHeaderFileToAllExportedData()
         {
-            // TODO
+            // Arrange & Act
+            string path = RunMSPCAndExportResults(true);
+            foreach (var sampleFolder in Directory.GetDirectories(path))
+                foreach (var file in Directory.GetFiles(sampleFolder))
+                    using (StreamReader reader = new StreamReader(file))
+                        Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)", reader.ReadLine());
+
+            // Clean up
+            Directory.Delete(path, true);
         }
     }
 }

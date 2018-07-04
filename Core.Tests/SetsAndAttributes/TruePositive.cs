@@ -105,7 +105,7 @@ namespace Core.Tests.Base
         }
 
         [Fact]
-        public void CorrectlyIdentifyAllPeaksASTruePositive()
+        public void CorrectlyIdentifyAllPeaksAsTruePositive()
         {
             var sA = new BED<ChIPSeqPeak>();
             sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-6, Name = "r11", HashKey = 1 }, _chr, _strand);

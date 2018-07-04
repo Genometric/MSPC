@@ -2,117 +2,95 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.MSPC.CLI.Model;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Runtime.CompilerServices;
 
-
+[assembly: InternalsVisibleTo("Genometric.MSPC.CLI.Tests")]
 namespace Genometric.MSPC.CLI
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var test = Environment.CurrentDirectory;
-
-            DateTime processStartTime = DateTime.Now;
-            Stopwatch analysisTime = new Stopwatch();
-            Stopwatch parserStopwatch = new Stopwatch();
-
-            var orchestrator = new Orchestrator();
-            /*
-            if (Samples<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>.Data == null)
-                Samples<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>.Data = new Dictionary<uint, GIFP.ParsedChIPseqPeaks<int, Interval<int, MChIPSeqPeak>, MChIPSeqPeak>>();
-            if (Sessions<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>.Data == null)
-                Sessions<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>.Data = new Dictionary<string, Session<Interval<int, MChIPSeqPeak>, MChIPSeqPeak>>();
-*/
-            //var options = new CommandLineOptions();
-            var files = new List<string>();
-            //if (CommandLine.Parser.Default.ParseArguments(args, options))
-            //{
-            for (int i = 0; i < args.Length; i = i + 2)
-                if (args[i] == "-i")
-                    files.Add(args[i + 1]);
-
-            /*if (files.Count <= 1)
-                files = options.inputFiles.ToList();*/
-
-            /*if (files.Count < 2)
+            string mspcCannotContinue = "\r\nMSPC cannot continue.";
+            var cliOptions = new CommandLineOptions();
+            try
             {
-                Console.WriteLine("At least two samples are required; MSPC can not continue.");
-                Environment.Exit(0);
-            }*/
+                cliOptions.Parse(args);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message + mspcCannotContinue);
+                return;
+            }
 
-            foreach (var file in files)
+            if (cliOptions.Input.Count < 2)
+            {
+                Console.WriteLine(String.Format("At least two samples are required; {0} is given.{1}", cliOptions.Input.Count, mspcCannotContinue));
+                return;
+            }
+
+            foreach (var file in cliOptions.Input)
                 if (!File.Exists(file))
                 {
-                    Console.WriteLine("Missing file: {0}", file);
-                    Console.WriteLine("MSPC can not continue.");
-                    Environment.Exit(0);
+                    Console.WriteLine(String.Format("Missing file: {0}{1}", file, mspcCannotContinue));
+                    return;
                 }
 
+            var orchestrator = new Orchestrator(cliOptions.Options, cliOptions.Input);
 
-            foreach (var file in files)
+            var et = new Stopwatch();
+            foreach (var file in cliOptions.Input)
             {
-                Console.WriteLine("Parsing sample : {0}", file);
-                parserStopwatch.Restart();
+                Console.WriteLine(String.Format("Parsing sample : {0}", file));
+                et.Restart();
 
                 try
                 {
-                    orchestrator.LoadSample(file);
-                    var parsedSample = orchestrator.samples[orchestrator.samples.Count - 1];
-                    parserStopwatch.Stop();
-                    Console.WriteLine("Done...  ET:\t{0}", parserStopwatch.Elapsed.ToString());
+                    var parsedSample = orchestrator.LoadSample(file);
+                    et.Stop();
+                    Console.WriteLine("Done...  ET:\t{0}", et.Elapsed.ToString());
                     Console.WriteLine("Read peaks#:\t{0}", parsedSample.IntervalsCount.ToString("N0", CultureInfo.InvariantCulture));
                     Console.WriteLine("Min p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMin.Value));
                     Console.WriteLine("Max p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMax.Value));
                     Console.WriteLine("");
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Console.WriteLine(" ---! an unknown Exception occured while parsing BED files; MSPC can not continue.");
-                    Environment.Exit(0);
+                    Console.WriteLine(String.Format("The following exception has occurred while parsing input files: {0}{1}", e.Message, mspcCannotContinue));
+                    return;
                 }
             }
 
-            //if (options.gamma == -1)
-            //options.gamma = options.tauS;
-
-            orchestrator.replicateType = "bio"; // options.replicateType;
-            orchestrator.tauS = 1e-8;//options.tauS;
-            orchestrator.tauW = 1e-4;// options.tauW;
-            orchestrator.alpha = 0.05f;// options.alpha;
-            orchestrator.gamma = 1e-8;//options.gamma;
-            orchestrator.C = 1;// options.C;
-
             Console.WriteLine("Analysis started ...");
-            analysisTime.Start();
-            try { orchestrator.Run(); }
-            catch (Exception exception)
+            et.Restart();
+            try
             {
-                Console.WriteLine(" ---! an unknown Exception occured while processing samples, program will terminate.");
-                Environment.Exit(0);
+                orchestrator.Run();
             }
-
-
+            catch (Exception e)
+            {
+                Console.WriteLine(String.Format("The following exception has occurred while processing the samples: {0}{1}", e.Message, mspcCannotContinue));
+                return;
+            }
 
             try
             {
                 Console.WriteLine("\n\rSaving results ...");
                 orchestrator.Export();
             }
-            catch (Exception exception)
+            catch (Exception e)
             {
-                Console.WriteLine(" ---! an unknown Exception occured while exporting analysis results, program will terminate.");
-                Environment.Exit(0);
+                Console.WriteLine(String.Format("The following exception has occurred while saving analysis results: {0}{1}", e.Message, mspcCannotContinue));
+                return;
             }
 
+            et.Stop();
             Console.WriteLine(" ");
-            Console.WriteLine("All processes successfully finished [Analysis ET: {0}", analysisTime.Elapsed.ToString() + "]");
+            Console.WriteLine(String.Format("All processes successfully finished [Analysis ET: {0}]", et.Elapsed.ToString()));
             Console.WriteLine(" ");
         }
     }

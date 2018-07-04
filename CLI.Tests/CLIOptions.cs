@@ -183,7 +183,7 @@ namespace Genometric.MSPC.CLI.Tests
             var po = options.Parse("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
 
             // Assert
-            Assert.True(po.Gamma == -1);
+            Assert.True(po.Gamma == 1E-8);
             Assert.True(po.Alpha == 0.05F);
             Assert.True(po.C == 1);
             Assert.True(po.MultipleIntersections == MultipleIntersections.UseLowestPValue);

@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{28D3CCE8-0B9F-45B2-A050-2091DD7EA689}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLI.Tests", "CLI.Tests\CLI.Tests.csproj", "{42617C98-C3DE-4970-8825-0F8E472CDB1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CLI.Tests", "CLI.Tests\CLI.Tests.csproj", "{42617C98-C3DE-4970-8825-0F8E472CDB1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

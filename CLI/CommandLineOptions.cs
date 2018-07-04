@@ -99,7 +99,6 @@ namespace Genometric.MSPC.CLI
                 var msgBuilder = new StringBuilder("The following required arguments are missing: ");
                 foreach (var item in missingArgs)
                     msgBuilder.Append(item + "; ");
-                msgBuilder.Append(".");
                 throw new ArgumentException(msgBuilder.ToString());
             }
 
@@ -128,6 +127,7 @@ namespace Genometric.MSPC.CLI
 
             if (_cGamma.HasValue() && !double.TryParse(_cGamma.Value(), out _vgamma))
                 ThrowInvalidException(_cGamma.LongName);
+            _vgamma = _vgamma == -1 ? _vtauS : _vgamma;
 
             if (_cAlpha.HasValue() && !float.TryParse(_cAlpha.Value(), out _valpha))
                 ThrowInvalidException(_cAlpha.LongName);

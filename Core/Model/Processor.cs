@@ -268,28 +268,14 @@ namespace Genometric.MSPC.Model
                     // Sorts confirmed peaks set based on their p-values.
                     confirmedPeaks.Sort(new Comparers.CompareProcessedPeakByValue<I>());
 
-                    for (int k = 1; k <= m; k++)
+                    for (int i = 0; i < m; i++)
                     {
-                        if (confirmedPeaks[k - 1].Source.Value > (k / (double)m) * _config.Alpha)
-                        {
-                            k--;
-                            for (int l = 1; l < k; l++)
-                            {
-                                confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
-                                confirmedPeaks[l].Classification.Add(Attributes.TruePositive);
-                            }
-                            for (int l = k; l < m; l++)
-                            {
-                                confirmedPeaks[l].AdjPValue = ((k * confirmedPeaks[l].Source.Value) / m) * _config.Alpha;
-                                confirmedPeaks[l].Classification.Add(Attributes.FalsePositive);
-                            }
-
-                            chr.Value.SetTruePositiveCount(k);
-                            chr.Value.SetFalsePositiveCount(m - k);
-                            break;
-                        }
+                        if (confirmedPeaks[i].Source.Value <= ((i + 1) / (double)m) * _config.Alpha)
+                            confirmedPeaks[i].Classification.Add(Attributes.TruePositive);
+                        else
+                            confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
+                        confirmedPeaks[i].AdjPValue = confirmedPeaks[i].Source.Value * (m / (i + 1));
                     }
-
                     // Sorts confirmed peaks set based on coordinates using default comparer.
                     confirmedPeaks.Sort();
                 }

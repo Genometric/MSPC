@@ -115,24 +115,24 @@ namespace Genometric.MSPC.CLI
                     break;
 
                 default:
-                    throw new ArgumentException("Invalid value given for the " + _cReplicate.LongName + " argument.");
+                    throw new ArgumentException("Invalid value given for the `" + _cReplicate.LongName + "` argument.");
             }
 
             if (!double.TryParse(_cTauS.Value(), out _vtauS))
-                throw new ArgumentException("Invalid value given for the " + _cTauS.LongName + " argument.");
+                throw new ArgumentException("Invalid value given for the `" + _cTauS.LongName + "` argument.");
 
             if (!double.TryParse(_cTauW.Value(), out _vtauW))
-                throw new ArgumentException("Invalid value given for the " + _cTauW.LongName + " argument.");
+                throw new ArgumentException("Invalid value given for the `" + _cTauW.LongName + "` argument.");
 
             if (_cGamma.HasValue() && !double.TryParse(_cGamma.Value(), out _vgamma))
-                throw new ArgumentException("Invalid value given for the " + _cGamma.LongName + " argument.");
+                throw new ArgumentException("Invalid value given for the `" + _cGamma.LongName + "` argument.");
             _vgamma = _vgamma == -1 ? _vtauS : _vgamma;
 
             if (_cAlpha.HasValue() && !float.TryParse(_cAlpha.Value(), out _valpha))
-                throw new ArgumentException("Invalid value given for the " + _cAlpha.LongName + " argument.");
+                throw new ArgumentException("Invalid value given for the `" + _cAlpha.LongName + "` argument.");
 
             if (_cC.HasValue() && !byte.TryParse(_cC.Value(), out _vc))
-                throw new ArgumentException("Invalid value given for the " + _cC.ShortName + " argument.");
+                throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
 
             if(_cM.HasValue())
                 switch (_cM.Value().ToLower())
@@ -146,7 +146,7 @@ namespace Genometric.MSPC.CLI
                         break;
 
                     default:
-                        throw new ArgumentException("Invalid value given for the " + _cM.LongName + " argument.");
+                        throw new ArgumentException("Invalid value given for the `" + _cM.LongName + "` argument.");
                 }
 
             return 0;

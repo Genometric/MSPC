@@ -243,7 +243,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
-            Assert.Equal("Invalid value given for the tauW argument.", exception.Message);
+            Assert.Equal("Invalid value given for the `tauW` argument.", exception.Message);
         }
 
         [Fact]
@@ -255,7 +255,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
-            Assert.Equal("Invalid value given for the tauS argument.", exception.Message);
+            Assert.Equal("Invalid value given for the `tauS` argument.", exception.Message);
         }
 
         [Fact]
@@ -267,7 +267,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
-            Assert.Equal("Invalid value given for the replicate argument.", exception.Message);
+            Assert.Equal("Invalid value given for the `replicate` argument.", exception.Message);
         }
 
         [Fact]
@@ -279,7 +279,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
-            Assert.Equal("Invalid value given for the gamma argument.", exception.Message);
+            Assert.Equal("Invalid value given for the `gamma` argument.", exception.Message);
         }
 
         [Fact]
@@ -291,7 +291,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
-            Assert.Equal("Invalid value given for the alpha argument.", exception.Message);
+            Assert.Equal("Invalid value given for the `alpha` argument.", exception.Message);
         }
 
         [Fact]
@@ -303,7 +303,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
-            Assert.Equal("Invalid value given for the c argument.", exception.Message);
+            Assert.Equal("Invalid value given for the `c` argument.", exception.Message);
         }
 
         [Fact]
@@ -315,7 +315,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
-            Assert.Equal("Invalid value given for the multipleIntersections argument.", exception.Message);
+            Assert.Equal("Invalid value given for the `multipleIntersections` argument.", exception.Message);
         }
     }
 }

@@ -314,7 +314,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -m ABC".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the multipleIntersections argument.", exception.Message);
         }
     }
 }

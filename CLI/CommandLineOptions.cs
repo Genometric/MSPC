@@ -132,7 +132,7 @@ namespace Genometric.MSPC.CLI
                 throw new ArgumentException("Invalid value given for the " + _cAlpha.LongName + " argument.");
 
             if (_cC.HasValue() && !byte.TryParse(_cC.Value(), out _vc))
-                throw new ArgumentException("Invalid value given for the " + _cC.LongName + " argument.");
+                throw new ArgumentException("Invalid value given for the " + _cC.ShortName + " argument.");
 
             if(_cM.HasValue())
                 switch (_cM.Value().ToLower())

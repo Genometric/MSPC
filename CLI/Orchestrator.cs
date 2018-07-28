@@ -63,8 +63,7 @@ namespace Genometric.MSPC.CLI
                              DateTime.Now.Minute +
                              DateTime.Now.Second,
                 includeHeader: true,
-                attributesToExport: a2E,
-                Export_Chromosomewide_stats: false);
+                attributesToExport: a2E);
 
             exporter.Export(_samples.ToDictionary(x => x.FileHashKey, x => x.FileName), _mspc.GetResults(), _mspc.GetMergedReplicates(), options);
         }

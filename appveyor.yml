@@ -27,7 +27,7 @@ test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore Core.Tests\Core.Tests.csproj --verbosity m
   - cmd: dotnet test Core.Tests\Core.Tests.csproj
-  - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]*" -output:".\mspc_coverage.xml" -oldstyle
+  - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle
 after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH

@@ -32,21 +32,13 @@ namespace Genometric.MSPC.CLI.Exporter
             if (!Directory.Exists(_options.Path))
                 Directory.CreateDirectory(_options.Path);
 
-            string date =
-                DateTime.Now.Date.ToString("dd'_'MM'_'yyyy", CultureInfo.InvariantCulture) +
-                "_h" + DateTime.Now.TimeOfDay.Hours.ToString() +
-                "_m" + DateTime.Now.TimeOfDay.Minutes.ToString() +
-                "_s" + DateTime.Now.TimeOfDay.Seconds.ToString() + "__";
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture) + "__";
 
             ExportConsensusPeaks(consensusPeaks);
 
             foreach (var result in results)
             {
-                int duplicationExtension = 0;
-
-                string samplePath = _options.Path + Path.DirectorySeparatorChar + date + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
-                while (Directory.Exists(samplePath))
-                    samplePath = _options.Path + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(fileNames[result.Key]) + "_" + (duplicationExtension++).ToString();
+                string samplePath = _options.Path + Path.DirectorySeparatorChar + timestamp + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
                 Directory.CreateDirectory(samplePath);
 
                 foreach(var attribute in options.AttributesToExport)

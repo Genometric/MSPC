@@ -27,10 +27,7 @@ test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore Core.Tests\Core.Tests.csproj --verbosity m
   - cmd: dotnet test Core.Tests\Core.Tests.csproj
-  - ps: cd Core.Tests
-  - OpenCover.Console.exe -register:"user" -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"xunit -noshadow" -filter:"+[*]* -[Core.Tests*]*" -oldStyle -output:".\mspc_coverage.xml"
-  - codecov -f "mspc_coverage.xml"
-  - ps: cd ..
+  - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]*" -output:".\mspc_coverage.xml" -oldstyle
 after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
@@ -85,3 +82,16 @@ for:
 #      secure: 0ubG+Z4SGof+VEFEQD4Gm5JIb4L6+lMq3pnRfUhim5RLUw+JaC5Qx9dBMWZ9JRuD
 #    skip_symbols: false
 
+# override settings for `dev*` branches
+-
+  branches:
+    only:
+      - /dev*/
+      
+  configuration: Debug
+  
+  after_test:
+    - ps: |
+        $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+        Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+        bash codecov.sh -f "Core.Tests/mspc_coverage.xml"

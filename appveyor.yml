@@ -7,6 +7,12 @@ init:
   - cmd: git config --global core.autocrlf true
 install:
   - dotnet restore
+
+before_build:
+- nuget restore
+- choco install opencover.portable
+- choco install codecov
+
 build:
   verbosity: minimal
 clone_depth: 1

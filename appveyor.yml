@@ -23,6 +23,7 @@ test_script:
   - cmd: dotnet test Core.Tests\Core.Tests.csproj
   - ps: cd Core.Tests
   - OpenCover.Console.exe -register:"user" -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"xunit -noshadow" -filter:"+[*]* -[Core.Tests*]*" -oldStyle -output:".\mspc_coverage.xml"
+  - codecov -f "mspc_coverage.xml"
   - ps: cd ..
 after_test:
   - ps: |
@@ -85,9 +86,3 @@ for:
       - /dev*/
       
   configuration: Debug
-  
-  after_test:
-    - ps: |
-        $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
-        Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-        bash codecov.sh -f "Core.Tests/mspc_coverage.xml"

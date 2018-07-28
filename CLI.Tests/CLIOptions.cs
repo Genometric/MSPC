@@ -230,7 +230,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("The following required arguments are missing: r|replicate; ", exception.Message);
         }
 
         [Fact]
@@ -241,7 +242,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w ABC -s 1E-8 -r bio".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the `tauW` argument.", exception.Message);
         }
 
         [Fact]
@@ -252,7 +254,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s ABC -r bio".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the `tauS` argument.", exception.Message);
         }
 
         [Fact]
@@ -263,7 +266,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r biooo".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the `replicate` argument.", exception.Message);
         }
 
         [Fact]
@@ -274,7 +278,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -g ABC".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the `gamma` argument.", exception.Message);
         }
 
         [Fact]
@@ -285,7 +290,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -a ABC".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the `alpha` argument.", exception.Message);
         }
 
         [Fact]
@@ -296,7 +302,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c ABC".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the `c` argument.", exception.Message);
         }
 
         [Fact]
@@ -307,7 +314,8 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -m ABC".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the `multipleIntersections` argument.", exception.Message);
         }
     }
 }

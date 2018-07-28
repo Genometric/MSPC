@@ -87,7 +87,7 @@ namespace Genometric.MSPC.CLI.Tests
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
 
             var exporter = new Exporter<ChIPSeqPeak>();
-            var options = new Options(path, includeHeader, _attributes, false);
+            var options = new Options(path, includeHeader, _attributes);
 
             exporter.Export(_sidfm, mspc.GetResults(), mspc.GetMergedReplicates(), options);
 

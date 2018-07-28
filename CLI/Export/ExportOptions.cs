@@ -13,19 +13,16 @@ namespace Genometric.MSPC.CLI.Exporter
         public Options(
             string path,
             bool includeHeader,
-            List<Attributes> attributesToExport,
-            bool Export_Chromosomewide_stats)
+            List<Attributes> attributesToExport)
         {
             Path = path;
             IncludeHeader = includeHeader;
-            ExportChromosomewideStats = Export_Chromosomewide_stats;
             _attributesToExport = new List<Attributes>(attributesToExport);
         }
 
         private readonly List<Attributes> _attributesToExport;
         public ReadOnlyCollection<Attributes> AttributesToExport { get { return _attributesToExport.AsReadOnly(); } }
 
-        public bool ExportChromosomewideStats { private set; get; }
         public bool IncludeHeader { private set; get; }
         public string Path { private set; get; }
     }

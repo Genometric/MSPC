@@ -8,6 +8,7 @@ using Genometric.MSPC.CLI.Exporter;
 using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -56,12 +57,7 @@ namespace Genometric.MSPC.CLI
             var exporter = new Exporter<ChIPSeqPeak>();
             var options = new Options(
                 path: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
-                             DateTime.Now.Year +
-                             DateTime.Now.Month +
-                             DateTime.Now.Day +
-                             DateTime.Now.Hour +
-                             DateTime.Now.Minute +
-                             DateTime.Now.Second,
+                      DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture),
                 includeHeader: true,
                 attributesToExport: a2E);
 

@@ -56,7 +56,7 @@ namespace Genometric.MSPC.CLI
 
             var exporter = new Exporter<ChIPSeqPeak>();
             var options = new Options(
-                path: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
+                path: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "Session_" +
                       DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture),
                 includeHeader: true,
                 attributesToExport: a2E);

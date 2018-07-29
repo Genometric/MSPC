@@ -64,14 +64,18 @@ namespace Genometric.MSPC.XSquaredData
 
             if (!((df / 2) - 1 > 7 || (df / 2) - 1 < 0))
             {
-                byte num_power = (byte)Math.Ceiling(Math.Abs(Math.Log10(probability)));
-                byte num_base = (byte)Math.Floor(probability * Math.Pow(10, num_power));
+                byte num_power = (byte)(Math.Ceiling(Math.Abs(Math.Log10(probability))) - 1);
+                byte num_base = (byte)(Math.Floor(probability * Math.Pow(10, num_power)) - 1);
+
+                if (num_base < 0 || num_base >= 9 ||
+                    num_power < 0 || num_power >= 50)
+                    return double.NaN;
 
                 return INVRTPData.data[num_base - 1, num_power - 1, (df / 2) - 1];
             }
             else
             {
-                return -1;
+                return double.NaN;
             }
         }
     }

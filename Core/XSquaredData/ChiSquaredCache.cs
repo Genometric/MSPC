@@ -75,7 +75,7 @@ namespace Genometric.MSPC.XSquaredData
             }
             else
             {
-                return -1;
+                return double.NaN;
             }
         }
     }

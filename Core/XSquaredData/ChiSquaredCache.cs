@@ -62,10 +62,10 @@ namespace Genometric.MSPC.XSquaredData
             if (probability == 1)
                 return 0;
 
-            if (!((df / 2) - 1 > 7 || (df / 2) - 1 < 0))
+            if ((df / 2) - 1 <= 7 || (df / 2) - 1 < 0)
             {
-                byte num_power = (byte)(Math.Ceiling(Math.Abs(Math.Log10(probability))) - 1);
-                byte num_base = (byte)(Math.Floor(probability * Math.Pow(10, num_power)) - 1);
+                byte num_power = (byte)(Math.Ceiling(Math.Abs(Math.Log10(probability))));
+                byte num_base = (byte)(Math.Floor(probability * Math.Pow(10, num_power)));
 
                 if (num_base < 0 || num_base >= 9 ||
                     num_power < 0 || num_power >= 50)

@@ -10,6 +10,7 @@ using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Genometric.MSPC.Model
@@ -17,10 +18,11 @@ namespace Genometric.MSPC.Model
     internal class Processor<I>
         where I : IChIPSeqPeak, new()
     {
+        private BackgroundWorker _worker;
+        private DoWorkEventArgs _workerEventArgs;
+
         public delegate void ProgressUpdate(ProgressReport value);
         public event ProgressUpdate OnProgressUpdate;
-
-        internal bool cancel;
 
         private double _xsqrd { set; get; }
 
@@ -56,9 +58,12 @@ namespace Genometric.MSPC.Model
             _samples.Add(id, peaks);
         }
 
-        internal void Run(Config config)
+        internal void Run(Config config, BackgroundWorker worker, DoWorkEventArgs e)
         {
             _config = config;
+            _worker = worker;
+            _workerEventArgs = e;
+            
             int step = 1, stepCount = 4;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
             BuildDataStructures();
@@ -83,9 +88,10 @@ namespace Genometric.MSPC.Model
             _analysisResults = new Dictionary<uint, Result<I>>();
             foreach (var sample in _samples)
             {
-                if (cancel)
+                if (_worker.CancellationPending)
                 {
                     _analysisResults = new Dictionary<uint, Result<I>>();
+                    _workerEventArgs.Cancel = true;
                     return;
                 }
                 _trees.Add(sample.Key, new Dictionary<string, Tree<I>>());
@@ -98,9 +104,10 @@ namespace Genometric.MSPC.Model
                     {
                         foreach (I p in strand.Value.Intervals)
                         {
-                            if (cancel)
+                            if (_worker.CancellationPending)
                             {
                                 _analysisResults = new Dictionary<uint, Result<I>>();
+                                _workerEventArgs.Cancel = true;
                                 return;
                             }
                             if (p.Value < _config.TauW)
@@ -119,9 +126,10 @@ namespace Genometric.MSPC.Model
                     foreach (var strand in chr.Value.Strands)
                         foreach (I peak in strand.Value.Intervals)
                         {
-                            if (cancel)
+                            if (_worker.CancellationPending)
                             {
                                 _analysisResults = new Dictionary<uint, Result<I>>();
+                                _workerEventArgs.Cancel = true;
                                 return;
                             }
                             _xsqrd = 0;
@@ -250,9 +258,10 @@ namespace Genometric.MSPC.Model
         /// </summary>
         private void PerformMultipleTestingCorrection()
         {
-            if (cancel)
+            if (_worker.CancellationPending)
             {
                 _analysisResults = new Dictionary<uint, Result<I>>();
+                _workerEventArgs.Cancel = true;
                 return;
             }
 
@@ -284,9 +293,10 @@ namespace Genometric.MSPC.Model
 
         private void CreateConsensusPeaks()
         {
-            if (cancel)
+            if (_worker.CancellationPending)
             {
                 _analysisResults = new Dictionary<uint, Result<I>>();
+                _workerEventArgs.Cancel = true;
                 return;
             }
 

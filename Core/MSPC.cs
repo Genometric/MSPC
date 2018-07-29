@@ -38,6 +38,7 @@ namespace Genometric.MSPC
             _backgroundProcessor = new BackgroundWorker();
             _backgroundProcessor.DoWork += _doWork;
             _backgroundProcessor.RunWorkerCompleted += _runWorkerCompleted;
+            _backgroundProcessor.WorkerSupportsCancellation = true;
             done = new AutoResetEvent(false);
             canceled = new AutoResetEvent(false);
         }
@@ -52,8 +53,7 @@ namespace Genometric.MSPC
             if (_processor.SamplesCount < 2)
                 throw new InvalidOperationException(String.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
 
-            _processor.cancel = false;
-            _processor.Run(config);
+            _processor.Run(config, new BackgroundWorker(), new DoWorkEventArgs(null));
             _results = _processor.AnalysisResults;
             return GetResults();
         }
@@ -65,7 +65,6 @@ namespace Genometric.MSPC
 
             done.Reset();
             canceled.Reset();
-            _processor.cancel = false;
             if (_backgroundProcessor.IsBusy)
                 Cancel();
             _backgroundProcessor.RunWorkerAsync(config);
@@ -74,14 +73,13 @@ namespace Genometric.MSPC
         public void Cancel()
         {
             canceled.Reset();
-            _processor.cancel = true;
+            _backgroundProcessor.CancelAsync();
             canceled.WaitOne();
         }
 
         public void CancelAsync()
         {
             canceled.Reset();
-            _processor.cancel = true;
         }
 
         public ReadOnlyDictionary<uint, Result<I>> GetResults()
@@ -96,7 +94,7 @@ namespace Genometric.MSPC
 
         private void _doWork(object sender, DoWorkEventArgs e)
         {
-            _processor.Run((Config)e.Argument);
+            _processor.Run((Config)e.Argument, sender as BackgroundWorker, e);
             _results = _processor.AnalysisResults;
         }
 

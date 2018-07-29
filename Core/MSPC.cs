@@ -2,16 +2,15 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.IntervalParsers;
+using Genometric.MSPC.Core.Model;
+using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
-using Genometric.MSPC.Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
-using Genometric.GeUtilities.IGenomics;
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
-using Genometric.MSPC.Core.Model;
 
 namespace Genometric.MSPC
 {

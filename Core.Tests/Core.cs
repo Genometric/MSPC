@@ -24,8 +24,8 @@ namespace Core.Tests
             var sB = new BED<ChIPSeqPeak>();
             for (int i = 0; i < 10000; i++)
             {
-                sA.Add(new ChIPSeqPeak() { Left = (10 * i) + 1, Right = (10 * i) + 4, Value = 1E-4, Name = "r1" + i, HashKey = 1 }, _chr, _strand);
-                sB.Add(new ChIPSeqPeak() { Left = (10 * i) + 6, Right = (10 * i) + 9, Value = 1E-5, Name = "r1" + i, HashKey = 1 }, _chr, _strand);
+                sA.Add(new ChIPSeqPeak() { Left = (10 * i) + 1, Right = (10 * i) + 4, Value = 1E-4, Name = "r1" + i, HashKey = (uint)i }, _chr, _strand);
+                sB.Add(new ChIPSeqPeak() { Left = (10 * i) + 6, Right = (10 * i) + 9, Value = 1E-5, Name = "r1" + i, HashKey = (uint)i * 10000 }, _chr, _strand);
             }
             
             var mspc = new MSPC<ChIPSeqPeak>();

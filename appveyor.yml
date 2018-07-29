@@ -7,23 +7,27 @@ init:
   - cmd: git config --global core.autocrlf true
 install:
   - dotnet restore
+
+before_build:
+- nuget restore
+- choco install opencover.portable
+- choco install codecov
+
 build:
   verbosity: minimal
 clone_depth: 1
 
 build_script:
   - choco install "msbuild-sonarqube-runner" -y
-  - MSBuild.SonarQube.Runner.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.analysis.mode=preview"
+  - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.analysis.mode=preview"
   - MSBuild.exe /t:Rebuild
-  - MSBuild.SonarQube.Runner.exe end 
+  - SonarScanner.MSBuild.exe end 
 
 test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore Core.Tests\Core.Tests.csproj --verbosity m
   - cmd: dotnet test Core.Tests\Core.Tests.csproj
-  - ps: cd Core.Tests
-  - OpenCover.Console.exe -register:"user" -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"xunit -noshadow" -filter:"+[*]* -[Core.Tests*]*" -oldStyle -output:".\mspc_coverage.xml"
-  - ps: cd ..
+  - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle
 after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
@@ -52,21 +56,19 @@ for:
   
   build_script:
     - choco install "msbuild-sonarqube-runner" -y
-    - MSBuild.SonarQube.Runner.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%"
+    - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%"
     - MSBuild.exe /t:Rebuild
-    - MSBuild.SonarQube.Runner.exe end /d:"sonar.login=%sonartoken%"
+    - SonarScanner.MSBuild.exe end /d:"sonar.login=%sonartoken%"
     
   after_test:
     - ps: |
         $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
         bash codecov.sh -f "Core.Tests/mspc_coverage.xml" -t $env:codecovtoken
-    - MSBuild.SonarQube.Runner.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%" /d:sonar.cs.opencover.reportsPaths="\Core.Tests\mspc_coverage.xml"
+    - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%" /d:sonar.cs.opencover.reportsPaths="\Core.Tests\mspc_coverage.xml"
     - MSBuild.exe /t:Rebuild
-    - ps: cd Core.Tests
-    - OpenCover.Console.exe -register:"user" -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"xunit -noshadow" -filter:"+[*]*" -oldStyle -output:"mspc_coverage.xml"
-    - ps: cd ..
-    - MSBuild.SonarQube.Runner.exe end /d:"sonar.login=%sonartoken%"
+    - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle
+    - SonarScanner.MSBuild.exe end /d:"sonar.login=%sonartoken%"
   
   artifacts: 
     - path: MSPC/bin/Release/Genometric.MSPC*.nupkg  
@@ -90,4 +92,4 @@ for:
     - ps: |
         $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-        bash codecov.sh -f "Core.Tests/mspc_coverage.xml"
+        bash codecov.sh -f "mspc_coverage.xml"

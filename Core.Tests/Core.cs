@@ -63,5 +63,15 @@ namespace Core.Tests
             Assert.True(!results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
             Assert.True(results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c);
         }
+
+        [Fact]
+        public void ReportProcessIsCanceled()
+        {
+            // Arrange & Act
+            RunThenCancelMSPC(10000);
+
+            // Assert
+            Assert.Contains("Canceled current task.", status);
+        }
     }
 }

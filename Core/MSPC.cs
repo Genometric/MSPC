@@ -79,11 +79,6 @@ namespace Genometric.MSPC
             canceled.Reset();
         }
 
-        public void CancelAsync()
-        {
-            canceled.Reset();
-        }
-
         public ReadOnlyDictionary<uint, Result<I>> GetResults()
         {
             return _results;

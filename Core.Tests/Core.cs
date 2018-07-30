@@ -44,7 +44,7 @@ namespace Core.Tests
             mspc.done.WaitOne();
 
             // Assert
-            Assert.True(mspc.GetResults()[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 0);
+            Assert.True(!mspc.GetResults()[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
         }
     }
 }

@@ -9,6 +9,7 @@ using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using Xunit;
 
 namespace Core.Tests
@@ -18,9 +19,11 @@ namespace Core.Tests
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
         private string status;
+        private AutoResetEvent _continue;
 
         private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> RunThenCancelMSPC(int iCount)
         {
+            _continue = new AutoResetEvent(false);
             var sA = new BED<ChIPSeqPeak>();
             var sB = new BED<ChIPSeqPeak>();
             for (int i = 0; i < iCount; i++)
@@ -34,9 +37,10 @@ namespace Core.Tests
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
+            _continue.Reset();
             // MSPC is expected to confirm peaks using the following configuration.
             mspc.RunAsync(new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue));
-            System.Threading.Thread.Sleep(1000);
+            _continue.WaitOne();
             // However, with the following configuration, it is expected to discard 
             // all the peaks. This can help asserting if the asynchronous process of 
             // the previous execution is canceled, and instead the following asynchronous 
@@ -49,6 +53,8 @@ namespace Core.Tests
 
         private void Mspc_StatusChanged(object sender, ValueEventArgs e)
         {
+            if (e.Value.Message == "Initializing")
+                _continue.Set();
             status += e.Value.Message;
         }
 

@@ -10,6 +10,7 @@ using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Genometric.MSPC.Model
@@ -17,10 +18,11 @@ namespace Genometric.MSPC.Model
     internal class Processor<I>
         where I : IChIPSeqPeak, new()
     {
+        private BackgroundWorker _worker;
+        private DoWorkEventArgs _workerEventArgs;
+
         public delegate void ProgressUpdate(ProgressReport value);
         public event ProgressUpdate OnProgressUpdate;
-
-        internal bool cancel;
 
         private double _xsqrd { set; get; }
 
@@ -56,19 +58,27 @@ namespace Genometric.MSPC.Model
             _samples.Add(id, peaks);
         }
 
-        internal void Run(Config config)
+        internal void Run(Config config, BackgroundWorker worker, DoWorkEventArgs e)
         {
             _config = config;
+            _worker = worker;
+            _workerEventArgs = e;
+            
             int step = 1, stepCount = 4;
+
+            if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
             BuildDataStructures();
 
+            if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
             ProcessSamples();
 
+            if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
             PerformMultipleTestingCorrection();
 
+            if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
             CreateConsensusPeaks();
         }
@@ -83,11 +93,6 @@ namespace Genometric.MSPC.Model
             _analysisResults = new Dictionary<uint, Result<I>>();
             foreach (var sample in _samples)
             {
-                if (cancel)
-                {
-                    _analysisResults = new Dictionary<uint, Result<I>>();
-                    return;
-                }
                 _trees.Add(sample.Key, new Dictionary<string, Tree<I>>());
                 _analysisResults.Add(sample.Key, new Result<I>(_config.ReplicateType));
                 foreach (var chr in sample.Value.Chromosomes)
@@ -95,18 +100,9 @@ namespace Genometric.MSPC.Model
                     _trees[sample.Key].Add(chr.Key, new Tree<I>());
                     _analysisResults[sample.Key].AddChromosome(chr.Key, chr.Value.Statistics.Count);
                     foreach (var strand in chr.Value.Strands)
-                    {
                         foreach (I p in strand.Value.Intervals)
-                        {
-                            if (cancel)
-                            {
-                                _analysisResults = new Dictionary<uint, Result<I>>();
-                                return;
-                            }
                             if (p.Value < _config.TauW)
                                 _trees[sample.Key][chr.Key].Add(p);
-                        }
-                    }
                 }
             }
         }
@@ -119,11 +115,9 @@ namespace Genometric.MSPC.Model
                     foreach (var strand in chr.Value.Strands)
                         foreach (I peak in strand.Value.Intervals)
                         {
-                            if (cancel)
-                            {
-                                _analysisResults = new Dictionary<uint, Result<I>>();
+                            if (_worker.CancellationPending)
                                 return;
-                            }
+
                             _xsqrd = 0;
                             if (peak.Value < _config.TauS)
                                 attribute = Attributes.Stringent;
@@ -250,12 +244,6 @@ namespace Genometric.MSPC.Model
         /// </summary>
         private void PerformMultipleTestingCorrection()
         {
-            if (cancel)
-            {
-                _analysisResults = new Dictionary<uint, Result<I>>();
-                return;
-            }
-
             foreach (var result in _analysisResults)
             {
                 foreach (var chr in result.Value.Chromosomes)
@@ -284,12 +272,6 @@ namespace Genometric.MSPC.Model
 
         private void CreateConsensusPeaks()
         {
-            if (cancel)
-            {
-                _analysisResults = new Dictionary<uint, Result<I>>();
-                return;
-            }
-
             _mergedReplicates = new Dictionary<string, SortedList<I, I>>();
             foreach (var result in _analysisResults)
             {
@@ -339,6 +321,18 @@ namespace Genometric.MSPC.Model
             foreach (var chr in _mergedReplicates)
                 foreach (var peak in chr.Value)
                     peak.Value.Name = "MSPC_peak_" + (c++);
+        }
+
+        private bool CheckCancellationPending()
+        {
+            if (_worker.CancellationPending)
+            {
+                _analysisResults = new Dictionary<uint, Result<I>>();
+                OnProgressUpdate(new ProgressReport(-1, -1, "Canceled current task."));
+                _workerEventArgs.Cancel = true;
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -75,6 +75,8 @@ namespace Genometric.MSPC
             canceled.Reset();
             _backgroundProcessor.CancelAsync();
             canceled.WaitOne();
+            done.Reset();
+            canceled.Reset();
         }
 
         public void CancelAsync()

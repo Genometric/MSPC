@@ -20,9 +20,10 @@ namespace Core.Tests
         public void CancelCurrentAsyncRun()
         {
             // Arrange
+            int c = 10000;
             var sA = new BED<ChIPSeqPeak>();
             var sB = new BED<ChIPSeqPeak>();
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < c; i++)
             {
                 sA.Add(new ChIPSeqPeak() { Left = (10 * i) + 1, Right = (10 * i) + 4, Value = 1E-4, Name = "r1" + i, HashKey = (uint)i }, _chr, _strand);
                 sB.Add(new ChIPSeqPeak() { Left = (10 * i) + 6, Right = (10 * i) + 9, Value = 1E-5, Name = "r1" + i, HashKey = (uint)i * 10000 }, _chr, _strand);
@@ -45,6 +46,7 @@ namespace Core.Tests
 
             // Assert
             Assert.True(!mspc.GetResults()[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
+            Assert.True(mspc.GetResults()[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c);
         }
     }
 }

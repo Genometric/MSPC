@@ -103,5 +103,23 @@ namespace Genometric.MSPC.Core.Tests.Base
             // Assert
             Assert.True(result == expectedResult);
         }
+
+        [Theory]
+        [InlineData(100, 10, 1)]
+        [InlineData(10, 100, -1)]
+        [InlineData(100, 100, 0)]
+        public void EqualValueCompareByIntervalRight(int xRight, int yRight, int expectedResult)
+        {
+            // Arrange
+            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
+            _x.Source.Right = xRight;
+            _y.Source.Right = yRight;
+
+            // Act
+            var result = comparer.Compare(_x, _y);
+
+            // Assert
+            Assert.True(result == expectedResult);
+        }
     }
 }

@@ -2,16 +2,13 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.MSPC.Model;
-using System;
-using System.Collections.Generic;
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace Genometric.MSPC.Comparers
 {
-    public class CompareProcessedPeakByValue<I> : IComparer<ProcessedPeak<I>>
+    public class CompareProcessedPeaksByValue<I> : IComparer<ProcessedPeak<I>>
         where I : IChIPSeqPeak, new()
     {
         public int Compare(ProcessedPeak<I> A, ProcessedPeak<I> B)

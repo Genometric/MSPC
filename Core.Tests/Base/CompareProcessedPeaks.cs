@@ -19,6 +19,14 @@ namespace Genometric.MSPC.Core.Tests.Base
         {
             _x = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
             _y = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
+
+            _x.Source.Value = 100;
+            _x.Source.Left = 1000;
+            _x.Source.Right = 10000;
+
+            _y.Source.Value = 100;
+            _y.Source.Left = 1000;
+            _y.Source.Right = 10000;
         }
 
         [Fact]
@@ -70,6 +78,24 @@ namespace Genometric.MSPC.Core.Tests.Base
             var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
             _x.Source.Value = xValue;
             _y.Source.Value = yValue;
+
+            // Act
+            var result = comparer.Compare(_x, _y);
+
+            // Assert
+            Assert.True(result == expectedResult);
+        }
+
+        [Theory]
+        [InlineData(100, 10, 1)]
+        [InlineData(10, 100, -1)]
+        [InlineData(100, 100, 0)]
+        public void EqualValueCompareByIntervalLeft(int xLeft, int yLeft, int expectedResult)
+        {
+            // Arrange
+            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
+            _x.Source.Left = xLeft;
+            _y.Source.Left = yLeft;
 
             // Act
             var result = comparer.Compare(_x, _y);

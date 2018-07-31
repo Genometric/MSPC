@@ -26,18 +26,33 @@ namespace Genometric.MSPC.Core.Tests.Base
         }
 
         [Fact]
-        public void AIsNull()
+        public void XIsNull()
         {
             // Arrange
             var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
 
             // Act
             var result = comparer.Compare(
-                null, new ProcessedPeak<ChIPSeqPeak>(
-                    new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>()));
+                null,
+                new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>()));
 
             // Assert
             Assert.True(result == -1);
+        }
+
+        [Fact]
+        public void YIsNull()
+        {
+            // Arrange
+            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
+
+            // Act
+            var result = comparer.Compare(
+                new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>()),
+                null);
+
+            // Assert
+            Assert.True(result == 1);
         }
     }
 }

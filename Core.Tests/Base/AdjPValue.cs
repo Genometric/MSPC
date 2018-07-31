@@ -4,12 +4,11 @@
 
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
-using Genometric.MSPC;
 using Genometric.MSPC.Model;
 using System.Linq;
 using Xunit;
 
-namespace Core.Tests.Base
+namespace Genometric.MSPC.Core.Tests.Base
 {
     public class AdjPValue
     {

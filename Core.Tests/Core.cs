@@ -4,7 +4,6 @@
 
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
-using Genometric.MSPC;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
 using System;
@@ -13,7 +12,7 @@ using System.Linq;
 using System.Threading;
 using Xunit;
 
-namespace Core.Tests
+namespace Genometric.MSPC.Core.Tests
 {
     public class Core
     {

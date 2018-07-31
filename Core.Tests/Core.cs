@@ -96,5 +96,21 @@ namespace Core.Tests
             var exception = Assert.Throws<InvalidOperationException>(() => mspc.Run(config));
             Assert.Equal(String.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
         }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void RunAsyncIfAtLeastTwoInputIsGiven(int inputCount)
+        {
+            // Arrange
+            var mspc = new MSPC<ChIPSeqPeak>();
+            if (inputCount == 1)
+                mspc.AddSample(0, new BED<ChIPSeqPeak>());
+            var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
+
+            // Act & Assert
+            var exception = Assert.Throws<InvalidOperationException>(() => mspc.RunAsync(config));
+            Assert.Equal(String.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
+        }
     }
 }

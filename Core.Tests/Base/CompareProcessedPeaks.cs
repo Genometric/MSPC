@@ -10,12 +10,12 @@ using Xunit;
 
 namespace Genometric.MSPC.Core.Tests.Base
 {
-    public class CompareProcessedPeaks
+    public class CompareProcessedPeaksByValue
     {
         private readonly ProcessedPeak<ChIPSeqPeak> _x;
         private readonly ProcessedPeak<ChIPSeqPeak> _y;
 
-        public CompareProcessedPeaks()
+        public CompareProcessedPeaksByValue()
         {
             _x = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
             _y = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
@@ -63,7 +63,8 @@ namespace Genometric.MSPC.Core.Tests.Base
         [Theory]
         [InlineData(100, 10, 1)]
         [InlineData(10, 100, -1)]
-        public void ValueOfXIsGreater(int xValue, int yValue, int expectedResult)
+        [InlineData(100, 100, 0)]
+        public void CompareByValue(int xValue, int yValue, int expectedResult)
         {
            // Arrange
             var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();

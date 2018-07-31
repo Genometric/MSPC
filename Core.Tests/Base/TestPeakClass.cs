@@ -4,23 +4,50 @@
 
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC.Core.Model;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Genometric.MSPC.Core.Tests.Base
 {
     public class TestPeakClass
     {
+        private readonly Peak<ChIPSeqPeak> _x;
+        private readonly Peak<ChIPSeqPeak> _y;
+
+        public TestPeakClass()
+        {
+            _x = new Peak<ChIPSeqPeak>(new ChIPSeqPeak());
+            _y = new Peak<ChIPSeqPeak>(new ChIPSeqPeak());
+
+            _x.Source.Value = 100;
+            _x.Source.Left = 1000;
+            _x.Source.Right = 10000;
+
+            _y.Source.Value = 100;
+            _y.Source.Left = 1000;
+            _y.Source.Right = 10000;
+        }
+
         [Fact]
         public void PeakIsBiggerThanNull()
         {
-            // Arrange
-            var p = new Peak<ChIPSeqPeak>(new ChIPSeqPeak());
-
-            // Act
-            var r = p.CompareTo(null);
+            // Arrange & Act
+            var r = _x.CompareTo(null);
 
             // Assert
             Assert.True(r == 1);
+        }
+
+        [Theory]
+        [InlineData(100, 10, 1]
+        [InlineData(10, 100, -1)]
+        [InlineData(100,100, 0)]
+        public void CompareByLeftEnd(int xLeft, int yLeft, int expectedResult)
+        {
+            _x.Source.Left = xLeft;
+            _y.Source.Left = yLeft;
+
+
         }
     }
 }

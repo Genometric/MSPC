@@ -12,8 +12,8 @@ namespace Genometric.MSPC.Core.Tests.Base
 {
     public class CompareProcessedPeaks
     {
-        private ProcessedPeak<ChIPSeqPeak> _x;
-        private ProcessedPeak<ChIPSeqPeak> _y;
+        private readonly ProcessedPeak<ChIPSeqPeak> _x;
+        private readonly ProcessedPeak<ChIPSeqPeak> _y;
 
         public CompareProcessedPeaks()
         {
@@ -41,9 +41,7 @@ namespace Genometric.MSPC.Core.Tests.Base
             var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
 
             // Act
-            var result = comparer.Compare(
-                null,
-                new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>()));
+            var result = comparer.Compare(null, _y);
 
             // Assert
             Assert.True(result == -1);
@@ -56,9 +54,7 @@ namespace Genometric.MSPC.Core.Tests.Base
             var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
 
             // Act
-            var result = comparer.Compare(
-                new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>()),
-                null);
+            var result = comparer.Compare(_x, null);
 
             // Assert
             Assert.True(result == 1);

@@ -4,7 +4,6 @@
 
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC.Core.Model;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Genometric.MSPC.Core.Tests.Base

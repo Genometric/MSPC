@@ -27,11 +27,11 @@ namespace Genometric.MSPC.Core.Model
             if (other == null) return 1;
 
             int c = Source.Left.CompareTo(other.Source.Left);
-            if (c == 0) return 0;
+            if (c != 0) return c;
             c = Source.Right.CompareTo(other.Source.Right);
-            if (c == 0) return 0;
+            if (c != 0) return c;
             c = Source.Value.CompareTo(other.Source.Value);
-            if (c == 0) return 0;
+            if (c != 0) return c;
             return Source.HashKey.CompareTo(other.Source.HashKey);
         }
 

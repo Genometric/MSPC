@@ -39,15 +39,20 @@ namespace Genometric.MSPC.Core.Tests.Base
         }
 
         [Theory]
-        [InlineData(100, 10, 1]
+        [InlineData(100, 10, 1)]
         [InlineData(10, 100, -1)]
         [InlineData(100,100, 0)]
         public void CompareByLeftEnd(int xLeft, int yLeft, int expectedResult)
         {
+            // Arrange
             _x.Source.Left = xLeft;
             _y.Source.Left = yLeft;
 
+            // Act
+            var r = _x.CompareTo(_y);
 
+            // Assert
+            Assert.True(r == expectedResult);
         }
     }
 }

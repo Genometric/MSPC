@@ -23,10 +23,12 @@ namespace Genometric.MSPC.Core.Tests.Base
             _x.Source.Value = 100;
             _x.Source.Left = 1000;
             _x.Source.Right = 10000;
+            _x.Source.HashKey = 12345;
 
             _y.Source.Value = 100;
             _y.Source.Left = 1000;
             _y.Source.Right = 10000;
+            _y.Source.HashKey = 12345;
         }
 
         [Fact]

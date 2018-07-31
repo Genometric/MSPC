@@ -11,24 +11,24 @@ namespace Genometric.MSPC.Comparers
     public class CompareProcessedPeaksByValue<I> : IComparer<ProcessedPeak<I>>
         where I : IChIPSeqPeak, new()
     {
-        public int Compare(ProcessedPeak<I> A, ProcessedPeak<I> B)
+        public int Compare(ProcessedPeak<I> x, ProcessedPeak<I> y)
         {
-            if (A == null)
+            if (x == null)
             {
-                if (B == null) return 0; // they are equal
+                if (y == null) return 0; // they are equal
                 else return -1; // B is greater
             }
             else
             {
-                if (B == null) return 1; // A is greater
+                if (y == null) return 1; // A is greater
                 else
                 {
-                    if (A.Source.Value != B.Source.Value)
-                        return A.Source.Value.CompareTo(B.Source.Value);
-                    else if (A.Source.Left != B.Source.Left)
-                        return A.Source.Left.CompareTo(B.Source.Left);
+                    if (x.Source.Value != y.Source.Value)
+                        return x.Source.Value.CompareTo(y.Source.Value);
+                    else if (x.Source.Left != y.Source.Left)
+                        return x.Source.Left.CompareTo(y.Source.Left);
                     else
-                        return A.Source.Right.CompareTo(B.Source.Right);
+                        return x.Source.Right.CompareTo(y.Source.Right);
                 }
             }
         }

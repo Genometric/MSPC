@@ -13,6 +13,19 @@ namespace Genometric.MSPC.Core.Tests.Base
     public class CompareProcessedPeaks
     {
         [Fact]
+        public void BothAreNull()
+        {
+            // Arrange
+            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
+
+            // Act
+            var result = comparer.Compare(null, null);
+
+            // Assert
+            Assert.True(result == 0);
+        }
+
+        [Fact]
         public void AIsNull()
         {
             // Arrange

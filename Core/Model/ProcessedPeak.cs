@@ -15,11 +15,11 @@ namespace Genometric.MSPC.Core.Model
     public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        internal ProcessedPeak(I source, double xSquared, List<SupportingPeak<I>> supportingPeaks) :
+        public ProcessedPeak(I source, double xSquared, List<SupportingPeak<I>> supportingPeaks) :
             this(source, xSquared, supportingPeaks.AsReadOnly())
         { }
 
-        internal ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks):
+        public ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks):
             base(source)
         {
             XSquared = xSquared;

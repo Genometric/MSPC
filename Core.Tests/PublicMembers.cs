@@ -14,7 +14,7 @@ using Xunit;
 
 namespace Genometric.MSPC.Core.Tests
 {
-    public class Core
+    public class PublicMembers
     {
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';

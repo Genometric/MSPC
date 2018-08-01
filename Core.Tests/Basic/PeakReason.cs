@@ -65,7 +65,9 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).First().Reason == "X-squared is below chi-squared of Gamma.");
+            Assert.Equal(
+                "X-squared is below chi-squared of Gamma.",
+                res[0].Chromosomes[_chr].Get(Attributes.Discarded).First().Reason);
         }
 
         [Fact]
@@ -88,7 +90,9 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).First().Reason == "Intersecting peaks count doesn't comply minimum C requirement.");
+            Assert.Equal(
+                "Intersecting peaks count doesn't comply minimum C requirement.",
+                res[0].Chromosomes[_chr].Get(Attributes.Discarded).First().Reason);
         }
     }
 }

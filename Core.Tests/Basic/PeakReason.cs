@@ -4,7 +4,9 @@
 
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Model;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;
 
@@ -21,10 +23,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
 
-        [Fact]
-        public void NoMessageForConfirmedPeaks()
+        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> RunMSPCAndReturnResult(Config config)
         {
-            // Arrange
             var sA = new BED<ChIPSeqPeak>();
             sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1E-5, HashKey = 1 }, _chr, _strand);
 
@@ -35,10 +35,14 @@ namespace Genometric.MSPC.Core.Tests.Basic
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
-            var config = new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-4, 1, 1F, MultipleIntersections.UseLowestPValue);
+            return mspc.Run(config);
+        }
 
-            // Act
-            var res = mspc.Run(config);
+        [Fact]
+        public void NoMessageForConfirmedPeaks()
+        {
+            // Arrange & Act
+            var res = RunMSPCAndReturnResult(new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-4, 1, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).First().Reason == "");
@@ -48,21 +52,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [Fact]
         public void MessageOfDiscardedForGamma()
         {
-            // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1E-5, HashKey = 1 }, _chr, _strand);
-
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 12, Right = 18, Value = 1E-5, HashKey = 2 }, _chr, _strand);
-
-            var mspc = new MSPC<ChIPSeqPeak>();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-
-            var config = new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-50, 1, 1F, MultipleIntersections.UseLowestPValue);
-
-            // Act
-            var res = mspc.Run(config);
+            // Arrange & Act
+            var res = RunMSPCAndReturnResult(new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-50, 1, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
             Assert.Equal(
@@ -73,21 +64,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [Fact]
         public void MessageOfDiscardedForC()
         {
-            // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1E-5, HashKey = 1 }, _chr, _strand);
-
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 22, Right = 28, Value = 1E-5, HashKey = 2 }, _chr, _strand);
-
-            var mspc = new MSPC<ChIPSeqPeak>();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-
-            var config = new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-50, 2, 1F, MultipleIntersections.UseLowestPValue);
-
-            // Act
-            var res = mspc.Run(config);
+            // Arrange & Act
+            var res = RunMSPCAndReturnResult(new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-50, 3, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
             Assert.Equal(

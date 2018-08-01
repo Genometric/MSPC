@@ -26,10 +26,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1E-8, HashKey = 1 }, _chr, _strand);
+            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1E-5, HashKey = 1 }, _chr, _strand);
 
             var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 12, Right = 18, Value = 1E-9, HashKey = 2 }, _chr, _strand);
+            sB.Add(new ChIPSeqPeak() { Left = 12, Right = 18, Value = 1E-5, HashKey = 2 }, _chr, _strand);
 
             var mspc = new MSPC<ChIPSeqPeak>();
             mspc.AddSample(0, sA);

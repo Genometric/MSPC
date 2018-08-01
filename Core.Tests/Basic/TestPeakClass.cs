@@ -6,7 +6,7 @@ using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC.Core.Model;
 using Xunit;
 
-namespace Genometric.MSPC.Core.Tests.Base
+namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class TestPeakClass
     {

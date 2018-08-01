@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Genometric.MSPC.Core.Tests.Base
+namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class C
     {

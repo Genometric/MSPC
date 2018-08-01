@@ -8,7 +8,7 @@ using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
 using Xunit;
 
-namespace Genometric.MSPC.Core.Tests.Base
+namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class CompareProcessedPeaksByValue
     {

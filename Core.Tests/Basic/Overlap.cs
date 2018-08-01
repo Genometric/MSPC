@@ -8,7 +8,7 @@ using Genometric.MSPC.Model;
 using System.Collections.Generic;
 using Xunit;
 
-namespace Genometric.MSPC.Core.Tests.Base
+namespace Genometric.MSPC.Core.Tests.Basic
 {
     /// <summary>
     /// This class asserts MSPC's functionality on processing 

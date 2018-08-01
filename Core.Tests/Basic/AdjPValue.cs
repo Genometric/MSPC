@@ -8,7 +8,7 @@ using Genometric.MSPC.Model;
 using System.Linq;
 using Xunit;
 
-namespace Genometric.MSPC.Core.Tests.Base
+namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class AdjPValue
     {

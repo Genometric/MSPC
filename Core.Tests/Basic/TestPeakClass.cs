@@ -141,5 +141,22 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(r == expectedResult);
         }
+
+        [Theory]
+        [InlineData(100, 10, false)]
+        [InlineData(10, 100, true)]
+        [InlineData(100, 100, false)]
+        public void EqualOperator(int xValue, int yValue, bool expectedResult)
+        {
+            // Arrange
+            _x.Source.Value = xValue;
+            _y.Source.Value = yValue;
+
+            // Act
+            var r = _x == _y;
+
+            // Assert
+            Assert.True(r == expectedResult);
+        }
     }
 }

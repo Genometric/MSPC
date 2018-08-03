@@ -182,5 +182,19 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(_x != _y);
         }
+
+        [Fact]
+        public void Equal()
+        {
+            // Assert
+            Assert.True(_x.Equals(_x));
+        }
+
+        [Fact]
+        public void GetHashCodeReturnsANumberOtherThanZero()
+        {
+            // Assert
+            Assert.True(_x.GetHashCode() != 0);
+        }
     }
 }

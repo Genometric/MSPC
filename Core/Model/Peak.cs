@@ -64,8 +64,6 @@ namespace Genometric.MSPC.Core.Model
 
         public static bool operator !=(Peak<I> operand1, Peak<I> operand2)
         {
-            if (operand1 is null)
-                return operand2 is null;
             return !operand1.Equals(operand2);
         }
 

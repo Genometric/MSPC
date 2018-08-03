@@ -21,10 +21,12 @@ namespace Genometric.MSPC.Core.Tests.Basic
             _x.Source.Value = 100;
             _x.Source.Left = 1000;
             _x.Source.Right = 10000;
+            _x.Source.Name = "";
 
             _y.Source.Value = 100;
             _y.Source.Left = 1000;
             _y.Source.Right = 10000;
+            _y.Source.Name = "";
         }
 
         [Fact]
@@ -103,6 +105,23 @@ namespace Genometric.MSPC.Core.Tests.Basic
 
             // Assert
             Assert.True(r == expectedResult);
+        }
+
+        [Theory]
+        [InlineData(100, 10,true)]
+        [InlineData(10, 100, false)]
+        [InlineData(100, 100, false)]
+        public void GreaterOperator(int xValue, int yValue, bool isGreater)
+        {
+            // Arrange
+            _x.Source.Value = xValue;
+            _y.Source.Value = yValue;
+
+            // Act
+            var r = _x > _y;
+
+            // Assert
+            Assert.True(r == isGreater);
         }
     }
 }

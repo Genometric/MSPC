@@ -4,6 +4,7 @@
 
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC.Core.Model;
+using System;
 using Xunit;
 
 namespace Genometric.MSPC.Core.Tests.Basic
@@ -111,7 +112,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [InlineData(100, 10,true)]
         [InlineData(10, 100, false)]
         [InlineData(100, 100, false)]
-        public void GreaterOperator(int xValue, int yValue, bool isGreater)
+        public void GreaterOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
             _x.Source.Value = xValue;
@@ -121,14 +122,14 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var r = _x > _y;
 
             // Assert
-            Assert.True(r == isGreater);
+            Assert.True(r == expectedResult);
         }
 
         [Theory]
         [InlineData(100, 10, false)]
         [InlineData(10, 100, true)]
         [InlineData(100, 100, false)]
-        public void SmallerOperator(int xValue, int yValue, bool isGreater)
+        public void SmallerOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
             _x.Source.Value = xValue;
@@ -138,7 +139,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var r = _x < _y;
 
             // Assert
-            Assert.True(r == isGreater);
+            Assert.True(r == expectedResult);
         }
     }
 }

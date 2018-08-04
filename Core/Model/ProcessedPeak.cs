@@ -64,7 +64,7 @@ namespace Genometric.MSPC.Core.Model
         public int CompareTo(ProcessedPeak<I> other)
         {
             if (other == null) return 1;
-            return CompareTo(other);
+            return base.CompareTo(other);
         }
 
         public override bool Equals(object obj)

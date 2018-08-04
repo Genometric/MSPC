@@ -11,6 +11,25 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class TestProcessedPeak
     {
+        private readonly ProcessedPeak<ChIPSeqPeak> _x;
+        private readonly ProcessedPeak<ChIPSeqPeak> _y;
+
+        public TestProcessedPeak()
+        {
+            _x = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
+            _y = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
+
+            _x.Source.Value = 100;
+            _x.Source.Left = 1000;
+            _x.Source.Right = 10000;
+            _x.Source.Name = "";
+
+            _y.Source.Value = 100;
+            _y.Source.Left = 1000;
+            _y.Source.Right = 10000;
+            _y.Source.Name = "";
+        }
+
         [Fact]
         public void CompareToANullObject()
         {
@@ -72,6 +91,23 @@ namespace Genometric.MSPC.Core.Tests.Basic
 
             // Assert
             Assert.True(r != 0);
+        }
+
+        [Theory]
+        [InlineData(100, 10, true)]
+        [InlineData(10, 100, false)]
+        [InlineData(100, 100, false)]
+        public void GreaterOperator(int xValue, int yValue, bool expectedResult)
+        {
+            // Arrange
+            _x.Source.Value = xValue;
+            _y.Source.Value = yValue;
+
+            // Act
+            var r = _x > _y;
+
+            // Assert
+            Assert.True(r == expectedResult);
         }
     }
 }

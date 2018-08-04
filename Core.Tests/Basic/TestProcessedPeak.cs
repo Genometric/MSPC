@@ -23,5 +23,18 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(r == 1);
         }
+
+        [Fact]
+        public void ComputeHashCode()
+        {
+            // Arrange
+            var pp = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
+
+            // Act
+            var r = pp.GetHashCode();
+
+            // Assert
+            Assert.True(r != 0);
+        }
     }
 }

@@ -167,5 +167,19 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(_x != _y);
         }
+
+        [Fact]
+        public void NotEqualOperatorWhenXIsNull()
+        {
+            // Assert
+            Assert.True(null != _y);
+        }
+
+        [Fact]
+        public void NotEqualOperatorWhenYIsNull()
+        {
+            // Assert
+            Assert.True(_x != null);
+        }
     }
 }

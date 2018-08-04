@@ -128,9 +128,7 @@ namespace Genometric.MSPC.Core.Model
 
         public static bool operator !=(ProcessedPeak<I> operand1, ProcessedPeak<I> operand2)
         {
-            if (operand1 is null)
-                return operand2 is null;
-            return !operand1.Equals(operand2);
+            return !(operand1 == operand2);
         }
     }
 }

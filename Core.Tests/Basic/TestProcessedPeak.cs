@@ -25,6 +25,43 @@ namespace Genometric.MSPC.Core.Tests.Basic
         }
 
         [Fact]
+        public void CompareTwoEqualInstances()
+        {
+            // Arrange
+            var p = new ChIPSeqPeak
+            {
+                Left = 10,
+                Summit = 15,
+                Right = 20,
+                Name = "MSPC_Peak",
+                Value = 100,
+                HashKey = 1234567890
+            };
+
+            var sup = new List<SupportingPeak<ChIPSeqPeak>>
+            {
+                new SupportingPeak<ChIPSeqPeak>(new ChIPSeqPeak()
+                {
+                    Left = 5,
+                    Right = 25,
+                    Summit = 15,
+                    Name = "MSPC_SupPeak",
+                    Value = 123,
+                    HashKey = 987654321
+                }, 1)
+            };
+
+            var pp1 = new ProcessedPeak<ChIPSeqPeak>(p, 10, sup);
+            var pp2 = new ProcessedPeak<ChIPSeqPeak>(p, 10, sup);
+
+            // Act
+            var r = pp1.Equals(pp2);
+
+            // Assert
+            Assert.True(r);
+        }
+
+        [Fact]
         public void ComputeHashCode()
         {
             // Arrange

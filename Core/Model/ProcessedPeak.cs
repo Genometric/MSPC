@@ -8,6 +8,7 @@ using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using static Genometric.MSPC.Core.Model.Messages;
 
 namespace Genometric.MSPC.Core.Model
@@ -72,9 +73,9 @@ namespace Genometric.MSPC.Core.Model
                    EqualityComparer<I>.Default.Equals(Source, peak.Source) &&
                    XSquared == peak.XSquared &&
                    RTP == peak.RTP &&
-                   EqualityComparer<ReadOnlyCollection<SupportingPeak<I>>>.Default.Equals(SupportingPeaks, peak.SupportingPeaks) &&
+                   !SupportingPeaks.Except(peak.SupportingPeaks).Any() &&
                    Reason == peak.Reason &&
-                   EqualityComparer<HashSet<Attributes>>.Default.Equals(Classification, peak.Classification) &&
+                   !Classification.Except(peak.Classification).Any() &&
                    AdjPValue == peak.AdjPValue;
         }
 

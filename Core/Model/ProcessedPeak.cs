@@ -61,7 +61,7 @@ namespace Genometric.MSPC.Core.Model
         /// </summary>
         public double AdjPValue { internal set; get; }
 
-        int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> other)
+        public int CompareTo(ProcessedPeak<I> other)
         {
             if (other == null) return 1;
             return CompareTo(other);

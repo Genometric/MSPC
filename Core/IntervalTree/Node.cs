@@ -142,26 +142,6 @@ namespace Genometric.MSPC.IntervalTree
             }
         }
 
-        public List<I> Stab(int time, ContainConstrains constraint)
-        {
-            List<I> result = new List<I>();
-
-            foreach (var entry in _intervals)
-            {
-                if (IntervalOperations<I>.Contains(entry.Key, time, constraint))
-                    foreach (var interval in entry.Value)
-                        result.Add(interval);
-                else if (entry.Key.Left.CompareTo(time) > 0)
-                    break;
-            }
-
-            if (time.CompareTo(_center) < 0 && _leftNode != null)
-                result.AddRange(_leftNode.Stab(time, constraint));
-            else if (time.CompareTo(_center) > 0 && _rightNode != null)
-                result.AddRange(_rightNode.Stab(time, constraint));
-            return result;
-        }
-
         public List<I> Query(I target)
         {
             List<I> result = new List<I>();

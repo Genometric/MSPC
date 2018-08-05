@@ -3,13 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Genometric.GeUtilities.IGenomics;
 
 namespace Genometric.MSPC.IntervalTree
 {
-    internal class IntervalOperations<I>
+    internal static class IntervalOperations<I>
         where I : IChIPSeqPeak, new()
     {
         public static bool Intersects(I a, I b)
@@ -44,7 +42,6 @@ namespace Genometric.MSPC.IntervalTree
 
         public static bool Contains(I interval, int point)
         {
-            //return time < end && time > start;
             return point.CompareTo(interval.Right) < 0 && point.CompareTo(interval.Left) > 0;
         }
 

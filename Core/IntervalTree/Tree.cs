@@ -25,15 +25,6 @@ namespace Genometric.MSPC.IntervalTree
             _size = 0;
         }
 
-        public Tree(List<I> intervalList)
-        {
-            _head = new Node<I>(intervalList);
-            _intervalList = new List<I>();
-            _intervalList.AddRange(intervalList);
-            _inSync = true;
-            _size = intervalList.Count;
-        }
-
         public void Add(I interval)
         {
             _intervalList.Add(interval);

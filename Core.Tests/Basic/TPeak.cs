@@ -9,12 +9,12 @@ using Xunit;
 
 namespace Genometric.MSPC.Core.Tests.Basic
 {
-    public class TestPeakClass
+    public class TPeak
     {
         private readonly Peak<ChIPSeqPeak> _x;
         private readonly Peak<ChIPSeqPeak> _y;
 
-        public TestPeakClass()
+        public TPeak()
         {
             _x = new Peak<ChIPSeqPeak>(new ChIPSeqPeak());
             _y = new Peak<ChIPSeqPeak>(new ChIPSeqPeak());

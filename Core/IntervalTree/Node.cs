@@ -4,6 +4,7 @@
 
 using Genometric.GeUtilities.IGenomics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Genometric.MSPC.IntervalTree
 {
@@ -32,9 +33,7 @@ namespace Genometric.MSPC.IntervalTree
                 endpoints.Add(interval.Left);
                 endpoints.Add(interval.Right);
             }
-
-            int? median = GetMedian(endpoints);
-            _center = median.GetValueOrDefault();
+            _center = endpoints.ElementAt(endpoints.Count / 2);
 
             var left = new List<I>();
             var right = new List<I>();
@@ -61,19 +60,6 @@ namespace Genometric.MSPC.IntervalTree
                 _leftNode = new Node<I>(left);
             if (right.Count > 0)
                 _rightNode = new Node<I>(right);
-        }
-
-        private int? GetMedian(SortedSet<int> set)
-        {
-            int i = 0;
-            int middle = set.Count / 2;
-            foreach (var point in set)
-            {
-                if (i == middle)
-                    return point;
-                i++;
-            }
-            return null;
         }
 
         public List<I> Query(I target)

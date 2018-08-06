@@ -4,6 +4,7 @@
 
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers;
+using Genometric.MSPC.Comparers;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.IntervalTree;
 using Genometric.MSPC.XSquaredData;
@@ -278,7 +279,7 @@ namespace Genometric.MSPC.Model
                 foreach (var chr in result.Value.Chromosomes)
                 {
                     if (!_mergedReplicates.ContainsKey(chr.Key))
-                        _mergedReplicates.Add(chr.Key, new SortedList<I, I>());
+                        _mergedReplicates.Add(chr.Key, new SortedList<I, I>(new OverlappingPeaksComparer<I>()));
 
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {

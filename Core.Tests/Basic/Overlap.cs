@@ -4,15 +4,11 @@
 
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
-using Genometric.MSPC;
 using Genometric.MSPC.Model;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
-namespace Core.Tests.Base
+namespace Genometric.MSPC.Core.Tests.Basic
 {
     /// <summary>
     /// This class asserts MSPC's functionality on processing 

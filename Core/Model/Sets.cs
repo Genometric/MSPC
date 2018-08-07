@@ -18,15 +18,10 @@ namespace Genometric.MSPC.Model
         private readonly ReplicateType _replicateType;
         private readonly Dictionary<UInt64, ProcessedPeak<I>> _peaks;
 
-        internal Sets(int capacity, ReplicateType replicateType)
+        public Sets(int capacity, ReplicateType replicateType)
         {
             _replicateType = replicateType;
             _peaks = new Dictionary<ulong, ProcessedPeak<I>>(capacity: capacity);
-        }
-
-        public void Add(ProcessedPeak<I> peak)
-        {
-            _peaks.Add(peak.Source.HashKey, peak);
         }
 
         public void AddOrUpdate(ProcessedPeak<I> processedPeak)

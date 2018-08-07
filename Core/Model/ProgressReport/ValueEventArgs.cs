@@ -3,10 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Model
 {
@@ -16,10 +12,6 @@ namespace Genometric.MSPC.Model
         public ValueEventArgs(ProgressReport value)
         {
             Value = value;
-        }
-        public override string ToString()
-        {
-            return Value.ToString();
         }
     }
 }

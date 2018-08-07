@@ -61,7 +61,7 @@ namespace Genometric.MSPC
         public void RunAsync(Config config)
         {
             if (_processor.SamplesCount < 2)
-                throw new InvalidOperationException(String.Format("Minimum two samples are required; {} is given.", _processor.SamplesCount));
+                throw new InvalidOperationException(String.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
 
             done.Reset();
             canceled.Reset();

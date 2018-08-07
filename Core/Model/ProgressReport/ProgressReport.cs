@@ -26,20 +26,5 @@ namespace Genometric.MSPC.Model
         public int Step { private set; get; }
         public int StepCount { private set; get; }
         public string Message { private set; get; }
-        public int Percentage { get { return (Step / StepCount) * 100; } }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is ProgressReport))
-                return false;
-
-            var that = (ProgressReport)obj;
-            return Step == that.Step && StepCount == that.StepCount && Message == that.Message ? true : false;
-        }
-
-        public override string ToString()
-        {
-            return Step.ToString() + ":" + Message;
-        }
     }
 }

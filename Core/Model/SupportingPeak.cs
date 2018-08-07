@@ -18,10 +18,12 @@ namespace Genometric.MSPC.Core.Model
 
         public UInt32 SampleID { private set; get; }
 
-        int IComparable<SupportingPeak<I>>.CompareTo(SupportingPeak<I> other)
+        public int CompareTo(SupportingPeak<I> other)
         {
             if (other == null) return 1;
-            return CompareTo(other);
+            if (SampleID != other.SampleID)
+                return SampleID.CompareTo(other.SampleID);
+            return base.CompareTo(other);
         }
     }
 }

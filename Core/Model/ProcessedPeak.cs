@@ -8,6 +8,7 @@ using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using static Genometric.MSPC.Core.Model.Messages;
 
 namespace Genometric.MSPC.Core.Model
@@ -15,11 +16,11 @@ namespace Genometric.MSPC.Core.Model
     public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        internal ProcessedPeak(I source, double xSquared, List<SupportingPeak<I>> supportingPeaks) :
+        public ProcessedPeak(I source, double xSquared, List<SupportingPeak<I>> supportingPeaks) :
             this(source, xSquared, supportingPeaks.AsReadOnly())
         { }
 
-        internal ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks):
+        public ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks):
             base(source)
         {
             XSquared = xSquared;
@@ -60,10 +61,10 @@ namespace Genometric.MSPC.Core.Model
         /// </summary>
         public double AdjPValue { internal set; get; }
 
-        int IComparable<ProcessedPeak<I>>.CompareTo(ProcessedPeak<I> other)
+        public int CompareTo(ProcessedPeak<I> other)
         {
             if (other == null) return 1;
-            return CompareTo(other);
+            return base.CompareTo(other);
         }
 
         public override bool Equals(object obj)
@@ -72,9 +73,9 @@ namespace Genometric.MSPC.Core.Model
                    EqualityComparer<I>.Default.Equals(Source, peak.Source) &&
                    XSquared == peak.XSquared &&
                    RTP == peak.RTP &&
-                   EqualityComparer<ReadOnlyCollection<SupportingPeak<I>>>.Default.Equals(SupportingPeaks, peak.SupportingPeaks) &&
+                   !SupportingPeaks.Except(peak.SupportingPeaks).Any() &&
                    Reason == peak.Reason &&
-                   EqualityComparer<HashSet<Attributes>>.Default.Equals(Classification, peak.Classification) &&
+                   !Classification.Except(peak.Classification).Any() &&
                    AdjPValue == peak.AdjPValue;
         }
 
@@ -127,9 +128,7 @@ namespace Genometric.MSPC.Core.Model
 
         public static bool operator !=(ProcessedPeak<I> operand1, ProcessedPeak<I> operand2)
         {
-            if (operand1 is null)
-                return operand2 is null;
-            return !operand1.Equals(operand2);
+            return !(operand1 == operand2);
         }
     }
 }

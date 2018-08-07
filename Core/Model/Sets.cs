@@ -24,11 +24,6 @@ namespace Genometric.MSPC.Model
             _peaks = new Dictionary<ulong, ProcessedPeak<I>>(capacity: capacity);
         }
 
-        public void Add(ProcessedPeak<I> peak)
-        {
-            _peaks.Add(peak.Source.HashKey, peak);
-        }
-
         public void AddOrUpdate(ProcessedPeak<I> processedPeak)
         {
             if (_peaks.TryGetValue(processedPeak.Source.HashKey, out ProcessedPeak<I> oldValue))

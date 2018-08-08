@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Genometric.MSPC.Core.Tests.Basic
+namespace Genometric.MSPC.Core.Tests.Replicates
 {
     public class BioAttributes
     {

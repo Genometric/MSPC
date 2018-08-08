@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;
 
-namespace Genometric.MSPC.Core.Tests.Basic
+namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 {
     public class Confirmed
     {

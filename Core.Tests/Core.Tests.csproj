@@ -6,6 +6,8 @@
     <IsPackable>false</IsPackable>
 
     <AssemblyName>Genometric.MSPC.Core.Tests</AssemblyName>
+
+    <RootNamespace>Genometric.MSPC.Core.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

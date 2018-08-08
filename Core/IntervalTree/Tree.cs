@@ -2,10 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Genometric.GeUtilities.IGenomics;
+using System.Collections.Generic;
 
 namespace Genometric.MSPC.IntervalTree
 {

@@ -66,8 +66,7 @@ namespace Genometric.MSPC.Model
             _workerEventArgs = e;
             
             int step = 1, stepCount = 4;
-
-            if (CheckCancellationPending()) return;
+            
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
             BuildDataStructures();
 

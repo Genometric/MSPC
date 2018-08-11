@@ -18,6 +18,7 @@ namespace Genometric.MSPC.Core.Tests
     {
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
+        private string _cancelOnMessage;
         private string status;
         private AutoResetEvent _continue;
 
@@ -53,16 +54,21 @@ namespace Genometric.MSPC.Core.Tests
 
         private void Mspc_StatusChanged(object sender, ValueEventArgs e)
         {
-            if (e.Value.Message == "Initializing")
+            if (e.Value.Message == _cancelOnMessage)
                 _continue.Set();
             status += e.Value.Message;
         }
 
-        [Fact]
-        public void CancelCurrentAsyncRun()
+        [Theory]
+        [InlineData("Initializing")]
+        [InlineData("Processing samples")]
+        [InlineData("Performing Multiple testing correction")]
+        [InlineData("Creating consensus peaks set")]
+        public void CancelCurrentAsyncRun(string cancelOnMessage)
         {
             // Arrange & Act
             int c = 10000;
+            _cancelOnMessage = cancelOnMessage;
             var results = RunThenCancelMSPC(c);
 
             // Assert
@@ -74,6 +80,7 @@ namespace Genometric.MSPC.Core.Tests
         public void ReportProcessIsCanceled()
         {
             // Arrange & Act
+            _cancelOnMessage = "Initializing";
             RunThenCancelMSPC(10000);
 
             // Assert

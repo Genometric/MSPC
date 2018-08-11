@@ -7,6 +7,7 @@ using Genometric.GeUtilities.IntervalParsers;
 using Genometric.MSPC.Comparers;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.IntervalTree;
+using Genometric.MSPC.Model;
 using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Genometric.MSPC.Model
+namespace Genometric.MSPC.Functions
 {
     internal class Processor<I>
         where I : IChIPSeqPeak, new()
@@ -66,8 +67,7 @@ namespace Genometric.MSPC.Model
             _workerEventArgs = e;
             
             int step = 1, stepCount = 4;
-
-            if (CheckCancellationPending()) return;
+            
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
             BuildDataStructures();
 

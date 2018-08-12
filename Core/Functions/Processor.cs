@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Functions
 {
@@ -65,9 +66,9 @@ namespace Genometric.MSPC.Functions
             _config = config;
             _worker = worker;
             _workerEventArgs = e;
-            
+
             int step = 1, stepCount = 4;
-            
+
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
             BuildDataStructures();
 
@@ -110,57 +111,73 @@ namespace Genometric.MSPC.Functions
 
         private void ProcessSamples()
         {
-            Attributes attribute;
+            Action<uint, KeyValuePair<string, Chromosome<I, BEDStats>>> processChr =
+                delegate (uint sampleKey, KeyValuePair<string, Chromosome<I, BEDStats>> chr)
+                {
+                    ProcessChr(sampleKey, chr);
+                };
+
             foreach (var sample in _samples)
-                foreach (var chr in sample.Value.Chromosomes)
-                    foreach (var strand in chr.Value.Strands)
-                        foreach (I peak in strand.Value.Intervals)
+                Parallel.ForEach(
+                    sample.Value.Chromosomes,
+                    new ParallelOptions { MaxDegreeOfParallelism = 10 },
+                    chr =>
+                    {
+                        processChr(sample.Key, chr);
+                    });
+        }
+
+        private void ProcessChr(uint sampleKey, KeyValuePair<string, Chromosome<I, BEDStats>> chr)
+        {
+            Attributes attribute;
+            foreach (var strand in chr.Value.Strands)
+                foreach (I peak in strand.Value.Intervals)
+                {
+                    if (_worker.CancellationPending)
+                        return;
+
+                    _xsqrd = 0;
+                    if (peak.Value < _config.TauS)
+                        attribute = Attributes.Stringent;
+                    else if (peak.Value < _config.TauW)
+                        attribute = Attributes.Weak;
+                    else
+                    {
+                        var pp = new ProcessedPeak<I>(peak, double.NaN, new List<SupportingPeak<I>>());
+                        pp.Classification.Add(Attributes.Background);
+                        _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
+                        continue;
+                    }
+
+                    var supportingPeaks = FindSupportingPeaks(sampleKey, chr.Key, peak);
+                    if (supportingPeaks.Count + 1 >= _config.C)
+                    {
+                        CalculateXsqrd(peak, supportingPeaks);
+                        var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
+                        pp.Classification.Add(attribute);
+                        if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                         {
-                            if (_worker.CancellationPending)
-                                return;
-
-                            _xsqrd = 0;
-                            if (peak.Value < _config.TauS)
-                                attribute = Attributes.Stringent;
-                            else if (peak.Value < _config.TauW)
-                                attribute = Attributes.Weak;
-                            else
-                            {
-                                var pp = new ProcessedPeak<I>(peak, double.NaN, new List<SupportingPeak<I>>());
-                                pp.Classification.Add(Attributes.Background);
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].AddOrUpdate(pp);
-                                continue;
-                            }
-
-                            var supportingPeaks = FindSupportingPeaks(sample.Key, chr.Key, peak);
-                            if (supportingPeaks.Count + 1 >= _config.C)
-                            {
-                                CalculateXsqrd(peak, supportingPeaks);
-                                var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
-                                pp.Classification.Add(attribute);
-                                if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
-                                {
-                                    pp.Classification.Add(Attributes.Confirmed);
-                                    _analysisResults[sample.Key].Chromosomes[chr.Key].AddOrUpdate(pp);
-                                    ProcessSupportingPeaks(sample.Key, chr.Key, peak, supportingPeaks, Attributes.Confirmed, Messages.Codes.M000);
-                                }
-                                else
-                                {
-                                    pp.reason = Messages.Codes.M001;
-                                    pp.Classification.Add(Attributes.Discarded);
-                                    _analysisResults[sample.Key].Chromosomes[chr.Key].AddOrUpdate(pp);
-                                    ProcessSupportingPeaks(sample.Key, chr.Key, peak, supportingPeaks, Attributes.Discarded, Messages.Codes.M001);
-                                }
-                            }
-                            else
-                            {
-                                var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
-                                pp.Classification.Add(attribute);
-                                pp.Classification.Add(Attributes.Discarded);
-                                pp.reason = Messages.Codes.M002;
-                                _analysisResults[sample.Key].Chromosomes[chr.Key].AddOrUpdate(pp);
-                            }
+                            pp.Classification.Add(Attributes.Confirmed);
+                            _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
+                            ProcessSupportingPeaks(sampleKey, chr.Key, peak, supportingPeaks, Attributes.Confirmed, Messages.Codes.M000);
                         }
+                        else
+                        {
+                            pp.reason = Messages.Codes.M001;
+                            pp.Classification.Add(Attributes.Discarded);
+                            _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
+                            ProcessSupportingPeaks(sampleKey, chr.Key, peak, supportingPeaks, Attributes.Discarded, Messages.Codes.M001);
+                        }
+                    }
+                    else
+                    {
+                        var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
+                        pp.Classification.Add(attribute);
+                        pp.Classification.Add(Attributes.Discarded);
+                        pp.reason = Messages.Codes.M002;
+                        _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
+                    }
+                }
         }
 
         private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)

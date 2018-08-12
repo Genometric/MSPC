@@ -27,8 +27,6 @@ namespace Genometric.MSPC.Functions
         public delegate void ProgressUpdate(ProgressReport value);
         public event ProgressUpdate OnProgressUpdate;
 
-        private double _xsqrd { set; get; }
-
         private Dictionary<uint, Result<I>> _analysisResults { set; get; }
         public ReadOnlyDictionary<uint, Result<I>> AnalysisResults
         {
@@ -139,7 +137,6 @@ namespace Genometric.MSPC.Functions
                     if (_worker.CancellationPending)
                         return;
 
-                    _xsqrd = 0;
                     if (peak.Value < _config.TauS)
                         attribute = Attributes.Stringent;
                     else if (peak.Value < _config.TauW)
@@ -155,26 +152,26 @@ namespace Genometric.MSPC.Functions
                     var supportingPeaks = FindSupportingPeaks(sampleKey, chr.Key, peak);
                     if (supportingPeaks.Count + 1 >= _config.C)
                     {
-                        CalculateXsqrd(peak, supportingPeaks);
-                        var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
+                        double xsqrd = CalculateXsqrd(peak, supportingPeaks);
+                        var pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks);
                         pp.Classification.Add(attribute);
-                        if (_xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
+                        if (xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                         {
                             pp.Classification.Add(Attributes.Confirmed);
                             _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
-                            ProcessSupportingPeaks(sampleKey, chr.Key, peak, supportingPeaks, Attributes.Confirmed, Messages.Codes.M000);
+                            ProcessSupportingPeaks(sampleKey, chr.Key, peak, supportingPeaks, xsqrd, Attributes.Confirmed, Messages.Codes.M000);
                         }
                         else
                         {
                             pp.reason = Messages.Codes.M001;
                             pp.Classification.Add(Attributes.Discarded);
                             _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
-                            ProcessSupportingPeaks(sampleKey, chr.Key, peak, supportingPeaks, Attributes.Discarded, Messages.Codes.M001);
+                            ProcessSupportingPeaks(sampleKey, chr.Key, peak, supportingPeaks, xsqrd, Attributes.Discarded, Messages.Codes.M001);
                         }
                     }
                     else
                     {
-                        var pp = new ProcessedPeak<I>(peak, _xsqrd, supportingPeaks);
+                        var pp = new ProcessedPeak<I>(peak, 0, supportingPeaks);
                         pp.Classification.Add(attribute);
                         pp.Classification.Add(Attributes.Discarded);
                         pp.reason = Messages.Codes.M002;
@@ -218,7 +215,7 @@ namespace Genometric.MSPC.Functions
             return supportingPeaks;
         }
 
-        private void ProcessSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, Attributes attribute, Messages.Codes message)
+        private void ProcessSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, double xsqrd, Attributes attribute, Messages.Codes message)
         {
             foreach (var supPeak in supportingPeaks)
             {
@@ -228,7 +225,7 @@ namespace Genometric.MSPC.Functions
                     if (supPeak.CompareTo(sP) != 0)
                         tSupPeak.Add(sP);
 
-                var pp = new ProcessedPeak<I>(supPeak.Source, _xsqrd, tSupPeak);
+                var pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak);
                 pp.Classification.Add(attribute);
                 pp.reason = message;
 
@@ -241,23 +238,26 @@ namespace Genometric.MSPC.Functions
             }
         }
 
-        private void CalculateXsqrd(I p, List<SupportingPeak<I>> supportingPeaks)
+        private double CalculateXsqrd(I p, List<SupportingPeak<I>> supportingPeaks)
         {
+            double xsqrd;
             if (p.Value != 0)
-                _xsqrd = Math.Log(p.Value, Math.E);
+                xsqrd = Math.Log(p.Value, Math.E);
             else
-                _xsqrd = Math.Log(Config.default0PValue, Math.E);
+                xsqrd = Math.Log(Config.default0PValue, Math.E);
 
             foreach (var supPeak in supportingPeaks)
                 if (supPeak.Source.Value != 0)
-                    _xsqrd += Math.Log(supPeak.Source.Value, Math.E);
+                    xsqrd += Math.Log(supPeak.Source.Value, Math.E);
                 else
-                    _xsqrd += Math.Log(Config.default0PValue, Math.E);
+                    xsqrd += Math.Log(Config.default0PValue, Math.E);
 
-            _xsqrd = _xsqrd * (-2);
+            xsqrd = xsqrd * (-2);
 
-            if (_xsqrd >= Math.Abs(Config.defaultMaxLogOfPVvalue))
-                _xsqrd = Math.Abs(Config.defaultMaxLogOfPVvalue);
+            if (xsqrd >= Math.Abs(Config.defaultMaxLogOfPVvalue))
+                xsqrd = Math.Abs(Config.defaultMaxLogOfPVvalue);
+
+            return xsqrd;
         }
 
         /// <summary>

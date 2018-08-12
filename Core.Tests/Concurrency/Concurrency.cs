@@ -41,7 +41,7 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
             mspc.AddSample(1, CreateSample(2, 20, 2000));
 
             // Act
-            var res = mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 2, 0.05F, MultipleIntersections.UseLowestPValue));
+            var res = mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
 
             // Assert
             for(int c=0;c<20;c++)

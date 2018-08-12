@@ -43,6 +43,8 @@ namespace Genometric.MSPC.Functions
             get { return new ReadOnlyDictionary<string, SortedList<I, I>>(_mergedReplicates); }
         }
 
+        public int DegreeOfParallelism { set; get; }
+
         private List<double> _cachedChiSqrd { set; get; }
 
         private Config _config { set; get; }
@@ -54,6 +56,7 @@ namespace Genometric.MSPC.Functions
         internal Processor()
         {
             _samples = new Dictionary<uint, BED<I>>();
+            DegreeOfParallelism = Environment.ProcessorCount;
         }
 
         internal void AddSample(uint id, BED<I> peaks)
@@ -120,7 +123,7 @@ namespace Genometric.MSPC.Functions
             foreach (var sample in _samples)
                 Parallel.ForEach(
                     sample.Value.Chromosomes,
-                    new ParallelOptions { MaxDegreeOfParallelism = 10 },
+                    new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
                     chr =>
                     {
                         processChr(sample.Key, chr);

@@ -32,7 +32,7 @@ namespace Genometric.MSPC
 
         private ReadOnlyDictionary<uint, Result<I>> _results { set; get; }
 
-        private int DegreeOfParallelism
+        public int DegreeOfParallelism
         {
             set { _processor.DegreeOfParallelism = value; }
             get { return _processor.DegreeOfParallelism; }

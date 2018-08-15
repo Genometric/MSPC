@@ -50,5 +50,25 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
                 Assert.True(res[1].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 2000);
             }
         }
+
+        [Fact]
+        public void HighDegreeOfParallelisim()
+        {
+            // Arrange
+            var mspc = new MSPC<ChIPSeqPeak>();
+            mspc.AddSample(0, CreateSample(0, 20, 10000));
+            mspc.AddSample(1, CreateSample(2, 20, 20000));
+            mspc.DegreeOfParallelism = 20;
+
+            // Act
+            var res = mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
+
+            // Assert
+            for (int c = 0; c < 20; c++)
+            {
+                Assert.True(res[0].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 10000);
+                Assert.True(res[1].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 20000);
+            }
+        }
     }
 }

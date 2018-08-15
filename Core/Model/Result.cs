@@ -4,7 +4,7 @@
 
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Model;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Genometric.MSPC.Core.Model
 {
@@ -12,17 +12,17 @@ namespace Genometric.MSPC.Core.Model
         where I : IChIPSeqPeak, new()
     {
         private ReplicateType _replicateType;
-        public Dictionary<string, Sets<I>> Chromosomes { set; get; }
+        public ConcurrentDictionary<string, Sets<I>> Chromosomes { set; get; }
 
         internal Result(ReplicateType replicateType)
         {
             _replicateType = replicateType;
-            Chromosomes = new Dictionary<string, Sets<I>>();
+            Chromosomes = new ConcurrentDictionary<string, Sets<I>>();
         }
 
         public void AddChromosome(string chr, int capacity)
         {
-            Chromosomes.Add(chr, new Sets<I>(capacity, _replicateType));
+            Chromosomes.TryAdd(chr, new Sets<I>(capacity, _replicateType));
         }
     }
 }

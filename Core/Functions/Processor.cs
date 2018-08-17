@@ -5,9 +5,9 @@
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.MSPC.Comparers;
+using Genometric.MSPC.Core.IntervalTree;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Core.XSquaredData;
-using Genometric.MSPC.IntervalTree;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

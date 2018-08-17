@@ -15,7 +15,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Genometric.MSPC.Functions
+namespace Genometric.MSPC.Core.Functions
 {
     internal class Processor<I>
         where I : IChIPSeqPeak, new()

@@ -5,7 +5,6 @@
 
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
-using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -6,12 +6,12 @@ using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Functions;
-using Genometric.MSPC.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
+using Genometric.MSPC.Model;
 
 namespace Genometric.MSPC
 {

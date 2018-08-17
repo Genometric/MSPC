@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Model;
+using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.XSquaredData;
 using System;
 using System.Collections.Generic;

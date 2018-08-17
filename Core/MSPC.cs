@@ -12,7 +12,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
 
-namespace Genometric.MSPC
+namespace Genometric.MSPC.Core
 {
     public class MSPC<I>
         where I : IChIPSeqPeak, new()

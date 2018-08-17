@@ -4,7 +4,7 @@
 
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers;
-using Genometric.MSPC.Comparers;
+using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.IntervalTree;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Core.XSquaredData;

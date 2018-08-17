@@ -6,7 +6,7 @@ using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
 
-namespace Genometric.MSPC.Comparers
+namespace Genometric.MSPC.Core.Comparers
 {
     public class CompareProcessedPeaksByValue<I> : IComparer<ProcessedPeak<I>>
         where I : IChIPSeqPeak, new()

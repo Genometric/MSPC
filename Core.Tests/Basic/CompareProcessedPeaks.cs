@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
-using Genometric.MSPC.Comparers;
+using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
 using Xunit;

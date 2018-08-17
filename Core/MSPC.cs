@@ -24,8 +24,8 @@ namespace Genometric.MSPC
             StatusChanged?.Invoke(this, new ValueEventArgs(value));
         }
 
-        public AutoResetEvent done;
-        public AutoResetEvent canceled;
+        public AutoResetEvent Done { set; get; }
+        public AutoResetEvent Canceled { set; get; }
 
         private Processor<I> _processor { set; get; }
         private BackgroundWorker _backgroundProcessor { set; get; }
@@ -46,8 +46,8 @@ namespace Genometric.MSPC
             _backgroundProcessor.DoWork += _doWork;
             _backgroundProcessor.RunWorkerCompleted += _runWorkerCompleted;
             _backgroundProcessor.WorkerSupportsCancellation = true;
-            done = new AutoResetEvent(false);
-            canceled = new AutoResetEvent(false);
+            Done = new AutoResetEvent(false);
+            Canceled = new AutoResetEvent(false);
         }
 
         public void AddSample(uint id, BED<I> sample)
@@ -70,8 +70,8 @@ namespace Genometric.MSPC
             if (_processor.SamplesCount < 2)
                 throw new InvalidOperationException(String.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
 
-            done.Reset();
-            canceled.Reset();
+            Done.Reset();
+            Canceled.Reset();
             if (_backgroundProcessor.IsBusy)
                 Cancel();
             _backgroundProcessor.RunWorkerAsync(config);
@@ -79,11 +79,11 @@ namespace Genometric.MSPC
 
         public void Cancel()
         {
-            canceled.Reset();
+            Canceled.Reset();
             _backgroundProcessor.CancelAsync();
-            canceled.WaitOne();
-            done.Reset();
-            canceled.Reset();
+            Canceled.WaitOne();
+            Done.Reset();
+            Canceled.Reset();
         }
 
         public ReadOnlyDictionary<uint, Result<I>> GetResults()
@@ -104,8 +104,8 @@ namespace Genometric.MSPC
 
         private void _runWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            canceled.Set();
-            done.Set();
+            Canceled.Set();
+            Done.Set();
         }
 
         private void _processorOnProgressUpdate(ProgressReport value)

@@ -4,11 +4,10 @@
 
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.IntervalParsers;
-using Genometric.MSPC.Comparers;
+using Genometric.MSPC.Core.Comparers;
+using Genometric.MSPC.Core.IntervalTree;
 using Genometric.MSPC.Core.Model;
-using Genometric.MSPC.IntervalTree;
-using Genometric.MSPC.Model;
-using Genometric.MSPC.XSquaredData;
+using Genometric.MSPC.Core.XSquaredData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +15,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Genometric.MSPC.Functions
+namespace Genometric.MSPC.Core.Functions
 {
     internal class Processor<I>
         where I : IChIPSeqPeak, new()

@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Genometric.MSPC.XSquaredData
+namespace Genometric.MSPC.Core.XSquaredData
 {
     public class ChiSquaredCache
     {

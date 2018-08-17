@@ -4,7 +4,7 @@
 
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
-using Genometric.MSPC.Model;
+using Genometric.MSPC.Core.Model;
 using System.Linq;
 using Xunit;
 

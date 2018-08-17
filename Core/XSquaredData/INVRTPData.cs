@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 
-namespace Genometric.MSPC.XSquaredData
+namespace Genometric.MSPC.Core.XSquaredData
 {
     internal class INVRTPData
     {

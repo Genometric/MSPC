@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 
-namespace Genometric.MSPC.Model
+namespace Genometric.MSPC.Core.Model
 {
     public struct ProgressReport
     {

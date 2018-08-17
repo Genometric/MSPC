@@ -3,12 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Genometric.MSPC.Model
+namespace Genometric.MSPC.Core.Model
 {
     public class Sets<I>
         where I : IChIPSeqPeak, new()

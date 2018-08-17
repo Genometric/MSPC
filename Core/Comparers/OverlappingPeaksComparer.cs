@@ -5,7 +5,7 @@
 using Genometric.GeUtilities.IGenomics;
 using System.Collections.Generic;
 
-namespace Genometric.MSPC.Comparers
+namespace Genometric.MSPC.Core.Comparers
 {
     public class OverlappingPeaksComparer<I> : IComparer<I>
         where I : IChIPSeqPeak, new()

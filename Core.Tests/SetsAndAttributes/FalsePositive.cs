@@ -5,7 +5,6 @@
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC.Core.Model;
-using Genometric.MSPC.Model;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;

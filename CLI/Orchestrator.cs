@@ -5,7 +5,8 @@
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC.CLI.Exporter;
-using Genometric.MSPC.Model;
+using Genometric.MSPC.Core;
+using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -41,7 +42,7 @@ namespace Genometric.MSPC.CLI
             foreach (var sample in _samples)
                 _mspc.AddSample(sample.FileHashKey, sample);
             _mspc.RunAsync(_options);
-            _mspc.done.WaitOne();
+            _mspc.Done.WaitOne();
         }
         private void _mspc_statusChanged(object sender, ValueEventArgs e)
         {

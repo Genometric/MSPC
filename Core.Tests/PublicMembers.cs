@@ -5,7 +5,6 @@
 using Genometric.GeUtilities.IntervalParsers;
 using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
 using Genometric.MSPC.Core.Model;
-using Genometric.MSPC.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -47,7 +46,7 @@ namespace Genometric.MSPC.Core.Tests
             // the previous execution is canceled, and instead the following asynchronous 
             // execution is completed.
             mspc.RunAsync(new Config(ReplicateType.Biological, 1e-10, 1e-20, 1e-200, 2, 0.05F, MultipleIntersections.UseLowestPValue));
-            mspc.done.WaitOne();
+            mspc.Done.WaitOne();
 
             return mspc.GetResults();
         }

@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Model;
 using System.Collections.Concurrent;
 
 namespace Genometric.MSPC.Core.Model

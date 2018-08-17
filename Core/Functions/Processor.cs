@@ -14,7 +14,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Genometric.MSPC.Model;
 
 namespace Genometric.MSPC.Functions
 {

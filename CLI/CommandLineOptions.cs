@@ -6,10 +6,8 @@ using Genometric.MSPC.Core.Model;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text;
 
-[assembly: InternalsVisibleTo("Genometric.MSPC.CLI.Tests")]
 namespace Genometric.MSPC.CLI
 {
     internal class CommandLineOptions

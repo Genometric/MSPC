@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Core.XSquaredData;
+using Genometric.MSPC.Core.Functions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,7 +27,7 @@ namespace Genometric.MSPC.Core.Model
             if (double.IsNaN(xSquared))
                 RTP = double.NaN;
             else
-                RTP = ChiSquaredCache.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaks.Count * 2));
+                RTP = ChiSqrd.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaks.Count * 2));
             Classification = new HashSet<Attributes>();
         }
 

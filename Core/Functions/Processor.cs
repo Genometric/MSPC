@@ -7,7 +7,7 @@ using Genometric.GeUtilities.IntervalParsers;
 using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.IntervalTree;
 using Genometric.MSPC.Core.Model;
-using Genometric.MSPC.Core.XSquaredData;
+using Genometric.MSPC.Core.Functions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -89,7 +89,7 @@ namespace Genometric.MSPC.Core.Functions
         {
             _cachedChiSqrd = new List<double>();
             for (int i = 1; i <= _samples.Count; i++)
-                _cachedChiSqrd.Add(Math.Round(ChiSquaredCache.ChiSqrdINVRTP(_config.Gamma, (byte)(i * 2)), 3));
+                _cachedChiSqrd.Add(Math.Round(ChiSqrd.ChiSqrdINVRTP(_config.Gamma, (byte)(i * 2)), 3));
 
             _trees = new Dictionary<uint, Dictionary<string, Tree<I>>>();
             _analysisResults = new Dictionary<uint, Result<I>>();

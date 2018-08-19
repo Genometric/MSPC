@@ -4,7 +4,7 @@
 
 using MathNet.Numerics.Distributions;
 
-namespace Genometric.MSPC.Core.XSquaredData
+namespace Genometric.MSPC.Core.Functions
 {
     public static class ChiSqrd
     {

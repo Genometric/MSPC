@@ -6,7 +6,7 @@ using MathNet.Numerics.Distributions;
 
 namespace Genometric.MSPC.Core.XSquaredData
 {
-    public class ChiSqrd
+    public static class ChiSqrd
     {
         /// <summary>
         /// Returns the right-tailed probability of the chi-squared distribution.

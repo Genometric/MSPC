@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
 {
-    public class CLIOptions
+    public class CliOptions
     {
         private const string _rep1 = "replicate_1.bed";
         private const string _rep2 = "replicate_2.bed";

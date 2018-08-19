@@ -46,7 +46,7 @@ namespace Genometric.MSPC.Core.XSquaredData
         public static double ChiSqrdINVRTP(double probability, int df)
         {
             var chisqrd = new ChiSquared(df);
-            return chisqrd.InverseCumulativeDistribution(probability);
+            return chisqrd.InverseCumulativeDistribution(1 - probability);
         }
     }
 }

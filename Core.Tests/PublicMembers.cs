@@ -46,6 +46,7 @@ namespace Genometric.MSPC.Core.Tests
             // all the peaks. This can help asserting if the asynchronous process of 
             // the previous execution is canceled, and instead the following asynchronous 
             // execution is completed.
+            _cancelOnMessage = "";
             mspc.RunAsync(new Config(ReplicateType.Biological, 1e-10, 1e-20, 1e-200, 2, 0.05F, MultipleIntersections.UseLowestPValue));
             mspc.Done.WaitOne();
 

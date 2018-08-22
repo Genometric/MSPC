@@ -41,6 +41,7 @@ namespace Genometric.MSPC.Core.Tests
             // MSPC is expected to confirm peaks using the following configuration.
             mspc.RunAsync(new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue));
             _continue.WaitOne();
+            _continue.Reset();
             // However, with the following configuration, it is expected to discard 
             // all the peaks. This can help asserting if the asynchronous process of 
             // the previous execution is canceled, and instead the following asynchronous 

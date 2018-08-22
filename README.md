@@ -2,7 +2,6 @@
 | -- |:--:| --: |
 ---
 
-![](docs/Home_mspc.jpg)
 
 ## About
 

@@ -1,8 +1,9 @@
-| [Documentation](https://github.com/Genometric/MSPC/wiki) | [Download](https://github.com/Genometric/MSPC/releases) | [Publication](https://academic.oup.com/bioinformatics/article/31/17/2761/183989/Using-combined-evidence-from-replicates-to)
-| -- |:--:| --: |
----
 
-![](docs/Home_mspc.jpg)
+| [Documentation](https://github.com/Genometric/MSPC/wiki) | [Publication](https://academic.oup.com/bioinformatics/article/31/17/2761/183989/Using-combined-evidence-from-replicates-to)
+| -- |--: |
+
+[![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status)](https://sonarcloud.io/dashboard/index/mspc)  [![codecov](https://codecov.io/gh/Genometric/MSPC/branch/master/graph/badge.svg)](https://codecov.io/gh/Genometric/MSPC)   [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc)](https://sonarcloud.io/dashboard/index/mspc) [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating)](https://sonarcloud.io/dashboard/index/mspc)
+
 
 ## About
 
@@ -15,6 +16,13 @@ Given a set of peaks from (biological or technical) replicates, the method combi
 For details you may refer to the [MSPC publication](http://bioinformatics.oxfordjournals.org/content/31/17/2761) and  [slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133).
 
 <br/>
+
+## [Download](https://github.com/Genometric/MSPC/releases)
+
+|                     | Cross-platform x64 release |
+| :-----------------: | :------------------------: |
+| Microsoft Windows            | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) |
+| Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) |
 
 ## Call Example (see [this page](https://github.com/Genometric/MSPC/wiki) for documentation)
 

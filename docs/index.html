@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>MSPC</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+        		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			ga('create', 'UA-33687213-3', 'auto');
+			ga('send', 'pageview');
+		</script>
+		<script>
+			  var httpRequest;
+			  function makeRequest(url) {
+				if (window.XMLHttpRequest) {
+				  httpRequest = new XMLHttpRequest();
+				} else if (window.ActiveXObject) {
+				  try {
+					httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+				  }
+				  catch (e) {
+					try {
+					  httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+					}
+					catch (e) {}
+				  }
+				}
+				if (!httpRequest) {
+				  alert('Giving up :( Cannot create an XMLHTTP instance');
+				  return false;
+				}
+				httpRequest.onreadystatechange = processResponse;
+				httpRequest.open('GET', url);
+				httpRequest.send();
+			  }
+			  function processResponse() {
+				if (httpRequest.readyState === 4) {
+				  if (httpRequest.status === 200) {
+					console.info('[Analytics] Response: ' + httpRequest.responseText);
+
+					var response = JSON.parse(httpRequest.responseText);
+					if (response) {
+						var numberOfVisits = response["MSPC-ONLY"].visits[0];
+						console.info('[Analytics] Total Visits: ', numberOfVisits);
+						var canvas = document.getElementById('visit_count');
+						var nVisitors = document.createElement('span');
+
+						//var sum = parseFloat(numberOfVisits) + (+'10000');
+
+						nVisitors.innerHTML = 'Number of visits: ' + numberOfVisits;
+						canvas.appendChild(nVisitors);
+					} else {
+						console.warn('[Analytics] No results found');
+					}
+				  } else {
+					console.error('There was a problem with the request.');
+				  }
+				}
+			  }
+		</script>
+	</head>
+	<body>
+		<!-- Page Wrapper -->
+			<div id="page-wrapper">
+				<!-- Wrapper -->
+					<div id="wrapper">
+						<!-- Panel (Banner) -->
+							<section class="panel content">
+								<div class="image span-1-75" data-position="50% 75%">
+									<img src="images/pic01.png" alt=" " />
+								</div>
+							</section>
+						<!-- Panel (Spotlight) -->
+							<section class="panel spotlight medium right" id="main">
+								<div class="content color4-alt span-16">
+									<h1 class="major">MSPC</h1>
+									<h4 class="major">Using combined evidence from replicates to evaluate ChIP-seq peaks</h4>
+                                    
+                                    <p id="visit_count"></p>
+								</div>
+								<div class="image filtered tinted" data-position="top left">
+									<img src="images/panel2bg.jpg" alt="" />
+								</div>
+							</section>
+                            <section class="panel spotlight medium right" id="about">
+								<div class="content color5">
+									<h2 class="major">About</h2>
+									<p>The analysis of ChIP-seq samples outputs a number of enriched regions (commonly known as "peaks"), each indicating a protein-DNA interaction or a specific chromatin modification. </p>
+                                                                                                                                       
+                                    <p> When replicate samples are analysed, overlapping peaks are expected. This repeated evidence can therefore be used to locally lower the minimum significance required to accept a peak. Here, we propose a method for joint analysis of weak peaks.</p>
+
+                                    <p> Given a set of peaks from (biological or technical) replicates, the method combines the p-values of overlapping enriched regions, and allows the "rescue" of weak peaks occuring in more than one replicate.</p>
+								</div>
+								<div class="image filtered tinted" data-position="top left">
+									<img src="images/panel2bg.jpg" alt="" />
+								</div>
+							</section>
+						<!-- Panel -->
+							<section class="panel color4">
+								<div class="intro joined">
+									<h10>MSPC is implemented in C# .NET, it is open-source and cross-platform. </h10>
+                                       <br/>
+                                    <h10>Available for Microsoft Windows, macOS, and Linux platforms. </h10>
+								</div>
+								<div class="inner">
+									<ul class="grid-icons two connected">
+										<li><a href="https://github.com/Genometric/MSPC/releases" class="special color5 circle icon fa-download">Download</a> </li>
+										<li><a href="https://github.com/Genometric/MSPC" class="special color5 circle icon fa-github">Source Code</a> </li>
+										<li><a href="https://github.com/Genometric/MSPC/wiki" class="special color5 circle icon fa-book">Documentation</a> </li>
+										<li><a href="https://github.com/Genometric/MSPC/issues" class="special color5 circle icon fa-question-circle">Questions</a> </li>
+									</ul>
+								</div>
+							</section>
+						<!-- Panel -->
+							<section class="panel color4-alt">
+								<div class="inner columns divided">
+									<div class="span-1-5">
+										<h6>Authors:</h6>
+                                        <br/>
+										<h6><a href="https://www.researchgate.net/profile/Vahid_Jalili"/>Vahid Jalili</a></h6>
+                                        <h6><a href="http://chrome.ws.dei.polimi.it/index.php/Matt%27s_Home_Page"/>Matteo Matteucci</a></h6>
+                                        <h6><a href="https://www.researchgate.net/profile/Marco_Masseroli"/>Marco Masseroli</h6>
+                                        <h6><a href="https://www.researchgate.net/profile/Marco_Morelli3"/>Marco J. Morelli</a></h6>
+									</div>
+								</div>
+							</section>
+					</div>
+			</div>
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script>
+				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+					(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+					m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+					})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+					ga('create', 'UA-100863841-1', 'auto');
+					ga('send', 'pageview');
+
+			</script>
+            <script type='text/javascript'>makeRequest('/AnalyticsQueryWrapper/AnalyticsServlet');</script>
+	</body>
+</html>

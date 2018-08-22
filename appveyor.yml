@@ -64,7 +64,7 @@ for:
     - ps: |
         $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-        bash codecov.sh -f "Core.Tests/mspc_coverage.xml" -t $env:codecovtoken
+        bash codecov.sh -f "mspc_coverage.xml" -t $env:codecovtoken
     - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%" /d:sonar.cs.opencover.reportsPaths=".\mspc_coverage.xml"
     - MSBuild.exe /t:Rebuild
     - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle

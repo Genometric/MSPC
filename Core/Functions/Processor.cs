@@ -280,8 +280,6 @@ namespace Genometric.MSPC.Core.Functions
                 foreach (var chr in result.Value.Chromosomes)
                 {
                     var confirmedPeaks = chr.Value.Get(Attributes.Confirmed).ToList();
-                    chr.Value.SetTruePositiveCount(confirmedPeaks.Count);
-                    chr.Value.SetFalsePositiveCount(0);
                     int m = confirmedPeaks.Count;
 
                     // Sorts confirmed peaks set based on their p-values.

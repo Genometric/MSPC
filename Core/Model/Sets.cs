@@ -12,8 +12,6 @@ namespace Genometric.MSPC.Core.Model
     public class Sets<I>
         where I : IChIPSeqPeak, new()
     {
-        private int _fpCount;
-        private int _tpCount;
         private readonly ReplicateType _replicateType;
         private readonly Dictionary<UInt64, ProcessedPeak<I>> _peaks;
 
@@ -49,16 +47,6 @@ namespace Genometric.MSPC.Core.Model
         public IEnumerable<ProcessedPeak<I>> Get(Attributes attributes)
         {
             return _peaks.Where(kvp => kvp.Value.Classification.Contains(attributes)).Select(kvp => kvp.Value);
-        }
-
-        internal void SetFalsePositiveCount(int value)
-        {
-            _fpCount = value;
-        }
-
-        internal void SetTruePositiveCount(int value)
-        {
-            _tpCount = value;
         }
     }
 }

@@ -17,7 +17,8 @@ namespace Genometric.MSPC.CLI.Exporter
     public class Exporter<P>
         where P : IChIPSeqPeak, new()
     {
-        private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
+        private readonly string _header = 
+            "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
         private Options _options;
 
         public void Export(
@@ -37,7 +38,12 @@ namespace Genometric.MSPC.CLI.Exporter
 
             foreach (var result in results)
             {
-                string samplePath = _options.Path + Path.DirectorySeparatorChar + timestamp + Path.GetFileNameWithoutExtension(fileNames[result.Key]);
+                string samplePath =
+                    _options.Path +
+                    Path.DirectorySeparatorChar +
+                    timestamp +
+                    Path.GetFileNameWithoutExtension(fileNames[result.Key]);
+
                 Directory.CreateDirectory(samplePath);
 
                 foreach(var attribute in options.AttributesToExport)
@@ -56,7 +62,10 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in data.Chromosomes)
                 {
-                    var sortedDictionary = from entry in chr.Value.Get(attribute) orderby entry ascending select entry;
+                    var sortedDictionary = from entry 
+                                           in chr.Value.Get(attribute)
+                                           orderby entry 
+                                           ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {

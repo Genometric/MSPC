@@ -29,7 +29,9 @@ namespace Genometric.MSPC.CLI
 
             if (cliOptions.Input.Count < 2)
             {
-                Console.WriteLine(string.Format("At least two samples are required; {0} is given.{1}", cliOptions.Input.Count, mspcCannotContinue));
+                Console.WriteLine(string.Format(
+                    "At least two samples are required; {0} is given.{1}",
+                    cliOptions.Input.Count, mspcCannotContinue));
                 return;
             }
 
@@ -60,7 +62,9 @@ namespace Genometric.MSPC.CLI
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(string.Format("The following exception has occurred while parsing input files: {0}{1}", e.Message, mspcCannotContinue));
+                    Console.WriteLine(string.Format(
+                        "The following exception has occurred while parsing input files: {0}{1}",
+                        e.Message, mspcCannotContinue));
                     return;
                 }
             }
@@ -73,7 +77,9 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("The following exception has occurred while processing the samples: {0}{1}", e.Message, mspcCannotContinue));
+                Console.WriteLine(string.Format(
+                    "The following exception has occurred while processing the samples: {0}{1}",
+                    e.Message, mspcCannotContinue));
                 return;
             }
 
@@ -84,7 +90,9 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("The following exception has occurred while saving analysis results: {0}{1}", e.Message, mspcCannotContinue));
+                Console.WriteLine(string.Format(
+                    "The following exception has occurred while saving analysis results: {0}{1}",
+                    e.Message, mspcCannotContinue));
                 return;
             }
 

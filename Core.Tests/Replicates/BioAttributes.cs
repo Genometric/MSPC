@@ -18,10 +18,12 @@ namespace Genometric.MSPC.Core.Tests.Replicates
             // Arrange
             var sets = new Sets<ChIPSeqPeak>(2, ReplicateType.Biological);
 
-            var confirmedPeak = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak() { HashKey = 1 }, 10, new List<SupportingPeak<ChIPSeqPeak>>());
+            var confirmedPeak = new ProcessedPeak<ChIPSeqPeak>(
+                new ChIPSeqPeak() { HashKey = 1 }, 10, new List<SupportingPeak<ChIPSeqPeak>>());
             confirmedPeak.Classification.Add(Attributes.Confirmed);
 
-            var discardedPeak = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak() { HashKey = 1 }, 10, new List<SupportingPeak<ChIPSeqPeak>>());
+            var discardedPeak = new ProcessedPeak<ChIPSeqPeak>(
+                new ChIPSeqPeak() { HashKey = 1 }, 10, new List<SupportingPeak<ChIPSeqPeak>>());
             discardedPeak.Classification.Add(Attributes.Discarded);
 
             // Act

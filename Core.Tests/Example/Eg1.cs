@@ -86,7 +86,9 @@ namespace Genometric.MSPC.Core.Tests.Example
 
         [Theory]
         [MemberData(nameof(ExpectedAttributes))]
-        public void AssertAttributeAssignment(ReplicateType replicateType, byte c, uint sampleIndex, ChIPSeqPeak peak, Attributes initial, Attributes processed)
+        public void AssertAttributeAssignment(
+            ReplicateType replicateType, byte c, uint sampleIndex,
+            ChIPSeqPeak peak, Attributes initial, Attributes processed)
         {
             // Arrange
             var mspc = InitializeMSPC();

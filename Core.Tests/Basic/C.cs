@@ -13,8 +13,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class C
     {
-        private string _chr = "chr1";
-        private char _strand = '*';
+        private readonly string _chr = "chr1";
+        private readonly char _strand = '*';
 
         //                        r11
         // Sample 1: ---------███████████----------

@@ -11,7 +11,7 @@ namespace Genometric.MSPC.Core.IntervalTree
         where I : IChIPSeqPeak, new()
     {
         private Node<I> _head;
-        private List<I> _intervalList;
+        private readonly List<I> _intervalList;
         private bool _inSync;
         private int _size;
 

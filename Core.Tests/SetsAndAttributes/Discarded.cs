@@ -101,7 +101,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 0);
+                Assert.False(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Any());
         }
 
         [Fact]

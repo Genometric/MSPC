@@ -53,7 +53,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Weak).Count() == 0);
+                Assert.False(s.Value.Chromosomes[_chr].Get(Attributes.Weak).Any());
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Background).Count() == 0);
+                Assert.False(s.Value.Chromosomes[_chr].Get(Attributes.Background).Any());
         }
 
         [Fact]

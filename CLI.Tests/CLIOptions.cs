@@ -30,9 +30,9 @@ namespace Genometric.MSPC.CLI.Tests
             if (rep1 != null) builder.Append("-i " + rep1 + " ");
             if (rep2 != null) builder.Append("-i " + rep2 + " ");
             if (rep3 != null) builder.Append("-i " + rep3 + " ");
-            if (!Double.IsNaN(tauW)) builder.Append("-w " + tauW + " ");
-            if (!Double.IsNaN(tauS)) builder.Append("-s " + tauS + " ");
-            if (!Double.IsNaN(gamma)) builder.Append("-g " + gamma + " ");
+            if (!double.IsNaN(tauW)) builder.Append("-w " + tauW + " ");
+            if (!double.IsNaN(tauS)) builder.Append("-s " + tauS + " ");
+            if (!double.IsNaN(gamma)) builder.Append("-g " + gamma + " ");
             if (!float.IsNaN(alpha)) builder.Append("-a " + alpha + " ");
             builder.Append("-c " + c + " ");
             builder.Append("-m " + m + " ");

@@ -11,10 +11,10 @@ namespace Genometric.MSPC.Core.IntervalTree
     internal class Node<I>
         where I : IChIPSeqPeak, new()
     {
-        private SortedDictionary<I, List<I>> _intervals;
-        private int _center;
-        private Node<I> _leftNode;
-        private Node<I> _rightNode;
+        private readonly SortedDictionary<I, List<I>> _intervals;
+        private readonly int _center;
+        private readonly Node<I> _leftNode;
+        private readonly Node<I> _rightNode;
 
         public Node()
         {

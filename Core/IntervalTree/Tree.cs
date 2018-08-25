@@ -13,14 +13,12 @@ namespace Genometric.MSPC.Core.IntervalTree
         private Node<I> _head;
         private readonly List<I> _intervalList;
         private bool _inSync;
-        private int _size;
 
         public Tree()
         {
             _head = new Node<I>();
             _intervalList = new List<I>();
             _inSync = true;
-            _size = 0;
         }
 
         public void Add(I interval)
@@ -41,7 +39,6 @@ namespace Genometric.MSPC.Core.IntervalTree
             {
                 _head = new Node<I>(_intervalList);
                 _inSync = true;
-                _size = _intervalList.Count;
             }
         }
 

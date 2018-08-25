@@ -50,7 +50,7 @@ namespace Genometric.MSPC.Core.Tests.Replicates
 
             // Assert
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 1);
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 0);
+            Assert.False(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r11) == 0);
         }
 
@@ -94,7 +94,7 @@ namespace Genometric.MSPC.Core.Tests.Replicates
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 0);
+            Assert.False(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 1);
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r11) == 0);
 

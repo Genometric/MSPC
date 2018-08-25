@@ -54,12 +54,12 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             // Assert
             foreach (var s in res)
                 Assert.True(
-                    s.Value.Chromosomes[_chr].Get(Attributes.Weak).Count() == 0 &&
-                    s.Value.Chromosomes[_chr].Get(Attributes.Stringent).Count() == 0 &&
-                    s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 0 &&
-                    s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Count() == 0 &&
-                    s.Value.Chromosomes[_chr].Get(Attributes.TruePositive).Count() == 0 &&
-                    s.Value.Chromosomes[_chr].Get(Attributes.FalsePositive).Count() == 0);
+                    !s.Value.Chromosomes[_chr].Get(Attributes.Weak).Any() &&
+                    !s.Value.Chromosomes[_chr].Get(Attributes.Stringent).Any() &&
+                    !s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Any() &&
+                    !s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Any() &&
+                    !s.Value.Chromosomes[_chr].Get(Attributes.TruePositive).Any() &&
+                    !s.Value.Chromosomes[_chr].Get(Attributes.FalsePositive).Any());
         }
 
         [Fact]

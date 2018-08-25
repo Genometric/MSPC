@@ -62,7 +62,9 @@ namespace Genometric.MSPC.CLI
                 includeHeader: true,
                 attributesToExport: a2E);
 
-            exporter.Export(_samples.ToDictionary(x => x.FileHashKey, x => x.FileName), _mspc.GetResults(), _mspc.GetMergedReplicates(), options);
+            exporter.Export(
+                _samples.ToDictionary(x => x.FileHashKey, x => x.FileName),
+                _mspc.GetResults(), _mspc.GetMergedReplicates(), options);
         }
     }
 }

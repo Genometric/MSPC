@@ -41,7 +41,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void NoMessageForConfirmedPeaks()
         {
             // Arrange & Act
-            var res = RunMSPCAndReturnResult(new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-4, 1, 1F, MultipleIntersections.UseLowestPValue));
+            var res = RunMSPCAndReturnResult(
+                new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-4, 1, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).First().Reason == "");
@@ -52,7 +53,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void MessageOfDiscardedForGamma()
         {
             // Arrange & Act
-            var res = RunMSPCAndReturnResult(new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-50, 1, 1F, MultipleIntersections.UseLowestPValue));
+            var res = RunMSPCAndReturnResult(
+                new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-50, 1, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
             Assert.Equal(
@@ -64,7 +66,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void MessageOfDiscardedForC()
         {
             // Arrange & Act
-            var res = RunMSPCAndReturnResult(new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-50, 3, 1F, MultipleIntersections.UseLowestPValue));
+            var res = RunMSPCAndReturnResult(
+                new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-50, 3, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
             Assert.Equal(

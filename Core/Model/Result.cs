@@ -10,7 +10,7 @@ namespace Genometric.MSPC.Core.Model
     public class Result<I>
         where I : IChIPSeqPeak, new()
     {
-        private ReplicateType _replicateType;
+        private readonly ReplicateType _replicateType;
         public ConcurrentDictionary<string, Sets<I>> Chromosomes { set; get; }
 
         internal Result(ReplicateType replicateType)

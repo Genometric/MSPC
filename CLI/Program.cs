@@ -29,14 +29,14 @@ namespace Genometric.MSPC.CLI
 
             if (cliOptions.Input.Count < 2)
             {
-                Console.WriteLine(String.Format("At least two samples are required; {0} is given.{1}", cliOptions.Input.Count, mspcCannotContinue));
+                Console.WriteLine(string.Format("At least two samples are required; {0} is given.{1}", cliOptions.Input.Count, mspcCannotContinue));
                 return;
             }
 
             foreach (var file in cliOptions.Input)
                 if (!File.Exists(file))
                 {
-                    Console.WriteLine(String.Format("Missing file: {0}{1}", file, mspcCannotContinue));
+                    Console.WriteLine(string.Format("Missing file: {0}{1}", file, mspcCannotContinue));
                     return;
                 }
 
@@ -45,7 +45,7 @@ namespace Genometric.MSPC.CLI
             var et = new Stopwatch();
             foreach (var file in cliOptions.Input)
             {
-                Console.WriteLine(String.Format("Parsing sample : {0}", file));
+                Console.WriteLine(string.Format("Parsing sample : {0}", file));
                 et.Restart();
 
                 try
@@ -60,7 +60,7 @@ namespace Genometric.MSPC.CLI
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(String.Format("The following exception has occurred while parsing input files: {0}{1}", e.Message, mspcCannotContinue));
+                    Console.WriteLine(string.Format("The following exception has occurred while parsing input files: {0}{1}", e.Message, mspcCannotContinue));
                     return;
                 }
             }
@@ -73,7 +73,7 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Console.WriteLine(String.Format("The following exception has occurred while processing the samples: {0}{1}", e.Message, mspcCannotContinue));
+                Console.WriteLine(string.Format("The following exception has occurred while processing the samples: {0}{1}", e.Message, mspcCannotContinue));
                 return;
             }
 
@@ -84,13 +84,13 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Console.WriteLine(String.Format("The following exception has occurred while saving analysis results: {0}{1}", e.Message, mspcCannotContinue));
+                Console.WriteLine(string.Format("The following exception has occurred while saving analysis results: {0}{1}", e.Message, mspcCannotContinue));
                 return;
             }
 
             et.Stop();
             Console.WriteLine(" ");
-            Console.WriteLine(String.Format("All processes successfully finished [Analysis ET: {0}]", et.Elapsed.ToString()));
+            Console.WriteLine(string.Format("All processes successfully finished [Analysis ET: {0}]", et.Elapsed.ToString()));
             Console.WriteLine(" ");
         }
     }

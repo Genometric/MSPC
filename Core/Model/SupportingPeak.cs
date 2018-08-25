@@ -10,13 +10,13 @@ namespace Genometric.MSPC.Core.Model
     public class SupportingPeak<I> : Peak<I>, IComparable<SupportingPeak<I>>
             where I : IChIPSeqPeak, new()
     {
-        public SupportingPeak(I source, UInt32 sampleID):
+        public SupportingPeak(I source, uint sampleID):
             base(source)
         {
             SampleID = sampleID;
         }
 
-        public UInt32 SampleID { private set; get; }
+        public uint SampleID { private set; get; }
 
         public int CompareTo(SupportingPeak<I> other)
         {

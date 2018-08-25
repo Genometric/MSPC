@@ -36,7 +36,7 @@ namespace Genometric.MSPC.CLI.Tests
             using (StringWriter sw = new StringWriter())
             {
                 Console.SetOut(sw);
-                Program.Main(String.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", rep1, rep2).Split(' '));
+                Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", rep1, rep2).Split(' '));
                 return sw.ToString();
             }
         }

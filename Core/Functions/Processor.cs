@@ -285,7 +285,7 @@ namespace Genometric.MSPC.Core.Functions
                     int m = confirmedPeaks.Count;
 
                     // Sorts confirmed peaks set based on their p-values.
-                    confirmedPeaks.Sort(new Comparers.CompareProcessedPeaksByValue<I>());
+                    confirmedPeaks.Sort(new CompareProcessedPeaksByValue<I>());
 
                     for (int i = 0; i < m; i++)
                     {

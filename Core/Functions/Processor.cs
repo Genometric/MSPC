@@ -69,6 +69,7 @@ namespace Genometric.MSPC.Core.Functions
             int step = 1, stepCount = 4;
 
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
+            CacheChiSqrdData();
             BuildDataStructures();
 
             if (CheckCancellationPending()) return;
@@ -84,12 +85,15 @@ namespace Genometric.MSPC.Core.Functions
             CreateConsensusPeaks();
         }
 
-        private void BuildDataStructures()
+        private void CacheChiSqrdData()
         {
             _cachedChiSqrd = new List<double>();
             for (int i = 1; i <= _samples.Count; i++)
                 _cachedChiSqrd.Add(Math.Round(ChiSqrd.ChiSqrdINVRTP(_config.Gamma, (byte)(i * 2)), 3));
+        }
 
+        private void BuildDataStructures()
+        {
             _trees = new Dictionary<uint, Dictionary<string, Tree<I>>>();
             _analysisResults = new Dictionary<uint, Result<I>>();
             foreach (var sample in _samples)

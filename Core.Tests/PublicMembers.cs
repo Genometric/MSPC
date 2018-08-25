@@ -118,7 +118,7 @@ namespace Genometric.MSPC.Core.Tests
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => mspc.Run(config));
-            Assert.Equal(String.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
+            Assert.Equal(string.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
         }
 
         [Theory]
@@ -134,7 +134,7 @@ namespace Genometric.MSPC.Core.Tests
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => mspc.RunAsync(config));
-            Assert.Equal(String.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
+            Assert.Equal(string.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
         }
     }
 }

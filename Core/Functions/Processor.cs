@@ -161,14 +161,18 @@ namespace Genometric.MSPC.Core.Functions
                         {
                             pp.Classification.Add(Attributes.Confirmed);
                             _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
-                            ProcessSupportingPeaks(sampleKey, chr.Key, peak, supportingPeaks, xsqrd, Attributes.Confirmed, Messages.Codes.M000);
+                            ProcessSupportingPeaks(
+                                sampleKey, chr.Key, peak, supportingPeaks,
+                                xsqrd, Attributes.Confirmed, Messages.Codes.M000);
                         }
                         else
                         {
                             pp.reason = Messages.Codes.M001;
                             pp.Classification.Add(Attributes.Discarded);
                             _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
-                            ProcessSupportingPeaks(sampleKey, chr.Key, peak, supportingPeaks, xsqrd, Attributes.Discarded, Messages.Codes.M001);
+                            ProcessSupportingPeaks(
+                                sampleKey, chr.Key, peak, supportingPeaks,
+                                xsqrd, Attributes.Discarded, Messages.Codes.M001);
                         }
                     }
                     else
@@ -205,8 +209,10 @@ namespace Genometric.MSPC.Core.Functions
                     default:
                         var chosenPeak = sps[0];
                         foreach (var sp in sps.Skip(1))
-                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue && sp.Value < chosenPeak.Value) ||
-                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue && sp.Value > chosenPeak.Value))
+                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue 
+                                && sp.Value < chosenPeak.Value) ||
+                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue 
+                                && sp.Value > chosenPeak.Value))
                                 chosenPeak = sp;
 
                         supportingPeaks.Add(new SupportingPeak<I>(chosenPeak, tree.Key));
@@ -217,7 +223,9 @@ namespace Genometric.MSPC.Core.Functions
             return supportingPeaks;
         }
 
-        private void ProcessSupportingPeaks(uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks, double xsqrd, Attributes attribute, Messages.Codes message)
+        private void ProcessSupportingPeaks
+            (uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks,
+            double xsqrd, Attributes attribute, Messages.Codes message)
         {
             foreach (var supPeak in supportingPeaks)
             {

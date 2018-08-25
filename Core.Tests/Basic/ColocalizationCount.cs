@@ -200,7 +200,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Any());
+            Assert.False(res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Any());
         }
     }
 }

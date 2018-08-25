@@ -86,6 +86,13 @@ namespace Genometric.MSPC.CLI
 
         private int AssertArguments()
         {
+            AssertRequiredArgsAreGiven();
+            AssertGivenValuesAreValid();
+            return 0;
+        }
+
+        private void AssertRequiredArgsAreGiven()
+        {
             var missingArgs = new List<string>();
             if (!_cInput.HasValue()) missingArgs.Add(_cInput.ShortName + "|" + _cInput.LongName);
             if (!_cReplicate.HasValue()) missingArgs.Add(_cReplicate.ShortName + "|" + _cReplicate.LongName);
@@ -99,7 +106,10 @@ namespace Genometric.MSPC.CLI
                     msgBuilder.Append(item + "; ");
                 throw new ArgumentException(msgBuilder.ToString());
             }
+        }
 
+        private void AssertGivenValuesAreValid()
+        {
             switch (_cReplicate.Value().ToLower())
             {
                 case "bio":
@@ -132,7 +142,7 @@ namespace Genometric.MSPC.CLI
             if (_cC.HasValue() && !byte.TryParse(_cC.Value(), out _vc))
                 throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
 
-            if(_cM.HasValue())
+            if (_cM.HasValue())
                 switch (_cM.Value().ToLower())
                 {
                     case "lowest":
@@ -146,8 +156,6 @@ namespace Genometric.MSPC.CLI
                     default:
                         throw new ArgumentException("Invalid value given for the `" + _cM.LongName + "` argument.");
                 }
-
-            return 0;
         }
 
         public Config Parse(string[] args)

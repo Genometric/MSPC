@@ -47,7 +47,7 @@ namespace Genometric.MSPC.CLI
             var et = new Stopwatch();
             foreach (var file in cliOptions.Input)
             {
-                Console.WriteLine(string.Format("Parsing sample : {0}", file));
+                Console.WriteLine(string.Format("Parsing sample: {0}", file));
                 et.Restart();
 
                 try

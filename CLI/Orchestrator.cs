@@ -31,7 +31,10 @@ namespace Genometric.MSPC.CLI
 
         public BED<ChIPSeqPeak> LoadSample(string fileName)
         {
-            var bedParser = new BEDParser();
+            var bedParser = new BEDParser
+            {
+                PValueFormat = PValueFormats.minus1_Log10_pValue
+            };
             var parsedSample = bedParser.Parse(fileName);
             _samples.Add(parsedSample);
             return parsedSample;

@@ -88,22 +88,12 @@ namespace Genometric.MSPC.Core.Tests
         {
             // Arrange & Act
             int c = 10000;
+            _cancelOnMessage = cancelOnMessage;
+            var results = RunThenCancelMSPC(c);
 
-            // Sometimes this unit test (for "Processing samples" case in particular)
-            // may fail in first try; this patch could fix the problem temporarily. 
-            // However, it needs to fixed by a better solution. 
-            for (int i = 0; i < 3; i++)
-            {
-                _cancelOnMessage = cancelOnMessage;
-                var results = RunThenCancelMSPC(c);
-                if (!results[0].Chromosomes.ContainsKey(_chr))
-                    continue;
-
-                // Assert
-                Assert.True(!results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
-                Assert.True(results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c);
-                break;
-            }
+            // Assert
+            Assert.True(!results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
+            Assert.True(results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c);
         }
 
         [Fact]

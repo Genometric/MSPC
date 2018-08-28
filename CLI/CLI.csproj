@@ -15,6 +15,7 @@
     <PackageId>Genometric.MSPC.CLI-v3.0.0RC</PackageId>
     <Copyright>GNU General Public License v3.0</Copyright>
     <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
+    <RootNamespace>Genometric.MSPC.CLI</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

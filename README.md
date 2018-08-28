@@ -17,20 +17,21 @@ For details you may refer to the [MSPC publication](http://bioinformatics.oxford
 
 <br/>
 
-## [Download from Releases page](https://github.com/Genometric/MSPC/releases)
+## Download and Run
 
 |                     | Cross-platform x64 release build status |
 | :-----------------: | :-------------------------------------: |
 | Microsoft Windows            | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) |
 | Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) |
 
-## Call Example (see [this page](https://github.com/Genometric/MSPC/wiki) for documentation)
+- [Download the latest version from the Releases page.](https://github.com/Genometric/MSPC/releases) Extract the archive and change your directory to the extracted content folder.
+- Requirements: download and install **.NET Core Runtime** from [this page](https://www.microsoft.com/net/download).
+- Run MSPC as the following:
+```shell
+dotnet .\CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1E-4 -s 1E-8
+```
 
-    // on Windows
-    MSPC -i rep1.bed -i rep2.bed -i rep3.bed -r biological -s 1E-8 -w 1E-4
-    
-    //on Linux/Mac
-    mono MSPC -i rep1.bed -i rep2.bed -i rep3.bed -r biological -s 1E-8 -w 1E-4
+See [this page](https://github.com/Genometric/MSPC/wiki/Arguments-in-details) for a complete list of arguments.
 
 <br/>
 

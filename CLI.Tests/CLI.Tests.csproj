@@ -8,6 +8,22 @@
     <AssemblyName>Genometric.MSPC.CLI.Tests</AssemblyName>
 
     <RootNamespace>Genometric.MSPC.CLI.Tests</RootNamespace>
+
+    <Version>3.0.0</Version>
+
+    <Authors>Vahid Jalili</Authors>
+
+    <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
+
+    <PackageProjectUrl>https://github.com/Genometric/MSPC</PackageProjectUrl>
+
+    <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
+
+    <PackageId>Genometric.MSPC.CLI.Tests-v3.0.0RC</PackageId>
+
+    <Copyright>GNU General Public License v3.0</Copyright>
+
+    <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

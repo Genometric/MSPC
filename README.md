@@ -17,10 +17,10 @@ For details you may refer to the [MSPC publication](http://bioinformatics.oxford
 
 <br/>
 
-## [Download](https://github.com/Genometric/MSPC/releases)
+## [Download from Releases page](https://github.com/Genometric/MSPC/releases)
 
-|                     | Cross-platform x64 release |
-| :-----------------: | :------------------------: |
+|                     | Cross-platform x64 release build status |
+| :-----------------: | :-------------------------------------: |
 | Microsoft Windows            | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) |
 | Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) |
 

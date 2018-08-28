@@ -18,16 +18,16 @@ namespace Genometric.MSPC.CLI.Tests
             FileStream stream = File.Create(rep1Path);
             using (StreamWriter writter = new StreamWriter(stream))
             {
-                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t0.001");
-                writter.WriteLine("chr1\t25\t35\tmspc_peak_1\t0.00001");
+                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t3");
+                writter.WriteLine("chr1\t25\t35\tmspc_peak_1\t5");
             }
 
             stream = File.Create(rep2Path);
             using (StreamWriter writter = new StreamWriter(stream))
             {
-                writter.WriteLine("chr1\t11\t18\tmspc_peak_2\t0.01");
-                writter.WriteLine("chr1\t22\t28\tmspc_peak_2\t0.0001");
-                writter.WriteLine("chr1\t30\t40\tmspc_peak_2\t0.0000001");
+                writter.WriteLine("chr1\t11\t18\tmspc_peak_2\t2");
+                writter.WriteLine("chr1\t22\t28\tmspc_peak_2\t3");
+                writter.WriteLine("chr1\t30\t40\tmspc_peak_2\t7");
             }
         }
 

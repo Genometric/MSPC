@@ -32,8 +32,6 @@ namespace Genometric.MSPC.CLI.Exporter
             if (!Directory.Exists(_options.Path))
                 Directory.CreateDirectory(_options.Path);
 
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture) + "__";
-
             ExportConsensusPeaks(consensusPeaks);
 
             foreach (var result in results)
@@ -41,7 +39,6 @@ namespace Genometric.MSPC.CLI.Exporter
                 string samplePath =
                     _options.Path +
                     Path.DirectorySeparatorChar +
-                    timestamp +
                     Path.GetFileNameWithoutExtension(fileNames[result.Key]);
 
                 Directory.CreateDirectory(samplePath);

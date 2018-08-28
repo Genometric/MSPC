@@ -45,7 +45,7 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
                 ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
 
             // Assert
-            for(int c=0;c<20;c++)
+            for (int c = 0; c < 20; c++)
             {
                 Assert.True(res[0].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 1000);
                 Assert.True(res[1].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 2000);

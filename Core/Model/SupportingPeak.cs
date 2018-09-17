@@ -8,7 +8,7 @@ using System;
 namespace Genometric.MSPC.Core.Model
 {
     public class SupportingPeak<I> : Peak<I>, IComparable<SupportingPeak<I>>
-            where I : IChIPSeqPeak, new()
+            where I : IPeak
     {
         public SupportingPeak(I source, uint sampleID):
             base(source)

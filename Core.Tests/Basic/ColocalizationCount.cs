@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
 using Xunit;
@@ -18,13 +18,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void SingleNonOverlappingPeak(byte c, byte expected)
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20 }, "chr1", '*');
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 30, Right = 40 }, "chr1", '*');
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 30, right: 40, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -47,13 +47,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void TwoOverlappingPeak(byte c, byte expected)
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20 }, "chr1", '*');
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 40 }, "chr1", '*');
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 40, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -63,7 +63,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(new[] 
+            Assert.True(new[]
             {
                 res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
                 res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count()
@@ -77,16 +77,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void ThreePeaksTwoOverlapping(byte c, byte expected)
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20 }, "chr1", '*');
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12 }, "chr1", '*');
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 12, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sC = new BED<ChIPSeqPeak>();
-            sC.Add(new ChIPSeqPeak() { Left = 18, Right = 25 }, "chr1", '*');
+            var sC = new Bed<Peak>();
+            sC.Add(new Peak(left: 18, right: 25, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);
@@ -97,7 +97,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(new[] 
+            Assert.True(new[]
             {
                 res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
                 res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
@@ -112,16 +112,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void ThreePeaksThreeOverlapping(byte c, byte expected)
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20 }, "chr1", '*');
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 18 }, "chr1", '*');
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 18, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sC = new BED<ChIPSeqPeak>();
-            sC.Add(new ChIPSeqPeak() { Left = 14, Right = 25 }, "chr1", '*');
+            var sC = new Bed<Peak>();
+            sC.Add(new Peak(left: 14, right: 25, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);
@@ -147,16 +147,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void ThreePeaksNoneOverlapping(byte c, byte expected)
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20 }, "chr1", '*');
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 8 }, "chr1", '*');
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 8, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sC = new BED<ChIPSeqPeak>();
-            sC.Add(new ChIPSeqPeak() { Left = 24, Right = 25 }, "chr1", '*');
+            var sC = new Bed<Peak>();
+            sC.Add(new Peak(left: 24, right: 25, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);
@@ -179,17 +179,17 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void OnlyOnePeakPerSampleIsConsideredForC()
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20 }, "chr1", '*');
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12 }, "chr1", '*');
-            sB.Add(new ChIPSeqPeak() { Left = 14, Right = 22 }, "chr1", '*');
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 12, value: 100, summit: 0, name: "Peak"), "chr1", '*');
+            sB.Add(new Peak(left: 14, right: 22, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var sC = new BED<ChIPSeqPeak>();
-            sC.Add(new ChIPSeqPeak() { Left = 24, Right = 25 }, "chr1", '*');
+            var sC = new Bed<Peak>();
+            sC.Add(new Peak(left: 24, right: 25, value: 100, summit: 0, name: "Peak"), "chr1", '*');
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);

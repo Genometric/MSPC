@@ -2,8 +2,9 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Exporter;
 using Genometric.MSPC.Core;
 using Genometric.MSPC.Core.Model;
@@ -18,20 +19,20 @@ namespace Genometric.MSPC.CLI
     internal class Orchestrator
     {
         private readonly Config _options;
-        private readonly MSPC<ChIPSeqPeak> _mspc;
-        private readonly List<BED<ChIPSeqPeak>> _samples;
+        private readonly MSPC<Peak> _mspc;
+        private readonly List<Bed<Peak>> _samples;
 
         internal Orchestrator(Config options, IReadOnlyList<string> input)
         {
             _options = options;
-            _mspc = new MSPC<ChIPSeqPeak>();
+            _mspc = new MSPC<Peak>(new PeakConstructor());
             _mspc.StatusChanged += _mspc_statusChanged;
-            _samples = new List<BED<ChIPSeqPeak>>();
+            _samples = new List<Bed<Peak>>();
         }
 
-        public BED<ChIPSeqPeak> LoadSample(string fileName)
+        public Bed<Peak> LoadSample(string fileName)
         {
-            var bedParser = new BEDParser
+            var bedParser = new BedParser
             {
                 PValueFormat = PValueFormats.minus1_Log10_pValue
             };
@@ -58,7 +59,7 @@ namespace Genometric.MSPC.CLI
             foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
                 a2E.Add(att);
 
-            var exporter = new Exporter<ChIPSeqPeak>();
+            var exporter = new Exporter<Peak>();
             var options = new Options(
                 path: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
                       DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture),

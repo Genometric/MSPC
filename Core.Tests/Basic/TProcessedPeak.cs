@@ -2,7 +2,7 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
 using Xunit;
@@ -11,30 +11,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class TProcessedPeak
     {
-        private readonly ProcessedPeak<ChIPSeqPeak> _x;
-        private readonly ProcessedPeak<ChIPSeqPeak> _y;
-
-        public TProcessedPeak()
+        private ProcessedPeak<Peak> GetP(int left = 1000, int right = 10000, double value = 100, string name = "", int summit = 0)
         {
-            _x = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
-            _y = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
-
-            _x.Source.Value = 100;
-            _x.Source.Left = 1000;
-            _x.Source.Right = 10000;
-            _x.Source.Name = "";
-
-            _y.Source.Value = 100;
-            _y.Source.Left = 1000;
-            _y.Source.Right = 10000;
-            _y.Source.Name = "";
+            return new ProcessedPeak<Peak>(new Peak(left, right, value, summit, name), 10, new List<SupportingPeak<Peak>>());
         }
 
         [Fact]
         public void CompareToANullObject()
         {
             // Arrange
-            var pp = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
+            var pp = GetP();
 
             // Act
             var r = pp.CompareTo(null);
@@ -47,31 +33,29 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void CompareTwoEqualInstances()
         {
             // Arrange
-            var p = new ChIPSeqPeak
+            var p = new Peak
+            (
+                left : 10,
+                summit : 15,
+                right : 20,
+                name : "MSPC_Peak",
+                value : 100
+            );
+
+            var sup = new List<SupportingPeak<Peak>>
             {
-                Left = 10,
-                Summit = 15,
-                Right = 20,
-                Name = "MSPC_Peak",
-                Value = 100,
-                HashKey = 1234567890
+                new SupportingPeak<Peak>(new Peak
+                (
+                    left : 5,
+                    right : 25,
+                    summit : 15,
+                    name : "MSPC_SupPeak",
+                    value : 123
+                ), 1)
             };
 
-            var sup = new List<SupportingPeak<ChIPSeqPeak>>
-            {
-                new SupportingPeak<ChIPSeqPeak>(new ChIPSeqPeak()
-                {
-                    Left = 5,
-                    Right = 25,
-                    Summit = 15,
-                    Name = "MSPC_SupPeak",
-                    Value = 123,
-                    HashKey = 987654321
-                }, 1)
-            };
-
-            var pp1 = new ProcessedPeak<ChIPSeqPeak>(p, 10, sup);
-            var pp2 = new ProcessedPeak<ChIPSeqPeak>(p, 10, sup);
+            var pp1 = new ProcessedPeak<Peak>(p, 10, sup);
+            var pp2 = new ProcessedPeak<Peak>(p, 10, sup);
 
             // Act
             var r = pp1.Equals(pp2);
@@ -84,7 +68,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void ComputeHashCode()
         {
             // Arrange
-            var pp = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
+            var pp = GetP();
 
             // Act
             var r = pp.GetHashCode();
@@ -100,11 +84,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void GreaterOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x > _y;
+            var r = x > y;
 
             // Assert
             Assert.True(r == expectedResult);
@@ -117,11 +101,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void SmallerOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x < _y;
+            var r = x < y;
 
             // Assert
             Assert.True(r == expectedResult);
@@ -134,11 +118,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void GreaterOrEqualOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x >= _y;
+            var r = x >= y;
 
             // Assert
             Assert.True(r == expectedResult);
@@ -151,11 +135,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void SmallerOrEqualOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x <= _y;
+            var r = x <= y;
 
             // Assert
             Assert.True(r == expectedResult);
@@ -164,22 +148,32 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [Fact]
         public void NotEqualOperator()
         {
+            // Arrange
+            var x = GetP();
+            var y = GetP();
+
             // Assert
-            Assert.True(_x != _y);
+            Assert.True(x != y);
         }
 
         [Fact]
         public void NotEqualOperatorWhenXIsNull()
         {
+            // Arrange
+            var y = GetP();
+
             // Assert
-            Assert.True(null != _y);
+            Assert.True(null != y);
         }
 
         [Fact]
         public void NotEqualOperatorWhenYIsNull()
         {
+            // Arrange
+            var x = GetP();
+
             // Assert
-            Assert.True(_x != null);
+            Assert.True(x != null);
         }
     }
 }

@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
 using Xunit;
@@ -12,20 +12,19 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
 {
     public class Concurrency
     {
-        private BED<ChIPSeqPeak> CreateSample(int offset, int chrCount, int iCount)
+        private Bed<Peak> CreateSample(int offset, int chrCount, int iCount)
         {
-            var rtv = new BED<ChIPSeqPeak>();
+            var rtv = new Bed<Peak>();
             for (int c = 0; c < chrCount; c++)
                 for (int i = 0; i < iCount; i++)
                     rtv.Add(
-                        new ChIPSeqPeak()
-                        {
-                            Left = (10 * i) + 1 + offset,
-                            Right = (10 * i) + 4 + offset,
-                            Value = 1E-6,
-                            Name = "r1" + i,
-                            HashKey = (uint)i
-                        },
+                        new Peak(
+                            left: (10 * i) + 1 + offset,
+                            right: (10 * i) + 4 + offset,
+                            value: 1E-6,
+                            name: "r1" + i,
+                            summit: 0
+                        ),
                         "chr" + c,
                         '*');
 
@@ -36,7 +35,7 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
         public void NumberOfPeaks()
         {
             // Arrange
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, CreateSample(0, 20, 1000));
             mspc.AddSample(1, CreateSample(2, 20, 2000));
 
@@ -56,7 +55,7 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
         public void HighDegreeOfParallelisim()
         {
             // Arrange
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, CreateSample(0, 20, 10000));
             mspc.AddSample(1, CreateSample(2, 20, 20000));
             mspc.DegreeOfParallelism = 20;

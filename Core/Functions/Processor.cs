@@ -3,7 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
-using Genometric.GeUtilities.IntervalParsers;
+using Genometric.GeUtilities.Intervals.Genome;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.IntervalTree;
 using Genometric.MSPC.Core.Model;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 namespace Genometric.MSPC.Core.Functions
 {
     internal class Processor<I>
-        where I : IChIPSeqPeak, new()
+        where I : IPeak
     {
         private BackgroundWorker _worker;
         private DoWorkEventArgs _workerEventArgs;
@@ -45,17 +46,20 @@ namespace Genometric.MSPC.Core.Functions
 
         private Config _config { set; get; }
 
-        private Dictionary<uint, BED<I>> _samples { set; get; }
+        private Dictionary<uint, Bed<I>> _samples { set; get; }
+
+        private IPeakConstructor<I> _peakConstructor;
 
         internal int SamplesCount { get { return _samples.Count; } }
 
-        internal Processor()
+        internal Processor(IPeakConstructor<I> peakConstructor)
         {
-            _samples = new Dictionary<uint, BED<I>>();
+            _samples = new Dictionary<uint, Bed<I>>();
+            _peakConstructor = peakConstructor;
             DegreeOfParallelism = Environment.ProcessorCount;
         }
 
-        internal void AddSample(uint id, BED<I> peaks)
+        internal void AddSample(uint id, Bed<I> peaks)
         {
             _samples.Add(id, peaks);
         }
@@ -114,8 +118,8 @@ namespace Genometric.MSPC.Core.Functions
 
         private void ProcessSamples()
         {
-            Action<uint, KeyValuePair<string, Chromosome<I, BEDStats>>> processChr =
-                delegate (uint sampleKey, KeyValuePair<string, Chromosome<I, BEDStats>> chr)
+            Action<uint, KeyValuePair<string, Chromosome<I, BedStats>>> processChr =
+                delegate (uint sampleKey, KeyValuePair<string, Chromosome<I, BedStats>> chr)
                 {
                     ProcessChr(sampleKey, chr);
                 };
@@ -130,7 +134,7 @@ namespace Genometric.MSPC.Core.Functions
                     });
         }
 
-        private void ProcessChr(uint sampleKey, KeyValuePair<string, Chromosome<I, BEDStats>> chr)
+        private void ProcessChr(uint sampleKey, KeyValuePair<string, Chromosome<I, BedStats>> chr)
         {
             Attributes attribute;
             foreach (var strand in chr.Value.Strands)
@@ -309,47 +313,54 @@ namespace Genometric.MSPC.Core.Functions
                     if (!_mergedReplicates.ContainsKey(chr.Key))
                         _mergedReplicates.Add(chr.Key, new SortedList<I, I>(new OverlappingPeaksComparer<I>()));
 
+                    int c = 0;
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
                         var peak = confirmedPeak.Source;
-                        var interval = new I
-                        {
-                            Left = peak.Left,
-                            Right = peak.Right,
-                            Name = "MSPC"
-                        };
+                        var interval = _peakConstructor.Construct(
+                            left: peak.Left,
+                            right: peak.Right,
+                            name: "MSPC_Peak",
+                            summit: (peak.Right - peak.Left) / 2,
+                            value: 0);
 
-                        I mergingPeak = new I
-                        {
-                            Left = peak.Left,
-                            Right = peak.Right,
-                            Name = "MSPC",
-                            Value =
-                            (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E)
-                        };
+                        I mergingPeak = _peakConstructor.Construct(
+                            left: peak.Left,
+                            right: peak.Right,
+                            name: "MSPC_Peak_" + (c++),
+                            summit: (peak.Right - peak.Left) / 2,
+                            value: (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E));
 
                         while (_mergedReplicates[chr.Key].TryGetValue(interval, out I mergedPeak))
                         {
                             _mergedReplicates[chr.Key].Remove(interval);
-                            interval.Left = Math.Min(interval.Left, mergedPeak.Left);
-                            interval.Right = Math.Max(interval.Right, mergedPeak.Right);
-                            mergingPeak.Left = interval.Left;
-                            mergingPeak.Right = interval.Right;
-                            mergingPeak.Value += mergedPeak.Value;
+                            interval = _peakConstructor.Construct(
+                                left: Math.Min(interval.Left, mergedPeak.Left),
+                                right: Math.Max(interval.Right, mergedPeak.Right),
+                                name: interval.Name,
+                                summit: interval.Summit,
+                                value: interval.Value);
+
+                            mergingPeak = _peakConstructor.Construct(
+                                left: interval.Left,
+                                right: interval.Right,
+                                name: mergedPeak.Name,
+                                summit: mergedPeak.Summit,
+                                value: mergingPeak.Value + mergedPeak.Value);
                         }
 
                         if (mergingPeak.Value >= Math.Abs(Config.defaultMaxLogOfPVvalue))
-                            mergingPeak.Value = Math.Abs(Config.defaultMaxLogOfPVvalue);
+                            mergingPeak = _peakConstructor.Construct(
+                                left: mergingPeak.Left,
+                                right: mergingPeak.Right,
+                                name: mergingPeak.Name,
+                                summit: mergingPeak.Summit,
+                                value: Math.Abs(Config.defaultMaxLogOfPVvalue));
 
                         _mergedReplicates[chr.Key].Add(interval, mergingPeak);
                     }
                 }
             }
-
-            int c = 0;
-            foreach (var chr in _mergedReplicates)
-                foreach (var peak in chr.Value)
-                    peak.Value.Name = "MSPC_peak_" + (c++);
         }
 
         private bool CheckCancellationPending()

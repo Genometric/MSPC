@@ -166,7 +166,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var x = GetP();
-            var y = GetP();
+            var y = GetP(right: 123456789);
 
             // Assert
             Assert.True(x != y);

@@ -147,7 +147,10 @@ namespace Genometric.MSPC.CLI.Tests
             string path = RunMSPCAndExportResults();
             var sampleFolder = Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[sampleID]); });
             var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(attribute.ToString()); });
-            var bedParser = new BedParser();
+            var bedParser = new BedParser
+            {
+                PValueFormat = PValueFormats.minus1_Log10_pValue
+            };
             var parsedSample = bedParser.Parse(file);
 
             // Assert

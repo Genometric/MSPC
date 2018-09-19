@@ -77,10 +77,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         }
 
         [Theory]
-        [InlineData(100, 10, 1)]
-        [InlineData(10, 100, -1)]
-        [InlineData(100, 100, 0)]
-        public void CompareByHashkey(uint xHashkey, uint yHashkey, int expectedResult)
+        [InlineData(100, 10, false)]
+        [InlineData(10, 100, false)]
+        [InlineData(100, 100, true)]
+        public void CompareByHashkey(uint xHashkey, uint yHashkey, bool equal)
         {
             // Arrange
             var x = GetP(hashSeed: xHashkey.ToString());
@@ -90,7 +90,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var r = x.CompareTo(y);
 
             // Assert
-            Assert.True(r == expectedResult);
+            Assert.True((r == 0) == equal);
         }
 
         [Theory]

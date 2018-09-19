@@ -80,11 +80,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [InlineData(100, 10, false)]
         [InlineData(10, 100, false)]
         [InlineData(100, 100, true)]
-        public void CompareByHashkey(uint xHashkey, uint yHashkey, bool equal)
+        public void CompareByHashkey(uint xHashSeed, uint yHashSeed, bool equal)
         {
             // Arrange
-            var x = GetP(hashSeed: xHashkey.ToString());
-            var y = GetP(hashSeed: yHashkey.ToString());
+            var x = GetP(hashSeed: xHashSeed.ToString());
+            var y = GetP(hashSeed: yHashSeed.ToString());
 
             // Act
             var r = x.CompareTo(y);

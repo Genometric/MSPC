@@ -61,17 +61,7 @@ namespace Genometric.MSPC.CLI
 
             Console.WriteLine("Analysis started ...");
             et.Restart();
-            try
-            {
-                orchestrator.Run();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(string.Format(
-                    "The following exception has occurred while processing the samples: {0}{1}",
-                    e.Message, mspcCannotContinue));
-                return;
-            }
+            orchestrator.Run();
 
             try
             {

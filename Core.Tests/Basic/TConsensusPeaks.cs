@@ -23,11 +23,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Arrange
             var mspc = new MSPC<Peak>(new PeakConstructor());
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: xLeft, right: xRight, value: 0.01, summit: 0, name: ""), "chr1", '*');
+            sA.Add(new Peak(left: xLeft, right: xRight, value: 0.01), "chr1", '*');
             mspc.AddSample(0, sA);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: yLeft, right: yRight, value: 0.01, summit: 0, name: ""), "chr1", '*');
+            sB.Add(new Peak(left: yLeft, right: yRight, value: 0.01), "chr1", '*');
             mspc.AddSample(1, sB);
 
             // Act

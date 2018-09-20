@@ -25,10 +25,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         private ReadOnlyDictionary<uint, Result<Peak>> RunMSPCAndReturnResult(Config config)
         {
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 1E-5, summit: 15, name: "Peak"), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 1E-5), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 12, right: 18, value: 1E-5, summit: 15, name: "Peak"), _chr, _strand);
+            sB.Add(new Peak(left: 12, right: 18, value: 1E-5), _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);

@@ -19,10 +19,10 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         private ReadOnlyDictionary<uint, Result<Peak>> GenerateAndProcessStringentPeaks()
         {
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 1e-9, summit: 0, name: ""), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 1e-9), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 1e-12, summit: 0, name: ""), _chr, _strand);
+            sB.Add(new Peak(left: 5, right: 12, value: 1e-12), _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -72,10 +72,10 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 1e-9, summit: 0, name: ""), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 1e-9), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 50, right: 60, value: 1e-12, summit: 0, name: ""), _chr, _strand);
+            sB.Add(new Peak(left: 50, right: 60, value: 1e-12), _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -96,11 +96,11 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         {
             // Arrange
             var sA = new Bed<Peak>();
-            var sAP = new Peak(left: 10, right: 20, value: 1e-9, summit: 0, name: "");
+            var sAP = new Peak(left: 10, right: 20, value: 1e-9);
             sA.Add(sAP, _chr, _strand);
 
             var sB = new Bed<Peak>();
-            var sBP = new Peak(left: 50, right: 60, value: 1e-12, summit: 0, name: "");
+            var sBP = new Peak(left: 50, right: 60, value: 1e-12);
             sB.Add(sBP, _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());

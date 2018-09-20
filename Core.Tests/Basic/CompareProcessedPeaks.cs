@@ -14,7 +14,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
     {
         private ProcessedPeak<Peak> GetP(int left = 1000, int right = 10000, double value = 100)
         {
-            return new ProcessedPeak<Peak>(new Peak(left, right, value, 0, ""), 10, new List<SupportingPeak<Peak>>());
+            return new ProcessedPeak<Peak>(new Peak(left, right, value), 10, new List<SupportingPeak<Peak>>());
         }
 
         [Fact]

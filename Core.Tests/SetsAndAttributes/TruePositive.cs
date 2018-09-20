@@ -19,10 +19,10 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         private ReadOnlyDictionary<uint, Result<Peak>> GenerateAndProcessBackgroundPeaks()
         {
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 1e-6, summit: 15, name: "Peak"), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 1e-6), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 1e-8, summit: 10, name: "Peak"), _chr, _strand);
+            sB.Add(new Peak(left: 5, right: 12, value: 1e-8), _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -48,16 +48,16 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         public void AssignTruePositive()
         {
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 1e-6, summit: 15, name: "r11"), _chr, _strand);
-            sA.Add(new Peak(left: 100, right: 200, value: 1e-8, summit: 150, name: "r12"), _chr, _strand);
-            sA.Add(new Peak(left: 1000, right: 2000, value: 1e-10, summit: 1500, name: "r13"), _chr, _strand);
-            sA.Add(new Peak(left: 10000, right: 20000, value: 1e-12, summit: 15000, name: "r14"), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 1e-6), _chr, _strand);
+            sA.Add(new Peak(left: 100, right: 200, value: 1e-8), _chr, _strand);
+            sA.Add(new Peak(left: 1000, right: 2000, value: 1e-10), _chr, _strand);
+            sA.Add(new Peak(left: 10000, right: 20000, value: 1e-12), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 1e-7, summit: 10, name: "r21"), _chr, _strand);
-            sB.Add(new Peak(left: 50, right: 120, value: 1e-9, summit: 100, name: "r22"), _chr, _strand);
-            sB.Add(new Peak(left: 500, right: 1200, value: 1e-11, summit: 1000, name: "r23"), _chr, _strand);
-            sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13, summit: 10000, name: "r24"), _chr, _strand);
+            sB.Add(new Peak(left: 5, right: 12, value: 1e-7), _chr, _strand);
+            sB.Add(new Peak(left: 50, right: 120, value: 1e-9), _chr, _strand);
+            sB.Add(new Peak(left: 500, right: 1200, value: 1e-11), _chr, _strand);
+            sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13), _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -77,17 +77,17 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         public void AssertCorrectPeakIsTaggedAsFalsePositive()
         {
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 1e-6, summit: 15, name: "r11"), _chr, _strand);
-            sA.Add(new Peak(left: 100, right: 200, value: 1e-8, summit: 150, name: "r12"), _chr, _strand);
-            var r13 = new Peak(left: 1000, right: 2000, value: 1e-10, summit: 15, name: "r13");
+            sA.Add(new Peak(left: 10, right: 20, value: 1e-6), _chr, _strand);
+            sA.Add(new Peak(left: 100, right: 200, value: 1e-8), _chr, _strand);
+            var r13 = new Peak(left: 1000, right: 2000, value: 1e-10);
             sA.Add(r13, _chr, _strand);
-            sA.Add(new Peak(left: 10000, right: 20000, value: 1e-12, summit: 15, name: "r14"), _chr, _strand);
+            sA.Add(new Peak(left: 10000, right: 20000, value: 1e-12), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 1e-7, summit: 10, name: "r21"), _chr, _strand);
-            sB.Add(new Peak(left: 50, right: 120, value: 1e-9, summit: 80, name: "r22"), _chr, _strand);
-            sB.Add(new Peak(left: 500, right: 1200, value: 1e-11, summit: 600, name: "r23"), _chr, _strand);
-            sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13, summit: 9000, name: "r24"), _chr, _strand);
+            sB.Add(new Peak(left: 5, right: 12, value: 1e-7), _chr, _strand);
+            sB.Add(new Peak(left: 50, right: 120, value: 1e-9), _chr, _strand);
+            sB.Add(new Peak(left: 500, right: 1200, value: 1e-11), _chr, _strand);
+            sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13), _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -106,16 +106,16 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         public void CorrectlyIdentifyAllPeaksAsTruePositive()
         {
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 1e-6, summit: 15, name: "r11"), _chr, _strand);
-            sA.Add(new Peak(left: 100, right: 200, value: 1e-8, summit: 150, name: "r12"), _chr, _strand);
-            sA.Add(new Peak(left: 1000, right: 2000, value: 1e-10, summit: 1500, name: "r13"), _chr, _strand);
-            sA.Add(new Peak(left: 10000, right: 20000, value: 1e-12, summit: 15000, name: "r14"), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 1e-6), _chr, _strand);
+            sA.Add(new Peak(left: 100, right: 200, value: 1e-8), _chr, _strand);
+            sA.Add(new Peak(left: 1000, right: 2000, value: 1e-10), _chr, _strand);
+            sA.Add(new Peak(left: 10000, right: 20000, value: 1e-12), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 1e-7, summit: 10, name: "r21"), _chr, _strand);
-            sB.Add(new Peak(left: 50, right: 120, value: 1e-9, summit: 100, name: "r22"), _chr, _strand);
-            sB.Add(new Peak(left: 500, right: 1200, value: 1e-11, summit: 1000, name: "r23"), _chr, _strand);
-            sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13, summit: 10000, name: "r24"), _chr, _strand);
+            sB.Add(new Peak(left: 5, right: 12, value: 1e-7), _chr, _strand);
+            sB.Add(new Peak(left: 50, right: 120, value: 1e-9), _chr, _strand);
+            sB.Add(new Peak(left: 500, right: 1200, value: 1e-11), _chr, _strand);
+            sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13), _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);

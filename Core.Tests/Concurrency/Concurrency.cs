@@ -22,8 +22,7 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
                             left: (10 * i) + 1 + offset,
                             right: (10 * i) + 4 + offset,
                             value: 1E-6,
-                            name: "r1" + i,
-                            summit: 0
+                            name: "r1" + i
                         ),
                         "chr" + c,
                         '*');

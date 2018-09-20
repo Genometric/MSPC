@@ -22,10 +22,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         //                  r21      r22        r23
         // Sample 2: ----████████---█████-----███████----
         //
-        private readonly static Peak r11 = new Peak(left: 10, right: 30, name: "r11", value: 1e-8, summit: 0);
-        private readonly static Peak r21 = new Peak(left: 05, right: 12, name: "r21", value: 1e-5, summit: 0);
-        private readonly static Peak r22 = new Peak(left: 16, right: 20, name: "r22", value: 1e-6, summit: 0);
-        private readonly static Peak r23 = new Peak(left: 26, right: 32, name: "r23", value: 1e-9, summit: 0);
+        private readonly static Peak r11 = new Peak(left: 10, right: 30, name: "r11", value: 1e-8);
+        private readonly static Peak r21 = new Peak(left: 05, right: 12, name: "r21", value: 1e-5);
+        private readonly static Peak r22 = new Peak(left: 16, right: 20, name: "r22", value: 1e-6);
+        private readonly static Peak r23 = new Peak(left: 26, right: 32, name: "r23", value: 1e-9);
 
         private ReadOnlyDictionary<uint, Result<Peak>> InitializeAndRun(MultipleIntersections miChoice)
         {

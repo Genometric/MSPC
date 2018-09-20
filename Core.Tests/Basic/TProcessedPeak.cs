@@ -13,7 +13,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
     {
         private ProcessedPeak<Peak> GetP(int left = 1000, int right = 10000, double value = 100, string name = "", int summit = 0)
         {
-            return new ProcessedPeak<Peak>(new Peak(left, right, value, summit, name), 10, new List<SupportingPeak<Peak>>());
+            return new ProcessedPeak<Peak>(new Peak(left, right, value, name, summit), 10, new List<SupportingPeak<Peak>>());
         }
 
         [Fact]

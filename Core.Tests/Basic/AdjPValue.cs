@@ -19,12 +19,12 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void ComputeAdjustedPValue()
         {
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, summit: 15, name: "r11"), _chr, _strand);
-            sA.Add(new Peak(left: 100, right: 200, value: 0.001, summit: 150, name: "r12"), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
+            sA.Add(new Peak(left: 100, right: 200, value: 0.001), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 0.01, summit: 8, name: "21"), _chr, _strand);
-            sB.Add(new Peak(left: 50, right: 120, value: 0.001, summit: 90, name: "22"), _chr, _strand);
+            sB.Add(new Peak(left: 5, right: 12, value: 0.01), _chr, _strand);
+            sB.Add(new Peak(left: 50, right: 120, value: 0.001), _chr, _strand);
             
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);

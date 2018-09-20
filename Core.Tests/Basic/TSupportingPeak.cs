@@ -14,7 +14,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void CompareWithANullObject()
         {
             // Arrange
-            var sp = new SupportingPeak<Peak>(new Peak(1, 10, 100, 5, ""), 1);
+            var sp = new SupportingPeak<Peak>(new Peak(1, 10, 100), 1);
 
             // Act & Assert
             Assert.True(sp.CompareTo(null) == 1);

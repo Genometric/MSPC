@@ -32,12 +32,12 @@ namespace Genometric.MSPC.Core.Tests.Replicates
         {
             // Arrange
             var sA = new Bed<Peak>();
-            var r11 = new Peak(left: 10, right: 20, value: 1e-4, summit: 15, name: "r11");
+            var r11 = new Peak(left: 10, right: 20, value: 1e-4, name: "r11");
             sA.Add(r11, _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 1e-4, name: "r21", summit: 10), _chr, _strand);
-            sB.Add(new Peak(left: 18, right: 25, value: 1e-4, name: "r22", summit: 20), _chr, _strand);
+            sB.Add(new Peak(left: 5, right: 12, value: 1e-4, name: "r21"), _chr, _strand);
+            sB.Add(new Peak(left: 18, right: 25, value: 1e-4, name: "r22"), _chr, _strand);
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -71,13 +71,13 @@ namespace Genometric.MSPC.Core.Tests.Replicates
         {
             // Arrange
             var sA = new Bed<Peak>();
-            var r11 = new Peak(left: 10, right: 26, value: 1e-4, name: "r11", summit: 15);
+            var r11 = new Peak(left: 10, right: 26, value: 1e-4, name: "r11");
             sA.Add(r11, _chr, _strand);
 
             var sB = new Bed<Peak>();
-            var r21 = new Peak(left: 5, right: 12, value: 1e-4, name: "r21", summit: 10);
-            var r22 = new Peak(left: 16, right: 18, value: 1e-7, name: "r22", summit: 17);
-            var r23 = new Peak(left: 22, right: 28, value: 1e-4, name: "r23", summit: 24);
+            var r21 = new Peak(left: 5, right: 12, value: 1e-4, name: "r21");
+            var r22 = new Peak(left: 16, right: 18, value: 1e-7, name: "r22");
+            var r23 = new Peak(left: 22, right: 28, value: 1e-4, name: "r23");
             sB.Add(r21, _chr, _strand);
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);

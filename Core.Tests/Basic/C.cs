@@ -29,11 +29,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         private static IEnumerable<Peak> GetPeaks(int count)
         {
             var peaks = new List<Peak>() {
-                new Peak(left : 10, right : 20, name : "r11", value : 1e-18, summit: 15),
-                new Peak(left : 05, right : 12, name : "r21", value : 1e-22, summit: 10),
-                new Peak(left : 08, right : 22, name : "r31", value : 1e-47, summit: 15 ),
-                new Peak(left : 18, right : 26, name : "r41", value : 1e-55, summit: 22),
-                new Peak(left : 14, right : 16, name : "r51", value : 1e-61, summit: 15 )};
+                new Peak(left: 10, right: 20, name: "r11", value: 1e-18),
+                new Peak(left: 05, right: 12, name: "r21", value: 1e-22),
+                new Peak(left: 08, right: 22, name: "r31", value: 1e-47),
+                new Peak(left: 18, right: 26, name: "r41", value: 1e-55),
+                new Peak(left: 14, right: 16, name: "r51", value: 1e-61)};
             return peaks.Take(count);
         }
 

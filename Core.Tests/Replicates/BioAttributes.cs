@@ -19,11 +19,11 @@ namespace Genometric.MSPC.Core.Tests.Replicates
             var sets = new Sets<Peak>(2, ReplicateType.Biological);
 
             var confirmedPeak = new ProcessedPeak<Peak>(
-                new Peak(1, 10, 100, 5, ""), 10, new List<SupportingPeak<Peak>>());
+                new Peak(1, 10, 100), 10, new List<SupportingPeak<Peak>>());
             confirmedPeak.Classification.Add(Attributes.Confirmed);
 
             var discardedPeak = new ProcessedPeak<Peak>(
-                new Peak(1, 10, 100, 5, ""), 10, new List<SupportingPeak<Peak>>());
+                new Peak(1, 10, 100), 10, new List<SupportingPeak<Peak>>());
             discardedPeak.Classification.Add(Attributes.Discarded);
 
             // Act

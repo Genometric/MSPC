@@ -19,10 +19,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 30, right: 40, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sB.Add(new Peak(left: 30, right: 40, value: 0.01), "chr1", '*');
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -48,10 +48,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 40, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 40, value: 0.01), "chr1", '*');
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -78,13 +78,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 12, value: 0.01), "chr1", '*');
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 18, right: 25, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sC.Add(new Peak(left: 18, right: 25, value: 0.01), "chr1", '*');
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -113,13 +113,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 18, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 18, value: 0.01), "chr1", '*');
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 14, right: 25, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sC.Add(new Peak(left: 14, right: 25, value: 0.01), "chr1", '*');
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -148,13 +148,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 8, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 8, value: 0.01), "chr1", '*');
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 24, right: 25, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sC.Add(new Peak(left: 24, right: 25, value: 0.01), "chr1", '*');
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
@@ -180,14 +180,14 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
-            sB.Add(new Peak(left: 14, right: 22, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 12, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 14, right: 22, value: 0.01), "chr1", '*');
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 24, right: 25, value: 0.01, summit: 0, name: "Peak"), "chr1", '*');
+            sC.Add(new Peak(left: 24, right: 25, value: 0.01), "chr1", '*');
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);

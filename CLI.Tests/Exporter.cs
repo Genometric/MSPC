@@ -2,8 +2,9 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Exporter;
 using Genometric.MSPC.Core;
 using Genometric.MSPC.Core.Model;
@@ -38,7 +39,7 @@ namespace Genometric.MSPC.CLI.Tests
             };
         }
 
-        private MSPC<ChIPSeqPeak> InitializeMSPC()
+        private MSPC<Peak> InitializeMSPC()
         {
             ///                 r11                r12
             /// Sample 1: --░░░░░░░░░░░-------████████████----------------------------
@@ -49,30 +50,30 @@ namespace Genometric.MSPC.CLI.Tests
             ///
             /// Legend: [░░ Background peak], [▒▒ Weak peak], [██ Stringent peak]
 
-            var r11 = new ChIPSeqPeak() { Left = 3, Right = 13, Name = "r11", Value = 1e-2, HashKey = 1 };
-            var r12 = new ChIPSeqPeak() { Left = 21, Right = 32, Name = "r12", Value = 1e-12, HashKey = 2 };
-            var r21 = new ChIPSeqPeak() { Left = 10, Right = 25, Name = "r21", Value = 1e-8, HashKey = 3 };
-            var r22 = new ChIPSeqPeak() { Left = 30, Right = 37, Name = "r22", Value = 1e-5, HashKey = 4 };
-            var r23 = new ChIPSeqPeak() { Left = 41, Right = 48, Name = "r23", Value = 1e-6, HashKey = 5 };
-            var r31 = new ChIPSeqPeak() { Left = 0, Right = 4, Name = "r31", Value = 1e-6, HashKey = 6 };
-            var r32 = new ChIPSeqPeak() { Left = 8, Right = 17, Name = "r32", Value = 1e-12, HashKey = 7 };
-            var r33 = new ChIPSeqPeak() { Left = 51, Right = 58, Name = "r33", Value = 1e-18, HashKey = 8 };
+            var r11 = new Peak(left: 3, right: 13, value: 1e-2, summit: 10, name: "r11");
+            var r12 = new Peak(left: 21, right: 32, value: 1e-12, summit: 25, name: "r12");
+            var r21 = new Peak(left: 10, right: 25, value: 1e-8, summit: 20, name: "r21");
+            var r22 = new Peak(left: 30, right: 37, value: 1e-5, summit: 35, name: "r22");
+            var r23 = new Peak(left: 41, right: 48, value: 1e-6, summit: 45, name: "r23");
+            var r31 = new Peak(left: 0, right: 4, value: 1e-6, summit: 2, name: "r31");
+            var r32 = new Peak(left: 8, right: 17, value: 1e-12, summit: 12, name: "r32");
+            var r33 = new Peak(left: 51, right: 58, value: 1e-18, summit: 55, name: "r33");
 
-            var sA = new BED<ChIPSeqPeak>();
+            var sA = new Bed<Peak>();
             sA.Add(r11, _chr, _strand);
             sA.Add(r12, _chr, _strand);
 
-            var sB = new BED<ChIPSeqPeak>();
+            var sB = new Bed<Peak>();
             sB.Add(r21, _chr, _strand);
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);
 
-            var sC = new BED<ChIPSeqPeak>();
+            var sC = new Bed<Peak>();
             sC.Add(r31, _chr, _strand);
             sC.Add(r32, _chr, _strand);
             sC.Add(r33, _chr, _strand);
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);
@@ -87,7 +88,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
 
-            var exporter = new Exporter<ChIPSeqPeak>();
+            var exporter = new Exporter<Peak>();
             var options = new Options(path, includeHeader, _attributes);
 
             exporter.Export(_sidfm, mspc.GetResults(), mspc.GetMergedReplicates(), options);
@@ -146,7 +147,10 @@ namespace Genometric.MSPC.CLI.Tests
             string path = RunMSPCAndExportResults();
             var sampleFolder = Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[sampleID]); });
             var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(attribute.ToString()); });
-            var bedParser = new BEDParser();
+            var bedParser = new BedParser
+            {
+                PValueFormat = PValueFormats.minus1_Log10_pValue
+            };
             var parsedSample = bedParser.Parse(file);
 
             // Assert

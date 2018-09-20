@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Genometric.MSPC.Core.Comparers
 {
     public class OverlappingPeaksComparer<I> : IComparer<I>
-        where I : IChIPSeqPeak, new()
+        where I : IPeak
     {
         public int Compare(I x, I y)
         {

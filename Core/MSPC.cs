@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
-using Genometric.GeUtilities.IntervalParsers;
 using Genometric.MSPC.Core.Model;
 using Genometric.MSPC.Core.Functions;
 using System;
@@ -11,11 +10,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 
 namespace Genometric.MSPC.Core
 {
     public class MSPC<I>
-        where I : IChIPSeqPeak, new()
+        where I : IPeak
     {
         public event EventHandler<ValueEventArgs> StatusChanged;
         private void OnStatusValueChaned(ProgressReport value)
@@ -37,9 +37,9 @@ namespace Genometric.MSPC.Core
             get { return _processor.DegreeOfParallelism; }
         }
 
-        public MSPC()
+        public MSPC(IPeakConstructor<I> peakConstructor)
         {
-            _processor = new Processor<I>();
+            _processor = new Processor<I>(peakConstructor);
             _processor.OnProgressUpdate += _processorOnProgressUpdate;
             _backgroundProcessor = new BackgroundWorker();
             _backgroundProcessor.DoWork += _doWork;
@@ -49,7 +49,7 @@ namespace Genometric.MSPC.Core
             Canceled = new AutoResetEvent(false);
         }
 
-        public void AddSample(uint id, BED<I> sample)
+        public void AddSample(uint id, Bed<I> sample)
         {
             _processor.AddSample(id, sample);
         }

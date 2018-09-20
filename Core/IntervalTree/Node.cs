@@ -9,7 +9,7 @@ using System.Linq;
 namespace Genometric.MSPC.Core.IntervalTree
 {
     internal class Node<I>
-        where I : IChIPSeqPeak, new()
+        where I : IPeak
     {
         private readonly SortedDictionary<I, List<I>> _intervals;
         private readonly int _center;

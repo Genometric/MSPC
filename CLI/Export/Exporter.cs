@@ -14,7 +14,7 @@ using System.Linq;
 namespace Genometric.MSPC.CLI.Exporter
 {
     public class Exporter<P>
-        where P : IChIPSeqPeak, new()
+        where P : IPeak
     {
         private readonly string _header = 
             "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";

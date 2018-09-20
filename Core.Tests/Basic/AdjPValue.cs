@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
 using Xunit;
@@ -18,15 +18,15 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [Fact]
         public void ComputeAdjustedPValue()
         {
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 0.01, Name = "r11", HashKey = 1 }, _chr, _strand);
-            sA.Add(new ChIPSeqPeak() { Left = 100, Right = 200, Value = 0.001, Name = "r12", HashKey = 2 }, _chr, _strand);
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
+            sA.Add(new Peak(left: 100, right: 200, value: 0.001), _chr, _strand);
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 0.01, Name = "21", HashKey = 5 }, _chr, _strand);
-            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 120, Value = 0.001, Name = "22", HashKey = 6 }, _chr, _strand);
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 12, value: 0.01), _chr, _strand);
+            sB.Add(new Peak(left: 50, right: 120, value: 0.001), _chr, _strand);
             
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 

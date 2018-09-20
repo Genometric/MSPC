@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace Genometric.MSPC.Core.Comparers
 {
     public class CompareProcessedPeaksByValue<I> : IComparer<ProcessedPeak<I>>
-        where I : IChIPSeqPeak, new()
+        where I : IPeak
     {
         public int Compare(ProcessedPeak<I> x, ProcessedPeak<I> y)
         {

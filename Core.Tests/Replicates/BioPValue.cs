@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System.Linq;
 using Xunit;
@@ -31,15 +31,15 @@ namespace Genometric.MSPC.Core.Tests.Replicates
         public void T1()
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            var r11 = new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-4, Name = "r11", HashKey = 0 };
+            var sA = new Bed<Peak>();
+            var r11 = new Peak(left: 10, right: 20, value: 1e-4, name: "r11");
             sA.Add(r11, _chr, _strand);
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21", HashKey = 1 }, _chr, _strand);
-            sB.Add(new ChIPSeqPeak() { Left = 18, Right = 25, Value = 1e-4, Name = "r22", HashKey = 2 }, _chr, _strand);
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 12, value: 1e-4, name: "r21"), _chr, _strand);
+            sB.Add(new Peak(left: 18, right: 25, value: 1e-4, name: "r22"), _chr, _strand);
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -70,19 +70,19 @@ namespace Genometric.MSPC.Core.Tests.Replicates
         public void T2()
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            var r11 = new ChIPSeqPeak() { Left = 10, Right = 26, Value = 1e-4, Name = "r11", HashKey = 0 };
+            var sA = new Bed<Peak>();
+            var r11 = new Peak(left: 10, right: 26, value: 1e-4, name: "r11");
             sA.Add(r11, _chr, _strand);
 
-            var sB = new BED<ChIPSeqPeak>();
-            var r21 = new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-4, Name = "r21", HashKey = 1 };
-            var r22 = new ChIPSeqPeak() { Left = 16, Right = 18, Value = 1e-7, Name = "r22", HashKey = 2 };
-            var r23 = new ChIPSeqPeak() { Left = 22, Right = 28, Value = 1e-4, Name = "r23", HashKey = 3 };
+            var sB = new Bed<Peak>();
+            var r21 = new Peak(left: 5, right: 12, value: 1e-4, name: "r21");
+            var r22 = new Peak(left: 16, right: 18, value: 1e-7, name: "r22");
+            var r23 = new Peak(left: 22, right: 28, value: 1e-4, name: "r23");
             sB.Add(r21, _chr, _strand);
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 

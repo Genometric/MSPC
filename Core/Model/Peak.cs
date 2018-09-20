@@ -13,7 +13,7 @@ namespace Genometric.MSPC.Core.Model
     /// </summary>
     /// <typeparam name="I"></typeparam>
     public class Peak<I> : IComparable<Peak<I>>
-            where I : IChIPSeqPeak, new()
+            where I : IPeak
     {
         public Peak(I source)
         {
@@ -32,7 +32,7 @@ namespace Genometric.MSPC.Core.Model
             if (c != 0) return c;
             c = Source.Value.CompareTo(other.Source.Value);
             if (c != 0) return c;
-            return Source.HashKey.CompareTo(other.Source.HashKey);
+            return Source.GetHashCode().CompareTo(other.Source.GetHashCode());
         }
 
         public static bool operator >(Peak<I> operand1, Peak<I> operand2)

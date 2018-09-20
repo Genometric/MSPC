@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 namespace Genometric.MSPC.Core.Model
 {
     public class Result<I>
-        where I : IChIPSeqPeak, new()
+        where I : IPeak
     {
         private readonly ReplicateType _replicateType;
         public ConcurrentDictionary<string, Sets<I>> Chromosomes { set; get; }

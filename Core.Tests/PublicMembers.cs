@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.ObjectModel;
@@ -21,35 +21,31 @@ namespace Genometric.MSPC.Core.Tests
         private string status;
         private AutoResetEvent _continue;
 
-        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> RunThenCancelMSPC(int iCount)
+        private ReadOnlyDictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount)
         {
             _continue = new AutoResetEvent(false);
-            var sA = new BED<ChIPSeqPeak>();
-            var sB = new BED<ChIPSeqPeak>();
+            var sA = new Bed<Peak>();
+            var sB = new Bed<Peak>();
             for (int i = 0; i < iCount; i++)
             {
-                sA.Add(new ChIPSeqPeak()
-                {
-                    Left = (10 * i) + 1,
-                    Right = (10 * i) + 4,
-                    Value = 1E-4,
-                    Name = "r1" + i,
-                    HashKey = (uint)i
-                },
+                sA.Add(new Peak(
+                    left: (10 * i) + 1,
+                    right: (10 * i) + 4,
+                    value: 1E-4,
+                    summit: 0,
+                    name: "r1" + i),
                     _chr, _strand);
 
-                sB.Add(new ChIPSeqPeak()
-                {
-                    Left = (10 * i) + 6,
-                    Right = (10 * i) + 9,
-                    Value = 1E-5,
-                    Name = "r1" + i,
-                    HashKey = (uint)i * 10000
-                },
+                sB.Add(new Peak(
+                    left: (10 * i) + 6,
+                    right: (10 * i) + 9,
+                    value: 1E-5,
+                    summit: 0,
+                    name: "r1" + i),
                 _chr, _strand);
             }
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             mspc.StatusChanged += Mspc_StatusChanged;
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
@@ -113,9 +109,9 @@ namespace Genometric.MSPC.Core.Tests
         public void RunIfAtLeastTwoInputIsGiven(int inputCount)
         {
             // Arrange
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             if (inputCount == 1)
-                mspc.AddSample(0, new BED<ChIPSeqPeak>());
+                mspc.AddSample(0, new Bed<Peak>());
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
 
             // Act & Assert
@@ -129,9 +125,9 @@ namespace Genometric.MSPC.Core.Tests
         public void RunAsyncIfAtLeastTwoInputIsGiven(int inputCount)
         {
             // Arrange
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new MSPC<Peak>(new PeakConstructor());
             if (inputCount == 1)
-                mspc.AddSample(0, new BED<ChIPSeqPeak>());
+                mspc.AddSample(0, new Bed<Peak>());
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
 
             // Act & Assert

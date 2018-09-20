@@ -63,18 +63,8 @@ namespace Genometric.MSPC.CLI
             et.Restart();
             orchestrator.Run();
 
-            try
-            {
-                Console.WriteLine("\n\rSaving results ...");
-                orchestrator.Export();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(string.Format(
-                    "The following exception has occurred while saving analysis results: {0}{1}",
-                    e.Message, mspcCannotContinue));
-                return;
-            }
+            Console.WriteLine("\n\rSaving results ...");
+            orchestrator.Export();
 
             et.Stop();
             Console.WriteLine(" ");

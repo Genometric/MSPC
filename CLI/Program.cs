@@ -42,7 +42,7 @@ namespace Genometric.MSPC.CLI
                     return;
                 }
 
-            var orchestrator = new Orchestrator(cliOptions.Options, cliOptions.Input);
+            var orchestrator = new Orchestrator(cliOptions.Options);
 
             var et = new Stopwatch();
             foreach (var file in cliOptions.Input)

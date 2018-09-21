@@ -4,60 +4,84 @@
 
 namespace Genometric.MSPC.Core.Model
 {
+    /// <summary>
+    /// The configuration of MSPC process.
+    /// </summary>
     public class Config
     {
+        /// <summary>
+        /// The configuration of MSPC process.
+        /// </summary>
+        /// <param name="replicateType">Sets the replicate type of the input samples.</param>
+        /// <param name="tauW">Sets weak p-value threshold.</param>
+        /// <param name="tauS">Sets stringent p-value threshold.</param>
+        /// <param name="gamma">Sets combined stringency threshold.</param>
+        /// <param name="C">Sets the minimum number of samples having overlapping peaks with a given peak.</param>
+        /// <param name="alpha">Sets Benjamini-Hochberg multiple testing correction threshold.</param>
+        /// <param name="multipleIntersections">Sets if the peak with lowest or highest p-value 
+        /// should be used when multiple peaks from a sample overlap with a given peak.</param>
         public Config(ReplicateType replicateType, double tauW, double tauS, double gamma, byte C, float alpha, MultipleIntersections multipleIntersections)
         {
-            this.ReplicateType = replicateType;
-            this.TauW = tauW;
-            this.TauS = tauS;
-            this.Gamma = gamma;
+            ReplicateType = replicateType;
+            TauW = tauW;
+            TauS = tauS;
+            Gamma = gamma;
             this.C = C;
-            this.Alpha = alpha;
-            this.MultipleIntersections = multipleIntersections;
+            Alpha = alpha;
+            MultipleIntersections = multipleIntersections;
         }
         /// <summary>
-        /// Represents the replicate type of the input samples.
+        /// Gets the replicate type of the input samples.
         /// </summary>
-        public ReplicateType ReplicateType { private set; get; }
+        public ReplicateType ReplicateType { get; }
 
         /// <summary>
-        /// Only one peak out of multiple peaks of a sample intersecting
-        /// with a peak on another sample will be chosen, if the value of
-        /// this parameter is TRUE, the peak with lowest p-value will be 
-        /// used; otherwise the peak with highest p-value will be used.
+        /// Gets if the peak with lowest or highest p-value 
+        /// should be used when multiple peaks from a sample 
+        /// overlap with a given peak.
         /// </summary>
-        public MultipleIntersections MultipleIntersections { private set; get; }
+        public MultipleIntersections MultipleIntersections { get; }
 
         /// <summary>
-        /// Represents the default value to be replace by p-value = 0
-        /// of a peak when combining p-values.
+        /// Gets the value to replace zero p-values.
         /// </summary>
         public const double default0PValue = double.Epsilon;
 
         /// <summary>
-        /// Represents the Stringent p-value threshold.
+        /// Gets stringent p-value threshold.
         /// </summary>
         public double TauS { private set; get; }
 
         /// <summary>
-        /// Represents the weak p-value threshold.
+        /// Gets weak p-value threshold.
         /// </summary>
-        public double TauW { private set; get; }
+        public double TauW { get; }
 
         /// <summary>
-        /// 
+        /// Gets combined stringency threshold. Peaks with 
+        /// combined p-value below this threshold are confirmed.
         /// </summary>
-        public double Gamma { private set; get; }
+        public double Gamma { get; }
 
         /// <summary>
-        /// 
+        /// Gets the minimum number of samples having overlapping 
+        /// peaks with a given peak.
         /// </summary>
-        public byte C { private set; get; }
+        /// <remarks>
+        /// For example, given three replicates (rep1, rep2 and rep3),
+        /// if C = 3, a peak on rep1 must overlap with at least 
+        /// one peak from both rep2 and rep3 to combine their 
+        /// p-values, otherwise the peak is discarded; 
+        /// if C = 2, a peak on rep1 must overlap with at least 
+        /// one peak from either rep2 or rep3 to combine their 
+        /// p-values, otherwise the peak is discarded.
+        /// </remarks>
+        public byte C { get; }
 
         /// <summary>
-        /// 
+        /// Gets Benjamini-Hochberg multiple 
+        /// testing correction threshold
         /// </summary>
-        public float Alpha { private set; get; }
+        public float Alpha { get; }
     }
 }

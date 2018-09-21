@@ -48,7 +48,7 @@ namespace Genometric.MSPC.Core.Functions
 
         private Dictionary<uint, Bed<I>> _samples { set; get; }
 
-        private IPeakConstructor<I> _peakConstructor;
+        private readonly IPeakConstructor<I> _peakConstructor;
 
         internal int SamplesCount { get { return _samples.Count; } }
 
@@ -118,11 +118,10 @@ namespace Genometric.MSPC.Core.Functions
 
         private void ProcessSamples()
         {
-            Action<uint, KeyValuePair<string, Chromosome<I, BedStats>>> processChr =
-                delegate (uint sampleKey, KeyValuePair<string, Chromosome<I, BedStats>> chr)
-                {
-                    ProcessChr(sampleKey, chr);
-                };
+            void processChr(uint sampleKey, KeyValuePair<string, Chromosome<I, BedStats>> chr)
+            {
+                ProcessChr(sampleKey, chr);
+            }
 
             foreach (var sample in _samples)
                 Parallel.ForEach(
@@ -233,8 +232,10 @@ namespace Genometric.MSPC.Core.Functions
         {
             foreach (var supPeak in supportingPeaks)
             {
-                var tSupPeak = new List<SupportingPeak<I>>();
-                tSupPeak.Add(new SupportingPeak<I>(p, id));
+                var tSupPeak = new List<SupportingPeak<I>>
+                {
+                    new SupportingPeak<I>(p, id)
+                };
                 foreach (var sP in supportingPeaks)
                     if (supPeak.CompareTo(sP) != 0)
                         tSupPeak.Add(sP);

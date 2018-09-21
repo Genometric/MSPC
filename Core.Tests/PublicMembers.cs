@@ -18,7 +18,7 @@ namespace Genometric.MSPC.Core.Tests
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
         private string _cancelOnMessage;
-        private string status;
+        private string _status;
         private AutoResetEvent _continue;
 
         private ReadOnlyDictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount)
@@ -72,7 +72,7 @@ namespace Genometric.MSPC.Core.Tests
                 _cancelOnMessage = "";
                 _continue.Set();
             }
-            status += e.Value.Message;
+            _status += e.Value.Message;
         }
 
         [Theory]
@@ -100,7 +100,7 @@ namespace Genometric.MSPC.Core.Tests
             RunThenCancelMSPC(10000);
 
             // Assert
-            Assert.Contains("Canceled current task.", status);
+            Assert.Contains("Canceled current task.", _status);
         }
 
         [Theory]

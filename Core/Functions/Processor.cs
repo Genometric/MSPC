@@ -233,8 +233,10 @@ namespace Genometric.MSPC.Core.Functions
         {
             foreach (var supPeak in supportingPeaks)
             {
-                var tSupPeak = new List<SupportingPeak<I>>();
-                tSupPeak.Add(new SupportingPeak<I>(p, id));
+                var tSupPeak = new List<SupportingPeak<I>>
+                {
+                    new SupportingPeak<I>(p, id)
+                };
                 foreach (var sP in supportingPeaks)
                     if (supPeak.CompareTo(sP) != 0)
                         tSupPeak.Add(sP);

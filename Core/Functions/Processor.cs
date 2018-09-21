@@ -48,7 +48,7 @@ namespace Genometric.MSPC.Core.Functions
 
         private Dictionary<uint, Bed<I>> _samples { set; get; }
 
-        private IPeakConstructor<I> _peakConstructor;
+        private readonly IPeakConstructor<I> _peakConstructor;
 
         internal int SamplesCount { get { return _samples.Count; } }
 

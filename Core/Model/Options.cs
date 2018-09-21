@@ -8,13 +8,13 @@ namespace Genometric.MSPC.Core.Model
     {
         public Config(ReplicateType replicateType, double tauW, double tauS, double gamma, byte C, float alpha, MultipleIntersections multipleIntersections)
         {
-            this.ReplicateType = replicateType;
-            this.TauW = tauW;
-            this.TauS = tauS;
-            this.Gamma = gamma;
+            ReplicateType = replicateType;
+            TauW = tauW;
+            TauS = tauS;
+            Gamma = gamma;
             this.C = C;
-            this.Alpha = alpha;
-            this.MultipleIntersections = multipleIntersections;
+            Alpha = alpha;
+            MultipleIntersections = multipleIntersections;
         }
         /// <summary>
         /// Represents the replicate type of the input samples.

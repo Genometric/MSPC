@@ -134,5 +134,19 @@ namespace Genometric.MSPC.Core.Tests
             var exception = Assert.Throws<InvalidOperationException>(() => mspc.RunAsync(config));
             Assert.Equal(string.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
         }
+
+        [Fact]
+        public void GetDegreeOfParallelism()
+        {
+            // Arrange && Act
+            int dp = 123;
+            var mspc = new MSPC<Peak>(new PeakConstructor())
+            {
+                DegreeOfParallelism = dp
+            };
+
+            // Assert
+            Assert.Equal(mspc.DegreeOfParallelism, dp);
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Represents the replicate type of the input samples.
         /// </summary>
-        public ReplicateType ReplicateType { private set; get; }
+        public ReplicateType ReplicateType { get; }
 
         /// <summary>
         /// Only one peak out of multiple peaks of a sample intersecting
@@ -27,7 +27,7 @@ namespace Genometric.MSPC.Core.Model
         /// this parameter is TRUE, the peak with lowest p-value will be 
         /// used; otherwise the peak with highest p-value will be used.
         /// </summary>
-        public MultipleIntersections MultipleIntersections { private set; get; }
+        public MultipleIntersections MultipleIntersections { get; }
 
         /// <summary>
         /// Represents the default value to be replace by p-value = 0
@@ -43,21 +43,21 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Represents the weak p-value threshold.
         /// </summary>
-        public double TauW { private set; get; }
+        public double TauW { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public double Gamma { private set; get; }
+        public double Gamma { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public byte C { private set; get; }
+        public byte C { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public float Alpha { private set; get; }
+        public float Alpha { get; }
     }
 }

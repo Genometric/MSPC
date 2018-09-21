@@ -17,13 +17,16 @@ namespace Genometric.MSPC.Core.Tests
     {
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
-        private string _cancelOnMessage;
-        private string status;
-        private AutoResetEvent _continue;
+        private string _status;
+        private AutoResetEvent _continueIni;
+        private AutoResetEvent _continuePrc;
+        private AutoResetEvent _continueMtc;
+        private AutoResetEvent _continueCon;
 
-        private ReadOnlyDictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount)
+        public enum Status { Init, Process, MTC, Consensu }; 
+
+        private ReadOnlyDictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount, Status status)
         {
-            _continue = new AutoResetEvent(false);
             var sA = new Bed<Peak>();
             var sB = new Bed<Peak>();
             for (int i = 0; i < iCount; i++)
@@ -46,15 +49,54 @@ namespace Genometric.MSPC.Core.Tests
             }
 
             var mspc = new MSPC<Peak>(new PeakConstructor());
-            mspc.StatusChanged += Mspc_StatusChanged;
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
-            _continue.Reset();
-            // MSPC is expected to confirm peaks using the following configuration.
-            mspc.RunAsync(new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue));
-            _continue.WaitOne();
-            _continue.Reset();
+            var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
+
+            switch (status)
+            {
+                case Status.Init:
+                    _continueIni = new AutoResetEvent(false);
+                    _continueIni.Reset();
+                    mspc.StatusChanged += WaitingIni;
+                    // MSPC is expected to confirm peaks using the following configuration.
+                    mspc.RunAsync(config);
+                    _continueIni.WaitOne();
+                    _continueIni.Reset();
+                    break;
+
+                case Status.Process:
+                    _continuePrc = new AutoResetEvent(false);
+                    _continuePrc.Reset();
+                    mspc.StatusChanged += WaitingPrc;
+                    // MSPC is expected to confirm peaks using the following configuration.
+                    mspc.RunAsync(config);
+                    _continuePrc.WaitOne();
+                    _continuePrc.Reset();
+                    break;
+
+                case Status.MTC:
+                    _continueMtc = new AutoResetEvent(false);
+                    _continueMtc.Reset();
+                    mspc.StatusChanged += WaitingMtc;
+                    // MSPC is expected to confirm peaks using the following configuration.
+                    mspc.RunAsync(config);
+                    _continueMtc.WaitOne();
+                    _continueMtc.Reset();
+                    break;
+
+                case Status.Consensu:
+                    _continueCon = new AutoResetEvent(false);
+                    _continueCon.Reset();
+                    mspc.StatusChanged += WaitingCon;
+                    // MSPC is expected to confirm peaks using the following configuration.
+                    mspc.RunAsync(config);
+                    _continueCon.WaitOne();
+                    _continueCon.Reset();
+                    break;
+            }
+
             // However, with the following configuration, it is expected to discard 
             // all the peaks. This can help asserting if the asynchronous process of 
             // the previous execution is canceled, and instead the following asynchronous 
@@ -65,27 +107,41 @@ namespace Genometric.MSPC.Core.Tests
             return mspc.GetResults();
         }
 
-        private void Mspc_StatusChanged(object sender, ValueEventArgs e)
+        private void WaitingIni(object sender, ValueEventArgs e)
         {
-            if (e.Value.Message == _cancelOnMessage)
-            {
-                _cancelOnMessage = "";
-                _continue.Set();
-            }
-            status += e.Value.Message;
+            if (e.Value.Message == "Initializing")
+                _continueIni.Set();
+            _status += e.Value.Message;
+        }
+        private void WaitingPrc(object sender, ValueEventArgs e)
+        {
+            if (e.Value.Message == "Processing samples")
+                _continuePrc.Set();
+            _status += e.Value.Message;
+        }
+        private void WaitingMtc(object sender, ValueEventArgs e)
+        {
+            if (e.Value.Message == "Performing Multiple testing correction")
+                _continueMtc.Set();
+            _status += e.Value.Message;
+        }
+        private void WaitingCon(object sender, ValueEventArgs e)
+        {
+            if (e.Value.Message == "Creating consensus peaks set")
+                _continueCon.Set();
+            _status += e.Value.Message;
         }
 
         [Theory]
-        [InlineData("Initializing")]
-        [InlineData("Processing samples")]
-        [InlineData("Performing Multiple testing correction")]
-        [InlineData("Creating consensus peaks set")]
-        public void CancelCurrentAsyncRun(string cancelOnMessage)
+        [InlineData(Status.Init)]
+        [InlineData(Status.Process)]
+        [InlineData(Status.MTC)]
+        [InlineData(Status.Consensu)]
+        public void CancelCurrentAsyncRun(Status status)
         {
             // Arrange & Act
             int c = 10000;
-            _cancelOnMessage = cancelOnMessage;
-            var results = RunThenCancelMSPC(c);
+            var results = RunThenCancelMSPC(c, status);
 
             // Assert
             Assert.True(!results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
@@ -96,11 +152,10 @@ namespace Genometric.MSPC.Core.Tests
         public void ReportProcessIsCanceled()
         {
             // Arrange & Act
-            _cancelOnMessage = "Initializing";
-            RunThenCancelMSPC(10000);
+            RunThenCancelMSPC(10000, Status.Init);
 
             // Assert
-            Assert.Contains("Canceled current task.", status);
+            Assert.Contains("Canceled current task.", _status);
         }
 
         [Theory]

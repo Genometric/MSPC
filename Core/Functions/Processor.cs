@@ -118,11 +118,10 @@ namespace Genometric.MSPC.Core.Functions
 
         private void ProcessSamples()
         {
-            Action<uint, KeyValuePair<string, Chromosome<I, BedStats>>> processChr =
-                delegate (uint sampleKey, KeyValuePair<string, Chromosome<I, BedStats>> chr)
-                {
-                    ProcessChr(sampleKey, chr);
-                };
+            void processChr(uint sampleKey, KeyValuePair<string, Chromosome<I, BedStats>> chr)
+            {
+                ProcessChr(sampleKey, chr);
+            }
 
             foreach (var sample in _samples)
                 Parallel.ForEach(

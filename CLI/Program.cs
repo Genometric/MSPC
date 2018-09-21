@@ -42,7 +42,7 @@ namespace Genometric.MSPC.CLI
                     return;
                 }
 
-            var orchestrator = new Orchestrator(cliOptions.Options, cliOptions.Input);
+            var orchestrator = new Orchestrator(cliOptions.Options);
 
             var et = new Stopwatch();
             foreach (var file in cliOptions.Input)
@@ -50,51 +50,21 @@ namespace Genometric.MSPC.CLI
                 Console.WriteLine(string.Format("Parsing sample: {0}", file));
                 et.Restart();
 
-                try
-                {
-                    var parsedSample = orchestrator.LoadSample(file);
-                    et.Stop();
-                    Console.WriteLine("Done...  ET:\t{0}", et.Elapsed.ToString());
-                    Console.WriteLine("Read peaks#:\t{0}", parsedSample.IntervalsCount.ToString("N0", CultureInfo.InvariantCulture));
-                    Console.WriteLine("Min p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMin.Value));
-                    Console.WriteLine("Max p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMax.Value));
-                    Console.WriteLine("");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(string.Format(
-                        "The following exception has occurred while parsing input files: {0}{1}",
-                        e.Message, mspcCannotContinue));
-                    return;
-                }
+                var parsedSample = orchestrator.LoadSample(file);
+                et.Stop();
+                Console.WriteLine("Done...  ET:\t{0}", et.Elapsed.ToString());
+                Console.WriteLine("Read peaks#:\t{0}", parsedSample.IntervalsCount.ToString("N0", CultureInfo.InvariantCulture));
+                Console.WriteLine("Min p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMin.Value));
+                Console.WriteLine("Max p-value:\t{0}", string.Format("{0:E3}", parsedSample.PValueMax.Value));
+                Console.WriteLine("");
             }
 
             Console.WriteLine("Analysis started ...");
             et.Restart();
-            try
-            {
-                orchestrator.Run();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(string.Format(
-                    "The following exception has occurred while processing the samples: {0}{1}",
-                    e.Message, mspcCannotContinue));
-                return;
-            }
+            orchestrator.Run();
 
-            try
-            {
-                Console.WriteLine("\n\rSaving results ...");
-                orchestrator.Export();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(string.Format(
-                    "The following exception has occurred while saving analysis results: {0}{1}",
-                    e.Message, mspcCannotContinue));
-                return;
-            }
+            Console.WriteLine("\n\rSaving results ...");
+            orchestrator.Export();
 
             et.Stop();
             Console.WriteLine(" ");

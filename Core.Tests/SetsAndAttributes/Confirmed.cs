@@ -131,5 +131,30 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
                 res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.Equals(sAP) &&
                 res[1].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.Equals(sBP));
         }
+
+        [Fact]
+        public void ConfirmPeakWithZeroPValue()
+        {
+            // Arrange
+            var sA = new Bed<Peak>();
+            var sAP = new Peak(left: 10, right: 20, value: 0);
+            sA.Add(sAP, _chr, _strand);
+
+            var sB = new Bed<Peak>();
+            var sBP = new Peak(left: 5, right: 15, value: 1e-12);
+            sB.Add(sBP, _chr, _strand);
+
+            var mspc = new MSPC<Peak>(new PeakConstructor());
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+
+            var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-8, 2, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
+        }
     }
 }

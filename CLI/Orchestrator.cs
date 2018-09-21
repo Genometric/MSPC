@@ -22,7 +22,7 @@ namespace Genometric.MSPC.CLI
         private readonly MSPC<Peak> _mspc;
         private readonly List<Bed<Peak>> _samples;
 
-        internal Orchestrator(Config options, IReadOnlyList<string> input)
+        internal Orchestrator(Config options)
         {
             _options = options;
             _mspc = new MSPC<Peak>(new PeakConstructor());

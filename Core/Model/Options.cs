@@ -30,12 +30,6 @@ namespace Genometric.MSPC.Core.Model
         public MultipleIntersections MultipleIntersections { private set; get; }
 
         /// <summary>
-        /// Represents the default value for maximum log of p-value. 
-        /// p-value lower than this value will be truncated. 
-        /// </summary>
-        public const double defaultMaxLogOfPVvalue = -3000.0;
-
-        /// <summary>
         /// Represents the default value to be replace by p-value = 0
         /// of a peak when combining p-values.
         /// </summary>

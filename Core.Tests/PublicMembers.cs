@@ -68,10 +68,7 @@ namespace Genometric.MSPC.Core.Tests
         private void Mspc_StatusChanged(object sender, ValueEventArgs e)
         {
             if (e.Value.Message == _cancelOnMessage)
-            {
-                _cancelOnMessage = "";
                 _continue.Set();
-            }
             _status += e.Value.Message;
         }
 

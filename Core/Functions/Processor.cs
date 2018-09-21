@@ -268,9 +268,6 @@ namespace Genometric.MSPC.Core.Functions
 
             xsqrd = xsqrd * (-2);
 
-            if (xsqrd >= Math.Abs(Config.defaultMaxLogOfPVvalue))
-                xsqrd = Math.Abs(Config.defaultMaxLogOfPVvalue);
-
             return xsqrd;
         }
 
@@ -348,14 +345,6 @@ namespace Genometric.MSPC.Core.Functions
                                 summit: mergedPeak.Summit,
                                 value: mergingPeak.Value + mergedPeak.Value);
                         }
-
-                        if (mergingPeak.Value >= Math.Abs(Config.defaultMaxLogOfPVvalue))
-                            mergingPeak = _peakConstructor.Construct(
-                                left: mergingPeak.Left,
-                                right: mergingPeak.Right,
-                                name: mergingPeak.Name,
-                                summit: mergingPeak.Summit,
-                                value: Math.Abs(Config.defaultMaxLogOfPVvalue));
 
                         _mergedReplicates[chr.Key].Add(interval, mergingPeak);
                     }

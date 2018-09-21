@@ -4,6 +4,9 @@
 
 namespace Genometric.MSPC.Core.Model
 {
+    /// <summary>
+    /// The configuration of MSPC process.
+    /// </summary>
     public class Config
     {
         /// <summary>

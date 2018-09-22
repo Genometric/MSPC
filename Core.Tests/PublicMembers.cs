@@ -48,7 +48,7 @@ namespace Genometric.MSPC.Core.Tests
                 _chr, _strand);
             }
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -164,7 +164,7 @@ namespace Genometric.MSPC.Core.Tests
         public void RunIfAtLeastTwoInputIsGiven(int inputCount)
         {
             // Arrange
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             if (inputCount == 1)
                 mspc.AddSample(0, new Bed<Peak>());
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
@@ -180,7 +180,7 @@ namespace Genometric.MSPC.Core.Tests
         public void RunAsyncIfAtLeastTwoInputIsGiven(int inputCount)
         {
             // Arrange
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             if (inputCount == 1)
                 mspc.AddSample(0, new Bed<Peak>());
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
@@ -195,7 +195,7 @@ namespace Genometric.MSPC.Core.Tests
         {
             // Arrange && Act
             int dp = 123;
-            var mspc = new Mspc<Peak>(new PeakConstructor())
+            var mspc = new Mspc()
             {
                 DegreeOfParallelism = dp
             };

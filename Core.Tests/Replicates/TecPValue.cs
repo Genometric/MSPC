@@ -39,7 +39,7 @@ namespace Genometric.MSPC.Core.Tests.Replicates
             sB.Add(new Peak(left: 5, right: 12, value: 1e-4, name: "r21"), _chr, _strand);
             sB.Add(new Peak(left: 18, right: 25, value: 1e-4, name: "r22"), _chr, _strand);
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -84,7 +84,7 @@ namespace Genometric.MSPC.Core.Tests.Replicates
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 

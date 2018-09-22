@@ -24,7 +24,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var sB = new Bed<Peak>();
             sB.Add(new Peak(left: 30, right: 40, value: 0.01), "chr1", '*');
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -53,7 +53,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var sB = new Bed<Peak>();
             sB.Add(new Peak(left: 5, right: 40, value: 0.01), "chr1", '*');
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -86,7 +86,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var sC = new Bed<Peak>();
             sC.Add(new Peak(left: 18, right: 25, value: 0.01), "chr1", '*');
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);
@@ -121,7 +121,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var sC = new Bed<Peak>();
             sC.Add(new Peak(left: 14, right: 25, value: 0.01), "chr1", '*');
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);
@@ -156,7 +156,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var sC = new Bed<Peak>();
             sC.Add(new Peak(left: 24, right: 25, value: 0.01), "chr1", '*');
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);
@@ -189,7 +189,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var sC = new Bed<Peak>();
             sC.Add(new Peak(left: 24, right: 25, value: 0.01), "chr1", '*');
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);

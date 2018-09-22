@@ -34,7 +34,7 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
         public void NumberOfPeaks()
         {
             // Arrange
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, CreateSample(0, 20, 1000));
             mspc.AddSample(1, CreateSample(2, 20, 2000));
 
@@ -54,7 +54,7 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
         public void HighDegreeOfParallelisim()
         {
             // Arrange
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, CreateSample(0, 20, 10000));
             mspc.AddSample(1, CreateSample(2, 20, 20000));
             mspc.DegreeOfParallelism = 20;

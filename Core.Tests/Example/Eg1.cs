@@ -77,7 +77,7 @@ namespace Genometric.MSPC.Core.Tests.Example
             sC.Add(r32, "chr1", '*');
             sC.Add(r33, "chr1", '*');
 
-            var mspc = new Mspc<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);

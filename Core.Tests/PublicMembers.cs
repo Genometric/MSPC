@@ -53,7 +53,7 @@ namespace Genometric.MSPC.Core.Tests
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
-            var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
+            var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 1, 0.05F, MultipleIntersections.UseLowestPValue);
 
             switch (status)
             {
@@ -98,7 +98,7 @@ namespace Genometric.MSPC.Core.Tests
             // This can help asserting if the asynchronous process of 
             // the previous execution is canceled, and instead the following asynchronous 
             // execution is completed.
-            mspc.RunAsync(new Config(ReplicateType.Biological, 1e-10, 1e-20, 1e-200, 2, 0.05F, MultipleIntersections.UseLowestPValue));
+            mspc.RunAsync(new Config(ReplicateType.Biological, 1e-10, 1e-20, 1e-200, 1, 0.05F, MultipleIntersections.UseLowestPValue));
             mspc.Done.WaitOne();
 
             return mspc.GetResults();

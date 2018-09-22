@@ -9,6 +9,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Genometric.MSPC.Core.Tests
@@ -135,9 +136,22 @@ namespace Genometric.MSPC.Core.Tests
         [InlineData(Status.Consensu)]
         public void CancelCurrentAsyncRun(Status status)
         {
-            // Arrange & Act
+            // Arrange
             int c = 10000;
-            var results = RunThenCancelMSPC(c, status);
+            int tries = 10;
+            ReadOnlyDictionary<uint, Result<Peak>> results = null;
+            for (int i = 0; i < tries; i++)
+            {
+                // Act
+                results = RunThenCancelMSPC(c, status);
+                if (!(results.Count == 0 || results[0].Chromosomes.Count == 0))
+                    break;
+                Thread.Sleep(10000);
+            }
+
+            if (results == null)
+                throw new InvalidOperationException(
+                    string.Format("Tried CancelCurrentAsyncRun unit test on {0} status for {1} times, all tries failed.", status, tries));
 
             // Assert
             Assert.True(!results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());

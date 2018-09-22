@@ -136,6 +136,15 @@ namespace Genometric.MSPC.Core.Tests
         [InlineData(Status.Consensu)]
         public void CancelCurrentAsyncRun(Status status)
         {
+            /// NOTE
+            /// 
+            /// This test (for all InlineData) always passes successfully.
+            /// However, it sometimes fails on Appveyor for unknown reasons.
+            /// When it fails on Appveyor, a re-build of the PR always passes
+            /// the failing test. Therefore, to prevent such fails, this unit
+            /// test re-tries it for a number of time before failing it.
+            /// ______________________________________________________________
+
             // Arrange
             int c = 10000;
             int tries = 10;

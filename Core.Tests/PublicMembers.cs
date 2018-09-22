@@ -144,7 +144,11 @@ namespace Genometric.MSPC.Core.Tests
             {
                 // Act
                 results = RunThenCancelMSPC(c, status);
-                if (!(results.Count == 0 || results[0].Chromosomes.Count == 0))
+                if (results.Count > 0 &&
+                    results[0].Chromosomes.Count > 0 &&
+                    results[0].Chromosomes.ContainsKey(_chr) &&
+                    !results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any() &&
+                    results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c)
                     break;
                 Thread.Sleep(10000);
             }

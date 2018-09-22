@@ -21,7 +21,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void MergeTwoConsensusPeaks(int xLeft, int xRight, int yLeft, int yRight, int cLeft, int cRight)
         {
             // Arrange
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc<Peak>(new PeakConstructor());
             var sA = new Bed<Peak>();
             sA.Add(new Peak(left: xLeft, right: xRight, value: 0.01), "chr1", '*');
             mspc.AddSample(0, sA);

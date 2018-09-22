@@ -14,7 +14,7 @@ using Genometric.GeUtilities.Intervals.Parsers.Model;
 
 namespace Genometric.MSPC.Core
 {
-    public class MSPC<I>
+    public class Mspc<I>
         where I : IPeak
     {
         public event EventHandler<ValueEventArgs> StatusChanged;
@@ -37,7 +37,7 @@ namespace Genometric.MSPC.Core
             get { return _processor.DegreeOfParallelism; }
         }
 
-        public MSPC(IPeakConstructor<I> peakConstructor)
+        public Mspc(IPeakConstructor<I> peakConstructor)
         {
             _processor = new Processor<I>(peakConstructor);
             _processor.OnProgressUpdate += _processorOnProgressUpdate;

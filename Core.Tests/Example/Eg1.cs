@@ -61,7 +61,7 @@ namespace Genometric.MSPC.Core.Tests.Example
                 new object[] { ReplicateType.Biological, 2, 2, r33, Attributes.Stringent, Attributes.Discarded },
             };
 
-        private MSPC<Peak> InitializeMSPC()
+        private Mspc<Peak> InitializeMSPC()
         {
             var sA = new Bed<Peak>();
             sA.Add(r11, "chr1", '*');
@@ -77,7 +77,7 @@ namespace Genometric.MSPC.Core.Tests.Example
             sC.Add(r32, "chr1", '*');
             sC.Add(r33, "chr1", '*');
 
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);

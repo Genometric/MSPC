@@ -6,9 +6,9 @@ using Genometric.GeUtilities.Intervals.Model;
 
 namespace Genometric.MSPC.Core
 {
-    public class MSPC : MSPC<Peak>
+    public class Mspc : Mspc<Peak>
     {
-        public MSPC() : base(new PeakConstructor())
+        public Mspc() : base(new PeakConstructor())
         { }
     }
 }

@@ -39,7 +39,7 @@ namespace Genometric.MSPC.CLI.Tests
             };
         }
 
-        private MSPC<Peak> InitializeMSPC()
+        private Mspc<Peak> InitializeMSPC()
         {
             ///                 r11                r12
             /// Sample 1: --░░░░░░░░░░░-------████████████----------------------------
@@ -73,7 +73,7 @@ namespace Genometric.MSPC.CLI.Tests
             sC.Add(r32, _chr, _strand);
             sC.Add(r33, _chr, _strand);
 
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc<Peak>(new PeakConstructor());
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);

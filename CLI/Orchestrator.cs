@@ -19,13 +19,13 @@ namespace Genometric.MSPC.CLI
     internal class Orchestrator
     {
         private readonly Config _options;
-        private readonly MSPC<Peak> _mspc;
+        private readonly Mspc _mspc;
         private readonly List<Bed<Peak>> _samples;
 
         internal Orchestrator(Config options)
         {
             _options = options;
-            _mspc = new MSPC<Peak>(new PeakConstructor());
+            _mspc = new Mspc();
             _mspc.StatusChanged += _mspc_statusChanged;
             _samples = new List<Bed<Peak>>();
         }

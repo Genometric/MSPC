@@ -24,7 +24,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var sB = new Bed<Peak>();
             sB.Add(new Peak(left: 5, right: 12, value: 1e-8), _chr, _strand);
 
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -59,7 +59,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             sB.Add(new Peak(left: 500, right: 1200, value: 1e-11), _chr, _strand);
             sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13), _chr, _strand);
 
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -89,7 +89,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             sB.Add(new Peak(left: 500, right: 1200, value: 1e-11), _chr, _strand);
             sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13), _chr, _strand);
 
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -117,7 +117,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             sB.Add(new Peak(left: 500, right: 1200, value: 1e-11), _chr, _strand);
             sB.Add(new Peak(left: 5000, right: 12000, value: 1e-13), _chr, _strand);
 
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 

@@ -58,7 +58,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             uint id = 0;
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             foreach(var peak in GetPeaks(samplesCount))
             {
                 var sample = new Bed<Peak>();

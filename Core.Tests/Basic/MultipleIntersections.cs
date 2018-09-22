@@ -38,7 +38,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);
 
-            var mspc = new MSPC<Peak>(new PeakConstructor());
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 

@@ -63,7 +63,6 @@ namespace Genometric.MSPC.Core.Tests
                     // MSPC is expected to confirm peaks using the following configuration.
                     mspc.RunAsync(config);
                     _continueIni.WaitOne();
-                    _continueIni.Reset();
                     break;
 
                 case Status.Process:
@@ -73,7 +72,6 @@ namespace Genometric.MSPC.Core.Tests
                     // MSPC is expected to confirm peaks using the following configuration.
                     mspc.RunAsync(config);
                     _continuePrc.WaitOne();
-                    _continuePrc.Reset();
                     break;
 
                 case Status.MTC:
@@ -83,7 +81,6 @@ namespace Genometric.MSPC.Core.Tests
                     // MSPC is expected to confirm peaks using the following configuration.
                     mspc.RunAsync(config);
                     _continueMtc.WaitOne();
-                    _continueMtc.Reset();
                     break;
 
                 case Status.Consensu:
@@ -93,7 +90,6 @@ namespace Genometric.MSPC.Core.Tests
                     // MSPC is expected to confirm peaks using the following configuration.
                     mspc.RunAsync(config);
                     _continueCon.WaitOne();
-                    _continueCon.Reset();
                     break;
             }
 

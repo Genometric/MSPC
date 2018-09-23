@@ -14,7 +14,7 @@ namespace Genometric.MSPC.CLI.Tests
         private const string _rep1 = "replicate_1.bed";
         private const string _rep2 = "replicate_2.bed";
         private const string _rep3 = "replicate_3.bed";
-        private const string _p = "C:\\TestPath\\parser.json";
+        private const string _p = null;
         private const double _tauW = 1E-2;
         private const double _tauS = 1E-9;
         private const double _gamma = 1E-12;
@@ -37,8 +37,8 @@ namespace Genometric.MSPC.CLI.Tests
             if (!float.IsNaN(alpha)) builder.Append("-a " + alpha + " ");
             builder.Append("-c " + c + " ");
             builder.Append("-m " + m + " ");
-            builder.Append("-r " + r + " ");
-            builder.Append("-p " + p);
+            builder.Append("-r " + r);
+            if (p != null) builder.Append(" -p " + p);
             return builder.ToString();
         }
 

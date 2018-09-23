@@ -6,6 +6,7 @@ using Genometric.MSPC.Core.Model;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Genometric.MSPC.CLI
@@ -121,6 +122,9 @@ namespace Genometric.MSPC.CLI
 
         private void AssertGivenValuesAreValid()
         {
+            if (_cParser.Value() != null && !File.Exists(_cParser.Value()))
+                throw new ArgumentException("Invalid value given for the `" + _cParser.LongName + "` argument.");
+
             switch (_cReplicate.Value().ToLower())
             {
                 case "bio":

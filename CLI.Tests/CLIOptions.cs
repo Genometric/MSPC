@@ -14,6 +14,7 @@ namespace Genometric.MSPC.CLI.Tests
         private const string _rep1 = "replicate_1.bed";
         private const string _rep2 = "replicate_2.bed";
         private const string _rep3 = "replicate_3.bed";
+        private const string _p = "C:\\TestPath\\parser.json";
         private const double _tauW = 1E-2;
         private const double _tauS = 1E-9;
         private const double _gamma = 1E-12;
@@ -24,7 +25,7 @@ namespace Genometric.MSPC.CLI.Tests
 
         private string GenerateShortNameArguments(
             string rep1 = _rep1, string rep2 = _rep2, string rep3 = _rep3, double tauW = _tauW, double tauS = _tauS,
-            double gamma = _gamma, float alpha = _alpha, byte c = _c, string m = _m, string r = _r)
+            double gamma = _gamma, float alpha = _alpha, byte c = _c, string m = _m, string r = _r, string p = _p)
         {
             var builder = new StringBuilder();
             if (rep1 != null) builder.Append("-i " + rep1 + " ");
@@ -37,6 +38,7 @@ namespace Genometric.MSPC.CLI.Tests
             builder.Append("-c " + c + " ");
             builder.Append("-m " + m + " ");
             builder.Append("-r " + r);
+            builder.Append("-p " + p);
             return builder.ToString();
         }
 
@@ -56,6 +58,20 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(options.Input[1] == rep2);
             if (rep3 != null)
                 Assert.True(options.Input[2] == rep3);
+        }
+
+        [Theory]
+        [InlineData("aParserConfig.json")]
+        [InlineData(@"C:\apath\parser.json")]
+        [InlineData("~/unix/parserConfig.json")]
+        public void ReadParser(string parserPath)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            options.Parse(GenerateShortNameArguments(p: parserPath).Split(' '));
+
+            // Assert
+            Assert.Equal(parserPath, options.ParserConfig);
         }
 
         [Theory]

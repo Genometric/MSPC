@@ -37,7 +37,7 @@ namespace Genometric.MSPC.CLI.Tests
             if (!float.IsNaN(alpha)) builder.Append("-a " + alpha + " ");
             builder.Append("-c " + c + " ");
             builder.Append("-m " + m + " ");
-            builder.Append("-r " + r);
+            builder.Append("-r " + r + " ");
             builder.Append("-p " + p);
             return builder.ToString();
         }

@@ -69,6 +69,11 @@ namespace Genometric.MSPC.CLI
 
         public IReadOnlyList<string> Input { get { return _cInput.Values.AsReadOnly(); } }
 
+        /// <summary>
+        /// Gets the path of a parser configuration file in JSON.
+        /// </summary>
+        public string ParserConfig { private set; get; }
+
         public CommandLineOptions()
         {
             _cla = new CommandLineApplication();

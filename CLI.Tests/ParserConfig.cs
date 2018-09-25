@@ -23,11 +23,21 @@ namespace Genometric.MSPC.CLI.Tests
                 obj1.Summit == obj2.Summit;
         }
 
-        [Fact]
-        public void ReadParserConfig()
+        [Theory]
+        [InlineData(0, 1, 2, 3, 4, 5)]
+        [InlineData(5, 0, -1, 12, -1, -1)]
+        public void ReadParserConfig(byte chr, byte left, sbyte right, byte name, sbyte strand, sbyte summit)
         {
             // Arrange
-            var cols = new BedColumns();
+            var cols = new BedColumns()
+            {
+                Chr = chr,
+                Left = left,
+                Right = right,
+                Name = name,
+                Strand = strand,
+                Summit = summit
+            };
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
             var obj = JsonConvert.SerializeObject(cols);
             using (StreamWriter w = new StreamWriter(path))
@@ -37,6 +47,7 @@ namespace Genometric.MSPC.CLI.Tests
             var parsedCols = new CLI.ParserConfig().ParseBed(path);
             File.Delete(path);
 
+            // Assert
             Assert.True(Equal(parsedCols, cols));
         }
     }

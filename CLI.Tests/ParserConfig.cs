@@ -50,5 +50,22 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.True(Equal(parsedCols, cols));
         }
+
+        [Fact]
+        public void ReadMalformedJSON()
+        {
+            // Arrange
+            var expected = new BedColumns() { Chr = 123 };
+            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            using (StreamWriter w = new StreamWriter(path))
+                w.WriteLine("{\"m\":7,\"l\":789,\"u\":-1,\"Chr\":123,\"L\":9,\"R\":2,\"d\":-1}");
+
+            // Act
+            var parsedCols = new CLI.ParserConfig().ParseBed(path);
+            File.Delete(path);
+
+            // Assert
+            Assert.True(Equal(parsedCols, expected));
+        }
     }
 }

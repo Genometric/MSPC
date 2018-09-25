@@ -39,9 +39,8 @@ namespace Genometric.MSPC.CLI.Tests
                 Summit = summit
             };
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            var obj = JsonConvert.SerializeObject(cols);
             using (StreamWriter w = new StreamWriter(path))
-                w.WriteLine(obj);
+                w.WriteLine(JsonConvert.SerializeObject(cols));
 
             // Act
             var parsedCols = new CLI.ParserConfig().ParseBed(path);

@@ -2,6 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using Genometric.GeUtilities.Intervals.Parsers.Model;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using Xunit;
@@ -144,6 +146,64 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("All processes successfully finished [Analysis ET: ", msg);
+        }
+
+        [Fact]
+        public void ParseBasedOnGivenParserConfig()
+        {
+            // Arrange
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            FileStream stream = File.Create(rep1Path);
+            using (StreamWriter writter = new StreamWriter(stream))
+            {
+                writter.WriteLine("ABC\t____\t10\t+++++\t100.0\tchr1\t___====____\tmspc_peak_1\t20");
+                writter.WriteLine("ABC\t____\t25\t+++++\t123.4\tchr1\t___====____\tmspc_peak_2\t35");
+            }
+
+            stream = File.Create(rep2Path);
+            using (StreamWriter writter = new StreamWriter(stream))
+            {
+                writter.WriteLine("ABC\t____\t11\t+++++\t31.4\tchr1\t___====____\tmspc_peak_3\t18");
+                writter.WriteLine("ABC\t____\t22\t+++++\t21.4\tchr1\t___====____\tmspc_peak_4\t28");
+                writter.WriteLine("ABC\t____\t30\t+++++\t99.9\tchr1\t___====____\tmspc_peak_5\t40");
+            }
+
+            var cols = new BedColumns()
+            {
+                Chr = 5,
+                Left = 2,
+                Right = 8,
+                Name = 7,
+                Strand = -1,
+                Summit = -1
+            };
+            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            using (StreamWriter w = new StreamWriter(path))
+                w.WriteLine(JsonConvert.SerializeObject(cols));
+
+
+            // Act
+            string console = null;
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-1 -s 1E-4 -c 1 -p {2}", rep1Path, rep2Path, path).Split(' '));
+                File.Delete(rep1Path);
+                File.Delete(rep2Path);
+                console = sw.ToString();
+            }
+
+
+            // Assert
+            Assert.Contains("Read peaks#:\t2", console);
+            Assert.Contains("Read peaks#:\t3", console);
+
+            Assert.Contains("Max p-value:\t1.000E-100", console);
+            Assert.Contains("Min p-value:\t3.981E-124", console);
+            Assert.Contains("Min p-value:\t1.259E-100", console);
+            Assert.Contains("Max p-value:\t3.981E-022", console);
         }
     }
 }

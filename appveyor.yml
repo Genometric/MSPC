@@ -77,7 +77,7 @@ for:
   deploy:
     provider: NuGet
     api_key:
-      secure: 24L5dmjrwXjz3qGi9rTz3dPc/tmGKbIl4YjSC8CHyzA=
+      secure: 7KMBaTezXgEOFImbXFoY3qHBtEuFO3NMwLDoGV8Eozq5kuEtSJKmpEROULOueUAF
     skip_symbols: false
 
 # override settings for `dev*` branches

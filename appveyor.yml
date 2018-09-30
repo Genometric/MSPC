@@ -71,13 +71,13 @@ for:
     - SonarScanner.MSBuild.exe end /d:"sonar.login=%sonartoken%"
   
   artifacts: 
-    - path: MSPC/bin/Release/Genometric.MSPC*.nupkg  
+    - path: Core/bin/Release/Genometric.MSPC.Core*.nupkg  
       name: MSPC
     
   deploy:
     provider: NuGet
     api_key:
-      secure: 24L5dmjrwXjz3qGi9rTz3dPc/tmGKbIl4YjSC8CHyzA=
+      secure: 7KMBaTezXgEOFImbXFoY3qHBtEuFO3NMwLDoGV8Eozq5kuEtSJKmpEROULOueUAF
     skip_symbols: false
 
 # override settings for `dev*` branches

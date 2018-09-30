@@ -19,11 +19,13 @@
 
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
 
-    <PackageId>Genometric.MSPC.CLI.Tests-v3.0.0RC</PackageId>
+    <PackageId>Genometric.MSPC.CLI.Tests</PackageId>
 
     <Copyright>GNU General Public License v3.0</Copyright>
 
     <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
+
+    <Company>Genometric</Company>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

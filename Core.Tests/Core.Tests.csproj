@@ -9,7 +9,7 @@
 
     <RootNamespace>Genometric.MSPC.Core.Tests</RootNamespace>
 
-    <PackageId>Genometric.MSPC.Core.Tests-v3.0.0RC</PackageId>
+    <PackageId>Genometric.MSPC.Core.Tests</PackageId>
 
     <Authors>Vahid Jalili</Authors>
 
@@ -26,6 +26,8 @@
     <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
 
     <Version>3.0.0</Version>
+
+    <Company>Genometric</Company>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

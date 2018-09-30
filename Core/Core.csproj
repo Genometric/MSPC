@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>Genometric.MSPC.Core</RootNamespace>
-    <PackageId>Genometric.MSPC.Core-v3.0.0RC</PackageId>
+    <PackageId>Genometric.MSPC.Core</PackageId>
     <Authors>Vahid Jalili</Authors>
     <Product>Genometric.MSPC.Core</Product>
     <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>

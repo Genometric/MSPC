@@ -31,8 +31,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Genometric.GeUtilities" Version="4.0.0" />
+    <PackageReference Include="Genometric.GeUtilities" Version="5.2.0" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
   <ItemGroup>

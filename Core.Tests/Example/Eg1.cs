@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +20,14 @@ namespace Genometric.MSPC.Core.Tests.Example
         //           r31       r32                                       r33
         // Sample 3: ████---██████████---------------------------------████████--
 
-        private readonly static ChIPSeqPeak r11 = new ChIPSeqPeak() { Left = 3, Right = 13, Name = "r11", Value = 1e-6, HashKey = 1 };
-        private readonly static ChIPSeqPeak r12 = new ChIPSeqPeak() { Left = 21, Right = 32, Name = "r12", Value = 1e-12, HashKey = 2 };
-        private readonly static ChIPSeqPeak r21 = new ChIPSeqPeak() { Left = 10, Right = 25, Name = "r21", Value = 1e-7, HashKey = 3 };
-        private readonly static ChIPSeqPeak r22 = new ChIPSeqPeak() { Left = 30, Right = 37, Name = "r22", Value = 1e-5, HashKey = 4 };
-        private readonly static ChIPSeqPeak r23 = new ChIPSeqPeak() { Left = 41, Right = 48, Name = "r23", Value = 1e-6, HashKey = 5 };
-        private readonly static ChIPSeqPeak r31 = new ChIPSeqPeak() { Left = 0, Right = 4, Name = "r31", Value = 1e-6, HashKey = 6 };
-        private readonly static ChIPSeqPeak r32 = new ChIPSeqPeak() { Left = 8, Right = 17, Name = "r32", Value = 1e-12, HashKey = 7 };
-        private readonly static ChIPSeqPeak r33 = new ChIPSeqPeak() { Left = 51, Right = 58, Name = "r33", Value = 1e-18, HashKey = 8 };
+        private readonly static Peak r11 = new Peak(left: 3, right: 13, name: "r11", value: 1e-6);
+        private readonly static Peak r12 = new Peak(left: 21, right: 32, name: "r12", value: 1e-12);
+        private readonly static Peak r21 = new Peak(left: 10, right: 25, name: "r21", value: 1e-7);
+        private readonly static Peak r22 = new Peak(left: 30, right: 37, name: "r22", value: 1e-5);
+        private readonly static Peak r23 = new Peak(left: 41, right: 48, name: "r23", value: 1e-6);
+        private readonly static Peak r31 = new Peak(left: 0, right: 4, name: "r31", value: 1e-6);
+        private readonly static Peak r32 = new Peak(left: 8, right: 17, name: "r32", value: 1e-12);
+        private readonly static Peak r33 = new Peak(left: 51, right: 58, name: "r33", value: 1e-18);
 
         public static IEnumerable<object[]> ExpectedAttributes =>
             new List<object[]>
@@ -61,23 +61,23 @@ namespace Genometric.MSPC.Core.Tests.Example
                 new object[] { ReplicateType.Biological, 2, 2, r33, Attributes.Stringent, Attributes.Discarded },
             };
 
-        private MSPC<ChIPSeqPeak> InitializeMSPC()
+        private Mspc<Peak> InitializeMSPC()
         {
-            var sA = new BED<ChIPSeqPeak>();
+            var sA = new Bed<Peak>();
             sA.Add(r11, "chr1", '*');
             sA.Add(r12, "chr1", '*');
 
-            var sB = new BED<ChIPSeqPeak>();
+            var sB = new Bed<Peak>();
             sB.Add(r21, "chr1", '*');
             sB.Add(r22, "chr1", '*');
             sB.Add(r23, "chr1", '*');
 
-            var sC = new BED<ChIPSeqPeak>();
+            var sC = new Bed<Peak>();
             sC.Add(r31, "chr1", '*');
             sC.Add(r32, "chr1", '*');
             sC.Add(r33, "chr1", '*');
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
             mspc.AddSample(2, sC);
@@ -88,7 +88,7 @@ namespace Genometric.MSPC.Core.Tests.Example
         [MemberData(nameof(ExpectedAttributes))]
         public void AssertAttributeAssignment(
             ReplicateType replicateType, byte c, uint sampleIndex,
-            ChIPSeqPeak peak, Attributes initial, Attributes processed)
+            Peak peak, Attributes initial, Attributes processed)
         {
             // Arrange
             var mspc = InitializeMSPC();

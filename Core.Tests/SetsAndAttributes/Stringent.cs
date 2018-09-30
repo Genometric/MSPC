@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,15 +16,15 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
 
-        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> GenerateAndProcessStringentPeaks()
+        private ReadOnlyDictionary<uint, Result<Peak>> GenerateAndProcessStringentPeaks()
         {
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 }, _chr, _strand);
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 1e-9), _chr, _strand);
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 5, Right = 12, Value = 1e-12 }, _chr, _strand);
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 12, value: 1e-12), _chr, _strand);
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -71,13 +71,13 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         public void StringentNonOverlappingPeaks()
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            sA.Add(new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 }, _chr, _strand);
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 1e-9), _chr, _strand);
 
-            var sB = new BED<ChIPSeqPeak>();
-            sB.Add(new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-12 }, _chr, _strand);
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 50, right: 60, value: 1e-12), _chr, _strand);
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -95,15 +95,15 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         public void ProcessedStringentPeakEqualsInput()
         {
             // Arrange
-            var sA = new BED<ChIPSeqPeak>();
-            var sAP = new ChIPSeqPeak() { Left = 10, Right = 20, Value = 1e-9 };
+            var sA = new Bed<Peak>();
+            var sAP = new Peak(left: 10, right: 20, value: 1e-9);
             sA.Add(sAP, _chr, _strand);
 
-            var sB = new BED<ChIPSeqPeak>();
-            var sBP = new ChIPSeqPeak() { Left = 50, Right = 60, Value = 1e-12 };
+            var sB = new Bed<Peak>();
+            var sBP = new Peak(left: 50, right: 60, value: 1e-12);
             sB.Add(sBP, _chr, _strand);
 
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 

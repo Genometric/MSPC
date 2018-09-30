@@ -2,7 +2,7 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.Core.Model;
 using Xunit;
 
@@ -10,30 +10,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class TPeak
     {
-        private readonly Peak<ChIPSeqPeak> _x;
-        private readonly Peak<ChIPSeqPeak> _y;
-
-        public TPeak()
+        private Peak<Peak> GetP(int left = 1000, int right = 10000, double value = 100, string name = "", string hashSeed = "")
         {
-            _x = new Peak<ChIPSeqPeak>(new ChIPSeqPeak());
-            _y = new Peak<ChIPSeqPeak>(new ChIPSeqPeak());
-
-            _x.Source.Value = 100;
-            _x.Source.Left = 1000;
-            _x.Source.Right = 10000;
-            _x.Source.Name = "";
-
-            _y.Source.Value = 100;
-            _y.Source.Left = 1000;
-            _y.Source.Right = 10000;
-            _y.Source.Name = "";
+            return new Peak<Peak>(new Peak(left, right, value, name, hashSeed: hashSeed));
         }
 
         [Fact]
         public void PeakIsBiggerThanNull()
         {
             // Arrange & Act
-            var r = _x.CompareTo(null);
+            var r = GetP().CompareTo(null);
 
             // Assert
             Assert.True(r == 1);
@@ -46,11 +32,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void CompareByLeftEnd(int xLeft, int yLeft, int expectedResult)
         {
             // Arrange
-            _x.Source.Left = xLeft;
-            _y.Source.Left = yLeft;
+            var x = GetP(left: xLeft);
+            var y = GetP(left: yLeft);
 
             // Act
-            var r = _x.CompareTo(_y);
+            var r = x.CompareTo(y);
 
             // Assert
             Assert.True(r == expectedResult);
@@ -63,11 +49,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void CompareByRightEnd(int xRight, int yRight, int expectedResult)
         {
             // Arrange
-            _x.Source.Right = xRight;
-            _y.Source.Right = yRight;
+            var x = GetP(right: xRight);
+            var y = GetP(right: yRight);
 
             // Act
-            var r = _x.CompareTo(_y);
+            var r = x.CompareTo(y);
 
             // Assert
             Assert.True(r == expectedResult);
@@ -80,31 +66,31 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void CompareByValue(int xValue, int yValue, int expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x.CompareTo(_y);
+            var r = x.CompareTo(y);
 
             // Assert
             Assert.True(r == expectedResult);
         }
 
         [Theory]
-        [InlineData(100, 10, 1)]
-        [InlineData(10, 100, -1)]
-        [InlineData(100, 100, 0)]
-        public void CompareByHashkey(uint xHashkey, uint yHashkey, int expectedResult)
+        [InlineData(100, 10, false)]
+        [InlineData(10, 100, false)]
+        [InlineData(100, 100, true)]
+        public void CompareByHashkey(uint xHashSeed, uint yHashSeed, bool equal)
         {
             // Arrange
-            _x.Source.HashKey = xHashkey;
-            _y.Source.HashKey = yHashkey;
+            var x = GetP(hashSeed: xHashSeed.ToString());
+            var y = GetP(hashSeed: yHashSeed.ToString());
 
             // Act
-            var r = _x.CompareTo(_y);
+            var r = x.CompareTo(y);
 
             // Assert
-            Assert.True(r == expectedResult);
+            Assert.True((r == 0) == equal);
         }
 
         [Theory]
@@ -114,11 +100,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void GreaterOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x > _y;
+            var r = x > y;
 
             // Assert
             Assert.True(r == expectedResult);
@@ -131,11 +117,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void SmallerOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x < _y;
+            var r = x < y;
 
             // Assert
             Assert.True(r == expectedResult);
@@ -148,11 +134,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void GreaterOrEqualOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x >= _y;
+            var r = x >= y;
 
             // Assert
             Assert.True(r == expectedResult);
@@ -165,11 +151,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void SmallerOrEqualOperator(int xValue, int yValue, bool expectedResult)
         {
             // Arrange
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var r = _x <= _y;
+            var r = x <= y;
 
             // Assert
             Assert.True(r == expectedResult);
@@ -178,29 +164,42 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [Fact]
         public void NotEqualOperator()
         {
+            // Arrange
+            var x = GetP();
+            var y = GetP(right: 123456789);
+
             // Assert
-            Assert.True(_x != _y);
+            Assert.True(x != y);
         }
 
         [Fact]
         public void Equal()
         {
+            // Arrange
+            var x = GetP();
+
             // Assert
-            Assert.True(_x.Equals(_x));
+            Assert.True(x.Equals(x));
         }
 
         [Fact]
         public void GetHashCodeReturnsANumberOtherThanZero()
         {
+            // Arrange
+            var x = GetP();
+
             // Assert
-            Assert.True(_x.GetHashCode() != 0);
+            Assert.True(x.GetHashCode() != 0);
         }
 
         [Fact]
         public void ToStringDoesNotReturnNull()
         {
+            // Arrange
+            var x = GetP();
+
             // Assert
-            Assert.NotNull(_x.ToString());
+            Assert.NotNull(x.ToString());
         }
     }
 }

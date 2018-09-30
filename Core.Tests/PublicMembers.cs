@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.ObjectModel;
@@ -17,79 +17,153 @@ namespace Genometric.MSPC.Core.Tests
     {
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
-        private string _cancelOnMessage;
-        private string status;
-        private AutoResetEvent _continue;
+        private string _status;
+        private AutoResetEvent _continueIni;
+        private AutoResetEvent _continuePrc;
+        private AutoResetEvent _continueMtc;
+        private AutoResetEvent _continueCon;
 
-        private ReadOnlyDictionary<uint, Result<ChIPSeqPeak>> RunThenCancelMSPC(int iCount)
+        public enum Status { Init, Process, MTC, Consensu }; 
+
+        private ReadOnlyDictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount, Status status)
         {
-            _continue = new AutoResetEvent(false);
-            var sA = new BED<ChIPSeqPeak>();
-            var sB = new BED<ChIPSeqPeak>();
+            var sA = new Bed<Peak>();
+            var sB = new Bed<Peak>();
             for (int i = 0; i < iCount; i++)
             {
-                sA.Add(new ChIPSeqPeak()
-                {
-                    Left = (10 * i) + 1,
-                    Right = (10 * i) + 4,
-                    Value = 1E-4,
-                    Name = "r1" + i,
-                    HashKey = (uint)i
-                },
+                sA.Add(new Peak(
+                    left: (10 * i) + 1,
+                    right: (10 * i) + 4,
+                    value: 1E-4,
+                    summit: 0,
+                    name: "r1" + i),
                     _chr, _strand);
 
-                sB.Add(new ChIPSeqPeak()
-                {
-                    Left = (10 * i) + 6,
-                    Right = (10 * i) + 9,
-                    Value = 1E-5,
-                    Name = "r1" + i,
-                    HashKey = (uint)i * 10000
-                },
+                sB.Add(new Peak(
+                    left: (10 * i) + 6,
+                    right: (10 * i) + 9,
+                    value: 1E-5,
+                    summit: 0,
+                    name: "r1" + i),
                 _chr, _strand);
             }
 
-            var mspc = new MSPC<ChIPSeqPeak>();
-            mspc.StatusChanged += Mspc_StatusChanged;
+            var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
-            _continue.Reset();
-            // MSPC is expected to confirm peaks using the following configuration.
-            mspc.RunAsync(new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue));
-            _continue.WaitOne();
-            _continue.Reset();
-            // However, with the following configuration, it is expected to discard 
-            // all the peaks. This can help asserting if the asynchronous process of 
+            var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 1, 0.05F, MultipleIntersections.UseLowestPValue);
+
+            switch (status)
+            {
+                case Status.Init:
+                    _continueIni = new AutoResetEvent(false);
+                    _continueIni.Reset();
+                    mspc.StatusChanged += WaitingIni;
+                    // MSPC is expected to confirm peaks using the following configuration.
+                    mspc.RunAsync(config);
+                    _continueIni.WaitOne();
+                    break;
+
+                case Status.Process:
+                    _continuePrc = new AutoResetEvent(false);
+                    _continuePrc.Reset();
+                    mspc.StatusChanged += WaitingPrc;
+                    // MSPC is expected to confirm peaks using the following configuration.
+                    mspc.RunAsync(config);
+                    _continuePrc.WaitOne();
+                    break;
+
+                case Status.MTC:
+                    _continueMtc = new AutoResetEvent(false);
+                    _continueMtc.Reset();
+                    mspc.StatusChanged += WaitingMtc;
+                    // MSPC is expected to confirm peaks using the following configuration.
+                    mspc.RunAsync(config);
+                    _continueMtc.WaitOne();
+                    break;
+
+                case Status.Consensu:
+                    _continueCon = new AutoResetEvent(false);
+                    _continueCon.Reset();
+                    mspc.StatusChanged += WaitingCon;
+                    // MSPC is expected to confirm peaks using the following configuration.
+                    mspc.RunAsync(config);
+                    _continueCon.WaitOne();
+                    break;
+            }
+
+            // With the following configuration, MSPC discards all the peaks. 
+            // This can help asserting if the asynchronous process of 
             // the previous execution is canceled, and instead the following asynchronous 
             // execution is completed.
-            mspc.RunAsync(new Config(ReplicateType.Biological, 1e-10, 1e-20, 1e-200, 2, 0.05F, MultipleIntersections.UseLowestPValue));
+            mspc.RunAsync(new Config(ReplicateType.Biological, 1e-10, 1e-20, 1e-200, 1, 0.05F, MultipleIntersections.UseLowestPValue));
             mspc.Done.WaitOne();
 
             return mspc.GetResults();
         }
 
-        private void Mspc_StatusChanged(object sender, ValueEventArgs e)
+        private void WaitingIni(object sender, ValueEventArgs e)
         {
-            if (e.Value.Message == _cancelOnMessage)
-            {
-                _cancelOnMessage = "";
-                _continue.Set();
-            }
-            status += e.Value.Message;
+            if (e.Value.Message == "Initializing")
+                _continueIni.Set();
+            _status += e.Value.Message;
+        }
+        private void WaitingPrc(object sender, ValueEventArgs e)
+        {
+            if (e.Value.Message == "Processing samples")
+                _continuePrc.Set();
+            _status += e.Value.Message;
+        }
+        private void WaitingMtc(object sender, ValueEventArgs e)
+        {
+            if (e.Value.Message == "Performing Multiple testing correction")
+                _continueMtc.Set();
+            _status += e.Value.Message;
+        }
+        private void WaitingCon(object sender, ValueEventArgs e)
+        {
+            if (e.Value.Message == "Creating consensus peaks set")
+                _continueCon.Set();
+            _status += e.Value.Message;
         }
 
         [Theory]
-        [InlineData("Initializing")]
-        [InlineData("Processing samples")]
-        [InlineData("Performing Multiple testing correction")]
-        [InlineData("Creating consensus peaks set")]
-        public void CancelCurrentAsyncRun(string cancelOnMessage)
+        [InlineData(Status.Init)]
+        [InlineData(Status.Process)]
+        [InlineData(Status.MTC)]
+        [InlineData(Status.Consensu)]
+        public void CancelCurrentAsyncRun(Status status)
         {
-            // Arrange & Act
+            /// NOTE
+            /// 
+            /// This test (for all InlineData) always passes successfully.
+            /// However, it sometimes fails on Appveyor for unknown reasons.
+            /// When it fails on Appveyor, a re-build of the PR always passes
+            /// the failing test. Therefore, to prevent such fails, this unit
+            /// test re-tries it for a number of time before failing it.
+            /// ______________________________________________________________
+
+            // Arrange
             int c = 10000;
-            _cancelOnMessage = cancelOnMessage;
-            var results = RunThenCancelMSPC(c);
+            int tries = 10;
+            ReadOnlyDictionary<uint, Result<Peak>> results = null;
+            for (int i = 0; i < tries; i++)
+            {
+                // Act
+                results = RunThenCancelMSPC(c, status);
+                if (results.Count > 0 &&
+                    results[0].Chromosomes.Count > 0 &&
+                    results[0].Chromosomes.ContainsKey(_chr) &&
+                    !results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any() &&
+                    results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c)
+                    break;
+                Thread.Sleep(10000);
+            }
+
+            if (results == null)
+                throw new InvalidOperationException(
+                    string.Format("Tried CancelCurrentAsyncRun unit test on {0} status for {1} times, all tries failed.", status, tries));
 
             // Assert
             Assert.True(!results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
@@ -100,11 +174,10 @@ namespace Genometric.MSPC.Core.Tests
         public void ReportProcessIsCanceled()
         {
             // Arrange & Act
-            _cancelOnMessage = "Initializing";
-            RunThenCancelMSPC(10000);
+            RunThenCancelMSPC(10000, Status.Init);
 
             // Assert
-            Assert.Contains("Canceled current task.", status);
+            Assert.Contains("Canceled current task.", _status);
         }
 
         [Theory]
@@ -113,9 +186,9 @@ namespace Genometric.MSPC.Core.Tests
         public void RunIfAtLeastTwoInputIsGiven(int inputCount)
         {
             // Arrange
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new Mspc();
             if (inputCount == 1)
-                mspc.AddSample(0, new BED<ChIPSeqPeak>());
+                mspc.AddSample(0, new Bed<Peak>());
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
 
             // Act & Assert
@@ -129,14 +202,28 @@ namespace Genometric.MSPC.Core.Tests
         public void RunAsyncIfAtLeastTwoInputIsGiven(int inputCount)
         {
             // Arrange
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new Mspc();
             if (inputCount == 1)
-                mspc.AddSample(0, new BED<ChIPSeqPeak>());
+                mspc.AddSample(0, new Bed<Peak>());
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => mspc.RunAsync(config));
             Assert.Equal(string.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
+        }
+
+        [Fact]
+        public void GetDegreeOfParallelism()
+        {
+            // Arrange && Act
+            int dp = 123;
+            var mspc = new Mspc()
+            {
+                DegreeOfParallelism = dp
+            };
+
+            // Assert
+            Assert.Equal(mspc.DegreeOfParallelism, dp);
         }
     }
 }

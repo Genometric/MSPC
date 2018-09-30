@@ -13,7 +13,7 @@ using static Genometric.MSPC.Core.Model.Messages;
 namespace Genometric.MSPC.Core.Model
 {
     public class ProcessedPeak<I> : Peak<I>, IComparable<ProcessedPeak<I>>
-            where I : IChIPSeqPeak, new()
+            where I : IPeak
     {
         public ProcessedPeak(I source, double xSquared, List<SupportingPeak<I>> supportingPeaks) :
             this(source, xSquared, supportingPeaks.AsReadOnly())

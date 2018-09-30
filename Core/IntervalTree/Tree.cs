@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Genometric.MSPC.Core.IntervalTree
 {
     internal class Tree<I>
-        where I : IChIPSeqPeak, new()
+        where I : IPeak
     {
         private Node<I> _head;
         private readonly List<I> _intervalList;

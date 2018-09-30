@@ -31,9 +31,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Genometric.GeUtilities" Version="4.0.0" />
+    <PackageReference Include="Genometric.GeUtilities" Version="5.2.0" />
     <PackageReference Include="MathNet.Numerics" Version="4.5.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
   </ItemGroup>
 
 </Project>

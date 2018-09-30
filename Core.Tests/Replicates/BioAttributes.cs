@@ -2,7 +2,7 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +16,14 @@ namespace Genometric.MSPC.Core.Tests.Replicates
         public void IfConfirmedAndDiscardedThenKeepOnlyConfirmed()
         {
             // Arrange
-            var sets = new Sets<ChIPSeqPeak>(2, ReplicateType.Biological);
+            var sets = new Sets<Peak>(2, ReplicateType.Biological);
 
-            var confirmedPeak = new ProcessedPeak<ChIPSeqPeak>(
-                new ChIPSeqPeak() { HashKey = 1 }, 10, new List<SupportingPeak<ChIPSeqPeak>>());
+            var confirmedPeak = new ProcessedPeak<Peak>(
+                new Peak(1, 10, 100), 10, new List<SupportingPeak<Peak>>());
             confirmedPeak.Classification.Add(Attributes.Confirmed);
 
-            var discardedPeak = new ProcessedPeak<ChIPSeqPeak>(
-                new ChIPSeqPeak() { HashKey = 1 }, 10, new List<SupportingPeak<ChIPSeqPeak>>());
+            var discardedPeak = new ProcessedPeak<Peak>(
+                new Peak(1, 10, 100), 10, new List<SupportingPeak<Peak>>());
             discardedPeak.Classification.Add(Attributes.Discarded);
 
             // Act

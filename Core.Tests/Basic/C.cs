@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers;
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,14 +26,14 @@ namespace Genometric.MSPC.Core.Tests.Basic
         // Sample 4: -----------------█████████----
         //                        r51
         // Sample 4: -------------███--------------
-        private static IEnumerable<ChIPSeqPeak> GetPeaks(int count)
+        private static IEnumerable<Peak> GetPeaks(int count)
         {
-            var peaks = new List<ChIPSeqPeak>() {
-                new ChIPSeqPeak() { Left = 10, Right = 20, Name = "r11", Value = 1e-18, HashKey = 1 },
-                new ChIPSeqPeak() { Left = 05, Right = 12, Name = "r21", Value = 1e-22, HashKey = 2 },
-                new ChIPSeqPeak() { Left = 08, Right = 22, Name = "r31", Value = 1e-47, HashKey = 3 },
-                new ChIPSeqPeak() { Left = 18, Right = 26, Name = "r41", Value = 1e-55, HashKey = 4 },
-                new ChIPSeqPeak() { Left = 14, Right = 16, Name = "r51", Value = 1e-61, HashKey = 5 }};
+            var peaks = new List<Peak>() {
+                new Peak(left: 10, right: 20, name: "r11", value: 1e-18),
+                new Peak(left: 05, right: 12, name: "r21", value: 1e-22),
+                new Peak(left: 08, right: 22, name: "r31", value: 1e-47),
+                new Peak(left: 18, right: 26, name: "r41", value: 1e-55),
+                new Peak(left: 14, right: 16, name: "r51", value: 1e-61)};
             return peaks.Take(count);
         }
 
@@ -58,10 +58,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             uint id = 0;
-            var mspc = new MSPC<ChIPSeqPeak>();
+            var mspc = new Mspc();
             foreach(var peak in GetPeaks(samplesCount))
             {
-                var sample = new BED<ChIPSeqPeak>();
+                var sample = new Bed<Peak>();
                 sample.Add(peak, _chr, _strand);
                 mspc.AddSample(id++, sample);
             }

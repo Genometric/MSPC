@@ -2,7 +2,7 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IntervalParsers.Model.Defaults;
+using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
@@ -12,30 +12,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class CompareProcessedPeaksByValue
     {
-        private readonly ProcessedPeak<ChIPSeqPeak> _x;
-        private readonly ProcessedPeak<ChIPSeqPeak> _y;
-
-        public CompareProcessedPeaksByValue()
+        private ProcessedPeak<Peak> GetP(int left = 1000, int right = 10000, double value = 100)
         {
-            _x = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
-            _y = new ProcessedPeak<ChIPSeqPeak>(new ChIPSeqPeak(), 10, new List<SupportingPeak<ChIPSeqPeak>>());
-
-            _x.Source.Value = 100;
-            _x.Source.Left = 1000;
-            _x.Source.Right = 10000;
-            _x.Source.HashKey = 12345;
-
-            _y.Source.Value = 100;
-            _y.Source.Left = 1000;
-            _y.Source.Right = 10000;
-            _y.Source.HashKey = 12345;
+            return new ProcessedPeak<Peak>(new Peak(left, right, value), 10, new List<SupportingPeak<Peak>>());
         }
 
         [Fact]
         public void BothAreNull()
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
+            var comparer = new CompareProcessedPeaksByValue<Peak>();
 
             // Act
             var result = comparer.Compare(null, null);
@@ -48,10 +34,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void XIsNull()
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
+            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var y = GetP();
 
             // Act
-            var result = comparer.Compare(null, _y);
+            var result = comparer.Compare(null, y);
 
             // Assert
             Assert.True(result == -1);
@@ -61,10 +48,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void YIsNull()
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
+            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var x = GetP();
 
             // Act
-            var result = comparer.Compare(_x, null);
+            var result = comparer.Compare(x, null);
 
             // Assert
             Assert.True(result == 1);
@@ -76,13 +64,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [InlineData(100, 100, 0)]
         public void CompareByValue(int xValue, int yValue, int expectedResult)
         {
-           // Arrange
-            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
-            _x.Source.Value = xValue;
-            _y.Source.Value = yValue;
+            // Arrange
+            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var x = GetP(value: xValue);
+            var y = GetP(value: yValue);
 
             // Act
-            var result = comparer.Compare(_x, _y);
+            var result = comparer.Compare(x, y);
 
             // Assert
             Assert.True(result == expectedResult);
@@ -95,12 +83,12 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void EqualValueCompareByIntervalLeft(int xLeft, int yLeft, int expectedResult)
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
-            _x.Source.Left = xLeft;
-            _y.Source.Left = yLeft;
+            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var x = GetP(left: xLeft);
+            var y = GetP(left: yLeft);
 
             // Act
-            var result = comparer.Compare(_x, _y);
+            var result = comparer.Compare(x, y);
 
             // Assert
             Assert.True(result == expectedResult);
@@ -113,12 +101,12 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void EqualValueCompareByIntervalRight(int xRight, int yRight, int expectedResult)
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<ChIPSeqPeak>();
-            _x.Source.Right = xRight;
-            _y.Source.Right = yRight;
+            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var x = GetP(right: xRight);
+            var y = GetP(right: yRight);
 
             // Act
-            var result = comparer.Compare(_x, _y);
+            var result = comparer.Compare(x, y);
 
             // Assert
             Assert.True(result == expectedResult);

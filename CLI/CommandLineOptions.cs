@@ -19,6 +19,11 @@ namespace Genometric.MSPC.CLI
             Description = "Input samples to be processed in Browser Extensible Data (BED) Format."
         };
 
+        private readonly CommandOption _cParser = new CommandOption("-p | --parser <value>", CommandOptionType.MultipleValue)
+        {
+            Description = "Sets the path to the parser configuration file in JSON."
+        };
+
         private readonly CommandOption _cReplicate = new CommandOption("-r | --replicate <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets the replicate type of samples. Possible values are: { Bio, Biological, Tec, Technical }"
@@ -69,10 +74,16 @@ namespace Genometric.MSPC.CLI
 
         public IReadOnlyList<string> Input { get { return _cInput.Values.AsReadOnly(); } }
 
+        /// <summary>
+        /// Gets the path of a parser configuration file in JSON.
+        /// </summary>
+        public string ParserConfig { get { return _cParser.Value(); } }
+
         public CommandLineOptions()
         {
             _cla = new CommandLineApplication();
             _cla.Options.Add(_cInput);
+            _cla.Options.Add(_cParser);
             _cla.Options.Add(_cReplicate);
             _cla.Options.Add(_cTauS);
             _cla.Options.Add(_cTauW);

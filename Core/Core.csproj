@@ -15,6 +15,7 @@
     <Version>3.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>Genometric</Company>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

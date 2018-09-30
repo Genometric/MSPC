@@ -71,7 +71,7 @@ for:
     - SonarScanner.MSBuild.exe end /d:"sonar.login=%sonartoken%"
   
   artifacts: 
-    - path: MSPC/bin/Release/Genometric.MSPC*.nupkg  
+    - path: Core/bin/Release/Genometric.MSPC.Core*.nupkg  
       name: MSPC
     
   deploy:

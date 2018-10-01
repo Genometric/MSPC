@@ -24,6 +24,19 @@ For details you may refer to the [MSPC publication](http://bioinformatics.oxford
 | Microsoft Windows            | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) |
 | Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) |
 
+### Use MSPC (Core) library in your .NET Core project:
+[![Latest version](https://img.shields.io/nuget/v/Genometric.MSPC.Core.svg?style=for-the-badge)](https://www.nuget.org/packages/Genometric.MSPC.Core/)
+
+```shell
+// Install from Package Manager:
+PM> Install-Package Genometric.MSPC.Core -Version 3.0.0
+
+// Install from .NET CLI:
+> dotnet add package Genometric.MSPC.Core --version 3.0.0
+```
+
+### Run MSPC (CLI) executable from command line: 
+
 - [Download the latest version from the Releases page.](https://github.com/Genometric/MSPC/releases) Extract the archive and change your directory to the extracted content folder.
 - Requirements: download and install **.NET Core Runtime** from [this page](https://www.microsoft.com/net/download).
 - Run MSPC as the following:

@@ -38,7 +38,7 @@ Remarks
 
    b. Replace the ``IntervalTreeLib`` with a built-in interval tree implementation, because `` IntervalTreeLib`` uses `` PowerCollections`` that is not .NET Core compatible;
 
-   c. Replace ``GIFP`` with ``GeUtilities``, because ``GIFP`` is not .NET Core compatible.
+   c. Replace ``GIFP`` with ``GeUtilities``, because ``GIFP`` is not .NET Core compatible [PR # 5_].
 
 2. Software engineering:
 
@@ -48,7 +48,7 @@ Remarks
 
    c. Integrate with appveyor_ and travis_, which enable continues integration and unit test all PRs;
 
-   d. Add/update license header for all the files.
+   d. Add/update license header for all the files. [PR # 14_]
 
 
 3. Architecture overhaul:
@@ -57,7 +57,7 @@ Remarks
    
    b. In addition to ``Run``, v3 implements ``RunAsync`` that runs the analysis asynchronous, which can be controlled/monitored using ``AutoResetEvent Done`` and ``AutoResetEvent Canceled`` properties. 
 
-   c. A major overhaul of how MSPC analysis results are stored. In **v2** and earlier, the results of an mspc analysis are available via an instance of ``AnalysisResult`` class. This class defines collections (e.g., dictionaries or lists) for each **classification** of peaks (e.g., stringent, weak, confirmed, or discarded), where each collection contains peaks (e.g., confirmed _) or their count (e.g., #stringent_confirmed_) under that classification. Among other design issues, this structure results in a considerable amount of hardcoded properties that is difficult to maintain and extend, while having considerable memory footprint and being suboptimal for process and retrieval. In **v3** this model is replaced by a ``Result`` class that has a dictionary of ``Sets`` (dictionary key and value are ``chr`` and ``Sets`` respectively), where ``Sets`` contains all the ``ProcessedPeak``s on that ``chr`` (see the following point). 
+   c. A major overhaul of how MSPC analysis results are stored. In **v2** and earlier, the results of an mspc analysis are available via an instance of ``AnalysisResult`` class. This class defines collections (e.g., dictionaries or lists) for each **classification** of peaks (e.g., stringent, weak, confirmed, or discarded), where each collection contains peaks (e.g., confirmed _) or their count (e.g., #stringent_confirmed_) under that classification. Among other design issues, this structure results in a considerable amount of hardcoded properties that is difficult to maintain and extend, while having considerable memory footprint and being suboptimal for process and retrieval. In **v3** this model is replaced by a ``Result`` class that has a dictionary of ``Sets`` (dictionary key and value are ``chr`` and ``Sets`` respectively), where ``Sets`` contains all the ``ProcessedPeak``s on that ``chr`` (see the following point). [PR # 10_, 11_, 12_, 17_, and 18_]
 
    d. The ``MChIPSeqPeak`` and ``ProcessedPeak`` classes are replaced by a new ``ProcessedPeak`` class, which among other changes, it has a ``Classification`` property that stores all its attributes (e.g., stringent, confirmed, and true-positive).
 
@@ -138,5 +138,12 @@ Remarks
 .. _appveyor: https://www.appveyor.com
 .. _travis: https://travis-ci.org
 .. _codecov: https://codecov.io
+.. _5: https://github.com/Genometric/MSPC/pull/5
+.. _10: https://github.com/Genometric/MSPC/pull/10
+.. _11: https://github.com/Genometric/MSPC/pull/11
+.. _12: https://github.com/Genometric/MSPC/pull/12
+.. _14: https://github.com/Genometric/MSPC/pull/14
+.. _17: https://github.com/Genometric/MSPC/pull/17
+.. _18: https://github.com/Genometric/MSPC/pull/18
 .. _confirmed: https://github.com/Genometric/MSPC/blob/746f8d719804bed5ff62893f6d22a1428ef5f13c/MSPCCLI/MSPCWarehouse/AnalysisResult.cs#L38 
 .. _#stringent_confirmed: https://github.com/Genometric/MSPC/blob/746f8d719804bed5ff62893f6d22a1428ef5f13c/MSPCCLI/MSPCWarehouse/AnalysisResult.cs#L132

@@ -13,6 +13,9 @@ matrix:
       - dotnet test Core.Tests/Core.Tests.csproj
       
     - language: node_js
+      type:
+        only:
+          - push
       node_js:
         - '8'
       cache:

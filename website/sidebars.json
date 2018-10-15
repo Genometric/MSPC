@@ -1,0 +1,13 @@
+{
+  "docs": {
+    "Getting Started": [
+        "welcome",
+        "quick_start",
+        "installation"
+    ],
+    "Guides": [
+        "args", 
+        "consensus"
+    ]
+  }
+}

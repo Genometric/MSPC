@@ -13,9 +13,6 @@ matrix:
       - dotnet test Core.Tests/Core.Tests.csproj
       
     - language: node_js
-      type:
-        only:
-          - push
       node_js:
         - '8'
       cache:
@@ -24,4 +21,4 @@ matrix:
         - git config --global user.name "${GH_NAME}"
         - git config --global user.email "${GH_EMAIL}"
         - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
-        - cd website && yarn install && GIT_USER="${GH_NAME}" yarn run publish-gh-pages
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd website && yarn install && GIT_USER="${GH_NAME}" yarn run publish-gh-pages; fi'

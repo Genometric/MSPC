@@ -14,15 +14,15 @@ dotnet .\CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4 -g 1E-9 -c 2 -a 
 
 ## Arguments Quick Reference
 
-| Argument | Type | short argument | long argument | valid values | default value |
-| -------- | ---- | -------------- | ------------- | ------------ | ------------- |
-| [Input](#input)          | Required | -i | -input | BED file | none |
-| [Replicate Type](#replicate-type) | Required | -r | -replicate | Bio, Biological, Tec, Technical | none |
-| [Stringency threshold](#stringency-threshold) | Required | -s | -tauS | Double | none |
-| [Weak threshold](#weak-threshold) | Required | -w | -tauW | Double | none |
-| [Gamma](#gamma) (combined stringency threshold) | Optional | -g | -gamma | Double | Stringency threshold |
-| [C](#c) (minimum required overlapping peaks) | Optional | -c | none | Integer | 1 |
-| [Alpha](#alpha) (BH multiple testing correction threshold) | Optional | -a | -alpha | Double | 0.05 |
+| Argument | Required | short argument | long argument | valid values | default value |
+| -------- | -------- | -------------- | ------------- | ------------ | ------------- |
+| [Input](#input)          | ✔️ | -i | -input | BED file | none |
+| [Replicate Type](#replicate-type) | ✔️ | -r | -replicate | Bio, Biological, Tec, Technical | none |
+| [Stringency threshold](#stringency-threshold) | ✔️ | -s | -tauS | Double | none |
+| [Weak threshold](#weak-threshold) | ✔️ | -w | -tauW | Double | none |
+| [Gamma](#gamma) (combined stringency threshold) |  | -g | -gamma | Double | Stringency threshold |
+| [C](#c) (minimum required overlapping peaks) |  | -c | none | Integer | 1 |
+| [Alpha](#alpha) (BH multiple testing correction threshold) |  | -a | -alpha | Double | 0.05 |
 
 
 

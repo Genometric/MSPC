@@ -27,13 +27,13 @@
             });
         </script></nav></div><div class="container mainContainer docMainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Quick Start</h1></header><article><div><span><ol>
 <li><a href="https://www.microsoft.com/net/download">Download and install</a> Microsoft .NET Core Runtime;</li>
-<li><a href="https://github.com/Genometric/MSPC/releases">Download</a> latest release of MSPC and extract executables from the zip archive;</li>
+<li><a href="https://github.com/Genometric/MSPC/releases">Download</a> the latest release of MSPC and extract executables from the zip archive;</li>
 <li><a href="http://www.bioinformatics.deib.polimi.it/genomic_computing/MSPC/packages/ENCODE_Samples.zip">Download sample data</a> and extract the archive to same path as MSPC;</li>
 <li>Run MSPC using the following command:</li>
 </ol>
 <pre><code class="hljs css language-shell">dotnet .\CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1E-4 -s 1E-8
 </code></pre>
-<p>MSPC creates a folder in the current execution path named <code>session_X_Y</code> where <code>X</code> and <code>Y</code> are execution date and time respectively. This folder contains the following files and folders:</p>
+<p>MSPC creates a folder in the current execution path named <code>session_X_Y</code>, where <code>X</code> and <code>Y</code> are execution date and time respectively. This folder contains the following files and folders:</p>
 <pre><code class="hljs css language-shell">.
 ├── ConsensusPeaks.bed
 ├── rep1
@@ -44,7 +44,7 @@
 │   ├── Stringent.bed
 │   ├── TruePositive.bed
 │   └── Weak.bed
-└── rep3
+└── rep2
     ├── Background.bed
     ├── Confirmed.bed
     ├── Discarded.bed

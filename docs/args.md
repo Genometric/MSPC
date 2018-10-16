@@ -12,9 +12,24 @@ dotnet .\CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4 -g 1E-9 -c 2 -a 
 ```
 
 
+## Arguments Quick Reference
+
+| Argument | Type | short argument | long argument | valid values | default value |
+| -------- | ---- | -------------- | ------------- | ------------ | ------------- |
+| [Input](#input)          | Required | -i | -input | BED file | none |
+| [Replicate Type](#replicate-type) | Required | -r | -replicate | Bio, Biological, Tec, Technical | none |
+| [Stringency threshold](#stringency-threshold) | Required | -s | -tauS | Double | none |
+| [Weak threshold](#weak-threshold) | Required | -w | -tauW | Double | none |
+| [Gamma](#gamma) (combined stringency threshold) | Optional | -g | -gamma | Double | Stringency threshold |
+| [C](#c) (minimum required overlapping peaks) | Optional | -c | none | Integer | 1 |
+| [Alpha](#alpha) (BH multiple testing correction threshold) | Optional | -a | -alpha | Double | 0.05 |
+
+
+
 ## Arguments
 In the following we explain arguments in details. 
-### 1. Input
+
+### Input
 Method A: Sample files are listed with the character '&' as separator between them. <br/>
 Method B: Sample files are listed after the '-i' argument.
 
@@ -28,7 +43,7 @@ Example:
     dotnet .\CLI.dll -i rep1.bed -i rep2.bed -i rep3.bed
 
 
-### 2. Replicate Type
+### Replicate Type
 Samples could be biological or technical replicates. The algorithm differentiates between the two replicate types based on the fact that less variations between technical replicates is expected compared to biological replicates. Replicate type can be specified using the following argument:
 
 | Short | Long | Type | Valid values | Default value |
@@ -41,7 +56,7 @@ Example:
     dotnet .\CLI.dll -i rep1.bed -i rep2.bed -i rep3.bed -r biological
 
 
-### 3. Stringency Threshold
+### Stringency Threshold
 It specifies the threshold for stringent peaks. Any peak with p-value lower than this threshold is set as stringent peak.
 
 | Short | Long | Type | Valid values | Default value |
@@ -53,7 +68,7 @@ Example:
     dotnet .\CLI.dll -i rep1.bed -i rep2.bed -s 1E-8
 
 
-### 4. Weak Threshold
+### Weak Threshold
 It specifies the threshold for weak peaks. Any peak with p-value lower than this threshold and higher or equal to the Stringency Threshold is set as weak peak; any peak with p-value higher than this threshold is discarded.
 
 | Short | Long | Type | Valid values | Default value |
@@ -65,7 +80,7 @@ Example:
     dotnet .\CLI.dll -i rep1.bed -i rep2.bed -w 1E-4
 
 
-### 5. Gamma
+### Gamma
 It sets the combined stringency threshold. Peaks with combined p-value below this threshold are confirmed.
 
 | Short | Long | Type | Valid values | Default value |
@@ -77,7 +92,7 @@ Example:
     dotnet .\CLI.dll -i rep1.bed -i rep2.bed -g 1E-8
 
 
-### 6. C
+### C
 It specifies the minimum number of samples where overlapping peaks must be called to combine their p-value. For example, given three replicates (rep1, rep2 and rep3), if `C = 3`, a peak on rep1 must intersect with at least one peak from both rep2 and rep3 to combine their p-values, otherwise the peak is discarded; if `C = 2`, a peak on rep1 must intersect with at least one peak from either rep2 or rep3 to combine their p-values, otherwise the peak is discarded.
 
 | Short | Long | Type | Valid values | Default value |
@@ -89,7 +104,7 @@ Example:
     dotnet .\CLI.dll -i rep1.bed -i rep2.bed -c 2
 
 
-### 7. Alpha
+### Alpha
 Threshold for Benjamini-Hochberg multiple testing correction.
 
 | Short | Long | Type | Valid values | Default value |

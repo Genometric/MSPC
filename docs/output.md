@@ -1,5 +1,5 @@
 ---
-title: Input
+title: Output
 ---
 
 MSPC `CLI` outputs different classifications of peaks (e.g., stringent, weak, stringent-confirmed,

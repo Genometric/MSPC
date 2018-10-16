@@ -14,7 +14,7 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4 -g 1E-9 -c 2 -a 0.
 
 ## Arguments Quick Reference
 
-| Argument | Required | short arg | long arg | valid values | default value |
+| Argument | Required | Short arg | Long arg | Valid Values | Default Value |
 | -------- | -------- | -------------- | ------------- | ------------ | ------------- |
 | [Input](#input)          | ✓ | `-i` | `--input` | BED file | none |
 | [Replicate Type](#replicate-type) | ✓ | `-r` | `--replicate` | bio, tec | none |

@@ -4,7 +4,7 @@ title: Quick Start
 
 1. [Download and install](https://www.microsoft.com/net/download) Microsoft .NET Core Runtime;
 2. [Download](https://github.com/Genometric/MSPC/releases) the latest release of MSPC and extract executables from the zip archive;
-3. [Download sample data](https://github.com/Genometric/MSPC/raw/dev/Downloads/demo_data.zip) and extract the archive to same path as MSPC;
+3. [Download sample data](https://github.com/Genometric/MSPC/raw/dev/Downloads/demo_data.zip) and extract the archive to the same path as MSPC;
 4. Run MSPC using the following command:
 
 ```shell

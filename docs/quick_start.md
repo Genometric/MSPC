@@ -34,7 +34,9 @@ MSPC creates a folder in the current execution path named `session_X_Y`, where `
     └── Weak.bed
 ```
 
-## Remarks
+## See Also
+
+- [Input file format](input.md)
 
 
 ## Input

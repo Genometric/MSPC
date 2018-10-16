@@ -5,11 +5,14 @@
         "quick_start",
         "installation"
     ],
-    "Guides": [
+    "CLI": [
         "input",
         "output",
         "args", 
         "consensus"
+    ],
+    "Core": [
+      
     ]
   }
 }

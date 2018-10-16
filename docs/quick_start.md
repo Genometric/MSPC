@@ -39,16 +39,6 @@ MSPC creates a folder in the current execution path named `session_X_Y`, where `
 - [Input file format](input.md)
 
 
-## Input
-MSPC takes as input a BED file for each replicate, each containing enriched regions (aka _peaks_) called with a permissive p-value threshold. The columns of the BED files should comply the field order defined on Ensembl:
-1. chrom;
-2. chromStart;
-3. chromEnd;
-4. name; 
-5. score (p-value). 
-
-The p-value needs to be in **-Log10(p-value)** format. More columns can be present, but they are not considered.
-
 ## Output
 MSPC outputs different classifications of peaks (e.g., stringent, weak, stringent-confirmed, weak-discarded) into merged and separated BED files. An output BED file contains all parsed information of a peak (i.e., chr, chromStart, chromEnd, name, and p-value) plus the combined significance and corresponding right-tail probability. An example is as follows: 
 

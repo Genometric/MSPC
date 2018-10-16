@@ -11,10 +11,27 @@ title: Quick Start
 dotnet .\CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1E-4 -s 1E-8
 ```
 
-MSPC produces the following output:
+MSPC creates a folder in the current execution path named `session_X_Y` where `X` and `Y` are execution date and time respectively. This folder contains the following files and folders:
 
 ```shell
-TO BE ADDED
+.
+├── ConsensusPeaks.bed
+├── rep1
+│   ├── Background.bed
+│   ├── Confirmed.bed
+│   ├── Discarded.bed
+│   ├── FalsePositive.bed
+│   ├── Stringent.bed
+│   ├── TruePositive.bed
+│   └── Weak.bed
+└── rep3
+    ├── Background.bed
+    ├── Confirmed.bed
+    ├── Discarded.bed
+    ├── FalsePositive.bed
+    ├── Stringent.bed
+    ├── TruePositive.bed
+    └── Weak.bed
 ```
 
 ## Remarks

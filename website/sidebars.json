@@ -5,11 +5,13 @@
         "quick_start",
         "installation"
     ],
+    "Method": [
+        "method/consensus"
+    ],
     "CLI": [
         "cli/input",
         "cli/output",
-        "cli/args", 
-        "consensus"
+        "cli/args"
     ],
     "Core": [
       

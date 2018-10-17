@@ -4,8 +4,8 @@
 <url> <loc>https://genometric.github.io/MSPC/docs/cli/args</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/cli/args" /> </url>
 <url> <loc>https://genometric.github.io/MSPC/docs/cli/input</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/cli/input" /> </url>
 <url> <loc>https://genometric.github.io/MSPC/docs/cli/output</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/cli/output" /> </url>
-<url> <loc>https://genometric.github.io/MSPC/docs/consensus</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/consensus" /> </url>
 <url> <loc>https://genometric.github.io/MSPC/docs/installation</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/installation" /> </url>
+<url> <loc>https://genometric.github.io/MSPC/docs/method/consensus</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/method/consensus" /> </url>
 <url> <loc>https://genometric.github.io/MSPC/docs/quick_start</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/quick_start" /> </url>
 <url> <loc>https://genometric.github.io/MSPC/docs/welcome</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/welcome" /> </url>
 </urlset>

@@ -6,9 +6,9 @@
         "installation"
     ],
     "CLI": [
-        "input",
-        "output",
-        "args", 
+        "cli/input",
+        "cli/output",
+        "cli/args", 
         "consensus"
     ],
     "Core": [

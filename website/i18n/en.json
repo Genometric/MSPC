@@ -5,8 +5,14 @@
     "previous": "Previous",
     "tagline": "Using combined evidence from replicates to evaluate ChIP-seq peaks",
     "docs": {
-      "args": {
+      "cli/args": {
         "title": "Arguments"
+      },
+      "cli/input": {
+        "title": "Input"
+      },
+      "cli/output": {
+        "title": "Output"
       },
       "consensus": {
         "title": "Consensus peaks"
@@ -28,7 +34,8 @@
     },
     "categories": {
       "Getting Started": "Getting Started",
-      "Guides": "Guides"
+      "CLI": "CLI",
+      "Core": "Core"
     }
   },
   "pages-strings": {

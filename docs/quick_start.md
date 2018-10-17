@@ -36,21 +36,6 @@ MSPC creates a folder in the current execution path named `session_X_Y`, where `
 
 ## See Also
 
+- [Welcome page](welcome.md)
 - [Input file format](input.md)
 - [Output files](output.md)
-
-
-## Arguments
-You may consider following table for quick start, a detailed description of arguments are available at [this page](Arguments-in-details).
-
-
-
-| Argument | Type | short argument | long argument | valid values | default value |
-| -------- | ---- | -------------- | ------------- | ------------ | ------------- |
-| Input          | Required | -i | -input | BED file | none |
-| Replicate Type | Required | -r | -replicate | Bio, Biological, Tec, Technical | none |
-| Stringency threshold | Required | -s | -tauS | Double | none |
-| Weak threshold | Required | -w | -tauW | Double | none |
-| Gamma (combined stringency threshold) | Optional | -g | -gamma | Double | Stringency threshold |
-| C (minimum required overlapping peaks) | Optional | -c | none | Integer | 1 |
-| Alpha (BH multiple testing correction threshold) | Optional | -a | -alpha | Double | 0.05 |

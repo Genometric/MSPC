@@ -10,6 +10,7 @@
         "method/consensus"
     ],
     "CLI": [
+		"cli/about",
         "cli/input",
         "cli/output",
         "cli/args"

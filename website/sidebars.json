@@ -10,14 +10,14 @@
         "method/consensus"
     ],
     "CLI": [
-		"cli/about",
+        "cli/about",
         "cli/input",
         "cli/output",
         "cli/args"
     ],
     "Library": [
-		"library/about",
-		"library/basic_invocation"
+        "library/about",
+        "library/basic_invocation"
     ]
   }
 }

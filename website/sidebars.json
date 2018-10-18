@@ -15,8 +15,8 @@
         "cli/output",
         "cli/args"
     ],
-    "Core": [
-      
+    "Library": [
+		"library/about"
     ]
   }
 }

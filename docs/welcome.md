@@ -12,5 +12,5 @@ MSPC can be used from:
 - [**Command Line Interface (CLI)**](cli/about.md): call MSPC CLI from your favorite terminal with necessary 
 arguments, and it writes the analysis results to BED files.
 
-- **As a library in your project**: call it from your program using your data types (or 
+- [**As a library in your project**](library/about.md): call it from your program using your data types (or 
 built-in types), and it will return analysis results to your program. 

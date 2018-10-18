@@ -9,7 +9,7 @@ weak peaks; hence reducing false-negatives.
 
 MSPC can be used from: 
 
-- [**Command Line Interface (CLI)**](/cli/args): call MSPC CLI from your favorite terminal with necessary 
+- [**Command Line Interface (CLI)**](cli/args.md): call MSPC CLI from your favorite terminal with necessary 
 arguments, and it writes the analysis results to BED files.
 
 - **As a library in your project**: call it from your program using your data types (or 

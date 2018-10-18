@@ -114,18 +114,3 @@ Threshold for Benjamini-Hochberg multiple testing correction.
 Example:
 
     dotnet .\CLI.dll -i rep1.bed -i rep2.bed -a 0.05
-
-
-## Output
-For each sample, the following bed files are created in a folder named as the sample:
-
-| File name      | Description |
-| -------------- | ----------- |
-| Background     | Peaks with p-value above the weak threshold (i.e., `-w`). | 
-| Confirmed      | Stringent confirmed and weak confirmed peaks. |
-| Discarded      | Stringent and weak discarded peaks. |
-| FalsePositive  | Stringent confirmed and weak confirmed peaks that fail the Benjamini-Hochberg multiple testing correction. |
-| Stringent      | Peaks with p-value below the stringency threshold (i.e., `-s`). |
-| TruePositive   | Stringent confirmed and weak confirmed peaks, passing the Benjamini-Hochberg multiple testing correction. |
-| Weak           | Peaks with p-value above or equal to the stringency threshold (i.e., `-s`) and below the weak threshold (i.e., `-w`). |
-

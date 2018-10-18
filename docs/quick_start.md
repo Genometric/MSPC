@@ -37,5 +37,5 @@ MSPC creates a folder in the current execution path named `session_X_Y`, where `
 ## See Also
 
 - [Welcome page](welcome.md)
-- [Input file format](input.md)
-- [Output files](output.md)
+- [Input file format](cli/input.md)
+- [Output files](cli/output.md)

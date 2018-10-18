@@ -16,8 +16,8 @@
         "cli/args"
     ],
     "Library": [
-		"core/about",
-		"core/basic_invocation"
+		"library/about",
+		"library/basic_invocation"
     ]
   }
 }

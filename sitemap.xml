@@ -11,5 +11,6 @@
 <url> <loc>https://genometric.github.io/MSPC/docs/method/about</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/method/about" /> </url>
 <url> <loc>https://genometric.github.io/MSPC/docs/method/consensus</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/method/consensus" /> </url>
 <url> <loc>https://genometric.github.io/MSPC/docs/quick_start</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/quick_start" /> </url>
+<url> <loc>https://genometric.github.io/MSPC/docs/sample_data</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/sample_data" /> </url>
 <url> <loc>https://genometric.github.io/MSPC/docs/welcome</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://genometric.github.io/MSPC/docs/welcome" /> </url>
 </urlset>

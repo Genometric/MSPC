@@ -28,3 +28,7 @@ and outputs ERs with false-discovery rate smaller than an adjustable threshold.
 The following figure is a schematic view of this method.
 
 ![alt text](assets/sets.svg)
+
+(The reported number of ERs in different sets in this figure, are based on applying
+MSPC on `wgEncodeSydhTfbsK562CmycStdAlnRep1` and `wgEncodeSydhTfbsK562CmycStdAlnRep2`
+samples using `-r bio -w 1e-4 -s 1e-8` parameters.)

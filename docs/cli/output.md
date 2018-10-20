@@ -2,20 +2,28 @@
 title: Output
 ---
 
-MSPC `CLI` outputs different classifications of peaks (e.g., stringent, weak, stringent-confirmed,
-weak-discarded) into merged and separated BED files. An output BED file contains all parsed 
-information of a peak (i.e., chr, chromStart, chromEnd, name, and p-value) plus the combined 
-significance and corresponding right-tail probability. An example is as follows: 
+MSPC `CLI` outputs each classifications of peaks (e.g., `stringent`, `weak`, `confirmed`, or
+`discarded`) in separate BED files. See the following figure for different sets and their 
+relation. 
+
+![alt text](assets/sets.svg)
+
+
+Each peak in an output BED file is represented by its parsed information (i.e., chr, chromStart, 
+chromEnd, name, and p-value) and its comparative analysis values (e.g., combined significance,
+and its right-tail probability). For instance:
 
 ```shell
 # from input:
-chr1  32600  32680  MACS_peak_4  4.08
+chr		chromStart	chromEnd	name			p-value
+chr1	32600		32680		MACS_peak_4		4.08
 
 # in the output:
-chr1  32600  32680  MACS_peak_4  4.08  222.936  46.373
+chr		chromStart	chromEnd	name			p-value		xSquared	right-tail_probability
+chr1	32600		32680		MACS_peak_4		4.08		222.936		46.373
 ```
 
-For each sample, the following bed files are created in a folder named as the sample:
+
 
 | File name      | Description |
 | -------------- | ----------- |
@@ -27,4 +35,4 @@ For each sample, the following bed files are created in a folder named as the sa
 | TruePositive   | Stringent confirmed and weak confirmed peaks, passing the Benjamini-Hochberg multiple testing correction. |
 | Weak           | Peaks with p-value above or equal to the stringency threshold (i.e., `-s`) and below the weak threshold (i.e., `-w`). |
 
-![alt text](assets/sets.svg)
+

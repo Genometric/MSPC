@@ -32,13 +32,13 @@ relation.</p>
 <p>Each peak in an output BED file is represented by its parsed information (i.e., chr, chromStart,
 chromEnd, name, and p-value) and its comparative analysis values (e.g., combined significance,
 and its right-tail probability). For instance:</p>
-<pre><code class="hljs css language-shell"><span class="hljs-meta">#</span><span class="bash"> from input:</span>
-chr     chromStart  chromEnd    name            p-value
-chr1    32600       32680       MACS_peak_4     4.08
+<pre><code class="hljs css language-shell"><span class="hljs-meta">#</span><span class="bash"> Input:</span>
+chr   chromStart   chromEnd    name     p-value
+chr1  32600        32680       peak_1   4.08
 <span class="hljs-meta">
-#</span><span class="bash"> <span class="hljs-keyword">in</span> the output:</span>
-chr     chromStart  chromEnd    name            p-value     xSquared    right-tail_probability
-chr1    32600       32680       MACS_peak_4     4.08        222.936     46.373
+#</span><span class="bash"> Output (e.g., Confirmed.bed):</span>
+chr   chromStart   chromEnd    name     p-value    xSquared     right-tail_probability
+chr1  32600        32680       peak_1   4.08       222.936      46.373
 </code></pre>
 <table>
 <thead>

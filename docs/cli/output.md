@@ -15,12 +15,12 @@ and its right-tail probability). For instance:
 
 ```shell
 # from input:
-chr		chromStart	chromEnd	name			p-value
-chr1	32600		32680		MACS_peak_4		4.08
+chr   chromStart   chromEnd    name     p-value
+chr1  32600        32680       peak_1   4.08
 
 # in the output:
-chr		chromStart	chromEnd	name			p-value		xSquared	right-tail_probability
-chr1	32600		32680		MACS_peak_4		4.08		222.936		46.373
+chr   chromStart   chromEnd    name     p-value    xSquared     right-tail_probability
+chr1  32600        32680       peak_1   4.08       222.936      46.373
 ```
 
 

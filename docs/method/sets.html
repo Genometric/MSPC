@@ -28,7 +28,7 @@
         </script></nav></div><div class="container mainContainer docMainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Sets</h1></header><article><div><span><p>MSPC rigorously combines the statistical significance of the overlapping
 enriched regions (ER), in order to &quot;rescue&quot; weak peaks, which would probably
 be discarded in a single-sample analysis, when their combined evidence
-across multiple samples is sufficiently strong. <a href="https://doi.org/10.1093/bioinformatics/btv293">Ref</a></p>
+across multiple samples is sufficiently strong. [<a href="https://doi.org/10.1093/bioinformatics/btv293">Ref</a>]</p>
 <p>MSPC takes as input, for each replicate, a list of ERs and a measure of
 their individual significance in terms of a P-value.
 Starting from a permissive call, it divides the initial ERs in &quot;stringent&quot;
@@ -37,13 +37,16 @@ the presence of overlapping enriched regions across multiple replicates.
 Non-overlapping regions can be penalised or discarded according to specific
 needs.</p>
 <p>The significance of the overlapping regions is rigorously combined with the
-[Fisher�s method(<a href="https://en.wikipedia.org/wiki/Fisher%27s_method">https://en.wikipedia.org/wiki/Fisher%27s_method</a>) to obtain
+<a href="https://en.wikipedia.org/wiki/Fisher%27s_method">Fisher's method</a> to obtain
 a global score. This score is assessed against an adjustable threshold on
 the combined evidence, and peaks in each replicate are either confirmed or
 discarded.</p>
 <p>Finally, in order to account for multiple testing correction, MSPC applies the
-<a href="https://en.wikipedia.org/wiki/False_discovery_rate#Benjamini�Hochberg_procedure">Benjamini�Hochberg procedure</a>,
+<a href="https://en.wikipedia.org/wiki/False_discovery_rate#Benjamini�Hochberg_procedure">Benjamini-Hochberg procedure</a>,
 and outputs ERs with false-discovery rate smaller than an adjustable threshold.</p>
 <p>The following figure is a schematic view of this method.</p>
 <p><img src="/MSPC/docs/assets/sets.svg" alt="alt text"></p>
+<p>(The reported number of ERs in different sets in this figure, are based on applying
+MSPC on <code>wgEncodeSydhTfbsK562CmycStdAlnRep1</code> and <code>wgEncodeSydhTfbsK562CmycStdAlnRep2</code>
+samples using <code>-r bio -w 1e-4 -s 1e-8</code> parameters.)</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/MSPC/docs/method/about"><span class="arrow-prev">← </span><span>Previous</span></a><a class="docs-next button" href="/MSPC/docs/method/consensus"><span>Next</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav docOnPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/MSPC/" class="nav-home"><img src="/MSPC/img/mspc_logo.svg" alt="MSPC" width="66" height="58"/></a><div><h5>Docs</h5><a href="/MSPC/docs/en/quick_start.html">Quick Start</a></div><div><h5>Community</h5><a href="https://github.com/Genometric/MSPC">GitHub</a></div></section><section class="copyright">Copyright © 2018 Genometric</section></footer></div></body></html>

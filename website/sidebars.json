@@ -3,7 +3,8 @@
     "Getting Started": [
         "welcome",
         "quick_start",
-        "installation"
+        "installation",
+		"sample_data"
     ],
     "Method": [
         "method/about",

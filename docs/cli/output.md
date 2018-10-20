@@ -26,3 +26,5 @@ For each sample, the following bed files are created in a folder named as the sa
 | Stringent      | Peaks with p-value below the stringency threshold (i.e., `-s`). |
 | TruePositive   | Stringent confirmed and weak confirmed peaks, passing the Benjamini-Hochberg multiple testing correction. |
 | Weak           | Peaks with p-value above or equal to the stringency threshold (i.e., `-s`) and below the weak threshold (i.e., `-w`). |
+
+![](sets.svg?raw=true)

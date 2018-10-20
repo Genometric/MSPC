@@ -7,6 +7,7 @@
     ],
     "Method": [
         "method/about",
+		"method/sets",
         "method/consensus"
     ],
     "CLI": [

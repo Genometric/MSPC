@@ -14,11 +14,11 @@ chromEnd, name, and p-value) and its comparative analysis values (e.g., combined
 and its right-tail probability). For instance:
 
 ```shell
-# from input:
+# Input:
 chr   chromStart   chromEnd    name     p-value
 chr1  32600        32680       peak_1   4.08
 
-# in the output:
+# Output (e.g., Confirmed.bed):
 chr   chromStart   chromEnd    name     p-value    xSquared     right-tail_probability
 chr1  32600        32680       peak_1   4.08       222.936      46.373
 ```

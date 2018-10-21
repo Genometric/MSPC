@@ -23,7 +23,7 @@ Peaks with `p-value >= `[`weak threshold`](cli/args.md#weak-threshold).
 
 
 ## Weak
-Peaks with [`stringency threshold`](cli/args.md#stringency-threshold)` <= p-value < [weak threshold](cli/args.md#weak-threshold)`.
+Peaks with [`stringency threshold`](cli/args.md#stringency-threshold)` <= p-value < `[`weak threshold`](cli/args.md#weak-threshold).
 
 
 ## Stringent

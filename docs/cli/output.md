@@ -22,17 +22,3 @@ chr1  32600        32680       peak_1   4.08
 chr   chromStart   chromEnd    name     p-value    xSquared     right-tail_probability
 chr1  32600        32680       peak_1   4.08       222.936      46.373
 ```
-
-
-
-| File name      | Description |
-| -------------- | ----------- |
-| Background     | Peaks with p-value above the weak threshold (i.e., `-w`). | 
-| Confirmed      | Stringent confirmed and weak confirmed peaks. |
-| Discarded      | Stringent and weak discarded peaks. |
-| FalsePositive  | Stringent confirmed and weak confirmed peaks that fail the Benjamini-Hochberg multiple testing correction. |
-| Stringent      | Peaks with p-value below the stringency threshold (i.e., `-s`). |
-| TruePositive   | Stringent confirmed and weak confirmed peaks, passing the Benjamini-Hochberg multiple testing correction. |
-| Weak           | Peaks with p-value above or equal to the stringency threshold (i.e., `-s`) and below the weak threshold (i.e., `-w`). |
-
-

@@ -17,27 +17,24 @@ result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and
 `-r bio -w 1e-4 -s 1e-8` parameters.)
 
 
-### Background
-Peaks with p-value above the [weak threshold](cli/args.md#weak-threshold): 
-`p-value >= weak threashold`
+## Background
+Peaks with `p-value >= [weak threshold](cli/args.md#weak-threshold)`.
 
 
-### Weak
-Peaks with p-value above or equal to the [stringency threshold](cli/args.md#stringency-threshold)
-and below the [weak threshold](cli/args.md#weak-threshold):
-`stringency threshold <= p-value < weak threshold`
+
+## Weak
+Peaks with `[stringency threshold](cli/args.md#stringency-threshold) <= p-value < [weak threshold](cli/args.md#weak-threshold)`.
 
 
-### Stringent
-Peaks with p-value below the [stringency threshold]((cli/args.md#stringency-threshold)):
-`p-value < stringency threshold`
+## Stringent
+Peaks with `p-value < [stringency threshold](cli/args.md#stringency-threshold)`.
 
 
-### Confirmed
+## Confirmed
 Peaks that are:
 
 1. supported by at least [`c`](cli/args.md#c) peaks from replicates, and
-2. their combined stringency satisfies the [given threshold](cli/args.md#gamma):
+2. their combined stringency (xSquared) satisfies the [given threshold](cli/args.md#gamma):
 `xSquared >= the inverse of the right-tailed probability of Gamma` and
 3. if [technical replicate](cli/args.md#replicate-type), passed all the 
 tests, and if [biological replicate](cli/args.md#replicate-type), 
@@ -50,7 +47,7 @@ passed at least one test.
 Peaks that are:
 
 1. does not have minimum required (i.e., [`c`](cli/args.md#c)) supporting evidence, or
-2. their combined stringency does not satisfy the [given threshold](cli/args.md#gamma), or
+2. their combined stringency (xSquared) does not satisfy the [given threshold](cli/args.md#gamma), or
 3. if [technical replicate](cli/args.md#replicate-type), failed a test.
 
 

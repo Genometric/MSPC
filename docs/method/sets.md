@@ -36,10 +36,10 @@ Peaks with p-value below the stringency threshold (i.e., `-s`):
 ### Confirmed
 Peaks that are:
 
-1- supported by at least `c` peaks from replicates, and
-2- their combined stringency satisfies the given threshold (i.e., `-g`): 
+1. supported by at least `c` peaks from replicates, and
+2. their combined stringency satisfies the given threshold (i.e., `-g`): 
 `xSquared >= the inverse of the right-tailed probability of Gamma` and
-3- if technical replicate, passed all the tests, and if biological 
+3. if technical replicate, passed all the tests, and if biological 
 replicate, passed at least one test.
 
 (see [method description](method/about.md))
@@ -48,9 +48,9 @@ replicate, passed at least one test.
 ### Discarded
 Peaks that are:
 
-1- does not have minimum required (i.e., `c`) supporting evidence, or
-2- their combined stringency does not satisfy the given threshold, or
-3- if technical replicate, failed a test.
+1. does not have minimum required (i.e., `c`) supporting evidence, or
+2. their combined stringency does not satisfy the given threshold, or
+3. if technical replicate, failed a test.
 
 
 ### TruePositive

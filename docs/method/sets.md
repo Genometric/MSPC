@@ -18,16 +18,16 @@ result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and
 
 
 ## Background
-Peaks with `p-value >= [weak threshold](cli/args.md#weak-threshold)`.
+Peaks with `p-value >= `[`weak threshold`](cli/args.md#weak-threshold).
 
 
 
 ## Weak
-Peaks with `[stringency threshold](cli/args.md#stringency-threshold) <= p-value < [weak threshold](cli/args.md#weak-threshold)`.
+Peaks with [`stringency threshold`](cli/args.md#stringency-threshold)` <= p-value < [weak threshold](cli/args.md#weak-threshold)`.
 
 
 ## Stringent
-Peaks with `p-value < [stringency threshold](cli/args.md#stringency-threshold)`.
+Peaks with `p-value < `[`stringency threshold`](cli/args.md#stringency-threshold).
 
 
 ## Confirmed
@@ -43,7 +43,7 @@ passed at least one test.
 (see [method description](method/about.md))
 
 
-### Discarded
+## Discarded
 Peaks that are:
 
 1. does not have minimum required (i.e., [`c`](cli/args.md#c)) supporting evidence, or
@@ -51,11 +51,11 @@ Peaks that are:
 3. if [technical replicate](cli/args.md#replicate-type), failed a test.
 
 
-### TruePositive
+## TruePositive
 The confirmed peaks that pass the Benjamini-Hochberg multiple 
 testing correction at level [`alpha`](cli/args.md#alpha).
 
 
-### FalsePositive
+## FalsePositive
 The confirmed peaks that fail Benjamini-Hochberg multiple 
 testing correction at level [`alpha`](cli/args.md#alpha).

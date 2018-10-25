@@ -79,6 +79,20 @@ specified using the following argument:</p>
 <pre><code class="hljs css language-shell">dotnet CLI.dll -i rep1.bed -i rep2.bed -r tec -w 1e-4 -s 1e-8
 dotnet CLI.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
 </code></pre>
+<h3><a class="anchor" aria-hidden="true" id="weak-threshold"></a><a href="#weak-threshold" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Weak Threshold</h3>
+<p>It sets a threshold on p-values, such that peaks with p-value between this
+and stringency threshold, are considered <a href="/MSPC/docs/method/sets#weak">weak peaks</a>.</p>
+<table>
+<thead>
+<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-w</code></td><td><code>--tauW</code></td><td>Required</td><td>Double</td><td>none</td></tr>
+</tbody>
+</table>
+<p>Example:</p>
+<pre><code class="hljs css language-shell">dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+</code></pre>
 <h3><a class="anchor" aria-hidden="true" id="stringency-threshold"></a><a href="#stringency-threshold" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Stringency Threshold</h3>
 <p>It sets a threshold on p-values, where peaks with p-value lower than
 this threshold, are considered <a href="/MSPC/docs/method/sets#stringent">stringent</a>.</p>
@@ -91,20 +105,7 @@ this threshold, are considered <a href="/MSPC/docs/method/sets#stringent">string
 </tbody>
 </table>
 <p>Example:</p>
-<pre><code class="hljs css language-shell">dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1E-8
-</code></pre>
-<h3><a class="anchor" aria-hidden="true" id="weak-threshold"></a><a href="#weak-threshold" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Weak Threshold</h3>
-<p>It specifies the threshold for weak peaks. Any peak with p-value lower than this threshold and higher or equal to the Stringency Threshold is set as weak peak; any peak with p-value higher than this threshold is discarded.</p>
-<table>
-<thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
-</thead>
-<tbody>
-<tr><td>-w</td><td>-tauW</td><td>Required</td><td>Double</td><td>none</td></tr>
-</tbody>
-</table>
-<p>Example:</p>
-<pre><code class="hljs">dotnet .\CLI.dll -i rep1.bed -i rep2.bed -w 1E-4
+<pre><code class="hljs css language-shell">dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="gamma"></a><a href="#gamma" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Gamma</h3>
 <p>It sets the combined stringency threshold. Peaks with combined p-value below this threshold are confirmed.</p>
@@ -145,4 +146,4 @@ this threshold, are considered <a href="/MSPC/docs/method/sets#stringent">string
 <p>Example:</p>
 <pre><code class="hljs">dotnet .\CLI.dll -i rep1.bed -i rep2.bed -a 0.05
 </code></pre>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/MSPC/docs/cli/output"><span class="arrow-prev">← </span><span>Previous</span></a><a class="docs-next button" href="/MSPC/docs/library/install"><span>Next</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav docOnPageNav"><ul class="toc-headings"><li><a href="#call-example-v3-and-newer">Call Example (v3 and newer):</a></li><li><a href="#arguments-quick-reference">Arguments Quick Reference</a></li><li><a href="#arguments">Arguments</a><ul class="toc-headings"><li><a href="#input">Input</a></li><li><a href="#replicate-type">Replicate Type</a></li><li><a href="#stringency-threshold">Stringency Threshold</a></li><li><a href="#weak-threshold">Weak Threshold</a></li><li><a href="#gamma">Gamma</a></li><li><a href="#c">C</a></li><li><a href="#alpha">Alpha</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/MSPC/" class="nav-home"><img src="/MSPC/img/mspc_logo.svg" alt="MSPC" width="66" height="58"/></a><div><h5>Docs</h5><a href="/MSPC/docs/en/quick_start.html">Quick Start</a></div><div><h5>Community</h5><a href="https://github.com/Genometric/MSPC">GitHub</a></div></section><section class="copyright">Copyright © 2018 Genometric</section></footer></div></body></html>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/MSPC/docs/cli/output"><span class="arrow-prev">← </span><span>Previous</span></a><a class="docs-next button" href="/MSPC/docs/library/install"><span>Next</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav docOnPageNav"><ul class="toc-headings"><li><a href="#call-example-v3-and-newer">Call Example (v3 and newer):</a></li><li><a href="#arguments-quick-reference">Arguments Quick Reference</a></li><li><a href="#arguments">Arguments</a><ul class="toc-headings"><li><a href="#input">Input</a></li><li><a href="#replicate-type">Replicate Type</a></li><li><a href="#weak-threshold">Weak Threshold</a></li><li><a href="#stringency-threshold">Stringency Threshold</a></li><li><a href="#gamma">Gamma</a></li><li><a href="#c">C</a></li><li><a href="#alpha">Alpha</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/MSPC/" class="nav-home"><img src="/MSPC/img/mspc_logo.svg" alt="MSPC" width="66" height="58"/></a><div><h5>Docs</h5><a href="/MSPC/docs/en/quick_start.html">Quick Start</a></div><div><h5>Community</h5><a href="https://github.com/Genometric/MSPC">GitHub</a></div></section><section class="copyright">Copyright © 2018 Genometric</section></footer></div></body></html>

@@ -90,15 +90,18 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 
 
 ### Gamma
-It sets the combined stringency threshold. Peaks with combined p-value below this threshold are confirmed.
+It sets the combined stringency threshold. Peaks with 
+combined p-value below this threshold are [confirmed](method/sets.md#confirmed).
 
 | Short | Long | Type | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| -g | -gamma | Optional | Double | Equal to Stringency Threshold |
+| `-g` | `--gamma` | Optional | Double | Equal to Stringency Threshold |
 
 Example:
 
-    dotnet .\CLI.dll -i rep1.bed -i rep2.bed -g 1E-8
+```shell
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1E-8
+```
 
 
 ### C

@@ -34,7 +34,7 @@ Sample files are listed after the `-i` or `--input` argument.
 
 | Short | Long | Type | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| -i | --input | Required | BED file | none |
+| `-i` | `--input` | Required | BED file | none |
 
 Example:
 
@@ -50,7 +50,7 @@ specified using the following argument:
 
 | Short | Long | Type | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| -r | --replicate | Required | Bio, Biological, Tec, Technical | none |
+| `-r` | `--replicate` | Required | `Bio`, `Biological`, `Tec`, `Technical` | none |
 
 Example:
 

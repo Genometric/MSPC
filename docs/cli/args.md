@@ -30,18 +30,17 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4 -g 1E-9 -c 2 -a 0.
 In the following we explain arguments in details. 
 
 ### Input
-Method A: Sample files are listed with the character '&' as separator between them. <br/>
-Method B: Sample files are listed after the '-i' argument.
+Sample files are listed after the '-i' argument.
 
 | Short | Long | Type | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| -i | -input | Required | any BED file in the format above specified | none |
+| -i | --input | Required | BED file | none |
 
 Example:
 
-    dotnet .\CLI.dll -i rep1.bed&rep2.bed&rep3.bed
-    dotnet .\CLI.dll -i rep1.bed -i rep2.bed -i rep3.bed
-
+```shell
+dotnet CLI.dll -i rep1.bed -i rep2.bed -i rep3.bed -r bio -w 1e-4 -s 1e-8
+```
 
 ### Replicate Type
 Samples could be biological or technical replicates. The algorithm differentiates between the two replicate types based on the fact that less variations between technical replicates is expected compared to biological replicates. Replicate type can be specified using the following argument:

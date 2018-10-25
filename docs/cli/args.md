@@ -61,15 +61,18 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
 
 
 ### Stringency Threshold
-It specifies the threshold for stringent peaks. Any peak with p-value lower than this threshold is set as stringent peak.
+It sets a threshold on p-values, where peaks with p-value lower than
+this threshold, are considered [stringent](method/sets.md#stringent).
 
 | Short | Long | Type | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| -s | -tauS | Required | Double | none |
+| `-s` | `--tauS` | Required | Double | none |
 
 Example:
 
-    dotnet .\CLI.dll -i rep1.bed -i rep2.bed -s 1E-8
+```shell
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1E-8
+```
 
 
 ### Weak Threshold

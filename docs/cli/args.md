@@ -59,6 +59,20 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r tec -w 1e-4 -s 1e-8
 dotnet CLI.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
 ```
 
+### Weak Threshold
+It sets a threshold on p-values, such that peaks with p-value between this
+and stringency threshold, are considered [weak peaks](method/sets.md#weak).
+
+| Short | Long | Type | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-w` | `--tauW` | Required | Double | none |
+
+Example:
+
+```shell
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+```
+
 
 ### Stringency Threshold
 It sets a threshold on p-values, where peaks with p-value lower than
@@ -71,20 +85,8 @@ this threshold, are considered [stringent](method/sets.md#stringent).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1E-8
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
-
-
-### Weak Threshold
-It specifies the threshold for weak peaks. Any peak with p-value lower than this threshold and higher or equal to the Stringency Threshold is set as weak peak; any peak with p-value higher than this threshold is discarded.
-
-| Short | Long | Type | Valid values | Default value |
-| ----- | ---- | ---- | ------------ | ------------- |
-| -w | -tauW | Required | Double | none |
-
-Example:
-
-    dotnet .\CLI.dll -i rep1.bed -i rep2.bed -w 1E-4
 
 
 ### Gamma

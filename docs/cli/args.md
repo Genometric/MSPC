@@ -33,9 +33,9 @@ In the following we explain arguments in details.
 ### Input
 Sample files are listed after the `-i` or `--input` argument.
 
-| Short | Long | Type | Valid values | Default value |
+| Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| `-i` | `--input` | Required | BED file | none |
+| `-i` | `--input` | ✓ | BED file | none |
 
 Example:
 
@@ -49,9 +49,9 @@ the two replicate types based on the fact that less variations between technical
 replicates is expected compared to biological replicates. Replicate type can be 
 specified using the following argument:
 
-| Short | Long | Type | Valid values | Default value |
+| Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| `-r` | `--replicate` | Required | `Bio`, `Biological`, `Tec`, `Technical` | none |
+| `-r` | `--replicate` | ✓ | `Bio`, `Biological`, `Tec`, `Technical` | none |
 
 Example:
 
@@ -64,9 +64,9 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
 It sets a threshold on p-values, such that peaks with p-value between this
 and stringency threshold, are considered [weak peaks](method/sets.md#weak).
 
-| Short | Long | Type | Valid values | Default value |
+| Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| `-w` | `--tauW` | Required | Double | none |
+| `-w` | `--tauW` | ✓ | Double | none |
 
 Example:
 
@@ -79,9 +79,9 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 It sets a threshold on p-values, where peaks with p-value lower than
 this threshold, are considered [stringent](method/sets.md#stringent).
 
-| Short | Long | Type | Valid values | Default value |
+| Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| `-s` | `--tauS` | Required | Double | none |
+| `-s` | `--tauS` | ✓ | Double | none |
 
 Example:
 
@@ -94,7 +94,7 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 It sets the combined stringency threshold. Peaks with 
 combined p-value below this threshold are [confirmed](method/sets.md#confirmed).
 
-| Short | Long | Type | Valid values | Default value |
+| Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
 | `-g` | `--gamma` | Optional | Double | Equal to Stringency Threshold |
 
@@ -114,7 +114,7 @@ p-value. Otherwise, MSPC discard the peaks. If `C = 2`, a peak on rep1
 must overlap with at least one peak from either rep2 or rep3, before
 MSPC combines their p-values; otherwise the peak is discarded.
 
-| Short | Long | Type | Valid values | Default value |
+| Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
 | `-c`  |      | Optional | Integer  | `1`           |
 
@@ -128,7 +128,7 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2
 ### Alpha
 It sets the threshold for [Benjamini-Hochberg multiple testing correction](https://en.wikipedia.org/wiki/False_discovery_rate#Benjamini–Hochberg_procedure).
 
-| Short | Long | Type | Valid values | Default value |
+| Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
 | `-a`  | `--alpha` | Optional | Double |  `0.05` |
 
@@ -143,7 +143,7 @@ When multiple peaks from a sample overlap with a given peak,
 this argument defines which of the peaks to be considered:
 the one with lowest p-value, or the one with highest p-value? 
 
-| Short | Long | Type | Valid values | Default value |
+| Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
 | `-m`  | `--multipleIntersections` | Optional | `Lowest`, `Highest` |  `Lowest` |
 

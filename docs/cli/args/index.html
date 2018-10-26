@@ -54,10 +54,10 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4 -g 1E-9 -c 2 -a 0.
 <p>Sample files are listed after the <code>-i</code> or <code>--input</code> argument.</p>
 <table>
 <thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+<tr><th>Short</th><th>Long</th><th>Required</th><th>Valid values</th><th>Default value</th></tr>
 </thead>
 <tbody>
-<tr><td><code>-i</code></td><td><code>--input</code></td><td>Required</td><td>BED file</td><td>none</td></tr>
+<tr><td><code>-i</code></td><td><code>--input</code></td><td>✓</td><td>BED file</td><td>none</td></tr>
 </tbody>
 </table>
 <p>Example:</p>
@@ -70,10 +70,10 @@ replicates is expected compared to biological replicates. Replicate type can be
 specified using the following argument:</p>
 <table>
 <thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+<tr><th>Short</th><th>Long</th><th>Required</th><th>Valid values</th><th>Default value</th></tr>
 </thead>
 <tbody>
-<tr><td><code>-r</code></td><td><code>--replicate</code></td><td>Required</td><td><code>Bio</code>, <code>Biological</code>, <code>Tec</code>, <code>Technical</code></td><td>none</td></tr>
+<tr><td><code>-r</code></td><td><code>--replicate</code></td><td>✓</td><td><code>Bio</code>, <code>Biological</code>, <code>Tec</code>, <code>Technical</code></td><td>none</td></tr>
 </tbody>
 </table>
 <p>Example:</p>
@@ -85,10 +85,10 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
 and stringency threshold, are considered <a href="/MSPC/docs/method/sets#weak">weak peaks</a>.</p>
 <table>
 <thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+<tr><th>Short</th><th>Long</th><th>Required</th><th>Valid values</th><th>Default value</th></tr>
 </thead>
 <tbody>
-<tr><td><code>-w</code></td><td><code>--tauW</code></td><td>Required</td><td>Double</td><td>none</td></tr>
+<tr><td><code>-w</code></td><td><code>--tauW</code></td><td>✓</td><td>Double</td><td>none</td></tr>
 </tbody>
 </table>
 <p>Example:</p>
@@ -99,10 +99,10 @@ and stringency threshold, are considered <a href="/MSPC/docs/method/sets#weak">w
 this threshold, are considered <a href="/MSPC/docs/method/sets#stringent">stringent</a>.</p>
 <table>
 <thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+<tr><th>Short</th><th>Long</th><th>Required</th><th>Valid values</th><th>Default value</th></tr>
 </thead>
 <tbody>
-<tr><td><code>-s</code></td><td><code>--tauS</code></td><td>Required</td><td>Double</td><td>none</td></tr>
+<tr><td><code>-s</code></td><td><code>--tauS</code></td><td>✓</td><td>Double</td><td>none</td></tr>
 </tbody>
 </table>
 <p>Example:</p>
@@ -113,7 +113,7 @@ this threshold, are considered <a href="/MSPC/docs/method/sets#stringent">string
 combined p-value below this threshold are <a href="/MSPC/docs/method/sets#confirmed">confirmed</a>.</p>
 <table>
 <thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+<tr><th>Short</th><th>Long</th><th>Required</th><th>Valid values</th><th>Default value</th></tr>
 </thead>
 <tbody>
 <tr><td><code>-g</code></td><td><code>--gamma</code></td><td>Optional</td><td>Double</td><td>Equal to Stringency Threshold</td></tr>
@@ -132,7 +132,7 @@ must overlap with at least one peak from either rep2 or rep3, before
 MSPC combines their p-values; otherwise the peak is discarded.</p>
 <table>
 <thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+<tr><th>Short</th><th>Long</th><th>Required</th><th>Valid values</th><th>Default value</th></tr>
 </thead>
 <tbody>
 <tr><td><code>-c</code></td><td></td><td>Optional</td><td>Integer</td><td><code>1</code></td></tr>
@@ -145,7 +145,7 @@ MSPC combines their p-values; otherwise the peak is discarded.</p>
 <p>It sets the threshold for <a href="https://en.wikipedia.org/wiki/False_discovery_rate#Benjamini–Hochberg_procedure">Benjamini-Hochberg multiple testing correction</a>.</p>
 <table>
 <thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+<tr><th>Short</th><th>Long</th><th>Required</th><th>Valid values</th><th>Default value</th></tr>
 </thead>
 <tbody>
 <tr><td><code>-a</code></td><td><code>--alpha</code></td><td>Optional</td><td>Double</td><td><code>0.05</code></td></tr>
@@ -160,7 +160,7 @@ this argument defines which of the peaks to be considered:
 the one with lowest p-value, or the one with highest p-value?</p>
 <table>
 <thead>
-<tr><th>Short</th><th>Long</th><th>Type</th><th>Valid values</th><th>Default value</th></tr>
+<tr><th>Short</th><th>Long</th><th>Required</th><th>Valid values</th><th>Default value</th></tr>
 </thead>
 <tbody>
 <tr><td><code>-m</code></td><td><code>--multipleIntersections</code></td><td>Optional</td><td><code>Lowest</code>, <code>Highest</code></td><td><code>Lowest</code></td></tr>

@@ -5,10 +5,7 @@ title: Arguments
 ## Call Example (v3 and newer):
 ```shell
 // minimum
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
-    
-// complete
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4 -g 1E-9 -c 2 -a 0.005
+$ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 ```
 
 

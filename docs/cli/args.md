@@ -115,7 +115,7 @@ MSPC combines their p-values; otherwise the peak is discarded.
 
 | Short | Long | Type | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| `-c`  |      | Optional | Integer  | 1             |
+| `-c`  |      | Optional | Integer  | `1`           |
 
 Example:
 
@@ -125,12 +125,14 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2
 
 
 ### Alpha
-Threshold for Benjamini-Hochberg multiple testing correction.
+It sets the threshold for [Benjamini-Hochberg multiple testing correction](https://en.wikipedia.org/wiki/False_discovery_rate#Benjamini–Hochberg_procedure).
 
 | Short | Long | Type | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| -a | -alpha | Optional | Double |  0.05 |
+| `-a`  | `--alpha` | Optional | Double |  `0.05` |
 
 Example:
 
-    dotnet .\CLI.dll -i rep1.bed -i rep2.bed -a 0.05
+```shell
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2 -a 0.05
+```

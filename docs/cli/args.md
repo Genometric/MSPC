@@ -121,7 +121,7 @@ MSPC combines their p-values; otherwise the peak is discarded.
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 2
 ```
 
 
@@ -135,7 +135,7 @@ It sets the threshold for [Benjamini-Hochberg multiple testing correction](https
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2 -a 0.05
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -a 0.05
 ```
 
 ### Multiple Intersections
@@ -150,5 +150,5 @@ the one with lowest p-value, or the one with highest p-value?
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2 -a 0.05 -m lowest
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -m lowest
 ```

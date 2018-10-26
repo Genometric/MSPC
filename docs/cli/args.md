@@ -100,20 +100,28 @@ combined p-value below this threshold are [confirmed](method/sets.md#confirmed).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1E-8
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8
 ```
 
 
 ### C
-It specifies the minimum number of samples where overlapping peaks must be called to combine their p-value. For example, given three replicates (rep1, rep2 and rep3), if `C = 3`, a peak on rep1 must intersect with at least one peak from both rep2 and rep3 to combine their p-values, otherwise the peak is discarded; if `C = 2`, a peak on rep1 must intersect with at least one peak from either rep2 or rep3 to combine their p-values, otherwise the peak is discarded.
+It sets the minimum number of overlapping peaks required before MSPC
+combines their p-value. For example, given three replicates (rep1, rep2 
+and rep3), if `C = 3`, a peak on rep1 must overlap with at least two
+peaks, one from rep2 and one from rep3, before MSPC combines their 
+p-value. Otherwise, MSPC discard the peaks. If `C = 2`, a peak on rep1 
+must overlap with at least one peak from either rep2 or rep3, before
+MSPC combines their p-values; otherwise the peak is discarded.
 
 | Short | Long | Type | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| -c | | Optional | Integer | 1 |
+| `-c`  |      | Optional | Integer  | 1             |
 
 Example:
 
-    dotnet .\CLI.dll -i rep1.bed -i rep2.bed -c 2
+```shell
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2
+```
 
 
 ### Alpha

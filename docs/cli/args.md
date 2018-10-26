@@ -23,6 +23,7 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4 -g 1E-9 -c 2 -a 0.
 | [Gamma](#gamma) |  | `-g` | `--gamma` | Double | tauS |
 | [C](#c) |  | `-c` | none | Integer | 1 |
 | [Alpha](#alpha) |  | `-a` | `--alpha` | Double | 0.05 |
+| [Multiple Intersections](#multiple-intersections) |  | `-m` | `--multipleIntersections` | `Lowest`, `Highest` |  `Lowest` |
 
 
 

@@ -136,3 +136,18 @@ Example:
 ```shell
 dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2 -a 0.05
 ```
+
+### Multiple Intersections
+When multiple peaks from a sample overlap with a given peak,
+this argument defines which of the peaks to be considered:
+the one with lowest p-value, or the one with highest p-value? 
+
+| Short | Long | Type | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-m`  | `--multipleIntersections` | Optional | `Lowest`, `Highest` |  `Lowest` |
+
+Example:
+
+```shell
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8 -c 2 -a 0.05 -m lowest
+```

@@ -17,12 +17,12 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4 -g 1E-9 -c 2 -a 0.
 | Argument | Required | Short arg | Valid Values | Default Value |
 | -------- | -------- | -------------- | ------------ | ------------- |
 | [Input](#input)          | ✓ | `-i` | BED file | none |
-| [Replicate Type](#replicate-type) | ✓ | `-r` | bio, tec | none |
-| [Stringency threshold](#stringency-threshold) | ✓ | `-s` | Double | none |
-| [Weak threshold](#weak-threshold) | ✓ | `-w` | Double | none |
-| [Gamma](#gamma) |  | `-g` | Double | tauS |
-| [C](#c) |  | `-c` | Integer | 1 |
-| [Alpha](#alpha) |  | `-a` | Double | 0.05 |
+| [Replicate Type](#replicate-type) | ✓ | `-r` | `bio`, `tec` | none |
+| [Stringency threshold](#stringency-threshold) | ✓ | `-s` | `double` | none |
+| [Weak threshold](#weak-threshold) | ✓ | `-w` | `double` | none |
+| [Gamma](#gamma) |  | `-g` | `double` | tauS |
+| [C](#c) |  | `-c` | `int` | `1` |
+| [Alpha](#alpha) |  | `-a` | `double` | `0.05` |
 | [Multiple Intersections](#multiple-intersections) |  | `-m` | `Lowest`, `Highest` |  `Lowest` |
 
 

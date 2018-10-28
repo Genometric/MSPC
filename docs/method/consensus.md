@@ -19,8 +19,6 @@ The **coordinate** of a consensus peak is the union of the coordinates of the pe
 - **Value** <br/>
 The value of each consensus peak is `X^2` which is calculated by combining the `p-value`s of the overlapping peaks using [Fisher's combined probability test](https://en.wikipedia.org/wiki/Fisher%27s_method):
 
-```math
-X_i^2 = -2 \times \sum_{i=1}^k \ln(p_i)
-```
+      X_i^2 = -2 \times \sum_{i=1}^k \ln(p_i)
 
 where `X_i^2` is the value of consensus peak `i`, and `p_i` is the p-value of overlapping peaks. For instance, the `X^2` of aforementioned consensus peaks is `163.484`, which is calculated by combining the p-values of overlapping peaks (i.e., `20.9` and `14.6`) using the [Fisher's method](https://en.wikipedia.org/wiki/Fisher%27s_method).

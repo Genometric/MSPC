@@ -30,6 +30,7 @@ const siteConfig = {
     {label: 'Documentation', doc: 'welcome'},
     {label: 'Download', href: 'https://github.com/Genometric/MSPC/releases'},
     {label: 'Questions', href: 'https://github.com/Genometric/MSPC/issues'},
+    {label: 'Publications', page: 'publications'},
   ],
 
   /* path to images for header/footer */
@@ -67,7 +68,16 @@ const siteConfig = {
   },
 
   // Add custom scripts here that would be placed in <script> tags.
-  scripts: ['https://buttons.github.io/buttons.js'],
+  scripts: ['https://buttons.github.io/buttons.js',
+     {
+         src: 'https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js',
+         async: true
+     },
+     {
+         src: 'https://badge.dimensions.ai/badge.js',
+         async: true
+     }
+  ],
 
   // On page navigation for the current documentation page.
   onPageNav: 'separate',

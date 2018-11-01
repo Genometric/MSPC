@@ -62,30 +62,31 @@ const Block = props => (
   </Container>
 );
 
-const P1 = () => (
-  <div
-    className="container paddingBottom"
-    style={{textAlign: 'left'}}>
-    <span class="__dimensions_badge_embed__" data-doi="10.1093/bioinformatics/btv293"></span>
-    <div class='altmetric-embed' data-badge-type='donut' data-doi="10.1093/bioinformatics/btv293"></div>
-    <h4>Jalili, V., Matteucci, M., Masseroli, M., & Morelli, M. J. (2015). Using combined evidence from replicates to evaluate ChIP-seq peaks. Bioinformatics, 31(17), 2761-2769.</h4>
-    
-    <MarkdownBlock>[Web](https://academic.oup.com/bioinformatics/article/31/17/2761/183989)</MarkdownBlock>
+const P1 = (props) => (
+  <div className="container">
+    <header>
+        <h4>{props.title}</h4>
+    </header>
+    <div className="content">
+        <span className="citations __dimensions_badge_embed__" data-doi={props.doi} data-style="small_circle"></span>
+        <div className='referenceCounter altmetric-embed' data-badge-type='donut' data-doi={props.doi}></div>
+        <a className="publicationLink" target="_pub" href={props.link}>{props.linkdescription}</a>
+    </div>
   </div>
 );
 
-const P2 = () => (
-  <div
-    className="container paddingBottom"
-    style={{textAlign: 'left'}}>
-    <span class="__dimensions_badge_embed__" data-doi="10.1093/bib/bbw029"></span>
-    <div class='altmetric-embed' data-badge-type='donut' data-doi="10.1093/bib/bbw029"></div>
-    <h4>Jalili, V., Matteucci, M., Morelli, M. J., & Masseroli, M. (2016). MuSERA: multiple sample enriched region assessment. Briefings in bioinformatics, 18(3), 367-381.</h4>
-    
-    <MarkdownBlock>[Web](https://academic.oup.com/bib/article-abstract/18/3/367/2562755)</MarkdownBlock>
-  </div>
-);
-
+//const P2 = () => (
+//  <div
+//    className="container paddingBottom"
+//    style={{textAlign: 'left'}}>
+//    <span class="__dimensions_badge_embed__" data-doi="10.1093/bib/bbw029"></span>
+//    <div class='altmetric-embed' data-badge-type='donut' data-doi="10.1093/bib/bbw029"></div>
+//    <h4>Jalili, V., Matteucci, M., Morelli, M. J., & Masseroli, M. (2016). MuSERA: multiple sample enriched region assessment. Briefings in bioinformatics, 18(3), 367-381.</h4>
+//    
+//    <MarkdownBlock>[Web](https://academic.oup.com/bib/article-abstract/18/3/367/2562755)</MarkdownBlock>
+//  </div>
+//);
+//
 
 class Index extends React.Component {
   render() {
@@ -94,9 +95,8 @@ class Index extends React.Component {
     return (
       <div>
         <HomeSplash language={language} />
-        <div className="mainContainer">
-          <P1 />
-          <P2 />
+        <div className="mainContainer publications">
+          <P1 title="Jalili, V., Matteucci, M., Masseroli, M., & Morelli, M. J. (2015). Using combined evidence from replicates to evaluate ChIP-seq peaks. Bioinformatics, 31(17), 2761-2769." doi="10.1093/bioinformatics/btv293" link="https://academic.oup.com/bioinformatics/article/31/17/2761/183989" linkdescription="Web" />
         </div>
       </div>
     );

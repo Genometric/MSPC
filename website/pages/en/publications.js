@@ -97,6 +97,8 @@ class Index extends React.Component {
         <HomeSplash language={language} />
         <div className="mainContainer publications">
           <P1 title="Jalili, V., Matteucci, M., Masseroli, M., & Morelli, M. J. (2015). Using combined evidence from replicates to evaluate ChIP-seq peaks. Bioinformatics, 31(17), 2761-2769." doi="10.1093/bioinformatics/btv293" link="https://academic.oup.com/bioinformatics/article/31/17/2761/183989" linkdescription="Web" />
+        
+          <P1 title="Jalili, V., Matteucci, M., Morelli, M. J., & Masseroli, M. (2016). MuSERA: multiple sample enriched region assessment. Briefings in bioinformatics, 18(3), 367-381." doi="10.1093/bib/bbw029" link="https://academic.oup.com/bib/article-abstract/18/3/367/2562755" linkdescription="Web" />
         </div>
       </div>
     );

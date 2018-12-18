@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Basic Invocation · MSPC</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Using combined evidence from replicates to evaluate ChIP-seq peaks"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Basic Invocation · MSPC"/><meta property="og:type" content="website"/><meta property="og:url" content="https://genometric.github.io/MSPC/index.html"/><meta property="og:description" content="Using combined evidence from replicates to evaluate ChIP-seq peaks"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/MSPC/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/sunburst.min.css"/><script>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Basic Invocation · MSPC</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="In general, a basic invocation on MSPC `Core` consists of three steps: "/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Basic Invocation · MSPC"/><meta property="og:type" content="website"/><meta property="og:url" content="https://genometric.github.io/MSPC/index.html"/><meta property="og:description" content="In general, a basic invocation on MSPC `Core` consists of three steps: "/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/MSPC/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/sunburst.min.css"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -33,4 +33,62 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer docMainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Basic Invocation</h1></header><article><div><span></span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/MSPC/docs/library/install"><span class="arrow-prev">← </span><span>Previous</span></a></div><p style="font-size:12px;text-align:right"><strong>Last updated: </strong>2018-10-20 03:33:01</p></div></div><nav class="onPageNav docOnPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/MSPC/" class="nav-home"><img src="/MSPC/img/mspc_logo.svg" alt="MSPC" width="66" height="58"/></a><div><h5>Docs</h5><a href="/MSPC/docs/en/quick_start.html">Quick Start</a></div><div><h5>Community</h5><a href="https://github.com/Genometric/MSPC">GitHub</a></div></section><section class="copyright">Copyright © 2018 Genometric</section></footer></div></body></html>
+        </script></nav></div><div class="container mainContainer docMainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Basic Invocation</h1></header><article><div><span><p>In general, a basic invocation on MSPC <code>Core</code> consists of three steps:</p>
+<ol>
+<li>Parse input samples;</li>
+<li>Setup a <code>Config</code> object, specifying basic analysis parameters;</li>
+<li>Initialize an instance of <code>Mspc</code> class, add all input samples, and call <code>Run</code> function.</li>
+</ol>
+<pre><code class="hljs css language-csharp"><span class="hljs-comment">//</span>
+<span class="hljs-comment">// First;</span>
+<span class="hljs-comment">// parse input samples using Genometric.GeUtilities</span>
+<span class="hljs-comment">// available on NuGet:  https://www.nuget.org/packages/Genometric.GeUtilities/</span>
+<span class="hljs-comment">// you may use a code similar to the following:</span>
+<span class="hljs-keyword">var</span> bedParser = <span class="hljs-keyword">new</span> BedParser();
+<span class="hljs-keyword">var</span> sample = bedParser.Parse(fileName);
+
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// Second;</span>
+<span class="hljs-comment">// Configure options</span>
+<span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> Config(
+    c: <span class="hljs-number">2</span>,
+    tauW: <span class="hljs-number">1E-4</span>,
+    tauS: <span class="hljs-number">1E-8</span>,
+    gamma: <span class="hljs-number">1E-8</span>,
+    alpha: <span class="hljs-number">0.05</span>F,
+    replicateType: ReplicateType.Biological,
+    multipleIntersections: MultipleIntersections.UseLowestPValue);
+
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// Third;</span>
+<span class="hljs-comment">// Initialize and call MSPC Core; you may use </span>
+<span class="hljs-comment">// a code similar to the following:</span>
+<span class="hljs-keyword">var</span> mspc = <span class="hljs-keyword">new</span> Mspc();
+mspc.AddSample(sample.FileHashKey, sample);
+<span class="hljs-keyword">var</span> results = mspc.Run(config);
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="remarks"></a><a href="#remarks" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Remarks</h2>
+<p>The afore-mentioned example uses <strong>conceret</strong> versions of the
+<code>BedParser</code> and <code>Mspc</code> class:</p>
+<ul>
+<li><a href="https://github.com/Genometric/GeUtilities/blob/30bb4691fc2ad37eda6131c6e3f3714c5464dbb4/GeUtilities/Intervals/Parsers/Bed/BedParser.cs#L10-L17"><code>BedParser</code></a>
+parses each peak in the given input sample file as a
+<a href="https://github.com/Genometric/GeUtilities/blob/30bb4691fc2ad37eda6131c6e3f3714c5464dbb4/GeUtilities/Intervals/Model/Peak.cs#L9-L54"><code>Peak</code></a>
+object, and returns a <a href="https://github.com/Genometric/GeUtilities/blob/30bb4691fc2ad37eda6131c6e3f3714c5464dbb4/GeUtilities/Intervals/Parsers/Model/Bed.cs#L9-L15"><code>Bed</code></a>
+object representing the sample file;</li>
+<li><a href="https://github.com/Genometric/MSPC/blob/be51df1fa2f37a0ded44cc8b5769864fd8c75bc9/Core/Mspc.cs#L9-L13"><code>Mspc</code></a>
+processes <a href="https://github.com/Genometric/GeUtilities/blob/30bb4691fc2ad37eda6131c6e3f3714c5464dbb4/GeUtilities/Intervals/Model/Peak.cs#L9-L54"><code>Peak</code></a>
+objects in a <a href="https://github.com/Genometric/GeUtilities/blob/30bb4691fc2ad37eda6131c6e3f3714c5464dbb4/GeUtilities/Intervals/Parsers/Model/Bed.cs#L9-L15"><code>Bed</code></a> object per sample,
+and returns analysis results in as <code>ReadOnlyDictionary&lt;uint,</code><a href="https://github.com/Genometric/MSPC/blob/be51df1fa2f37a0ded44cc8b5769864fd8c75bc9/Core/Model/Result.cs#L10-L26"><code>Result</code></a><code>&lt;Peak&gt;&gt;</code>.</li>
+</ul>
+<p>This design is to facilitate using MSPC for developers, since
+they do not need to define/implement mspc-specific models and
+can benefit from simpler function invocations.</p>
+<p>However, each of these classes implement <strong>generic</strong> versions
+that allow developers to define their own types, which makes
+it simpler to integrate MSPC into their application. For instance,
+if your peaks are represented in a different type (you use a different
+class for your peaks), you can still use MSPC to analyze your peaks
+without having to convert them to a different type, if your objects
+implement the same interface as MSPC requires.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/MSPC/docs/library/install"><span class="arrow-prev">← </span><span>Previous</span></a></div><p style="font-size:12px;text-align:right"><strong>Last updated: </strong>2018-12-18 06:26:47</p></div></div><nav class="onPageNav docOnPageNav"><ul class="toc-headings"><li><a href="#remarks">Remarks</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/MSPC/" class="nav-home"><img src="/MSPC/img/mspc_logo.svg" alt="MSPC" width="66" height="58"/></a><div><h5>Docs</h5><a href="/MSPC/docs/en/quick_start.html">Quick Start</a></div><div><h5>Community</h5><a href="https://github.com/Genometric/MSPC">GitHub</a></div></section><section class="copyright">Copyright © 2018 Genometric</section></footer></div></body></html>

@@ -19,7 +19,8 @@
     ],
     "Library": [
         "library/install",
-        "library/basic_invocation"
+        "library/basic_invocation",
+		"library/asynch_exe"
     ]
   }
 }

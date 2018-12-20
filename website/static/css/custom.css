@@ -34,3 +34,11 @@ a:hover {
 a:active {
     color: rgb(0, 161, 255);
 }
+
+.projectTitle {
+    color: white;
+}
+
+.homeContainer {
+    background: #230038;
+}

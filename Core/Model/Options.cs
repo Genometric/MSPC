@@ -16,17 +16,17 @@ namespace Genometric.MSPC.Core.Model
         /// <param name="tauW">Sets weak p-value threshold.</param>
         /// <param name="tauS">Sets stringent p-value threshold.</param>
         /// <param name="gamma">Sets combined stringency threshold.</param>
-        /// <param name="C">Sets the minimum number of samples having overlapping peaks with a given peak.</param>
+        /// <param name="c">Sets the minimum number of samples having overlapping peaks with a given peak.</param>
         /// <param name="alpha">Sets Benjamini-Hochberg multiple testing correction threshold.</param>
         /// <param name="multipleIntersections">Sets if the peak with lowest or highest p-value 
         /// should be used when multiple peaks from a sample overlap with a given peak.</param>
-        public Config(ReplicateType replicateType, double tauW, double tauS, double gamma, byte C, float alpha, MultipleIntersections multipleIntersections)
+        public Config(ReplicateType replicateType, double tauW, double tauS, double gamma, byte c, float alpha, MultipleIntersections multipleIntersections)
         {
             ReplicateType = replicateType;
             TauW = tauW;
             TauS = tauS;
             Gamma = gamma;
-            this.C = C;
+            C = c;
             Alpha = alpha;
             MultipleIntersections = multipleIntersections;
         }

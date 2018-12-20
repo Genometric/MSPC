@@ -13,8 +13,8 @@ using System.Linq;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
-    public class Exporter<P>
-        where P : IPeak
+    public class Exporter<I>
+        where I : IPeak
     {
         private readonly string _header = 
             "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
@@ -22,8 +22,8 @@ namespace Genometric.MSPC.CLI.Exporter
 
         public void Export(
             Dictionary<uint, string> fileNames,
-            ReadOnlyDictionary<uint, Result<P>> results,
-            ReadOnlyDictionary<string, SortedList<P, P>> consensusPeaks,
+            ReadOnlyDictionary<uint, Result<I>> results,
+            ReadOnlyDictionary<string, SortedList<I, I>> consensusPeaks,
             Options options)
         {
             _options = options;
@@ -47,7 +47,7 @@ namespace Genometric.MSPC.CLI.Exporter
             }
         }
 
-        private void WriteToFile(string samplePath, Result<P> data, Attributes attribute)
+        private void WriteToFile(string samplePath, Result<I> data, Attributes attribute)
         {
             string filename = samplePath + Path.DirectorySeparatorChar + attribute.ToString() + ".bed";
             File.Create(filename).Dispose();
@@ -78,7 +78,7 @@ namespace Genometric.MSPC.CLI.Exporter
             }
         }
 
-        private void ExportConsensusPeaks(ReadOnlyDictionary<string, SortedList<P, P>> peaks)
+        private void ExportConsensusPeaks(ReadOnlyDictionary<string, SortedList<I, I>> peaks)
         {
             string filename = _options.Path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed";
             File.Create(filename).Dispose();

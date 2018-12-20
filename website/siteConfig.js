@@ -45,26 +45,25 @@ const siteConfig = {
   },
 
   /* Custom fonts for website */
-  /*
-  fonts: {
-    myFont: [
-      "Times New Roman",
-      "Serif"
-    ],
-    myOtherFont: [
-      "-apple-system",
-      "system-ui"
-    ]
-  },
-  */
+//  fonts: {
+//    myFont: [
+//      "Times New Roman",
+//      "Serif"
+//    ],
+//    myOtherFont: [
+//      "-apple-system",
+//      "system-ui"
+//    ]
+//  },
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
   copyright: `Copyright © ${new Date().getFullYear()} Genometric`,
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
-    // theme: 'dracula', 
-    theme: 'sunburst',
+//    theme: 'dracula',
+//    theme: 'sunburst',
+    theme: 'vs2015',
   },
 
   // Add custom scripts here that would be placed in <script> tags.

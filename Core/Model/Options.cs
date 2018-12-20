@@ -50,7 +50,7 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// Gets stringent p-value threshold.
         /// </summary>
-        public double TauS { private set; get; }
+        public double TauS { get; }
 
         /// <summary>
         /// Gets weak p-value threshold.

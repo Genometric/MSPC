@@ -16,8 +16,8 @@ namespace Genometric.MSPC.CLI.Exporter
     public class Exporter<I>
         where I : IPeak
     {
-        private readonly string _header = 
-            "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)";
+        private readonly string _header =
+            "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\tAdjustedP-value";
         private Options _options;
 
         public void Export(
@@ -72,7 +72,8 @@ namespace Genometric.MSPC.CLI.Exporter
                             item.Source.Name + "\t" +
                             ConvertPValue(item.Source.Value) + "\t" +
                             Math.Round(item.XSquared, 3) + "\t" +
-                            ConvertPValue(item.RTP));
+                            ConvertPValue(item.RTP) + "\t" +
+                            item.AdjPValue);
                     }
                 }
             }

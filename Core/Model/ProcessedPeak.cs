@@ -22,6 +22,7 @@ namespace Genometric.MSPC.Core.Model
         public ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks):
             base(source)
         {
+            AdjPValue = double.NaN;
             XSquared = xSquared;
             SupportingPeaks = supportingPeaks;
             if (double.IsNaN(xSquared))

@@ -158,7 +158,7 @@ namespace Genometric.MSPC.CLI.Tests
                 Assert.False(parsedSample.Chromosomes.ContainsKey(_chr));
             else
                 Assert.True(parsedSample.Chromosomes[_chr].Strands[_strand].Intervals.Count == count);
-            
+
             // Clean up
             Directory.Delete(path, true);
         }
@@ -186,6 +186,30 @@ namespace Genometric.MSPC.CLI.Tests
                 foreach (var file in Directory.GetFiles(sampleFolder))
                     using (StreamReader reader = new StreamReader(file))
                         Assert.NotEqual("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\tAdjustedP-value", reader.ReadLine());
+
+            // Clean up
+            Directory.Delete(path, true);
+        }
+
+        [Theory]
+        [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, double.NaN, double.NaN, 0)]
+        public void CorrectValuesForEachPropertyOfExportedPeak(
+            uint sampleID, Attributes attribute,
+            string chr, int left, int right, string name, double value, double xSqrd, double rtp, double adjustedPValue)
+        {
+            // Arrange
+            string path = RunMSPCAndExportResults();
+            string expectedLine = chr + "\t" + left + "\t" + right + "\t" + name + "\t" + value + "\t" + xSqrd + "\t" + rtp + "\t" + adjustedPValue;
+            string readLine = "";
+            var sampleFolder = Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[sampleID]); });
+            var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(attribute.ToString()); });
+
+            // Act
+            using (StreamReader reader = new StreamReader(file))
+                readLine = reader.ReadLine();
+
+            // Assert
+            Assert.Equal(expectedLine, readLine);
 
             // Clean up
             Directory.Delete(path, true);

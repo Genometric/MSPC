@@ -171,7 +171,7 @@ namespace Genometric.MSPC.CLI.Tests
             foreach (var sampleFolder in Directory.GetDirectories(path))
                 foreach (var file in Directory.GetFiles(sampleFolder))
                     using (StreamReader reader = new StreamReader(file))
-                        Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\tAdjustedP-value", reader.ReadLine());
+                        Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)", reader.ReadLine());
 
             // Clean up
             Directory.Delete(path, true);
@@ -185,7 +185,7 @@ namespace Genometric.MSPC.CLI.Tests
             foreach (var sampleFolder in Directory.GetDirectories(path))
                 foreach (var file in Directory.GetFiles(sampleFolder))
                     using (StreamReader reader = new StreamReader(file))
-                        Assert.NotEqual("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\tAdjustedP-value", reader.ReadLine());
+                        Assert.NotEqual("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)", reader.ReadLine());
 
             // Clean up
             Directory.Delete(path, true);

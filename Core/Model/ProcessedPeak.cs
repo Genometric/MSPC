@@ -76,7 +76,7 @@ namespace Genometric.MSPC.Core.Model
                    !SupportingPeaks.Except(peak.SupportingPeaks).Any() &&
                    Reason == peak.Reason &&
                    !Classification.Except(peak.Classification).Any() &&
-                   AdjPValue == peak.AdjPValue;
+                   ((double.IsNaN(AdjPValue) && double.IsNaN(peak.AdjPValue)) || AdjPValue == peak.AdjPValue);
         }
 
         public override int GetHashCode()

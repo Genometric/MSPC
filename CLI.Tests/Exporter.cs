@@ -192,7 +192,7 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
-        [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, double.NaN, double.NaN, 0)]
+        [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, double.NaN, double.NaN, double.NaN)]
         public void CorrectValuesForEachPropertyOfExportedPeak(
             uint sampleID, Attributes attribute,
             string chr, int left, int right, string name, double value, double xSqrd, double rtp, double adjustedPValue)

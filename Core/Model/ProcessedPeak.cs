@@ -71,8 +71,8 @@ namespace Genometric.MSPC.Core.Model
         {
             return obj is ProcessedPeak<I> peak &&
                    EqualityComparer<I>.Default.Equals(Source, peak.Source) &&
-                   XSquared == peak.XSquared &&
-                   RTP == peak.RTP &&
+                   ((double.IsNaN(XSquared) && double.IsNaN(peak.XSquared)) || XSquared == peak.XSquared) &&
+                   ((double.IsNaN(RTP) && double.IsNaN(peak.RTP)) || RTP == peak.RTP) &&
                    !SupportingPeaks.Except(peak.SupportingPeaks).Any() &&
                    Reason == peak.Reason &&
                    !Classification.Except(peak.Classification).Any() &&

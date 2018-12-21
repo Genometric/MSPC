@@ -29,8 +29,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
             Assert.True(r == 1);
         }
 
-        [Fact]
-        public void CompareTwoEqualInstances()
+        [Theory]
+        [InlineData(10)]
+        [InlineData(double.NaN)]
+        public void CompareTwoEqualInstances(double xSquared)
         {
             // Arrange
             var p = new Peak
@@ -54,8 +56,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
                 ), 1)
             };
 
-            var pp1 = new ProcessedPeak<Peak>(p, 10, sup);
-            var pp2 = new ProcessedPeak<Peak>(p, 10, sup);
+            var pp1 = new ProcessedPeak<Peak>(p, xSquared, sup);
+            var pp2 = new ProcessedPeak<Peak>(p, xSquared, sup);
 
             // Act
             var r = pp1.Equals(pp2);

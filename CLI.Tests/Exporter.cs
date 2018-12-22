@@ -214,5 +214,34 @@ namespace Genometric.MSPC.CLI.Tests
             // Clean up
             Directory.Delete(path, true);
         }
+
+        [Fact]
+        public void OutputIsSorted()
+        {
+            // Arrange
+            string path = RunMSPCAndExportResults();
+            var sampleFolder = Array.Find(
+                Directory.GetDirectories(path),
+                (string f) => { return f.Contains(_sidfm[1]); });
+
+            var file = Array.Find(
+                Directory.GetFiles(sampleFolder),
+                (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(Attributes.Confirmed.ToString()); });
+
+            // Act
+            string line1, line2;
+            using (var reader = new StreamReader(file))
+            {
+                line1 = reader.ReadLine();
+                line2 = reader.ReadLine();
+            }
+
+            // Assert
+            Assert.Equal("chr1\t10\t25\tr21\t8\t92.103\t0\t7.699", line1);
+            Assert.Equal("chr1\t30\t37\tr22\t5\t78.288\t0\t5", line2);
+
+            // Clean up
+            Directory.Delete(path, true);
+        }
     }
 }

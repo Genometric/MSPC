@@ -17,6 +17,7 @@
     <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
     <RootNamespace>Genometric.MSPC.CLI</RootNamespace>
     <Company>Genometric</Company>
+    <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

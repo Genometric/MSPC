@@ -90,14 +90,19 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in peaks)
                 {
-                    foreach (var item in chr.Value)
+                    var sortedPeaks = from entry
+                                      in chr.Value
+                                      orderby entry ascending
+                                      select entry;
+
+                    foreach (var peak in sortedPeaks)
                     {
                         writter.WriteLine(
                             chr.Key + "\t" +
-                            item.Value.Left.ToString() + "\t" +
-                            item.Value.Right.ToString() + "\t" +
-                            item.Value.Name + "\t" +
-                            Math.Round(item.Value.Value, 3));
+                            peak.Value.Left.ToString() + "\t" +
+                            peak.Value.Right.ToString() + "\t" +
+                            peak.Value.Name + "\t" +
+                            Math.Round(peak.Value.Value, 3));
                     }
                 }
             }

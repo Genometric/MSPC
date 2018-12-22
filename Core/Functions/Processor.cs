@@ -293,6 +293,8 @@ namespace Genometric.MSPC.Core.Functions
                             confirmedPeaks[i].Classification.Add(Attributes.TruePositive);
                         else
                             confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
+
+                        // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
                         confirmedPeaks[i].AdjPValue = confirmedPeaks[i].Source.Value * (m / (i + 1));
                     }
                     // Sorts confirmed peaks set based on coordinates using default comparer.

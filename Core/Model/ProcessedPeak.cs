@@ -57,7 +57,9 @@ namespace Genometric.MSPC.Core.Model
         public HashSet<Attributes> Classification { internal set; get; }
 
         /// <summary>
-        /// Sets and gets adjusted p-value using the multiple testing correction method of choice.
+        /// Sets and gets adjusted p-value (false discovery rate) using the 
+        /// Benjamini and Hochberg Multiple Testing Correction multiple 
+        /// testing correction.
         /// </summary>
         public double AdjPValue { internal set; get; }
 

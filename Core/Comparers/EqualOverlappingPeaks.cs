@@ -18,7 +18,13 @@ namespace Genometric.MSPC.Core.Comparers
 
         public int GetHashCode(I obj)
         {
-            return obj.GetHashCode();
+            // This function always returns
+            // `0` so that HashSet used for 
+            // consensus peaks, relies on
+            // the `Equals` function to 
+            // determin if two intervals
+            // are "equal" (aka, overlapping). 
+            return 0;
         }
     }
 }

@@ -78,16 +78,15 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void FindTwoNonOverlappingConsensusPeaks()
         {
             // Arrange and Act
-            var cPeaksCollection = GetSampleConsensusPeaks();
-            var cPeaks = new List<Peak>();
-            foreach (var cpeak in cPeaksCollection["chr1"])
-                cPeaks.Add(cpeak);
+            var cPeaks = GetSampleConsensusPeaks();
 
             // Assert
-            Assert.True(cPeaks[0].Left == 2 && cPeaks[0].Right == 26);
-            Assert.True(cPeaks[1].Left == 36 && cPeaks[1].Right == 40);
-            Assert.True(cPeaks[2].Left == 50 && cPeaks[2].Right == 60);
-            Assert.True(cPeaks[3].Left == 70 && cPeaks[3].Right == 90);
+            foreach (var peak in cPeaks["chr1"])
+                Assert.True(
+                    (peak.Left == 2 && peak.Right == 26) ||
+                    (peak.Left == 36 && peak.Right == 40) ||
+                    (peak.Left == 50 && peak.Right == 60) ||
+                    (peak.Left == 70 && peak.Right == 90));
         }
     }
 }

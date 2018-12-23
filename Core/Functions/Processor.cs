@@ -320,13 +320,6 @@ namespace Genometric.MSPC.Core.Functions
                         var interval = _peakConstructor.Construct(
                             left: peak.Left,
                             right: peak.Right,
-                            name: "MSPC_Peak",
-                            summit: (peak.Right - peak.Left) / 2,
-                            value: 0);
-
-                        I mergingPeak = _peakConstructor.Construct(
-                            left: peak.Left,
-                            right: peak.Right,
                             name: "MSPC_Peak_" + (c++),
                             summit: (peak.Right - peak.Left) / 2,
                             value: (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E));
@@ -339,14 +332,7 @@ namespace Genometric.MSPC.Core.Functions
                                 right: Math.Max(interval.Right, mergedPeak.Right),
                                 name: interval.Name,
                                 summit: interval.Summit,
-                                value: interval.Value);
-
-                            mergingPeak = _peakConstructor.Construct(
-                                left: interval.Left,
-                                right: interval.Right,
-                                name: mergedPeak.Name,
-                                summit: mergedPeak.Summit,
-                                value: mergingPeak.Value + mergedPeak.Value);
+                                value: interval.Value + mergedPeak.Value);
                         }
 
                         _mergedReplicates[chr.Key].Add(interval);

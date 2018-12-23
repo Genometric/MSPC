@@ -5,6 +5,8 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;
 
@@ -12,6 +14,40 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class TConsensusPeaks
     {
+        private ReadOnlyDictionary<string, SortedList<Peak, Peak>> GetSampleConsensusPeaks()
+        {
+            ///                 r11                 r12
+            /// Sample 0: ----▓▓▓▓▓▓--------------▓▓▓▓▓▓-----------------------
+            ///               r21         r22             r23    r24
+            /// Sample 1: --▓▓▓▓▓▓--------▓▓▓-------------░░░---▓▓▓▓▓----------
+            ///                 r31                 r32             r33
+            /// Sample 2: -▓▓▓▓▓▓▓▓▓▓▓▓-----------▓▓▓▓▓▓----------▓▓▓▓▓▓▓▓-----
+            ///
+            var s0 = new Bed<Peak>();
+            s0.Add(new Peak(10, 20, 1E-8), "chr1", '*');
+            s0.Add(new Peak(50, 60, 1E-8), "chr1", '*');
+
+            var s1 = new Bed<Peak>();
+            s1.Add(new Peak(6, 16, 1E-8), "chr1", '*');
+            s1.Add(new Peak(36, 40, 1E-8), "chr1", '*');
+            s1.Add(new Peak(64, 68, 1E-2), "chr1", '*');
+            s1.Add(new Peak(70, 80, 1E-8), "chr1", '*');
+
+            var s2 = new Bed<Peak>();
+            s2.Add(new Peak(2, 26, 1E-8), "chr1", '*');
+            s2.Add(new Peak(50, 60, 1E-8), "chr1", '*');
+            s2.Add(new Peak(76, 90, 1E-8), "chr1", '*');
+
+            var mspc = new Mspc();
+            mspc.AddSample(0, s0);
+            mspc.AddSample(1, s1);
+            mspc.AddSample(2, s2);
+
+            mspc.Run(new Config(ReplicateType.Biological, 1E-4, 1E-6, 1E-6, 1, 0.05F, MultipleIntersections.UseLowestPValue));
+
+            return mspc.GetMergedReplicates();
+        }
+
         [Theory]
         [InlineData(10, 20, 5, 15, 5, 20)]
         [InlineData(10, 20, 12, 18, 10, 20)]
@@ -36,6 +72,22 @@ namespace Genometric.MSPC.Core.Tests.Basic
 
             // Assert
             Assert.True(cp.Left == cLeft && cp.Right == cRight);
+        }
+
+        [Fact]
+        public void FindTwoNonOverlappingConsensusPeaks()
+        {
+            // Arrange and Act
+            var cPeaksCollection = GetSampleConsensusPeaks();
+            var cPeaks = new List<Peak>();
+            foreach (var cpeak in cPeaksCollection["chr1"])
+                cPeaks.Add(cpeak.Value);
+
+            // Assert
+            Assert.True(cPeaks[0].Left == 2 && cPeaks[0].Right == 26);
+            Assert.True(cPeaks[1].Left == 36 && cPeaks[1].Right == 40);
+            Assert.True(cPeaks[2].Left == 50 && cPeaks[2].Right == 60);
+            Assert.True(cPeaks[3].Left == 70 && cPeaks[3].Right == 90);
         }
     }
 }

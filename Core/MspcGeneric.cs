@@ -91,7 +91,7 @@ namespace Genometric.MSPC.Core
             return _results;
         }
 
-        public ReadOnlyDictionary<string, SortedList<I, I>> GetMergedReplicates()
+        public ReadOnlyDictionary<string, HashSet<I>> GetMergedReplicates()
         {
             return _processor.MergedReplicates;
         }

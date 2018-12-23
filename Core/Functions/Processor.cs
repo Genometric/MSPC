@@ -34,10 +34,10 @@ namespace Genometric.MSPC.Core.Functions
 
         private Dictionary<uint, Dictionary<string, Tree<I>>> _trees { set; get; }
 
-        private Dictionary<string, SortedList<I, I>> _mergedReplicates { set; get; }
-        public ReadOnlyDictionary<string, SortedList<I, I>> MergedReplicates
+        private Dictionary<string, HashSet<I>> _mergedReplicates { set; get; }
+        public ReadOnlyDictionary<string, HashSet<I>> MergedReplicates
         {
-            get { return new ReadOnlyDictionary<string, SortedList<I, I>>(_mergedReplicates); }
+            get { return new ReadOnlyDictionary<string, HashSet<I>>(_mergedReplicates); }
         }
 
         public int DegreeOfParallelism { set; get; }
@@ -305,13 +305,13 @@ namespace Genometric.MSPC.Core.Functions
 
         private void CreateConsensusPeaks()
         {
-            _mergedReplicates = new Dictionary<string, SortedList<I, I>>();
+            _mergedReplicates = new Dictionary<string, HashSet<I>>();
             foreach (var result in _analysisResults)
             {
                 foreach (var chr in result.Value.Chromosomes)
                 {
                     if (!_mergedReplicates.ContainsKey(chr.Key))
-                        _mergedReplicates.Add(chr.Key, new SortedList<I, I>(new OverlappingPeaksComparer<I>()));
+                        _mergedReplicates.Add(chr.Key, new HashSet<I>(new EqualOverlappingPeaks<I>()));
 
                     int c = 0;
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
@@ -349,7 +349,7 @@ namespace Genometric.MSPC.Core.Functions
                                 value: mergingPeak.Value + mergedPeak.Value);
                         }
 
-                        _mergedReplicates[chr.Key].Add(interval, mergingPeak);
+                        _mergedReplicates[chr.Key].Add(interval);
                     }
                 }
             }

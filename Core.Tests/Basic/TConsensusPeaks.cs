@@ -14,7 +14,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class TConsensusPeaks
     {
-        private ReadOnlyDictionary<string, SortedList<Peak, Peak>> GetSampleConsensusPeaks()
+        private ReadOnlyDictionary<string, HashSet<Peak>> GetSampleConsensusPeaks()
         {
             ///                 r11                 r12
             /// Sample 0: ----▓▓▓▓▓▓--------------▓▓▓▓▓▓-----------------------
@@ -68,7 +68,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
 
             // Act
             mspc.Run(new Config(ReplicateType.Biological, 1, 1, 1, 1, 1F, MultipleIntersections.UseLowestPValue));
-            var cp = mspc.GetMergedReplicates()["chr1"].First().Value;
+            var cp = mspc.GetMergedReplicates()["chr1"].First();
 
             // Assert
             Assert.True(cp.Left == cLeft && cp.Right == cRight);
@@ -81,7 +81,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var cPeaksCollection = GetSampleConsensusPeaks();
             var cPeaks = new List<Peak>();
             foreach (var cpeak in cPeaksCollection["chr1"])
-                cPeaks.Add(cpeak.Value);
+                cPeaks.Add(cpeak);
 
             // Assert
             Assert.True(cPeaks[0].Left == 2 && cPeaks[0].Right == 26);

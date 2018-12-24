@@ -102,7 +102,10 @@ namespace Genometric.MSPC.CLI.Exporter
                             peak.Source.Left.ToString() + "\t" +
                             peak.Source.Right.ToString() + "\t" +
                             peak.Source.Name + "\t" +
-                            Math.Round(peak.Source.Value, 3));
+                            ConvertPValue(peak.Source.Value) + "\t" +
+                            Math.Round(peak.XSquared, 3) + "\t" +
+                            ConvertPValue(peak.RTP) + "\t" +
+                            ConvertPValue(peak.AdjPValue));
                     }
                 }
             }

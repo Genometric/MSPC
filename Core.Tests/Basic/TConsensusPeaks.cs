@@ -75,7 +75,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         }
 
         [Fact]
-        public void FindTwoNonOverlappingConsensusPeaks()
+        public void CoordinatesOfConsensusPeaks()
         {
             // Arrange and Act
             var cPeaks = GetSampleConsensusPeaks();

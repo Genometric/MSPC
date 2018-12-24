@@ -91,7 +91,7 @@ namespace Genometric.MSPC.CLI.Tests
             var exporter = new Exporter<Peak>();
             var options = new Options(path, includeHeader, _attributes);
 
-            exporter.Export(_sidfm, mspc.GetResults(), mspc.GetMergedReplicates(), options);
+            exporter.Export(_sidfm, mspc.GetResults(), mspc.GetConsensusPeaks(), options);
 
             return path;
         }

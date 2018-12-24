@@ -45,7 +45,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
 
             mspc.Run(new Config(ReplicateType.Biological, 1E-4, 1E-6, 1E-6, 1, 0.05F, MultipleIntersections.UseLowestPValue));
 
-            return mspc.GetMergedReplicates();
+            return mspc.GetConsensusPeaks();
         }
 
         [Theory]
@@ -68,7 +68,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
 
             // Act
             mspc.Run(new Config(ReplicateType.Biological, 1, 1, 1, 1, 1F, MultipleIntersections.UseLowestPValue));
-            var cp = mspc.GetMergedReplicates()["chr1"].First();
+            var cp = mspc.GetConsensusPeaks()["chr1"].First();
 
             // Assert
             Assert.True(cp.Source.Left == cLeft && cp.Source.Right == cRight);

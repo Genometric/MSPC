@@ -68,7 +68,7 @@ namespace Genometric.MSPC.CLI
 
             exporter.Export(
                 _samples.ToDictionary(x => x.FileHashKey, x => x.FileName),
-                _mspc.GetResults(), _mspc.GetMergedReplicates(), options);
+                _mspc.GetResults(), _mspc.GetConsensusPeaks(), options);
         }
     }
 }

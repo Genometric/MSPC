@@ -91,9 +91,9 @@ namespace Genometric.MSPC.Core
             return _results;
         }
 
-        public ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>> GetMergedReplicates()
+        public ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>> GetConsensusPeaks()
         {
-            return _processor.MergedReplicates;
+            return _processor.ConsensusPeaks;
         }
 
         private void _doWork(object sender, DoWorkEventArgs e)

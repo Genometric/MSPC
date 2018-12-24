@@ -34,10 +34,10 @@ namespace Genometric.MSPC.Core.Functions
 
         private Dictionary<uint, Dictionary<string, Tree<I>>> _trees { set; get; }
 
-        private Dictionary<string, HashSet<I>> _mergedReplicates { set; get; }
-        public ReadOnlyDictionary<string, HashSet<I>> MergedReplicates
+        private Dictionary<string, HashSet<ProcessedPeak<I>>> _mergedReplicates { set; get; }
+        public ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>> MergedReplicates
         {
-            get { return new ReadOnlyDictionary<string, HashSet<I>>(_mergedReplicates); }
+            get { return new ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>>(_mergedReplicates); }
         }
 
         public int DegreeOfParallelism { set; get; }
@@ -305,13 +305,13 @@ namespace Genometric.MSPC.Core.Functions
 
         private void CreateConsensusPeaks()
         {
-            _mergedReplicates = new Dictionary<string, HashSet<I>>();
+            _mergedReplicates = new Dictionary<string, HashSet<ProcessedPeak<I>>>();
             foreach (var result in _analysisResults)
             {
                 foreach (var chr in result.Value.Chromosomes)
                 {
                     if (!_mergedReplicates.ContainsKey(chr.Key))
-                        _mergedReplicates.Add(chr.Key, new HashSet<I>(new EqualOverlappingPeaks<I>()));
+                        _mergedReplicates.Add(chr.Key, new HashSet<ProcessedPeak<I>>(comparer: new EqualOverlappingPeaks<I>()));
 
                     int c = 0;
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
@@ -323,19 +323,21 @@ namespace Genometric.MSPC.Core.Functions
                             name: "MSPC_Peak_" + (c++),
                             summit: (peak.Right - peak.Left) / 2,
                             value: (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E));
+                        var pp = new ProcessedPeak<I>(interval, double.NaN, new List<SupportingPeak<I>>());
 
-                        while (_mergedReplicates[chr.Key].TryGetValue(interval, out I mergedPeak))
+                        while (_mergedReplicates[chr.Key].TryGetValue(pp, out ProcessedPeak<I> mergedPeak))
                         {
-                            _mergedReplicates[chr.Key].Remove(interval);
+                            _mergedReplicates[chr.Key].Remove(pp);
                             interval = _peakConstructor.Construct(
-                                left: Math.Min(interval.Left, mergedPeak.Left),
-                                right: Math.Max(interval.Right, mergedPeak.Right),
+                                left: Math.Min(interval.Left, mergedPeak.Source.Left),
+                                right: Math.Max(interval.Right, mergedPeak.Source.Right),
                                 name: interval.Name,
                                 summit: interval.Summit,
-                                value: interval.Value + mergedPeak.Value);
+                                value: interval.Value + mergedPeak.Source.Value);
+                            pp = new ProcessedPeak<I>(interval, double.NaN, new List<SupportingPeak<I>>());
                         }
 
-                        _mergedReplicates[chr.Key].Add(interval);
+                        _mergedReplicates[chr.Key].Add(pp);
                     }
                 }
             }

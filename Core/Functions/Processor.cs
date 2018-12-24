@@ -316,13 +316,12 @@ namespace Genometric.MSPC.Core.Functions
                     int c = 0;
                     foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
                     {
-                        var peak = confirmedPeak.Source;
                         var interval = _peakConstructor.Construct(
-                            left: peak.Left,
-                            right: peak.Right,
+                            left: confirmedPeak.Source.Left,
+                            right: confirmedPeak.Source.Right,
                             name: "MSPC_Peak_" + (c++),
-                            summit: (peak.Right - peak.Left) / 2,
-                            value: (-2) * Math.Log((peak.Value == 0 ? Config.default0PValue : peak.Value), Math.E));
+                            summit: (confirmedPeak.Source.Right - confirmedPeak.Source.Left) / 2,
+                            value: (-2) * Math.Log((confirmedPeak.Source.Value == 0 ? Config.default0PValue : confirmedPeak.Source.Value), Math.E));
                         var pp = new ProcessedPeak<I>(interval, double.NaN, new List<SupportingPeak<I>>());
 
                         while (_mergedReplicates[chr.Key].TryGetValue(pp, out ProcessedPeak<I> mergedPeak))

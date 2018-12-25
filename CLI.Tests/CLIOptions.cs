@@ -76,7 +76,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             var options = new CommandLineOptions();
-            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "*").Split(' '));
+            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "*", rep3: null).Split(' '));
 
             // Assert
             Assert.True(options.Input.Count == 10);

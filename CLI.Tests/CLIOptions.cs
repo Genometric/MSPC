@@ -69,19 +69,24 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange
             var tmpPath = Path.GetTempPath();
             var tmpFiles = new List<string>();
+            string timeStamp = DateTime.Now.ToOADate().ToString();
             for (int i = 0; i < 9; i++)
-                tmpFiles.Add(tmpPath + "tmpFile_" + i + ".bed");
+                tmpFiles.Add(tmpPath + "mspc_" + timeStamp + "_" + i + ".bed");
             foreach (var file in tmpFiles)
-                File.Create(file);
+                File.Create(file).Close();
 
             // Act
             var options = new CommandLineOptions();
-            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "*", rep3: null).Split(' '));
+            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "mspc_" + timeStamp + "_*.bed", rep3: null).Split(' '));
 
             // Assert
             Assert.True(options.Input.Count == 10);
             for (int i = 0; i < 9; i++)
-                Assert.True(options.Input.Count(s => s.Contains(tmpPath + "tmpFile_" + i + ".bed")) == 1);
+                Assert.True(options.Input.Count(s => s.Contains(tmpPath + "mspc_" + timeStamp + "_" + i + ".bed")) == 1);
+
+            // Clean up
+            foreach (var file in tmpFiles)
+                File.Delete(file);
         }
 
         [Theory]

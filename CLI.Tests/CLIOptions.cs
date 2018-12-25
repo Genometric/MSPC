@@ -70,18 +70,18 @@ namespace Genometric.MSPC.CLI.Tests
             var tmpPath = Path.GetTempPath();
             var tmpFiles = new List<string>();
             for (int i = 0; i < 9; i++)
-                tmpFiles.Add(tmpPath + Path.DirectorySeparatorChar + "tmpFile_" + i + ".bed");
+                tmpFiles.Add(tmpPath + "tmpFile_" + i + ".bed");
             foreach (var file in tmpFiles)
                 File.Create(file);
 
             // Act
             var options = new CommandLineOptions();
-            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + Path.DirectorySeparatorChar + "*").Split(' '));
+            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "*").Split(' '));
 
             // Assert
             Assert.True(options.Input.Count == 10);
             for (int i = 0; i < 9; i++)
-                Assert.True(options.Input.Count(s => s.Contains(tmpPath + Path.DirectorySeparatorChar + "tmpFile_" + i + ".bed")) == 1);
+                Assert.True(options.Input.Count(s => s.Contains(tmpPath + "tmpFile_" + i + ".bed")) == 1);
         }
 
         [Theory]

@@ -4,8 +4,11 @@
 
 using Genometric.MSPC.Core.Model;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Xunit;
+using System.Linq;
 
 namespace Genometric.MSPC.CLI.Tests
 {
@@ -58,6 +61,27 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(options.Input[1] == rep2);
             if (rep3 != null)
                 Assert.True(options.Input[2] == rep3);
+        }
+
+        [Fact]
+        public void InputSpecifiedUsingWildCardCharacters()
+        {
+            // Arrange
+            var tmpPath = Path.GetTempPath();
+            var tmpFiles = new List<string>();
+            for (int i = 0; i < 9; i++)
+                tmpFiles.Add(tmpPath + Path.DirectorySeparatorChar + "tmpFile_" + i + ".bed");
+            foreach (var file in tmpFiles)
+                File.Create(file);
+
+            // Act
+            var options = new CommandLineOptions();
+            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + Path.DirectorySeparatorChar + "*").Split(' '));
+
+            // Assert
+            Assert.True(options.Input.Count == 10);
+            for (int i = 0; i < 9; i++)
+                Assert.True(options.Input.Count(s => s.Contains(tmpPath + Path.DirectorySeparatorChar + "tmpFile_" + i + ".bed")) == 1);
         }
 
         [Theory]

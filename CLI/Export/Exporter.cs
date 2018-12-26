@@ -23,7 +23,7 @@ namespace Genometric.MSPC.CLI.Exporter
         public void Export(
             Dictionary<uint, string> fileNames,
             ReadOnlyDictionary<uint, Result<I>> results,
-            ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>> consensusPeaks,
+            ReadOnlyDictionary<string, List<ProcessedPeak<I>>> consensusPeaks,
             Options options)
         {
             _options = options;
@@ -79,7 +79,7 @@ namespace Genometric.MSPC.CLI.Exporter
             }
         }
 
-        private void ExportConsensusPeaks(ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>> peaks)
+        private void ExportConsensusPeaks(ReadOnlyDictionary<string, List<ProcessedPeak<I>>> peaks)
         {
             string filename = _options.Path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed";
             File.Create(filename).Dispose();

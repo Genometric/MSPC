@@ -34,10 +34,10 @@ namespace Genometric.MSPC.Core.Functions
 
         private Dictionary<uint, Dictionary<string, Tree<I>>> _trees { set; get; }
 
-        private Dictionary<string, HashSet<ProcessedPeak<I>>> _consensusPeaks { set; get; }
-        public ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>> ConsensusPeaks
+        private Dictionary<string, List<ProcessedPeak<I>>> _consensusPeaks { set; get; }
+        public ReadOnlyDictionary<string, List<ProcessedPeak<I>>> ConsensusPeaks
         {
-            get { return new ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>>(_consensusPeaks); }
+            get { return new ReadOnlyDictionary<string, List<ProcessedPeak<I>>>(_consensusPeaks); }
         }
 
         public int DegreeOfParallelism { set; get; }

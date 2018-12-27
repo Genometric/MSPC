@@ -34,10 +34,10 @@ namespace Genometric.MSPC.Core.Functions
 
         private Dictionary<uint, Dictionary<string, Tree<I>>> _trees { set; get; }
 
-        private Dictionary<string, HashSet<ProcessedPeak<I>>> _consensusPeaks { set; get; }
-        public ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>> ConsensusPeaks
+        private Dictionary<string, List<ProcessedPeak<I>>> _consensusPeaks { set; get; }
+        public ReadOnlyDictionary<string, List<ProcessedPeak<I>>> ConsensusPeaks
         {
-            get { return new ReadOnlyDictionary<string, HashSet<ProcessedPeak<I>>>(_consensusPeaks); }
+            get { return new ReadOnlyDictionary<string, List<ProcessedPeak<I>>>(_consensusPeaks); }
         }
 
         public int DegreeOfParallelism { set; get; }
@@ -86,7 +86,7 @@ namespace Genometric.MSPC.Core.Functions
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
-            CreateConsensusPeaks();
+            _consensusPeaks = new ConsensusPeaks<I>().Compute(_analysisResults, _peakConstructor, DegreeOfParallelism);
         }
 
         private void CacheChiSqrdData()
@@ -299,45 +299,6 @@ namespace Genometric.MSPC.Core.Functions
                     }
                     // Sorts confirmed peaks set based on coordinates using default comparer.
                     confirmedPeaks.Sort();
-                }
-            }
-        }
-
-        private void CreateConsensusPeaks()
-        {
-            _consensusPeaks = new Dictionary<string, HashSet<ProcessedPeak<I>>>();
-            foreach (var result in _analysisResults)
-            {
-                foreach (var chr in result.Value.Chromosomes)
-                {
-                    if (!_consensusPeaks.ContainsKey(chr.Key))
-                        _consensusPeaks.Add(chr.Key, new HashSet<ProcessedPeak<I>>(comparer: new EqualOverlappingPeaks<I>()));
-
-                    int c = 0;
-                    foreach (var confirmedPeak in chr.Value.Get(Attributes.Confirmed))
-                    {
-                        var interval = _peakConstructor.Construct(
-                            left: confirmedPeak.Source.Left,
-                            right: confirmedPeak.Source.Right,
-                            name: "MSPC_Peak_" + (c++),
-                            summit: (confirmedPeak.Source.Right - confirmedPeak.Source.Left) / 2,
-                            value: (-2) * Math.Log((confirmedPeak.Source.Value == 0 ? Config.default0PValue : confirmedPeak.Source.Value), Math.E));
-                        var pp = new ProcessedPeak<I>(interval, double.NaN, new List<SupportingPeak<I>>());
-
-                        while (_consensusPeaks[chr.Key].TryGetValue(pp, out ProcessedPeak<I> mergedPeak))
-                        {
-                            _consensusPeaks[chr.Key].Remove(pp);
-                            interval = _peakConstructor.Construct(
-                                left: Math.Min(interval.Left, mergedPeak.Source.Left),
-                                right: Math.Max(interval.Right, mergedPeak.Source.Right),
-                                name: interval.Name,
-                                summit: interval.Summit,
-                                value: interval.Value + mergedPeak.Source.Value);
-                            pp = new ProcessedPeak<I>(interval, double.NaN, new List<SupportingPeak<I>>());
-                        }
-
-                        _consensusPeaks[chr.Key].Add(pp);
-                    }
                 }
             }
         }

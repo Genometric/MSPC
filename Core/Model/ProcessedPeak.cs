@@ -20,17 +20,24 @@ namespace Genometric.MSPC.Core.Model
         { }
 
         public ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks):
+            this(source, xSquared, supportingPeaks.Count)
+        {
+            SupportingPeaks = supportingPeaks;
+        }
+
+        public ProcessedPeak(I source, double xSquared, int supportingPeaksCount):
             base(source)
         {
             AdjPValue = double.NaN;
             XSquared = xSquared;
-            SupportingPeaks = supportingPeaks;
             if (double.IsNaN(xSquared))
                 RTP = double.NaN;
             else
-                RTP = ChiSqrd.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaks.Count * 2));
+                RTP = ChiSqrd.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaksCount * 2));
             Classification = new HashSet<Attributes>();
+            SupportingPeaks = new List<SupportingPeak<I>>().AsReadOnly();
         }
+            
 
         /// <summary>
         /// Sets and gets X-squared of test

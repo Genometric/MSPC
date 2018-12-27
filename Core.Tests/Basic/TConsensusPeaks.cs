@@ -14,7 +14,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class TConsensusPeaks
     {
-        private ReadOnlyDictionary<string, HashSet<ProcessedPeak<Peak>>> GetSampleConsensusPeaks()
+        private ReadOnlyDictionary<string, List<ProcessedPeak<Peak>>> GetSampleConsensusPeaks()
         {
             ///                 r11                 r12
             /// Sample 0: ----▓▓▓▓▓▓--------------▓▓▓▓▓▓-----------------------

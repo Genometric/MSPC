@@ -175,6 +175,9 @@ namespace Genometric.MSPC.CLI
                 }
                 else if (!int.TryParse(_cC.Value(), out _vc))
                     throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
+
+                if (_vc == 0)
+                    _vc = 1;
             }
 
             if (_cM.HasValue())

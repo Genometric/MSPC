@@ -88,7 +88,7 @@ namespace Genometric.MSPC.Core.Functions
                                 "MSPC_Peak",
                                 (peak.Key.right - peak.Key.left) / 2),
                             peak.Key.xSquard,
-                            new List<SupportingPeak<I>>()));
+                            peak.Key.involvedPeaksCount));
                     }
                 });
 

@@ -100,6 +100,7 @@ namespace Genometric.MSPC.CLI
         private int AssertArguments()
         {
             AssertRequiredArgsAreGiven();
+            ReadInputFiles();
             AssertGivenValuesAreValid();
             return 0;
         }
@@ -119,6 +120,17 @@ namespace Genometric.MSPC.CLI
                     msgBuilder.Append(item + "; ");
                 throw new ArgumentException(msgBuilder.ToString());
             }
+        }
+
+        private void ReadInputFiles()
+        {
+            _inputFiles = new List<string>();
+            foreach (var input in _cInput.Values)
+                if (input.Contains("*") || input.Contains("?"))
+                    foreach (var file in Directory.GetFiles(Path.GetDirectoryName(input), Path.GetFileName(input)))
+                        _inputFiles.Add(file);
+                else
+                    _inputFiles.Add(input);
         }
 
         private void AssertGivenValuesAreValid()
@@ -152,8 +164,18 @@ namespace Genometric.MSPC.CLI
             if (_cAlpha.HasValue() && !float.TryParse(_cAlpha.Value(), out _valpha))
                 throw new ArgumentException("Invalid value given for the `" + _cAlpha.LongName + "` argument.");
 
-            if (_cC.HasValue() && !byte.TryParse(_cC.Value(), out _vc))
-                throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
+            if (_cC.HasValue())
+            {
+                if (_cC.Value().Contains("%"))
+                {
+                    if (int.TryParse(_cC.Value().Replace("%", ""), out int percentage))
+                        _vc = (byte)((_inputFiles.Count * percentage) / 100);
+                    else
+                        throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
+                }
+                else if (!byte.TryParse(_cC.Value(), out _vc))
+                    throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
+            }
 
             if (_cM.HasValue())
                 switch (_cM.Value().ToLower())
@@ -174,14 +196,6 @@ namespace Genometric.MSPC.CLI
         public Config Parse(string[] args)
         {
             _cla.Execute(args);
-            _inputFiles = new List<string>();
-            foreach (var input in _cInput.Values)
-                if (input.Contains("*") || input.Contains("?"))
-                    foreach (var file in Directory.GetFiles(Path.GetDirectoryName(input), Path.GetFileName(input)))
-                        _inputFiles.Add(file);
-                else
-                    _inputFiles.Add(input);
-
             Options = new Config(_vreplicate, _vtauW, _vtauS, _vgamma, _vc, _valpha, _vm);
             return Options;
         }

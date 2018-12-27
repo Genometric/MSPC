@@ -21,6 +21,7 @@ namespace Genometric.MSPC.CLI.Tests
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
         private readonly List<Attributes> _attributes;
+        private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)";
 
         // Sample ID Filename Mapping
         private readonly Dictionary<uint, string> _sidfm;
@@ -171,7 +172,7 @@ namespace Genometric.MSPC.CLI.Tests
             foreach (var sampleFolder in Directory.GetDirectories(path))
                 foreach (var file in Directory.GetFiles(sampleFolder))
                     using (StreamReader reader = new StreamReader(file))
-                        Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)", reader.ReadLine());
+                        Assert.Equal(_header, reader.ReadLine());
 
             // Clean up
             Directory.Delete(path, true);
@@ -185,7 +186,7 @@ namespace Genometric.MSPC.CLI.Tests
             foreach (var sampleFolder in Directory.GetDirectories(path))
                 foreach (var file in Directory.GetFiles(sampleFolder))
                     using (StreamReader reader = new StreamReader(file))
-                        Assert.NotEqual("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)", reader.ReadLine());
+                        Assert.NotEqual(_header, reader.ReadLine());
 
             // Clean up
             Directory.Delete(path, true);
@@ -203,7 +204,7 @@ namespace Genometric.MSPC.CLI.Tests
                 line = reader.ReadLine();
 
             // Assert
-            Assert.True("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)".Equals(line) == write);
+            Assert.True(line.Equals(_header) == write);
 
             // Clean up
             Directory.Delete(path, true);

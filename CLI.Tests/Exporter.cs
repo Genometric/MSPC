@@ -164,29 +164,17 @@ namespace Genometric.MSPC.CLI.Tests
             Directory.Delete(path, true);
         }
 
-        [Fact]
-        public void WriteHeaderFileToAllExportedData()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WriteHeaderToAllExportedData(bool write)
         {
             // Arrange & Act
-            string path = RunMSPCAndExportResults(true);
+            string path = RunMSPCAndExportResults(write);
             foreach (var sampleFolder in Directory.GetDirectories(path))
                 foreach (var file in Directory.GetFiles(sampleFolder))
                     using (StreamReader reader = new StreamReader(file))
-                        Assert.Equal(_header, reader.ReadLine());
-
-            // Clean up
-            Directory.Delete(path, true);
-        }
-
-        [Fact]
-        public void NotWriteHeaderFileToAllExportedData()
-        {
-            // Arrange & Act
-            string path = RunMSPCAndExportResults();
-            foreach (var sampleFolder in Directory.GetDirectories(path))
-                foreach (var file in Directory.GetFiles(sampleFolder))
-                    using (StreamReader reader = new StreamReader(file))
-                        Assert.NotEqual(_header, reader.ReadLine());
+                        Assert.True(_header.Equals(reader.ReadLine()) == write);
 
             // Clean up
             Directory.Delete(path, true);

@@ -1,0 +1,15 @@
+===== 
+v3.1 
+=====
+
+- An overhaul on consensus peaks computation: improving performance and mode;
+- Input samples can be specified using wildcard characters;
+- The value of `C` argument can be specified as a percentage of the number of input samples;
+- Update documentation; 
+- Report BH-adjusted p-value for all the sets;
+- Report XSquared, RTP, and BH-adjusted p-value for consensus peaks;
+- Sort all output bed files;
+- Made `c` argument in the options constructor lowercase;
+- Refactor `mergedReplicates` to `ConsensusPeaks`;
+- Report `NaN` for the BH-adjusted p-value of backgroud peaks; 
+- Report BH-adjusted p-value in the `-1xlog10` format, and mention that in the column header of the exported bed files;

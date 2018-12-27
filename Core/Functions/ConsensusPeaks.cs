@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Core.Functions
 {
-    internal static class ConsensusPeaks<I>
+    internal class ConsensusPeaks<I>
         where I : IPeak
     {
-        private static Dictionary<string, SortedDictionary<Interval, Interval>> _consensusPeaks { set; get; }
+        private Dictionary<string, SortedDictionary<Interval, Interval>> _consensusPeaks { set; get; }
 
-        public static Dictionary<string, List<ProcessedPeak<I>>> Compute(
+        public Dictionary<string, List<ProcessedPeak<I>>> Compute(
             Dictionary<uint, Result<I>> analysisResults,
             IPeakConstructor<I> peakConstructor,
             int degreeOfParallelisim)
@@ -43,7 +43,7 @@ namespace Genometric.MSPC.Core.Functions
             return ConvertToListOfProcessedPeaks(peakConstructor, degreeOfParallelisim);
         }
 
-        private static void DetermineConsensusPeaks(string chr, IEnumerable<ProcessedPeak<I>> peaks)
+        private void DetermineConsensusPeaks(string chr, IEnumerable<ProcessedPeak<I>> peaks)
         {
             foreach (var confirmedPeak in peaks)
             {
@@ -67,7 +67,7 @@ namespace Genometric.MSPC.Core.Functions
             }
         }
 
-        private static Dictionary<string, List<ProcessedPeak<I>>> ConvertToListOfProcessedPeaks(IPeakConstructor<I> peakConstructor, int degreeOfParallelism)
+        private Dictionary<string, List<ProcessedPeak<I>>> ConvertToListOfProcessedPeaks(IPeakConstructor<I> peakConstructor, int degreeOfParallelism)
         {
             var rtv = new Dictionary<string, List<ProcessedPeak<I>>>();
             foreach (var chr in _consensusPeaks)

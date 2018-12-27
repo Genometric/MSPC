@@ -6,6 +6,7 @@ using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Core.Functions
@@ -73,6 +74,7 @@ namespace Genometric.MSPC.Core.Functions
             foreach (var chr in _consensusPeaks)
                 rtv.Add(chr.Key, new List<ProcessedPeak<I>>(capacity: chr.Value.Count));
 
+            int counter = 0;
             Parallel.ForEach(
                 _consensusPeaks,
                 new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
@@ -85,7 +87,7 @@ namespace Genometric.MSPC.Core.Functions
                                 peak.Key.left,
                                 peak.Key.right,
                                 peak.Key.xSquard,
-                                "MSPC_Peak",
+                                "MSPC_Peak_" + Interlocked.Increment(ref counter),
                                 (peak.Key.right - peak.Key.left) / 2),
                             peak.Key.xSquard,
                             peak.Key.involvedPeaksCount));

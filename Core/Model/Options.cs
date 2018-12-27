@@ -20,7 +20,7 @@ namespace Genometric.MSPC.Core.Model
         /// <param name="alpha">Sets Benjamini-Hochberg multiple testing correction threshold.</param>
         /// <param name="multipleIntersections">Sets if the peak with lowest or highest p-value 
         /// should be used when multiple peaks from a sample overlap with a given peak.</param>
-        public Config(ReplicateType replicateType, double tauW, double tauS, double gamma, byte c, float alpha, MultipleIntersections multipleIntersections)
+        public Config(ReplicateType replicateType, double tauW, double tauS, double gamma, int c, float alpha, MultipleIntersections multipleIntersections)
         {
             ReplicateType = replicateType;
             TauW = tauW;
@@ -76,7 +76,7 @@ namespace Genometric.MSPC.Core.Model
         /// one peak from either rep2 or rep3 to combine their 
         /// p-values, otherwise the peak is discarded.
         /// </remarks>
-        public byte C { get; }
+        public int C { get; }
 
         /// <summary>
         /// Gets Benjamini-Hochberg multiple 

@@ -67,7 +67,7 @@ namespace Genometric.MSPC.CLI
         private double _vtauW = 1E-4;
         private double _vgamma = -1;
         private float _valpha = 0.05F;
-        private byte _vc = 1;
+        private int _vc = 1;
         private MultipleIntersections _vm = MultipleIntersections.UseLowestPValue;
 
 
@@ -169,11 +169,11 @@ namespace Genometric.MSPC.CLI
                 if (_cC.Value().Contains("%"))
                 {
                     if (int.TryParse(_cC.Value().Replace("%", ""), out int percentage))
-                        _vc = (byte)((_inputFiles.Count * percentage) / 100);
+                        _vc = (_inputFiles.Count * percentage) / 100;
                     else
                         throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
                 }
-                else if (!byte.TryParse(_cC.Value(), out _vc))
+                else if (!int.TryParse(_cC.Value(), out _vc))
                     throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
             }
 

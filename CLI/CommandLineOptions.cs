@@ -6,6 +6,7 @@ using Genometric.MSPC.Core.Model;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Genometric.MSPC.CLI
@@ -72,7 +73,8 @@ namespace Genometric.MSPC.CLI
 
         public Config Options { private set; get; }
 
-        public IReadOnlyList<string> Input { get { return _cInput.Values.AsReadOnly(); } }
+        private List<string> _inputFiles;
+        public IReadOnlyList<string> Input { get { return _inputFiles.AsReadOnly(); } }
 
         /// <summary>
         /// Gets the path of a parser configuration file in JSON.
@@ -172,6 +174,14 @@ namespace Genometric.MSPC.CLI
         public Config Parse(string[] args)
         {
             _cla.Execute(args);
+            _inputFiles = new List<string>();
+            foreach (var input in _cInput.Values)
+                if (input.Contains("*") || input.Contains("?"))
+                    foreach (var file in Directory.GetFiles(Path.GetDirectoryName(input), Path.GetFileName(input)))
+                        _inputFiles.Add(file);
+                else
+                    _inputFiles.Add(input);
+
             Options = new Config(_vreplicate, _vtauW, _vtauS, _vgamma, _vc, _valpha, _vm);
             return Options;
         }

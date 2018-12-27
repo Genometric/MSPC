@@ -192,6 +192,24 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WriteHeaderToConsensusPeaksFile(bool write)
+        {
+            // Arrange & Act
+            string line;
+            string path = RunMSPCAndExportResults(write);
+            using (StreamReader reader = new StreamReader(path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+                line = reader.ReadLine();
+
+            // Assert
+            Assert.True("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)".Equals(line) == write);
+
+            // Clean up
+            Directory.Delete(path, true);
+        }
+
+        [Theory]
         [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, double.NaN, double.NaN, double.NaN)]
         public void CorrectValuesForEachPropertyOfExportedPeak(
             uint sampleID, Attributes attribute,

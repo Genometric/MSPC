@@ -21,6 +21,7 @@ namespace Genometric.MSPC.CLI.Tests
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
         private readonly List<Attributes> _attributes;
+        private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)";
 
         // Sample ID Filename Mapping
         private readonly Dictionary<uint, string> _sidfm;
@@ -163,29 +164,35 @@ namespace Genometric.MSPC.CLI.Tests
             Directory.Delete(path, true);
         }
 
-        [Fact]
-        public void WriteHeaderFileToAllExportedData()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WriteHeaderToAllExportedData(bool write)
         {
             // Arrange & Act
-            string path = RunMSPCAndExportResults(true);
+            string path = RunMSPCAndExportResults(write);
             foreach (var sampleFolder in Directory.GetDirectories(path))
                 foreach (var file in Directory.GetFiles(sampleFolder))
                     using (StreamReader reader = new StreamReader(file))
-                        Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)", reader.ReadLine());
+                        Assert.True(_header.Equals(reader.ReadLine()) == write);
 
             // Clean up
             Directory.Delete(path, true);
         }
 
-        [Fact]
-        public void NotWriteHeaderFileToAllExportedData()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WriteHeaderToConsensusPeaksFile(bool write)
         {
             // Arrange & Act
-            string path = RunMSPCAndExportResults();
-            foreach (var sampleFolder in Directory.GetDirectories(path))
-                foreach (var file in Directory.GetFiles(sampleFolder))
-                    using (StreamReader reader = new StreamReader(file))
-                        Assert.NotEqual("chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)", reader.ReadLine());
+            string line;
+            string path = RunMSPCAndExportResults(write);
+            using (StreamReader reader = new StreamReader(path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+                line = reader.ReadLine();
+
+            // Assert
+            Assert.True(line.Equals(_header) == write);
 
             // Clean up
             Directory.Delete(path, true);

@@ -86,7 +86,7 @@ namespace Genometric.MSPC.CLI.Exporter
             using (StreamWriter writter = new StreamWriter(filename))
             {
                 if (_options.IncludeHeader)
-                    writter.WriteLine("chr\tstart\tstop\tname\tX-squared");
+                    writter.WriteLine(_header);
 
                 foreach (var chr in peaks)
                 {

@@ -40,6 +40,18 @@ Example:
 dotnet CLI.dll -i rep1.bed -i rep2.bed -i rep3.bed -r bio -w 1e-4 -s 1e-8
 ```
 
+
+[Wildcard characters](https://en.wikipedia.org/wiki/Wildcard_character) can be 
+used to specify multiple files; for instance:
+
+```shell
+# read all the files with .bed extension as input:
+$ dotnet CLI.dll -i *.bed -r bio -w 1e-4 -s 1e-8
+
+# read multiple set of files in different directories:
+$ dotnet CLI.dll -i C:\setA\*.bed -i C:\setB\sci-ATAC*.bed -r bio -w 1e-4 -s 1e-8
+```
+
 ### Replicate Type
 Samples could be biological or technical replicates. MSPC differentiates between 
 the two replicate types based on the fact that less variations between technical 

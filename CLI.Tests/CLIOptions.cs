@@ -178,6 +178,28 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
+        [InlineData("10%")]
+        [InlineData("50%")]
+        [InlineData("100%")]
+        public void CorrectlyComputeC(string c)
+        {
+            // Arrange
+            int inputCount = 10;
+            int expectedC = (int.Parse(c.Replace("%", "")) * 10) / 100;
+
+            var args = new StringBuilder(GenerateShortNameArguments(null, null, null, c: c));
+            for (int i = 0; i < inputCount; i++)
+                args.Append(" -i sample_" + i);
+
+            // Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(args.ToString().Split(' '));
+
+            // Assert
+            Assert.Equal(expectedC, po.C);
+        }
+
+        [Theory]
         [InlineData("lowest", MultipleIntersections.UseLowestPValue)]
         [InlineData("LowEST", MultipleIntersections.UseLowestPValue)]
         [InlineData("highest", MultipleIntersections.UseHighestPValue)]

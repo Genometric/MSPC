@@ -86,7 +86,7 @@ namespace Genometric.MSPC.Core.Functions
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
-            _consensusPeaks = ConsensusPeaks<I>.Compute(_analysisResults, _peakConstructor);
+            _consensusPeaks = ConsensusPeaks<I>.Compute(_analysisResults, _peakConstructor, DegreeOfParallelism);
         }
 
         private void CacheChiSqrdData()

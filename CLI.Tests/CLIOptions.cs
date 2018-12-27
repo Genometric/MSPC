@@ -22,13 +22,13 @@ namespace Genometric.MSPC.CLI.Tests
         private const double _tauS = 1E-9;
         private const double _gamma = 1E-12;
         private const float _alpha = 0.0005F;
-        private const byte _c = 2;
+        private const string _c = "2";
         private const string _m = "lowest";
         private const string _r = "bio";
 
         private string GenerateShortNameArguments(
             string rep1 = _rep1, string rep2 = _rep2, string rep3 = _rep3, double tauW = _tauW, double tauS = _tauS,
-            double gamma = _gamma, float alpha = _alpha, byte c = _c, string m = _m, string r = _r, string p = _p)
+            double gamma = _gamma, float alpha = _alpha, string c = _c, string m = _m, string r = _r, string p = _p)
         {
             var builder = new StringBuilder();
             if (rep1 != null) builder.Append("-i " + rep1 + " ");
@@ -165,16 +165,41 @@ namespace Genometric.MSPC.CLI.Tests
 
         [Theory]
         [InlineData(_c)]
-        [InlineData(1)]
-        [InlineData(5)]
-        public void ReadC(byte c)
+        [InlineData("1")]
+        [InlineData("5")]
+        public void ReadC(string c)
         {
             // Arrange & Act
             var options = new CommandLineOptions();
             var po = options.Parse(GenerateShortNameArguments(c: c).Split(' '));
 
             // Assert
-            Assert.True(po.C == c);
+            Assert.True(po.C == byte.Parse(c));
+        }
+
+        [Theory]
+        [InlineData("0%")]
+        [InlineData("10%")]
+        [InlineData("50%")]
+        [InlineData("100%")]
+        public void CorrectlyComputeC(string c)
+        {
+            // Arrange
+            int inputCount = 10;
+            int expectedC = (int.Parse(c.Replace("%", "")) * 10) / 100;
+            if (expectedC == 0)
+                expectedC = 1;
+
+            var args = new StringBuilder(GenerateShortNameArguments(null, null, null, c: c));
+            for (int i = 0; i < inputCount; i++)
+                args.Append(" -i sample_" + i);
+
+            // Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(args.ToString().Split(' '));
+
+            // Assert
+            Assert.Equal(expectedC, po.C);
         }
 
         [Theory]
@@ -345,6 +370,18 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             var options = new CommandLineOptions();
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c ABC".Split(' ');
+
+            // Assert
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Equal("Invalid value given for the `c` argument.", exception.Message);
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidPercentageOfC()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c 1A%".Split(' ');
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));

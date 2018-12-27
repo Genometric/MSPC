@@ -178,6 +178,7 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
+        [InlineData("0%")]
         [InlineData("10%")]
         [InlineData("50%")]
         [InlineData("100%")]
@@ -186,6 +187,8 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange
             int inputCount = 10;
             int expectedC = (int.Parse(c.Replace("%", "")) * 10) / 100;
+            if (expectedC == 0)
+                expectedC = 1;
 
             var args = new StringBuilder(GenerateShortNameArguments(null, null, null, c: c));
             for (int i = 0; i < inputCount; i++)

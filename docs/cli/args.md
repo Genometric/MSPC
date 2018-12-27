@@ -119,19 +119,33 @@ It sets the minimum number of overlapping peaks required before MSPC
 combines their p-value. For example, given three replicates (rep1, rep2 
 and rep3), if `C = 3`, a peak on rep1 must overlap with at least two
 peaks, one from rep2 and one from rep3, before MSPC combines their 
-p-value. Otherwise, MSPC discard the peaks. If `C = 2`, a peak on rep1 
+p-value; otherwise, MSPC discards the peak. If `C = 2`, a peak on rep1 
 must overlap with at least one peak from either rep2 or rep3, before
-MSPC combines their p-values; otherwise the peak is discarded.
+MSPC combines their p-values; otherwise MSPC discards the peak.
 
 | Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
-| `-c`  |      | Optional | Integer  | `1`           |
+| `-c`  |      | Optional | String  | `1`           |
+
+The value of `C` can be given in *absolute* (e.g., `C = 2` will 
+require at least `2` samples) or *percentage* of input samples 
+(e.g., `C = 50%` will require at least `50%` of input samples) formats.
+
+The minimum value of `C` is `1`. If a value less than `1` is given
+(e.g., `C = 0`, `C = 0%`, or `C = -1`), MSPC automatically sets it
+to `1` (i.e., `C = 1`).
 
 Example:
 
 ```shell
 dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 2
+
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 50%
 ```
+
+Note, you do not need to enclose a value for `C` in `"` to represent 
+it as a string; the values are automatically considered as string type 
+objects. In other words, you do not need to enter the value as `C "3"`.
 
 
 ### Alpha

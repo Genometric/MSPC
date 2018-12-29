@@ -47,10 +47,7 @@ namespace Genometric.MSPC.CLI
 
             var bedColumns = new BedColumns();
             if (cliOptions.ParserConfig != null)
-            {
-                var parser = new ParserConfig();
-                bedColumns = parser.ParseBed(cliOptions.ParserConfig);
-            }
+                bedColumns = ParserConfig.ParseBed(cliOptions.ParserConfig);
 
             var et = new Stopwatch();
             foreach (var file in cliOptions.Input)

@@ -4,11 +4,12 @@
 
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 
 namespace Genometric.MSPC.CLI
 {
-    internal class ParserConfig : BedColumns
+    internal class ParserConfig : BedColumns, IEquatable<ParserConfig>
     {
         public bool DropPeakIfInvalidValue { set; get; }
         public double DefaultValue { set; get; }
@@ -28,6 +29,22 @@ namespace Genometric.MSPC.CLI
                 json = r.ReadToEnd();
 
             return JsonConvert.DeserializeObject<ParserConfig>(json);
+        }
+
+        public bool Equals(ParserConfig other)
+        {
+            if (other == null) return false;
+            return
+                Chr == other.Chr &&
+                Left == other.Left &&
+                Right == other.Right &&
+                Name == other.Name &&
+                Summit == other.Summit &&
+                Strand == other.Strand &&
+                Value == other.Value &&
+                PValueFormat == other.PValueFormat &&
+                DefaultValue == other.DefaultValue &&
+                DropPeakIfInvalidValue == other.DropPeakIfInvalidValue;
         }
     }
 }

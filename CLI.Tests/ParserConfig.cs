@@ -11,28 +11,13 @@ namespace Genometric.MSPC.CLI.Tests
 {
     public class TParserConfig
     {
-        private bool Equal(ParserConfig obj1, ParserConfig obj2)
-        {
-            return
-                obj1.Chr == obj2.Chr &&
-                obj1.Left == obj2.Left &&
-                obj1.Right == obj2.Right &&
-                obj1.Name == obj2.Name &&
-                obj1.Strand == obj2.Strand &&
-                obj1.Summit == obj2.Summit &&
-                obj1.Value == obj2.Value &&
-                obj1.DefaultValue == obj2.DefaultValue &&
-                obj1.PValueFormat == obj2.PValueFormat &&
-                obj1.DropPeakIfInvalidValue == obj2.DropPeakIfInvalidValue;
-        }
-
         [Theory]
         [InlineData(0, 1, 2, 3, 4, 5, 6, true, 1E-4, "minus1_Log10_pValue")]
         [InlineData(5, 0, -1, 12, -1, -1, 1, false, 123.456, "SameAsInput")]
         public void ReadParserConfig(byte chr, byte left, sbyte right, byte name, sbyte strand, sbyte summit, byte value, bool dropPeakIfInvalidValue, double defaultValue, string pValueFormat)
         {
             // Arrange
-            var cols = new ParserConfig()
+            ParserConfig cols = new ParserConfig()
             {
                 Chr = chr,
                 Left = left,
@@ -51,11 +36,11 @@ namespace Genometric.MSPC.CLI.Tests
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
             // Act
-            var parsedCols = new ParserConfig().ParseBed(path);
+            ParserConfig parsedCols = new ParserConfig().ParseBed(path);
             File.Delete(path);
 
             // Assert
-            Assert.True(Equal(parsedCols, cols));
+            Assert.True(parsedCols.Equals(cols));
         }
 
         [Fact]
@@ -72,7 +57,7 @@ namespace Genometric.MSPC.CLI.Tests
             File.Delete(path);
 
             // Assert
-            Assert.True(Equal(parsedCols, expected));
+            Assert.True(parsedCols.Equals(expected));
         }
     }
 }

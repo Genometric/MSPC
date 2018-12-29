@@ -45,9 +45,9 @@ namespace Genometric.MSPC.CLI
 
             var orchestrator = new Orchestrator(cliOptions.Options);
 
-            var bedColumns = new BedColumns();
+            var parserConfig = new BedColumns();
             if (cliOptions.ParserConfig != null)
-                bedColumns = ParserConfig.LoadFromJSON(cliOptions.ParserConfig);
+                parserConfig = ParserConfig.LoadFromJSON(cliOptions.ParserConfig);
 
             var et = new Stopwatch();
             foreach (var file in cliOptions.Input)
@@ -55,7 +55,7 @@ namespace Genometric.MSPC.CLI
                 Console.WriteLine(string.Format("Parsing sample: {0}", file));
                 et.Restart();
 
-                var parsedSample = orchestrator.LoadSample(file, bedColumns);
+                var parsedSample = orchestrator.LoadSample(file, parserConfig);
                 et.Stop();
                 Console.WriteLine("Done...  ET:\t{0}", et.Elapsed.ToString());
                 Console.WriteLine("Read peaks#:\t{0}", parsedSample.IntervalsCount.ToString("N0", CultureInfo.InvariantCulture));

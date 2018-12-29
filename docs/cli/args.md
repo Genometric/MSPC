@@ -21,6 +21,7 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 | [C](#c) |  | `-c` | `int` | `1` |
 | [Alpha](#alpha) |  | `-a` | `double` | `0.05` |
 | [Multiple Intersections](#multiple-intersections) |  | `-m` | `Lowest`, `Highest` |  `Lowest` |
+| [Input Parser Configuration](#input-parser-configuration) |   | `-p` | file path | none |
 
 
 
@@ -175,3 +176,15 @@ Example:
 ```shell
 dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -m lowest
 ```
+
+### Input Parser Configuration 
+
+Sets the path to a JSON file containing the configuration 
+for the input BED file parser.
+
+| Short | Long | Required | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-p`  | `--parser` | Optional | File path | none |
+
+Refer to [this page](cli/parser.md) on how to configure the input parser
+using a JSON object.

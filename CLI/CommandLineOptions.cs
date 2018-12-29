@@ -7,6 +7,7 @@ using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Genometric.MSPC.CLI
@@ -196,9 +197,44 @@ namespace Genometric.MSPC.CLI
                 }
         }
 
+        private string[] ParseExpandedInput(string[] args)
+        {
+            var rtv = new List<string>();
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i] == "-" + _cInput.ShortName || args[i] == "--" + _cInput.LongName)
+                {
+                    var inputs = new List<string>();
+                    for (i++; i < args.Length; i++)
+                    {
+                        if (_cla.Options.Any(x => args[i] == "-" + x.ShortName || args[i] == "--" + x.LongName))
+                        {
+                            i--;
+                            break;
+                        }
+                        else
+                            inputs.Add(args[i]);
+                    }
+
+                    foreach(var input in inputs)
+                    {
+                        rtv.Add("-" + _cInput.ShortName);
+                        rtv.Add(input);
+                    }
+                }
+                else
+                {
+                    rtv.Add(args[i]);
+                }
+            }
+
+            return rtv.ToArray();
+        }
+
         public Config Parse(string[] args)
         {
-            _cla.Execute(args);
+            var parsedInput = ParseExpandedInput(args);
+            _cla.Execute(parsedInput);
             Options = new Config(_vreplicate, _vtauW, _vtauS, _vgamma, _vc, _valpha, _vm);
             return Options;
         }

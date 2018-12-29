@@ -12,7 +12,7 @@ namespace Genometric.MSPC.CLI.Tests
 {
     public class ParserConfig
     {
-        private bool Equal(BedColumns obj1, BedColumns obj2)
+        private bool Equal(CLI.ParserConfig obj1, CLI.ParserConfig obj2)
         {
             return
                 obj1.Chr == obj2.Chr &&
@@ -20,23 +20,32 @@ namespace Genometric.MSPC.CLI.Tests
                 obj1.Right == obj2.Right &&
                 obj1.Name == obj2.Name &&
                 obj1.Strand == obj2.Strand &&
-                obj1.Summit == obj2.Summit;
+                obj1.Summit == obj2.Summit &&
+                obj1.Value == obj2.Value &&
+                obj1.DefaultValue == obj2.DefaultValue &&
+                obj1.PValueFormat == obj2.PValueFormat &&
+                obj1.DropPeakIfInvalidValue == obj2.DropPeakIfInvalidValue;
         }
 
         [Theory]
-        [InlineData(0, 1, 2, 3, 4, 5)]
-        [InlineData(5, 0, -1, 12, -1, -1)]
-        public void ReadParserConfig(byte chr, byte left, sbyte right, byte name, sbyte strand, sbyte summit)
+        [InlineData(0, 1, 2, 3, 4, 5, 6, true, 1E-4, "minus1_Log10_pValue")]
+        [InlineData(5, 0, -1, 12, -1, -1, 1, false, 123.456, "SameAsInput")]
+        public void ReadParserConfig(byte chr, byte left, sbyte right, byte name, sbyte strand, sbyte summit, byte value, bool dropPeakIfInvalidValue, double defaultValue, string pValueFormat)
         {
             // Arrange
-            var cols = new BedColumns()
+            var cols = new CLI.ParserConfig()
             {
                 Chr = chr,
                 Left = left,
                 Right = right,
                 Name = name,
                 Strand = strand,
-                Summit = summit
+                Summit = summit,
+                Value = value,
+                DefaultValue = defaultValue,
+                PValueFormat = pValueFormat,
+                DropPeakIfInvalidValue = dropPeakIfInvalidValue,
+
             };
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
             using (StreamWriter w = new StreamWriter(path))
@@ -54,7 +63,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void ReadMalformedJSON()
         {
             // Arrange
-            var expected = new BedColumns() { Chr = 123 };
+            var expected = new CLI.ParserConfig() { Chr = 123 };
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
             using (StreamWriter w = new StreamWriter(path))
                 w.WriteLine("{\"m\":7,\"l\":789,\"u\":-1,\"Chr\":123,\"L\":9,\"R\":2,\"d\":-1}");

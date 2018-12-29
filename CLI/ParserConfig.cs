@@ -8,15 +8,26 @@ using System.IO;
 
 namespace Genometric.MSPC.CLI
 {
-    internal class ParserConfig
+    internal class ParserConfig : BedColumns
     {
-        public BedColumns ParseBed(string path)
+        public bool DropPeakIfInvalidValue { set; get; }
+        public double DefaultValue { set; get; }
+        public string PValueFormat { set; get; }
+
+        public ParserConfig()
+        {
+            DropPeakIfInvalidValue = true;
+            DefaultValue = 1E-8;
+            PValueFormat = "minus1_Log10_pValue";
+        }
+
+        public ParserConfig ParseBed(string path)
         {
             string json = null;
             using (StreamReader r = new StreamReader(path))
                 json = r.ReadToEnd();
 
-            return JsonConvert.DeserializeObject<BedColumns>(json);
+            return JsonConvert.DeserializeObject<ParserConfig>(json);
         }
     }
 }

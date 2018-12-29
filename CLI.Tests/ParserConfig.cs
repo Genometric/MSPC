@@ -36,7 +36,7 @@ namespace Genometric.MSPC.CLI.Tests
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
             // Act
-            ParserConfig parsedCols = ParserConfig.ParseBed(path);
+            ParserConfig parsedCols = ParserConfig.LoadFromJSON(path);
             File.Delete(path);
 
             // Assert
@@ -53,7 +53,7 @@ namespace Genometric.MSPC.CLI.Tests
                 w.WriteLine("{\"m\":7,\"l\":789,\"u\":-1,\"Chr\":123,\"L\":9,\"R\":2,\"d\":-1}");
 
             // Act
-            var parsedCols = ParserConfig.ParseBed(path);
+            var parsedCols = ParserConfig.LoadFromJSON(path);
             File.Delete(path);
 
             // Assert

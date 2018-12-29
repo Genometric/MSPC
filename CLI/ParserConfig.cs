@@ -22,7 +22,7 @@ namespace Genometric.MSPC.CLI
             PValueFormat = "minus1_Log10_pValue";
         }
 
-        public static ParserConfig ParseBed(string path)
+        public static ParserConfig LoadFromJSON(string path)
         {
             string json = null;
             using (StreamReader r = new StreamReader(path))

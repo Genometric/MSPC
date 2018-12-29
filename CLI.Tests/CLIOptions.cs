@@ -63,8 +63,10 @@ namespace Genometric.MSPC.CLI.Tests
                 Assert.True(options.Input[2] == rep3);
         }
 
-        [Fact]
-        public void ReadInputWhenWildCardCharAreExpanded()
+        [Theory]
+        [InlineData("rep1.bed rep2.bed rep3.bed", null, 3)]
+        [InlineData("rep1.bed rep2.bed rep3.bed", "rep4.bed rep5.bed", 5)]
+        public void ReadInputWhenWildCardCharAreExpanded(string inputArg1, string inputArg2, int inputCount)
         {
             /// While some shell application such as PowerShell
             /// do not expand wildcard characters (i.e., if *.bed
@@ -77,13 +79,18 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Arrange & Act
             var options = new CommandLineOptions();
-            options.Parse(GenerateShortNameArguments(rep1: "rep1.bed rep2.bed rep3.bed", rep2: null, rep3: null).Split(' '));
+            options.Parse(GenerateShortNameArguments(rep1: inputArg1, rep2: inputArg2, rep3: null).Split(' '));
 
             // Assert
-            Assert.True(options.Input.Count == 3);
+            Assert.True(options.Input.Count == inputCount);
             Assert.True(options.Input[0] == "rep1.bed");
             Assert.True(options.Input[1] == "rep2.bed");
             Assert.True(options.Input[2] == "rep3.bed");
+            if (inputArg2 != null)
+            {
+                Assert.True(options.Input[3] == "rep4.bed");
+                Assert.True(options.Input[4] == "rep5.bed");
+            }
         }
 
         [Fact]

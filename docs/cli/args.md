@@ -180,8 +180,11 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -m lowest
 ### Input Parser Configuration 
 
 Sets the path to a JSON file containing the configuration 
-for the input BED file parser. 
+for the input BED file parser.
 
 | Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
 | `-p`  | `--parser` | Optional | File path | none |
+
+Refer to [this page](cli/parser.md) on how to configure the input parser
+using a JSON object.

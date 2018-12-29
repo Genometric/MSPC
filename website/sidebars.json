@@ -15,7 +15,8 @@
         "cli/about",
         "cli/input",
         "cli/output",
-        "cli/args"
+        "cli/args",
+		"cli/parser"
     ],
     "Library": [
         "library/install",

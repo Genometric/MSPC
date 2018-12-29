@@ -64,6 +64,29 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void ReadInputWhenWildCardCharAreExpanded()
+        {
+            /// While some shell application such as PowerShell
+            /// do not expand wildcard characters (i.e., if *.bed
+            /// is passed as an argument, the application receives
+            /// *.bed), Some other shell applications such as Mac 
+            /// Terminal expand wildcard characters (i.e., if *.bed
+            /// is passed as an argument, the application receives
+            /// a list of all files with .bed extension). This unit
+            /// test, asserts for the later.
+
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            options.Parse(GenerateShortNameArguments(rep1: "rep1.bed rep2.bed rep3.bed", rep2: null, rep3: null).Split(' '));
+
+            // Assert
+            Assert.True(options.Input.Count == 3);
+            Assert.True(options.Input[0] == "rep1.bed");
+            Assert.True(options.Input[1] == "rep2.bed");
+            Assert.True(options.Input[2] == "rep3.bed");
+        }
+
+        [Fact]
         public void InputSpecifiedUsingWildCardCharacters()
         {
             // Arrange

@@ -9,9 +9,9 @@ using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
 {
-    public class ParserConfig
+    public class TParserConfig
     {
-        private bool Equal(CLI.ParserConfig obj1, CLI.ParserConfig obj2)
+        private bool Equal(ParserConfig obj1, ParserConfig obj2)
         {
             return
                 obj1.Chr == obj2.Chr &&
@@ -32,7 +32,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void ReadParserConfig(byte chr, byte left, sbyte right, byte name, sbyte strand, sbyte summit, byte value, bool dropPeakIfInvalidValue, double defaultValue, string pValueFormat)
         {
             // Arrange
-            var cols = new CLI.ParserConfig()
+            var cols = new ParserConfig()
             {
                 Chr = chr,
                 Left = left,
@@ -51,7 +51,7 @@ namespace Genometric.MSPC.CLI.Tests
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
             // Act
-            var parsedCols = new CLI.ParserConfig().ParseBed(path);
+            var parsedCols = new ParserConfig().ParseBed(path);
             File.Delete(path);
 
             // Assert
@@ -62,13 +62,13 @@ namespace Genometric.MSPC.CLI.Tests
         public void ReadMalformedJSON()
         {
             // Arrange
-            var expected = new CLI.ParserConfig() { Chr = 123 };
+            var expected = new ParserConfig() { Chr = 123 };
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
             using (StreamWriter w = new StreamWriter(path))
                 w.WriteLine("{\"m\":7,\"l\":789,\"u\":-1,\"Chr\":123,\"L\":9,\"R\":2,\"d\":-1}");
 
             // Act
-            var parsedCols = new CLI.ParserConfig().ParseBed(path);
+            var parsedCols = new ParserConfig().ParseBed(path);
             File.Delete(path);
 
             // Assert

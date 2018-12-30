@@ -53,7 +53,7 @@ namespace Genometric.MSPC.Core.Functions
                     left = confirmedPeak.Source.Left,
                     right = confirmedPeak.Source.Right,
                     involvedPeaksCount = 1,
-                    xSquard = (-2) * Math.Log((confirmedPeak.Source.Value == 0 ? Config.default0PValue : confirmedPeak.Source.Value), Math.E)
+                    xSquard = (-2) * Math.Log(confirmedPeak.Source.Value == 0 ? Config.default0PValue : confirmedPeak.Source.Value, Math.E)
                 };
 
                 while (_consensusPeaks[chr].TryGetValue(interval, out Interval mergedInterval))
@@ -61,7 +61,7 @@ namespace Genometric.MSPC.Core.Functions
                     _consensusPeaks[chr].Remove(interval);
                     interval.left = Math.Min(interval.left, mergedInterval.left);
                     interval.right = Math.Max(interval.right, mergedInterval.right);
-                    interval.involvedPeaksCount++;
+                    interval.involvedPeaksCount += mergedInterval.involvedPeaksCount;
                     interval.xSquard += mergedInterval.xSquard;
                 }
                 _consensusPeaks[chr].Add(interval, interval);
@@ -90,7 +90,7 @@ namespace Genometric.MSPC.Core.Functions
                                 "MSPC_Peak_" + Interlocked.Increment(ref counter),
                                 (peak.Key.right - peak.Key.left) / 2),
                             peak.Key.xSquard,
-                            peak.Key.involvedPeaksCount));
+                            peak.Key.involvedPeaksCount - 1));
                     }
                 });
 

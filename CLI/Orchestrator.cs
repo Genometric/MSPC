@@ -30,9 +30,9 @@ namespace Genometric.MSPC.CLI
             _samples = new List<Bed<Peak>>();
         }
 
-        public Bed<Peak> LoadSample(string fileName, BedColumns columns)
+        public Bed<Peak> LoadSample(string fileName, ParserConfig parserConfig)
         {
-            var bedParser = new BedParser(columns)
+            var bedParser = new BedParser(parserConfig)
             {
                 PValueFormat = PValueFormats.minus1_Log10_pValue,
             };

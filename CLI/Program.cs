@@ -45,7 +45,7 @@ namespace Genometric.MSPC.CLI
 
             var orchestrator = new Orchestrator(cliOptions.Options);
 
-            var parserConfig = new BedColumns();
+            var parserConfig = new ParserConfig();
             if (cliOptions.ParserConfig != null)
                 parserConfig = ParserConfig.LoadFromJSON(cliOptions.ParserConfig);
 

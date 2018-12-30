@@ -53,7 +53,7 @@ namespace Genometric.MSPC.Core.Functions
                     left = confirmedPeak.Source.Left,
                     right = confirmedPeak.Source.Right,
                     involvedPeaksCount = 1,
-                    xSquard = (-2) * Math.Log((confirmedPeak.Source.Value == 0 ? Config.default0PValue : confirmedPeak.Source.Value), Math.E)
+                    xSquard = (-2) * Math.Log(confirmedPeak.Source.Value == 0 ? Config.default0PValue : confirmedPeak.Source.Value, Math.E)
                 };
 
                 while (_consensusPeaks[chr].TryGetValue(interval, out Interval mergedInterval))

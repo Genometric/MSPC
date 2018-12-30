@@ -27,17 +27,17 @@ namespace Genometric.MSPC.Core.Tests.Basic
             /// Sample 2: -▓▓▓▓▓▓▓▓▓▓▓▓-----------▓▓▓▓▓▓----------▓▓▓▓▓▓▓▓-----
             ///
             var s0 = new Bed<Peak>();
-            s0.Add(new Peak(10, 20, 1E-8), _chr, _strand);
+            s0.Add(new Peak(10, 20, 1.23E-8), _chr, _strand);
             s0.Add(new Peak(50, 60, 1E-8), _chr, _strand);
 
             var s1 = new Bed<Peak>();
-            s1.Add(new Peak(6, 16, 1E-8), _chr, _strand);
+            s1.Add(new Peak(6, 16, 4.56E-8), _chr, _strand);
             s1.Add(new Peak(36, 40, 1E-8), _chr, _strand);
             s1.Add(new Peak(64, 68, 1E-2), _chr, _strand);
             s1.Add(new Peak(70, 80, 1E-8), _chr, _strand);
 
             var s2 = new Bed<Peak>();
-            s2.Add(new Peak(2, 26, 1E-8), _chr, _strand);
+            s2.Add(new Peak(2, 26, 7.89E-10), _chr, _strand);
             s2.Add(new Peak(50, 60, 1E-8), _chr, _strand);
             s2.Add(new Peak(76, 90, 1E-8), _chr, _strand);
 
@@ -90,6 +90,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
                     (peak.Source.Left == 36 && peak.Source.Right == 40) ||
                     (peak.Source.Left == 50 && peak.Source.Right == 60) ||
                     (peak.Source.Left == 70 && peak.Source.Right == 90));
+        }
+
+        [Fact]
+        public void XSqrd()
+        {
+            // Arrange and Act
+            var cPeaks = GetSampleConsensusPeaks();
+
+            // Assert
+            Assert.True(cPeaks[_chr][0].XSquared == 112.154559);
         }
     }
 }

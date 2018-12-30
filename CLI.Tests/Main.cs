@@ -6,6 +6,7 @@ using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
@@ -204,6 +205,48 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains("Min p-value:\t3.981E-124", console);
             Assert.Contains("Min p-value:\t1.259E-100", console);
             Assert.Contains("Max p-value:\t3.981E-022", console);
+        }
+
+        [Fact]
+        public void AssertUsingParserConfig()
+        {
+            // Arrange
+            var rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            var rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            using (var writter = new StreamWriter(rep1Path))
+            {
+                writter.WriteLine("10\t20\tchr1");
+                writter.WriteLine("50\t60\tchr1");
+            }
+            using (var writter = new StreamWriter(rep2Path))
+            {
+                writter.WriteLine("15\t25\tchr1");
+                writter.WriteLine("55\t65\tchr1");
+            }
+
+            ParserConfig cols = new ParserConfig()
+            {
+                Chr = 2,
+                Left = 0,
+                Right = 1,
+                DefaultValue = 1E-8,
+                DropPeakIfInvalidValue = false
+            };
+            var parserConfigFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            using (StreamWriter w = new StreamWriter(parserConfigFile))
+                w.WriteLine(JsonConvert.SerializeObject(cols));
+
+            // ACt
+            string consoleOutput = "";
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-4 -s 1E-6 -p {2}", rep1Path, rep2Path, parserConfigFile).Split(' '));
+                consoleOutput = sw.ToString();
+            }
+
+            // Assert
+            Assert.True(Regex.Matches(consoleOutput, "Read peaks#:	2").Count == 2);
         }
     }
 }

@@ -30,7 +30,6 @@ namespace Genometric.MSPC.CLI.Tests
                 DefaultValue = defaultValue,
                 PValueFormat = pValueFormat,
                 DropPeakIfInvalidValue = dropPeakIfInvalidValue,
-
             };
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
             using (StreamWriter w = new StreamWriter(path))

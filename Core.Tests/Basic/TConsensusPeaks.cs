@@ -98,9 +98,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange and Act
             var cPeaks = GetSampleConsensusPeaks();
+            var cPeak = cPeaks[_chr].First(x => x.Source.Left == 2 && x.Source.Right == 26);
 
             // Assert
-            Assert.True(Math.Round(cPeaks[_chr][0].XSquared, 6) == 112.154559);
+            Assert.True(Math.Round(cPeak.XSquared, 6) == 112.154559);
         }
     }
 }

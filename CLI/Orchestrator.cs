@@ -34,7 +34,9 @@ namespace Genometric.MSPC.CLI
         {
             var bedParser = new BedParser(parserConfig)
             {
-                PValueFormat = PValueFormats.minus1_Log10_pValue,
+                PValueFormat = parserConfig.PValueFormat,
+                DefaultValue = parserConfig.DefaultValue,
+                DropPeakIfInvalidValue = parserConfig.DropPeakIfInvalidValue
             };
             var parsedSample = bedParser.Parse(fileName);
             _samples.Add(parsedSample);

@@ -2,7 +2,6 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Parsers.Model;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -45,12 +44,9 @@ namespace Genometric.MSPC.CLI
 
             var orchestrator = new Orchestrator(cliOptions.Options);
 
-            var bedColumns = new BedColumns();
+            var parserConfig = new ParserConfig();
             if (cliOptions.ParserConfig != null)
-            {
-                var parser = new ParserConfig();
-                bedColumns = parser.ParseBed(cliOptions.ParserConfig);
-            }
+                parserConfig = ParserConfig.LoadFromJSON(cliOptions.ParserConfig);
 
             var et = new Stopwatch();
             foreach (var file in cliOptions.Input)
@@ -58,7 +54,7 @@ namespace Genometric.MSPC.CLI
                 Console.WriteLine(string.Format("Parsing sample: {0}", file));
                 et.Restart();
 
-                var parsedSample = orchestrator.LoadSample(file, bedColumns);
+                var parsedSample = orchestrator.LoadSample(file, parserConfig);
                 et.Stop();
                 Console.WriteLine("Done...  ET:\t{0}", et.Elapsed.ToString());
                 Console.WriteLine("Read peaks#:\t{0}", parsedSample.IntervalsCount.ToString("N0", CultureInfo.InvariantCulture));

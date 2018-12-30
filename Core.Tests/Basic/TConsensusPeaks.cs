@@ -5,6 +5,7 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -28,18 +29,18 @@ namespace Genometric.MSPC.Core.Tests.Basic
             ///
             var s0 = new Bed<Peak>();
             s0.Add(new Peak(10, 20, 1.23E-8), _chr, _strand);
-            s0.Add(new Peak(50, 60, 1E-8), _chr, _strand);
+            //s0.Add(new Peak(50, 60, 1E-8), _chr, _strand);
 
             var s1 = new Bed<Peak>();
             s1.Add(new Peak(6, 16, 4.56E-8), _chr, _strand);
-            s1.Add(new Peak(36, 40, 1E-8), _chr, _strand);
+            /*s1.Add(new Peak(36, 40, 1E-8), _chr, _strand);
             s1.Add(new Peak(64, 68, 1E-2), _chr, _strand);
-            s1.Add(new Peak(70, 80, 1E-8), _chr, _strand);
+            s1.Add(new Peak(70, 80, 1E-8), _chr, _strand);*/
 
             var s2 = new Bed<Peak>();
             s2.Add(new Peak(2, 26, 7.89E-10), _chr, _strand);
-            s2.Add(new Peak(50, 60, 1E-8), _chr, _strand);
-            s2.Add(new Peak(76, 90, 1E-8), _chr, _strand);
+            /*s2.Add(new Peak(50, 60, 1E-8), _chr, _strand);
+            s2.Add(new Peak(76, 90, 1E-8), _chr, _strand);*/
 
             var mspc = new Mspc();
             mspc.AddSample(0, s0);
@@ -99,7 +100,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var cPeaks = GetSampleConsensusPeaks();
 
             // Assert
-            Assert.True(cPeaks[_chr][0].XSquared == 112.154559);
+            Assert.True(Math.Round(cPeaks[_chr][0].XSquared, 6) == 112.154559);
         }
     }
 }

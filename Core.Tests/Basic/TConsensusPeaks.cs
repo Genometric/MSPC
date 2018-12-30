@@ -27,19 +27,19 @@ namespace Genometric.MSPC.Core.Tests.Basic
             /// Sample 2: -▓▓▓▓▓▓▓▓▓▓▓▓-----------▓▓▓▓▓▓----------▓▓▓▓▓▓▓▓-----
             ///
             var s0 = new Bed<Peak>();
-            s0.Add(new Peak(10, 20, 1E-8), _chr, '*');
-            s0.Add(new Peak(50, 60, 1E-8), _chr, '*');
+            s0.Add(new Peak(10, 20, 1E-8), _chr, _strand);
+            s0.Add(new Peak(50, 60, 1E-8), _chr, _strand);
 
             var s1 = new Bed<Peak>();
-            s1.Add(new Peak(6, 16, 1E-8), _chr, '*');
-            s1.Add(new Peak(36, 40, 1E-8), _chr, '*');
-            s1.Add(new Peak(64, 68, 1E-2), _chr, '*');
-            s1.Add(new Peak(70, 80, 1E-8), _chr, '*');
+            s1.Add(new Peak(6, 16, 1E-8), _chr, _strand);
+            s1.Add(new Peak(36, 40, 1E-8), _chr, _strand);
+            s1.Add(new Peak(64, 68, 1E-2), _chr, _strand);
+            s1.Add(new Peak(70, 80, 1E-8), _chr, _strand);
 
             var s2 = new Bed<Peak>();
-            s2.Add(new Peak(2, 26, 1E-8), _chr, '*');
-            s2.Add(new Peak(50, 60, 1E-8), _chr, '*');
-            s2.Add(new Peak(76, 90, 1E-8), _chr, '*');
+            s2.Add(new Peak(2, 26, 1E-8), _chr, _strand);
+            s2.Add(new Peak(50, 60, 1E-8), _chr, _strand);
+            s2.Add(new Peak(76, 90, 1E-8), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, s0);
@@ -62,11 +62,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Arrange
             var mspc = new Mspc();
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: xLeft, right: xRight, value: 0.01), _chr, '*');
+            sA.Add(new Peak(left: xLeft, right: xRight, value: 0.01), _chr, _strand);
             mspc.AddSample(0, sA);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: yLeft, right: yRight, value: 0.01), _chr, '*');
+            sB.Add(new Peak(left: yLeft, right: yRight, value: 0.01), _chr, _strand);
             mspc.AddSample(1, sB);
 
             // Act

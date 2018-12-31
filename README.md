@@ -32,8 +32,8 @@ The method allows the "rescue" of weak peaks occuring in more than one
 replicate and outputs a new set of enriched regions for each replicate. 
 
 For details you may refer to the 
-[MSPC publication](http://bioinformatics.oxfordjournals.org/content/31/17/2761) 
-and  [slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133).
+[MSPC publications](https://genometric.github.io/MSPC/publications) 
+and [slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133).
 
 <br/>
 
@@ -84,7 +84,7 @@ PM> Install-Package Genometric.MSPC.Core -Version 3.0.0
 
 
 ## Graphical version
-[MuSERA](Musera.codeplex.com) is a graphical tool that efficiently 
+[MuSERA](https://github.com/Genometric/MuSERA) is a graphical tool that efficiently 
 implements MSPC (v2) for comparative evaluation of ChIP-seq and DNase-seq 
 samples. Additionally, it facilitates the assessment of replicates by 
 integrating common pipelines such as _functional analysis_,

@@ -78,7 +78,7 @@ to your BED file. Then save this file with any name
 (e.g., `myConfig.json`), and give its path to MSPC 
 using [`--parser` argument](cli/args.md#input-parser-configuration).
 
-### p-Value format
+### p-Value Format
 
 By default, MSPC expects p-values in a BED file to 
 represented in `-log10(p-value)` format. However, 
@@ -100,3 +100,62 @@ the following table:
 
 (See [p-value formats](https://github.com/Genometric/GeUtilities/blob/30bb4691fc2ad37eda6131c6e3f3714c5464dbb4/GeUtilities/Intervals/Parsers/Bed/Enums.cs#L7])
 of GeUtilities.)
+
+
+### Peaks with Missing or Invalid p-Values
+
+Some BED files may not a valid p-value for some
+or none of the peaks in that file; for instance,
+BED files generated per cell in single-cell 
+assays do not commonly provide a p-value
+per peak. Hence, following cases are possible:
+
+- missing p-value for some peaks:
+    ```
+    chr1	9999	10039	MACS_peak_1	2.42
+    chr1	10101	10190	MACS_peak_2	3.23
+    chr1	29303	29382	MACS_peak_3
+    ```
+
+- none of the peaks have a p-value (commonly in 
+single-cell assays):
+    ```
+    chr1	9999	10039
+    chr1	10101	10190
+    chr1	29303	29382
+    ```
+
+By default, MSPC drops all the peaks that 
+do not have a valid p-value. To set MSPC
+to read such peaks, use the following 
+attribute in parser configuration JSON 
+object: 
+
+```json
+"DropPeakIfInvalidValue":false
+```
+
+With this configuration, MSPC sets the p-value
+of peaks with invalid/missing p-value to `1E-8`
+(see [this initialization](https://github.com/Genometric/GeUtilities/blob/30bb4691fc2ad37eda6131c6e3f3714c5464dbb4/GeUtilities/Intervals/Parsers/Bed/BedParserGeneric.cs#L89)).
+To change the default p-value, use the following
+attribute in parser configuration JSON
+object: 
+
+```json
+"DefaultValue":0.0001
+```
+
+Hence, to read the previous example, 
+set the parser configuration JSON object as 
+the following:
+
+```json
+{
+   "Chr":0,
+   "Left":1,
+   "Right":2,
+   "DefaultValue":0.0001,
+   "DropPeakIfInvalidValue":true
+}
+```

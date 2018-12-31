@@ -103,5 +103,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(Math.Round(cPeak.XSquared, 6) == 112.154559);
         }
+
+        [Fact]
+        public void RTP()
+        {
+            // Arrange and Act
+            var cPeaks = GetSampleConsensusPeaks();
+            var cPeak = cPeaks[_chr].First(x => x.Source.Left == 2 && x.Source.Right == 26);
+
+            // Assert
+            Assert.True(Math.Round(cPeak.RTP, 6) == 7.21069E-22);
+        }
     }
 }

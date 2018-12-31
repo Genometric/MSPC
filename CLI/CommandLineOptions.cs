@@ -85,6 +85,7 @@ namespace Genometric.MSPC.CLI
         public CommandLineOptions()
         {
             _cla = new CommandLineApplication();
+            _cla.HelpOption("-? | -h | --help");
             _cla.Options.Add(_cInput);
             _cla.Options.Add(_cParser);
             _cla.Options.Add(_cReplicate);

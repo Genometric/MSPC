@@ -104,7 +104,7 @@ namespace Genometric.MSPC.CLI
             AssertRequiredArgsAreGiven();
             ReadInputFiles();
             AssertGivenValuesAreValid();
-            return 0;
+            return 1;
         }
 
         private void AssertRequiredArgsAreGiven()
@@ -217,7 +217,7 @@ namespace Genometric.MSPC.CLI
                             inputs.Add(args[i]);
                     }
 
-                    foreach(var input in inputs)
+                    foreach (var input in inputs)
                     {
                         rtv.Add("-" + _cInput.ShortName);
                         rtv.Add(input);
@@ -232,10 +232,11 @@ namespace Genometric.MSPC.CLI
             return rtv.ToArray();
         }
 
-        public Config Parse(string[] args)
+        public Config Parse(string[] args, out bool helpIsDisplayed)
         {
             var parsedInput = ParseExpandedInput(args);
-            _cla.Execute(parsedInput);
+            var status = _cla.Execute(parsedInput);
+            helpIsDisplayed = status != 1;
             Options = new Config(_vreplicate, _vtauW, _vtauS, _vgamma, _vc, _valpha, _vm);
             return Options;
         }

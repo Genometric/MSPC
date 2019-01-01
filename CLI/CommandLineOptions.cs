@@ -176,6 +176,9 @@ namespace Genometric.MSPC.CLI
             if (!double.TryParse(_cTauW.Value(), out _vtauW))
                 throw new ArgumentException("Invalid value given for the `" + _cTauW.LongName + "` argument.");
 
+            if (_vtauW <= _vtauS)
+                throw new ArgumentException("Stringency threshold (TauS) should be lower than weak threshold (TauW).");
+
             if (_cGamma.HasValue() && !double.TryParse(_cGamma.Value(), out _vgamma))
                 throw new ArgumentException("Invalid value given for the `" + _cGamma.LongName + "` argument.");
             _vgamma = _vgamma == -1 ? _vtauS : _vgamma;

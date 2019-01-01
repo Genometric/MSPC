@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Genometric.MSPC.CLI
@@ -85,16 +86,31 @@ namespace Genometric.MSPC.CLI
         public CommandLineOptions()
         {
             _cla = new CommandLineApplication();
+            _cla.Name = "MSPC CLI";
+            _cla.Description = "Using combined evidence from replicates to evaluate ChIP-seq and single-cell peaks.";
+            _cla.ExtendedHelpText =
+                "\n\rDocumentation:\thttps://genometric.github.io/MSPC/" +
+                "\n\rSource Code:\thttps://github.com/Genometric/MSPC" +
+                "\n\rPublications:\thttps://genometric.github.io/MSPC/publications\n\r";
+
             _cla.HelpOption("-? | -h | --help");
+
+            _cla.VersionOption("-v | --version", () =>
+            {
+                return string.Format(
+                    "Version {0}",
+                    Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+            });
+
             _cla.Options.Add(_cInput);
-            _cla.Options.Add(_cParser);
             _cla.Options.Add(_cReplicate);
-            _cla.Options.Add(_cTauS);
             _cla.Options.Add(_cTauW);
+            _cla.Options.Add(_cTauS);
             _cla.Options.Add(_cGamma);
             _cla.Options.Add(_cAlpha);
             _cla.Options.Add(_cC);
             _cla.Options.Add(_cM);
+            _cla.Options.Add(_cParser);
             Func<int> assertArguments = AssertArguments;
             _cla.OnExecute(assertArguments);
         }

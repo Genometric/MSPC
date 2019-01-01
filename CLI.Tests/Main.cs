@@ -260,7 +260,6 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string expected = 
-                " Version 15.8.0" +
                 "\r\n\r\nUsage: MSPC CLI [options]" +
                 "\r\n\r\nOptions:\r\n  -? | -h | --help                      Show help information" +
                 "\r\n  -v | --version                        Show version information" +
@@ -283,7 +282,22 @@ namespace Genometric.MSPC.CLI.Tests
             string msg = RunMSPC(template: template);
 
             // Assert
-            Assert.Equal(expected, msg);
+            Assert.Contains(expected, msg);
+        }
+
+        [Theory]
+        [InlineData("-v")]
+        [InlineData("--version")]
+        public void ShowVersion(string template)
+        {
+            // Arrange
+            string expected = "\r\nVersion ";
+
+            // Act
+            string msg = RunMSPC(template: template);
+
+            // Assert
+            Assert.Contains(expected, msg);
         }
     }
 }

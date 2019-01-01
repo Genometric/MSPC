@@ -19,7 +19,8 @@ namespace Genometric.MSPC.CLI
             var cliOptions = new CommandLineOptions();
             try
             {
-                cliOptions.Parse(args);
+                cliOptions.Parse(args, out bool helpIsDisplayed);
+                if (helpIsDisplayed) return;
             }
             catch (Exception e)
             {

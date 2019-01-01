@@ -135,7 +135,7 @@ namespace Genometric.MSPC.CLI.Tests
 
         [Theory]
         [InlineData(_tauS)]
-        [InlineData(1)]
+        [InlineData(1E-3)]
         [InlineData(0)]
         [InlineData(1.1E-53)]
         public void ReadTauS(double tauS)
@@ -151,8 +151,8 @@ namespace Genometric.MSPC.CLI.Tests
         [Theory]
         [InlineData(_tauW)]
         [InlineData(1)]
-        [InlineData(0)]
-        [InlineData(1.1E-53)]
+        [InlineData(1E-8)]
+        [InlineData(1.1E-3)]
         public void ReadTauW(double tauW)
         {
             // Arrange & Act
@@ -356,6 +356,18 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `tauS` argument.", exception.Message);
+        }
+
+        [Fact]
+        public void ThrowExceptionIfTauSIsNotLowerThanTauW()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-8 -s 1E-4 -r bio".Split(' ');
+
+            // Assert
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+            Assert.Equal("Stringency threshold (TauS) should be lower than weak threshold (TauW).", exception.Message);
         }
 
         [Fact]

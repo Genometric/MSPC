@@ -85,16 +85,17 @@ namespace Genometric.MSPC.CLI
 
         public CommandLineOptions()
         {
-            _cla = new CommandLineApplication();
-            _cla.Name = "MSPC CLI";
-            _cla.Description = "Using combined evidence from replicates to evaluate ChIP-seq and single-cell peaks.";
-            _cla.ExtendedHelpText =
+            _cla = new CommandLineApplication
+            {
+                Name = "MSPC CLI",
+                Description = "Using combined evidence from replicates to evaluate ChIP-seq and single-cell peaks.",
+                ExtendedHelpText =
                 "\n\rDocumentation:\thttps://genometric.github.io/MSPC/" +
                 "\n\rSource Code:\thttps://github.com/Genometric/MSPC" +
-                "\n\rPublications:\thttps://genometric.github.io/MSPC/publications\n\r";
+                "\n\rPublications:\thttps://genometric.github.io/MSPC/publications\n\r"
+            };
 
             _cla.HelpOption("-? | -h | --help");
-
             _cla.VersionOption("-v | --version", () =>
             {
                 return string.Format(

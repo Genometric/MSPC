@@ -47,5 +47,10 @@ namespace Genometric.MSPC.Core.Model
         {
             return _peaks.Where(kvp => kvp.Value.Classification.Contains(attributes)).Select(kvp => kvp.Value);
         }
+
+        public int Count(Attributes attribute)
+        {
+            return _peaks.Count(kvp => kvp.Value.Classification.Contains(attribute));
+        }
     }
 }

@@ -41,7 +41,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = GenerateAndProcessBackgroundPeaks();
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.FalsePositive).Count() == 1);
+            Assert.True(res[0].Chromosomes[_chr].Count(Attributes.FalsePositive) == 1);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var sample in res)
-                Assert.True(sample.Value.Chromosomes[_chr].Get(Attributes.FalsePositive).Count() == 2);
+                Assert.True(sample.Value.Chromosomes[_chr].Count(Attributes.FalsePositive) == 2);
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var sample in res)
-                Assert.True(sample.Value.Chromosomes[_chr].Get(Attributes.FalsePositive).Count() == 4);
+                Assert.True(sample.Value.Chromosomes[_chr].Count(Attributes.FalsePositive) == 4);
         }
     }
 }

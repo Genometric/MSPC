@@ -82,7 +82,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = mspc.Run(config);
 
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Background).Count() == 1);
+                Assert.True(s.Value.Chromosomes[_chr].Count(Attributes.Background) == 1);
         }
 
         [Fact]
@@ -105,8 +105,8 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = mspc.Run(config);
 
             Assert.True(
-                res[0].Chromosomes[_chr].Get(Attributes.Background).Count() == 1 &&
-                res[1].Chromosomes[_chr].Get(Attributes.Background).Count() == 0);
+                res[0].Chromosomes[_chr].Count(Attributes.Background) == 1 &&
+                res[1].Chromosomes[_chr].Count(Attributes.Background) == 0);
         }
 
         [Fact]

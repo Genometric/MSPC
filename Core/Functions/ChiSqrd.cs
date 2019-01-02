@@ -2,6 +2,7 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 
 namespace Genometric.MSPC.Core.Functions
@@ -24,8 +25,7 @@ namespace Genometric.MSPC.Core.Functions
         /// <returns></returns>
         public static double ChiSqrdDistRTP(double x, int df)
         {
-            var chisqrd = new ChiSquared(df);
-            return chisqrd.CumulativeDistribution(x);
+            return SpecialFunctions.GammaUpperRegularized(df / 2.0, x / 2.0);
         }
 
         /// <summary>

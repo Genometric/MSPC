@@ -5,6 +5,9 @@
     "previous": "Previous",
     "tagline": "Using combined evidence from replicates to evaluate ChIP-seq peaks",
     "docs": {
+      "cli/about": {
+        "title": "About"
+      },
       "cli/args": {
         "title": "Arguments"
       },
@@ -14,14 +17,35 @@
       "cli/output": {
         "title": "Output"
       },
-      "consensus": {
-        "title": "Consensus peaks"
+      "cli/parser": {
+        "title": "Parser Configuration"
       },
       "installation": {
         "title": "Instalation"
       },
+      "library/asynch_exe": {
+        "title": "(A)synchronous execution"
+      },
+      "library/basic_invocation": {
+        "title": "Basic Invocation"
+      },
+      "library/install": {
+        "title": "Install"
+      },
+      "method/about": {
+        "title": "About"
+      },
+      "method/consensus": {
+        "title": "Consensus peaks"
+      },
+      "method/sets": {
+        "title": "Sets"
+      },
       "quick_start": {
         "title": "Quick Start"
+      },
+      "sample_data": {
+        "title": "Sample Data"
       },
       "welcome": {
         "title": "Welcome"
@@ -29,13 +53,16 @@
     },
     "links": {
       "Documentation": "Documentation",
+      "Source Code": "Source Code",
       "Download": "Download",
-      "Questions": "Questions"
+      "Questions": "Questions",
+      "Publications": "Publications"
     },
     "categories": {
       "Getting Started": "Getting Started",
+      "Method": "Method",
       "CLI": "CLI",
-      "Core": "Core"
+      "Library": "Library"
     }
   },
   "pages-strings": {

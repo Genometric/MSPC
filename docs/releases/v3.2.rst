@@ -1,0 +1,12 @@
+===== 
+v3.1 
+=====
+
+- Add Help and Version options for the CLI;
+- Report summary statistics;
+- Extend parser config, it supports p-value format, drop peaks with invalid p-value, and default p-value;
+- Implement a `Count` function for the `Sets` type;
+- Update README;
+- Update documentation;
+- Fix a bug reading input samples specifiec using wildcard chars;
+- Fix a bug computing x-squared for consensus peaks;

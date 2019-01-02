@@ -1,6 +1,7 @@
 
 # MSPC
-[![Latest version](https://img.shields.io/nuget/v/Genometric.MSPC.Core.svg?style=for-the-badge)](https://www.nuget.org/packages/Genometric.MSPC.Core/)
+
+[![NuGet Badge](https://buildstats.info/nuget/Genometric.MSPC.Core?vWidth=50&dWidth=50)](https://www.nuget.org/packages/Genometric.MSPC.Core)
 
 [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status)](https://sonarcloud.io/dashboard/index/mspc)  [![codecov](https://codecov.io/gh/Genometric/MSPC/branch/master/graph/badge.svg)](https://codecov.io/gh/Genometric/MSPC)   [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc)](https://sonarcloud.io/dashboard/index/mspc) [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating)](https://sonarcloud.io/dashboard/index/mspc)
 
@@ -31,8 +32,8 @@ The method allows the "rescue" of weak peaks occuring in more than one
 replicate and outputs a new set of enriched regions for each replicate. 
 
 For details you may refer to the 
-[MSPC publication](http://bioinformatics.oxfordjournals.org/content/31/17/2761) 
-and  [slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133).
+[MSPC publications](https://genometric.github.io/MSPC/publications) 
+and [slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133).
 
 <br/>
 
@@ -40,10 +41,12 @@ and  [slides on slideshare](http://www.slideshare.net/jalilivahid/mspc-50694133)
 
 **Cross-platform x64 release**
 
-| Operating System   |  build status |
-| :----------------: | :------------ |
-| Microsoft Windows  | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) |
-| Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) |
+| Operating System |  Build Status | Build History |
+| :--------------: | :-----------: | :-----------: |
+| Microsoft Windows  | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) | [![Build history](https://buildstats.info/appveyor/chart/VJalili/mspc)](https://ci.appveyor.com/project/VJalili/mspc/history) |
+| Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) | [![Build history](https://buildstats.info/travisci/chart/Genometric/MSPC)](https://travis-ci.org/Genometric/MSPC/builds) |
+
+
 
 <br/>
 
@@ -81,7 +84,7 @@ PM> Install-Package Genometric.MSPC.Core -Version 3.0.0
 
 
 ## Graphical version
-[MuSERA](Musera.codeplex.com) is a graphical tool that efficiently 
+[MuSERA](https://github.com/Genometric/MuSERA) is a graphical tool that efficiently 
 implements MSPC (v2) for comparative evaluation of ChIP-seq and DNase-seq 
 samples. Additionally, it facilitates the assessment of replicates by 
 integrating common pipelines such as _functional analysis_,

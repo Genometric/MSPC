@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Genometric.MSPC.CLI
@@ -84,16 +85,33 @@ namespace Genometric.MSPC.CLI
 
         public CommandLineOptions()
         {
-            _cla = new CommandLineApplication();
+            _cla = new CommandLineApplication
+            {
+                Name = "MSPC CLI",
+                Description = "Using combined evidence from replicates to evaluate ChIP-seq and single-cell peaks.",
+                ExtendedHelpText =
+                "\n\rDocumentation:\thttps://genometric.github.io/MSPC/" +
+                "\n\rSource Code:\thttps://github.com/Genometric/MSPC" +
+                "\n\rPublications:\thttps://genometric.github.io/MSPC/publications\n\r"
+            };
+
+            _cla.HelpOption("-? | -h | --help");
+            _cla.VersionOption("-v | --version", () =>
+            {
+                return string.Format(
+                    "Version {0}",
+                    Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+            });
+
             _cla.Options.Add(_cInput);
-            _cla.Options.Add(_cParser);
             _cla.Options.Add(_cReplicate);
-            _cla.Options.Add(_cTauS);
             _cla.Options.Add(_cTauW);
+            _cla.Options.Add(_cTauS);
             _cla.Options.Add(_cGamma);
             _cla.Options.Add(_cAlpha);
             _cla.Options.Add(_cC);
             _cla.Options.Add(_cM);
+            _cla.Options.Add(_cParser);
             Func<int> assertArguments = AssertArguments;
             _cla.OnExecute(assertArguments);
         }
@@ -103,7 +121,7 @@ namespace Genometric.MSPC.CLI
             AssertRequiredArgsAreGiven();
             ReadInputFiles();
             AssertGivenValuesAreValid();
-            return 0;
+            return 1;
         }
 
         private void AssertRequiredArgsAreGiven()
@@ -157,6 +175,9 @@ namespace Genometric.MSPC.CLI
 
             if (!double.TryParse(_cTauW.Value(), out _vtauW))
                 throw new ArgumentException("Invalid value given for the `" + _cTauW.LongName + "` argument.");
+
+            if (_vtauW <= _vtauS)
+                throw new ArgumentException("Stringency threshold (TauS) should be lower than weak threshold (TauW).");
 
             if (_cGamma.HasValue() && !double.TryParse(_cGamma.Value(), out _vgamma))
                 throw new ArgumentException("Invalid value given for the `" + _cGamma.LongName + "` argument.");
@@ -216,7 +237,7 @@ namespace Genometric.MSPC.CLI
                             inputs.Add(args[i]);
                     }
 
-                    foreach(var input in inputs)
+                    foreach (var input in inputs)
                     {
                         rtv.Add("-" + _cInput.ShortName);
                         rtv.Add(input);
@@ -231,10 +252,11 @@ namespace Genometric.MSPC.CLI
             return rtv.ToArray();
         }
 
-        public Config Parse(string[] args)
+        public Config Parse(string[] args, out bool helpIsDisplayed)
         {
             var parsedInput = ParseExpandedInput(args);
-            _cla.Execute(parsedInput);
+            var status = _cla.Execute(parsedInput);
+            helpIsDisplayed = status != 1;
             Options = new Config(_vreplicate, _vtauW, _vtauS, _vgamma, _vc, _valpha, _vm);
             return Options;
         }

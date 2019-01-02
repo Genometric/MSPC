@@ -19,7 +19,8 @@ namespace Genometric.MSPC.CLI
             var cliOptions = new CommandLineOptions();
             try
             {
-                cliOptions.Parse(args);
+                cliOptions.Parse(args, out bool helpIsDisplayed);
+                if (helpIsDisplayed) return;
             }
             catch (Exception e)
             {
@@ -74,6 +75,8 @@ namespace Genometric.MSPC.CLI
             Console.WriteLine(" ");
             Console.WriteLine(string.Format("All processes successfully finished [Analysis ET: {0}]", et.Elapsed.ToString()));
             Console.WriteLine(" ");
+
+            orchestrator.WriteSummaryStats();
         }
     }
 }

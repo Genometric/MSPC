@@ -28,6 +28,7 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     {label: 'Documentation', doc: 'welcome'},
+    {label: 'Source Code', href: 'https://github.com/Genometric/MSPC/'},
     {label: 'Download', href: 'https://github.com/Genometric/MSPC/releases'},
     {label: 'Questions', href: 'https://github.com/Genometric/MSPC/issues'},
     {label: 'Publications', page: 'publications'},

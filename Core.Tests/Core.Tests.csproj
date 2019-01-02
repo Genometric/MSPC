@@ -19,17 +19,19 @@
 
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
 
-    <AssemblyVersion>3.1.0.0</AssemblyVersion>
+    <AssemblyVersion>3.2.0.0</AssemblyVersion>
 
     <Copyright>GNU General Public License v3.0</Copyright>
 
     <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
 
-    <Version>3.1.0</Version>
+    <Version>3.2.0</Version>
 
     <Company>Genometric</Company>
 
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
+
+    <PackageIconUrl>https://github.com/Genometric/MSPC/blob/dev/website/static/img/mspc_logo.svg</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

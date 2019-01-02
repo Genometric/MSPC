@@ -53,7 +53,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            options.Parse(GenerateShortNameArguments(rep1: rep1, rep2: rep2, rep3: rep3).Split(' '));
+            options.Parse(GenerateShortNameArguments(rep1: rep1, rep2: rep2, rep3: rep3).Split(' '), out bool _);
 
             // Assert
             Assert.True(options.Input.Count == validInputCount);
@@ -79,7 +79,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Arrange & Act
             var options = new CommandLineOptions();
-            options.Parse(GenerateShortNameArguments(rep1: inputArg1, rep2: inputArg2, rep3: null).Split(' '));
+            options.Parse(GenerateShortNameArguments(rep1: inputArg1, rep2: inputArg2, rep3: null).Split(' '), out bool _);
 
             // Assert
             Assert.True(options.Input.Count == inputCount);
@@ -107,7 +107,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             var options = new CommandLineOptions();
-            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "mspc_" + timeStamp + "_*.bed", rep3: null).Split(' '));
+            options.Parse(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "mspc_" + timeStamp + "_*.bed", rep3: null).Split(' '), out bool _);
 
             // Assert
             Assert.True(options.Input.Count == 10);
@@ -127,7 +127,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            options.Parse(GenerateShortNameArguments(p: parserPath).Split(' '));
+            options.Parse(GenerateShortNameArguments(p: parserPath).Split(' '), out bool _);
 
             // Assert
             Assert.Equal(parserPath, options.ParserConfig);
@@ -135,14 +135,14 @@ namespace Genometric.MSPC.CLI.Tests
 
         [Theory]
         [InlineData(_tauS)]
-        [InlineData(1)]
+        [InlineData(1E-3)]
         [InlineData(0)]
         [InlineData(1.1E-53)]
         public void ReadTauS(double tauS)
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments(tauS: tauS).Split(' '));
+            var po = options.Parse(GenerateShortNameArguments(tauS: tauS).Split(' '), out bool _);
 
             // Assert
             Assert.True(po.TauS == tauS);
@@ -151,13 +151,13 @@ namespace Genometric.MSPC.CLI.Tests
         [Theory]
         [InlineData(_tauW)]
         [InlineData(1)]
-        [InlineData(0)]
-        [InlineData(1.1E-53)]
+        [InlineData(1E-8)]
+        [InlineData(1.1E-3)]
         public void ReadTauW(double tauW)
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments(tauW: tauW).Split(' '));
+            var po = options.Parse(GenerateShortNameArguments(tauW: tauW).Split(' '), out bool _);
 
             // Assert
             Assert.True(po.TauW == tauW);
@@ -172,7 +172,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments(gamma: gamma).Split(' '));
+            var po = options.Parse(GenerateShortNameArguments(gamma: gamma).Split(' '), out bool _);
 
             // Assert
             Assert.True(po.Gamma == gamma);
@@ -187,7 +187,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments(alpha: alpha).Split(' '));
+            var po = options.Parse(GenerateShortNameArguments(alpha: alpha).Split(' '), out bool _);
 
             // Assert
             Assert.True(po.Alpha == alpha);
@@ -201,7 +201,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments(c: c).Split(' '));
+            var po = options.Parse(GenerateShortNameArguments(c: c).Split(' '), out bool _);
 
             // Assert
             Assert.True(po.C == byte.Parse(c));
@@ -226,7 +226,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             var options = new CommandLineOptions();
-            var po = options.Parse(args.ToString().Split(' '));
+            var po = options.Parse(args.ToString().Split(' '), out bool _);
 
             // Assert
             Assert.Equal(expectedC, po.C);
@@ -240,7 +240,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments(m: m).Split(' '));
+            var po = options.Parse(GenerateShortNameArguments(m: m).Split(' '), out bool _);
 
             // Assert
             Assert.True(po.MultipleIntersections == expectedValue);
@@ -255,7 +255,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse(GenerateShortNameArguments(r: r).Split(' '));
+            var po = options.Parse(GenerateShortNameArguments(r: r).Split(' '), out bool _);
 
             // Assert
             Assert.True(po.ReplicateType == expectedValue);
@@ -266,7 +266,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+            var po = options.Parse("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '), out bool _);
 
             // Assert
             Assert.True(options.Input.Count == 2);
@@ -280,7 +280,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var options = new CommandLineOptions();
-            var po = options.Parse("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+            var po = options.Parse("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '), out bool _);
 
             // Assert
             Assert.True(po.Gamma == 1E-8);
@@ -297,7 +297,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-w 1E-2 -s 1E-8 -r bio".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
         }
 
         [Fact]
@@ -308,7 +308,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -r bio".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
         }
 
         [Fact]
@@ -319,7 +319,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -s 1E-8 -r bio".Split(' ');
 
             // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
         }
 
         [Fact]
@@ -330,7 +330,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("The following required arguments are missing: r|replicate; ", exception.Message);
         }
 
@@ -342,7 +342,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w ABC -s 1E-8 -r bio".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `tauW` argument.", exception.Message);
         }
 
@@ -354,8 +354,20 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s ABC -r bio".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `tauS` argument.", exception.Message);
+        }
+
+        [Fact]
+        public void ThrowExceptionIfTauSIsNotLowerThanTauW()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-8 -s 1E-4 -r bio".Split(' ');
+
+            // Assert
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+            Assert.Equal("Stringency threshold (TauS) should be lower than weak threshold (TauW).", exception.Message);
         }
 
         [Fact]
@@ -366,7 +378,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r biooo".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `replicate` argument.", exception.Message);
         }
 
@@ -378,7 +390,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -g ABC".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `gamma` argument.", exception.Message);
         }
 
@@ -390,7 +402,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -a ABC".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `alpha` argument.", exception.Message);
         }
 
@@ -402,7 +414,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c ABC".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `c` argument.", exception.Message);
         }
 
@@ -414,7 +426,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c 1A%".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `c` argument.", exception.Message);
         }
 
@@ -426,7 +438,7 @@ namespace Genometric.MSPC.CLI.Tests
             string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -m ABC".Split(' ');
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments));
+            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
             Assert.Equal("Invalid value given for the `multipleIntersections` argument.", exception.Message);
         }
     }

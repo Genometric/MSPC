@@ -21,6 +21,24 @@ namespace Genometric.MSPC.CLI
         private readonly Config _options;
         private readonly Mspc _mspc;
         private readonly List<Bed<Peak>> _samples;
+        private Dictionary<uint, string> _samplesDict
+        {
+            get
+            {
+                return _samples.ToDictionary(x => x.FileHashKey, x => x.FileName);
+            }
+        }
+
+        private List<Attributes> _allAttributes
+        {
+            get
+            {
+                var attributes = new List<Attributes>();
+                foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
+                    attributes.Add(att);
+                return attributes;
+            }
+        }
 
         internal Orchestrator(Config options)
         {
@@ -55,22 +73,30 @@ namespace Genometric.MSPC.CLI
             Console.WriteLine("[" + e.Value.Step + "/" + e.Value.StepCount + "] " + e.Value.Message);
         }
 
-        internal void Export()
+        internal void Export(List<Attributes> attributesToExport = null)
         {
-            var a2E = new List<Attributes>();
-            foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
-                a2E.Add(att);
+            if (attributesToExport == null)
+                attributesToExport = _allAttributes;
 
             var exporter = new Exporter<Peak>();
             var options = new Options(
                 path: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
                       DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture),
                 includeHeader: true,
-                attributesToExport: a2E);
+                attributesToExport: attributesToExport);
 
             exporter.Export(
-                _samples.ToDictionary(x => x.FileHashKey, x => x.FileName),
+                _samplesDict,
                 _mspc.GetResults(), _mspc.GetConsensusPeaks(), options);
+        }
+
+        internal void WriteSummaryStats(List<Attributes> exportedAttributes = null)
+        {
+            if (exportedAttributes == null)
+                exportedAttributes = _allAttributes;
+
+            var lines = SummaryStats.Create(_samples, _samplesDict, _mspc.GetResults(), _mspc.GetConsensusPeaks(), exportedAttributes);
+            SummaryStats.WriteToConsole(lines);
         }
     }
 }

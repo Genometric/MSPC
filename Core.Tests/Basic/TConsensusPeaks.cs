@@ -112,7 +112,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var cPeak = cPeaks[_chr].First(x => x.Source.Left == 2 && x.Source.Right == 26);
 
             // Assert
-            Assert.True(Math.Round(cPeak.RTP, 6) == 7.21069E-22);
+            Assert.True(cPeak.RTP.ToString("E5") == "7.21069E-022");
         }
     }
 }

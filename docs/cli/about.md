@@ -69,15 +69,7 @@ minimum and maximum p-values parsed from the file;
     are identified as *Stringent*, *Weak*, *Confirmed*,
     and etc. (see [sets description](method/sets.md)).
 
-    > Note that the percentages reported for *Stringent*, *Weak*, 
-    and *Background* sets, should add-up to `100%`;
-    however, the percentage reported for *Confirmed* and
-    *Discarded* is not expected to add-up to `100%` if
-    the percentage of *Background* set is not `0%`. 
-    Similarly, the percentages reported for `TruePositive`
-    and `FalsePositive` sets will not add-up to `100%`
-    if the percentage of *Background* and *Discarded* is 
-    not `0%` (see [sets description](method/sets.md)).
+    > **Note** that the percentages reported for *Stringent*, *Weak*, and *Background* sets, should add-up to `100%`; however, the percentage reported for *Confirmed* and *Discarded* is not expected to add-up to `100%` if the percentage of *Background* set is not `0%`. Similarly, the percentages reported for `TruePositive` and `FalsePositive` sets will not add-up to `100%` if the percentage of *Background* and *Discarded* is not `0%` (see [sets description](method/sets.md)).
 
  - Number of consensus peaks.
 

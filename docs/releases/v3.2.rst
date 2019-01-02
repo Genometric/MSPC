@@ -1,5 +1,5 @@
 ===== 
-v3.1 
+v3.2 
 =====
 
 - Add Help and Version options for the CLI;

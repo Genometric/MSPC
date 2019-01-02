@@ -69,7 +69,7 @@ namespace Genometric.MSPC.CLI
                     int value = 0;
                     foreach (var chr in res.Value.Chromosomes)
                         value += chr.Value.Get(att).Count();
-                    sampleSummary[i++] = Math.Round(value / totalPeaks, 1).ToString("P");
+                    sampleSummary[i++] = (value / totalPeaks).ToString("P");
                 }
                 rtv.Add(RenderRow(columnWidth, sampleSummary));
             }

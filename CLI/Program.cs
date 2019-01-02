@@ -74,6 +74,8 @@ namespace Genometric.MSPC.CLI
             Console.WriteLine(" ");
             Console.WriteLine(string.Format("All processes successfully finished [Analysis ET: {0}]", et.Elapsed.ToString()));
             Console.WriteLine(" ");
+
+            orchestrator.WriteSummaryStats();
         }
     }
 }

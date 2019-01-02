@@ -32,6 +32,8 @@
     <FileVersion>3.1.0.0</FileVersion>
 
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
+
+    <PackageIconUrl>https://github.com/Genometric/MSPC/blob/dev/website/static/img/mspc_logo.svg</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

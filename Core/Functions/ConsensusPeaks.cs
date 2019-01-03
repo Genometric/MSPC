@@ -44,7 +44,7 @@ namespace Genometric.MSPC.Core.Functions
             // Convert the type of determined consensus peaks.
             var processedPeaks = ConvertToListOfProcessedPeaks(peakConstructor, degreeOfParallelisim);
             var fdr = new FalseDiscoveryRate<I>();
-            fdr.PerformMultipleTestingCorrection(processedPeaks, alpha);
+            fdr.PerformMultipleTestingCorrection(processedPeaks, alpha, degreeOfParallelisim);
             return processedPeaks;
         }
 

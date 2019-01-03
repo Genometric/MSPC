@@ -7,6 +7,7 @@ using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Core.Functions
 {
@@ -16,20 +17,30 @@ namespace Genometric.MSPC.Core.Functions
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha)
+        public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha, int degreeOfParallelism)
         {
             foreach (var result in results)
-                foreach (var chr in result.Value.Chromosomes)
-                    PerformMultipleTestingCorrection(chr.Value.Get(Attributes.Confirmed).ToList(), alpha);
+                Parallel.ForEach(
+                    result.Value.Chromosomes,
+                    new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
+                    chr =>
+                    {
+                        PerformMultipleTestingCorrection(chr.Value.Get(Attributes.Confirmed).ToList(), alpha);
+                    });
         }
 
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha)
+        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha, int degreeOfParallelism)
         {
-            foreach (var chr in peaks)
-                PerformMultipleTestingCorrection(chr.Value, alpha);
+            Parallel.ForEach(
+                peaks,
+                new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
+                chr =>
+                {
+                    PerformMultipleTestingCorrection(chr.Value, alpha);
+                });
         }
 
         private void PerformMultipleTestingCorrection(List<ProcessedPeak<I>> peaks, float alpha)

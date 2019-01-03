@@ -44,7 +44,18 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             // Assert
             foreach (var result in results)
                 Assert.True(
-                    Math.Round(result.Value.Chromosomes[_chr].Get(Attributes.Confirmed).First().XSquared,8) == 96.70857391);
+                    Math.Round(result.Value.Chromosomes[_chr].Get(Attributes.Confirmed).First().XSquared, 8) == 96.70857391);
+        }
+
+        [Fact]
+        public void RTP()
+        {
+            // Arrange & Act
+            var results = CreateStringentPeaksAndConfirmThem();
+
+            // Assert
+            foreach (var result in results)
+                Assert.True(result.Value.Chromosomes[_chr].Get(Attributes.Confirmed).First().RTP.ToString("E5") == "4.93543E-020");
         }
 
         [Fact]

@@ -244,8 +244,8 @@ namespace Genometric.MSPC.CLI.Tests
             }
 
             // Assert
-            Assert.Equal("chr1\t10\t25\tr21\t8\t92.103\t0\t7.699", line1);
-            Assert.Equal("chr1\t30\t37\tr22\t5\t78.288\t0\t5", line2);
+            Assert.Equal("chr1\t10\t25\tr21\t8\t92.103\t18.327\t7.699", line1);
+            Assert.Equal("chr1\t30\t37\tr22\t5\t78.288\t15.396\t5", line2);
 
             // Clean up
             Directory.Delete(path, true);

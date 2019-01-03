@@ -82,7 +82,8 @@ namespace Genometric.MSPC.Core.Functions
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
-            PerformMultipleTestingCorrection();
+            var fdr = new FalseDiscoveryRate<I>();
+            fdr.PerformMultipleTestingCorrection(AnalysisResults, _config.Alpha);
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
@@ -270,37 +271,6 @@ namespace Genometric.MSPC.Core.Functions
             xsqrd = xsqrd * (-2);
 
             return xsqrd;
-        }
-
-        /// <summary>
-        /// Benjamini–Hochberg procedure (step-up procedure)
-        /// </summary>
-        private void PerformMultipleTestingCorrection()
-        {
-            foreach (var result in _analysisResults)
-            {
-                foreach (var chr in result.Value.Chromosomes)
-                {
-                    var confirmedPeaks = chr.Value.Get(Attributes.Confirmed).ToList();
-                    int m = confirmedPeaks.Count;
-
-                    // Sorts confirmed peaks set based on their p-values.
-                    confirmedPeaks.Sort(new CompareProcessedPeaksByValue<I>());
-
-                    for (int i = 0; i < m; i++)
-                    {
-                        if (confirmedPeaks[i].Source.Value <= ((i + 1) / (double)m) * _config.Alpha)
-                            confirmedPeaks[i].Classification.Add(Attributes.TruePositive);
-                        else
-                            confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
-
-                        // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
-                        confirmedPeaks[i].AdjPValue = confirmedPeaks[i].Source.Value * (m / (i + 1));
-                    }
-                    // Sorts confirmed peaks set based on coordinates using default comparer.
-                    confirmedPeaks.Sort();
-                }
-            }
         }
 
         private bool CheckCancellationPending()

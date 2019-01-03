@@ -115,9 +115,9 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             Assert.Equal("3.093E-012", r1.AdjPValue.ToString("E3"));
-            Assert.Equal("5.352E-016", r2.AdjPValue.ToString("E3"));
-            Assert.Equal("9.870E-020", r3.AdjPValue.ToString("E3"));
-            Assert.Equal("2.342E-023", r4.AdjPValue.ToString("E3"));
+            Assert.Equal("5.353E-016", r2.AdjPValue.ToString("E3"));
+            Assert.Equal("9.871E-020", r3.AdjPValue.ToString("E3"));
+            Assert.Equal("2.343E-023", r4.AdjPValue.ToString("E3"));
         }
 
         [Fact]

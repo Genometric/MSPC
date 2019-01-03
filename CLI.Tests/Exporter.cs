@@ -225,27 +225,65 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void OutputIsSorted()
         {
-            // Arrange
-            string path = RunMSPCAndExportResults();
-            var sampleFolder = Array.Find(
-                Directory.GetDirectories(path),
-                (string f) => { return f.Contains(_sidfm[1]); });
+            // Arrange & Act
+            var s0 = new Bed<Peak>();
+            var peaks = new List<Peak>()
+            {
+                new Peak(1000, 1100, 1E-8),
+                new Peak(10, 11, 1E-8),
+                new Peak(100, 110, 1E-8),
+                new Peak(10000, 11000, 1E-8),
+                new Peak(100000, 110000, 1E-8),
+                new Peak(150000, 160000, 1E-8),
+                new Peak(120000, 130000, 1E-8),
+                new Peak(1000000, 1100000, 1E-8),
+                new Peak(1200000, 1300000, 1E-8),
+                new Peak(110000000, 120000000, 1E-8),
+                new Peak(130000000, 140000000, 1E-8),
+                new Peak(910000000, 920000000, 1E-8),
+                new Peak(930000000, 940000000, 1E-8)
+            };
 
+            var chrs = new List<string>()
+            {
+                "chr5","chr1","chr3","chr8","chr9","chr9","chr9","chr18","chr18","chrX","chrX","chrY","chrY"
+            };
+
+            for (int i = 0; i < peaks.Count; i++)
+                s0.Add(peaks[i], chrs[i], _strand);
+
+            var s1 = new Bed<Peak>();
+            s1.Add(new Peak(800, 900, 1E-8), "chr5", _strand);
+
+            var mspc = new Mspc();
+            mspc.AddSample(0, s0);
+            mspc.AddSample(1, s1);
+
+            mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
+            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            new Exporter<Peak>().Export(_sidfm, mspc.GetResults(), mspc.GetConsensusPeaks(), new Options(path, false, _attributes));
+
+            // In the exported session folder, first finds the folder that contains 
+            // analysis results for a given sample, then within that folder
+            // finds the file that contains data belonging to a given attributes.
             var file = Array.Find(
-                Directory.GetFiles(sampleFolder),
+                Directory.GetFiles(Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[0]); })),
                 (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(Attributes.Confirmed.ToString()); });
 
-            // Act
-            string line1, line2;
+            // Assert
+            int lineCounter = 0;
             using (var reader = new StreamReader(file))
             {
-                line1 = reader.ReadLine();
-                line2 = reader.ReadLine();
+                for (int i = 0; i < peaks.Count; i++)
+                {
+                    var line = reader.ReadLine().Split('\t');
+                    Assert.True(
+                        chrs[lineCounter] == line[0] &&
+                        peaks[lineCounter].Left.ToString() == line[1] &&
+                        peaks[lineCounter].Right.ToString() == line[2]);
+                    lineCounter++;
+                }
             }
-
-            // Assert
-            Assert.Equal("chr1\t10\t25\tr21\t8\t92.103\t18.327\t7.699", line1);
-            Assert.Equal("chr1\t30\t37\tr22\t5\t78.288\t15.396\t5", line2);
 
             // Clean up
             Directory.Delete(path, true);

@@ -5,6 +5,7 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;
@@ -32,6 +33,29 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Act
             return mspc.Run(config);
+        }
+
+        [Fact]
+        public void XSqrd()
+        {
+            // Arrange & Act
+            var results = CreateStringentPeaksAndConfirmThem();
+
+            // Assert
+            foreach (var result in results)
+                Assert.True(
+                    Math.Round(result.Value.Chromosomes[_chr].Get(Attributes.Confirmed).First().XSquared, 8) == 96.70857391);
+        }
+
+        [Fact]
+        public void RTP()
+        {
+            // Arrange & Act
+            var results = CreateStringentPeaksAndConfirmThem();
+
+            // Assert
+            foreach (var result in results)
+                Assert.True(result.Value.Chromosomes[_chr].Get(Attributes.Confirmed).First().RTP.ToString("E5") == "4.93543E-020");
         }
 
         [Fact]

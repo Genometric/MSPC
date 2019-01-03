@@ -19,29 +19,8 @@ namespace Genometric.MSPC.Core.Functions
         public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha)
         {
             foreach (var result in results)
-            {
                 foreach (var chr in result.Value.Chromosomes)
-                {
-                    var confirmedPeaks = chr.Value.Get(Attributes.Confirmed).ToList();
-                    int m = confirmedPeaks.Count;
-
-                    // Sorts confirmed peaks set based on their p-values.
-                    confirmedPeaks.Sort(new CompareProcessedPeaksByValue<I>());
-
-                    for (int i = 0; i < m; i++)
-                    {
-                        if (confirmedPeaks[i].Source.Value <= (i + 1) / (double)m * alpha)
-                            confirmedPeaks[i].Classification.Add(Attributes.TruePositive);
-                        else
-                            confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
-
-                        // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
-                        confirmedPeaks[i].AdjPValue = confirmedPeaks[i].Source.Value * (m / (i + 1));
-                    }
-                    // Sorts confirmed peaks set based on coordinates using default comparer.
-                    confirmedPeaks.Sort();
-                }
-            }
+                    PerformMultipleTestingCorrection(chr.Value.Get(Attributes.Confirmed).ToList(), alpha);
         }
 
         /// <summary>
@@ -50,26 +29,28 @@ namespace Genometric.MSPC.Core.Functions
         public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha)
         {
             foreach (var chr in peaks)
+                PerformMultipleTestingCorrection(chr.Value, alpha);
+        }
+
+        private void PerformMultipleTestingCorrection(List<ProcessedPeak<I>> peaks, float alpha)
+        {
+            int m = peaks.Count;
+
+            // Sorts the set of confirmed peaks based on their p-values.
+            peaks.Sort(new CompareProcessedPeaksByValue<I>());
+
+            for (int i = 0; i < m; i++)
             {
-                var confirmedPeaks = chr.Value;
-                int m = confirmedPeaks.Count;
+                if (peaks[i].Source.Value <= (i + 1) / (double)m * alpha)
+                    peaks[i].Classification.Add(Attributes.TruePositive);
+                else
+                    peaks[i].Classification.Add(Attributes.FalsePositive);
 
-                // Sorts confirmed peaks set based on their p-values.
-                confirmedPeaks.Sort(new CompareProcessedPeaksByValue<I>());
-
-                for (int i = 0; i < m; i++)
-                {
-                    if (confirmedPeaks[i].Source.Value <= (i + 1) / (double)m * alpha)
-                        confirmedPeaks[i].Classification.Add(Attributes.TruePositive);
-                    else
-                        confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
-
-                    // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
-                    confirmedPeaks[i].AdjPValue = confirmedPeaks[i].Source.Value * (m / (i + 1));
-                }
-                // Sorts confirmed peaks set based on coordinates using default comparer.
-                confirmedPeaks.Sort();
+                // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
+                peaks[i].AdjPValue = peaks[i].Source.Value * (m / (i + 1));
             }
+            // Sorts confirmed peaks set based on coordinates using default comparer.
+            peaks.Sort();
         }
     }
 }

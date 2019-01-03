@@ -31,7 +31,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             new Peak(left: 5000, right: 12000, value: 1e-13)
         };
 
-        private ReadOnlyDictionary<uint, Result<Peak>> GenerateAndProcessBackgroundPeaks(int peakCount = 4, float alpha= 5e-10F)
+        private Mspc SetupMSPC(int peakCount = 4, float alpha = 5e-10F)
         {
             var sA = new Bed<Peak>();
             for (int i = 0; i < peakCount; i++)
@@ -47,15 +47,25 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             var config = new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-8, 2, alpha, MultipleIntersections.UseLowestPValue);
 
-            // Act
-            return mspc.Run(config);
+            mspc.Run(config);
+            return mspc;
+        }
+
+        private ReadOnlyDictionary<uint, Result<Peak>> GetResults(int peakCount = 4, float alpha = 5e-10F)
+        {
+            return SetupMSPC(peakCount, alpha).GetResults();
+        }
+
+        private ReadOnlyDictionary<string, List<ProcessedPeak<Peak>>> GetConsensusPeaks(int peakCount = 4, float alpha = 5e-10F)
+        {
+            return SetupMSPC(peakCount, alpha).GetConsensusPeaks();
         }
 
         [Fact]
         public void AssignTruePositiveAttributeWhenThereIsOnlyOnePeak()
         {
             // Arrange & Act
-            var res = GenerateAndProcessBackgroundPeaks(peakCount: 1, alpha: 5e-7F);
+            var res = GetResults(peakCount: 1, alpha: 5e-7F);
 
             // Assert
             Assert.True(res[1].Chromosomes[_chr].Count(Attributes.TruePositive) == 1);
@@ -65,7 +75,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         public void AssignTruePositive()
         {
             // Arrange & Act
-            var results = GenerateAndProcessBackgroundPeaks();
+            var results = GetResults();
 
             // Assert
             foreach (var sample in results)
@@ -76,7 +86,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         public void AssertCorrectPeakIsTaggedAsFalsePositive()
         {
             // Arrange & Act
-            var results = GenerateAndProcessBackgroundPeaks();
+            var results = GetResults();
 
             // Assert
             Assert.True(results[0].Chromosomes[_chr].Get(Attributes.TruePositive).First().Source.Equals(setA[2]));
@@ -85,12 +95,38 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         [Fact]
         public void CorrectlyIdentifyAllPeaksAsTruePositive()
         {
-            // Act
-            var results = GenerateAndProcessBackgroundPeaks(alpha: 5e-6F);
+            // Arrange & Act
+            var results = GetResults(alpha: 5e-6F);
 
             // Assert
             foreach (var sample in results)
                 Assert.True(sample.Value.Chromosomes[_chr].Count(Attributes.TruePositive) == 4);
+        }
+
+        [Fact]
+        public void AdjPValue()
+        {
+            // Arrange & Act
+            var cPeaks = GetConsensusPeaks(alpha: 5e-14F)[_chr];
+
+            // Assert
+            Assert.Equal("2.344E-023", cPeaks[0].AdjPValue.ToString("E3"));
+            Assert.Equal("9.880E-020", cPeaks[1].AdjPValue.ToString("E3"));
+            Assert.Equal("5.346E-016", cPeaks[2].AdjPValue.ToString("E3"));
+            Assert.Equal(cPeaks[3].RTP, cPeaks[3].AdjPValue);
+        }
+
+        [Fact]
+        public void FalseDiscovery()
+        {
+            // Arrange & Act
+            var cPeaks = GetConsensusPeaks(alpha: 5e-14F)[_chr];
+
+            // Assert
+            Assert.Contains(Attributes.TruePositive, cPeaks[0].Classification);
+            Assert.Contains(Attributes.TruePositive, cPeaks[0].Classification);
+            Assert.Contains(Attributes.TruePositive, cPeaks[0].Classification);
+            Assert.Contains(Attributes.FalsePositive, cPeaks[0].Classification);
         }
     }
 }

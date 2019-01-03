@@ -90,7 +90,7 @@ namespace Genometric.MSPC.Core.Functions
                             peakConstructor.Construct(
                                 peak.Key.left,
                                 peak.Key.right,
-                                peak.Key.xSquard,
+                                ChiSqrd.ChiSqrdDistRTP(peak.Key.xSquard, peak.Key.involvedPeaksCount * 2),
                                 "MSPC_Peak_" + Interlocked.Increment(ref counter),
                                 (peak.Key.right - peak.Key.left) / 2),
                             peak.Key.xSquard,

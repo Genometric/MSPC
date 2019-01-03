@@ -56,11 +56,6 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             return SetupMSPC(peakCount, alpha).GetResults();
         }
 
-        private ReadOnlyDictionary<string, List<ProcessedPeak<Peak>>> GetConsensusPeaks(int peakCount = 4, float alpha = 5e-10F)
-        {
-            return SetupMSPC(peakCount, alpha).GetConsensusPeaks();
-        }
-
         [Fact]
         public void AssignTruePositiveAttributeWhenThereIsOnlyOnePeak()
         {
@@ -101,40 +96,6 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             // Assert
             foreach (var sample in results)
                 Assert.True(sample.Value.Chromosomes[_chr].Count(Attributes.TruePositive) == 4);
-        }
-
-        [Fact]
-        public void AdjPValue()
-        {
-            // Arrange & Act
-            var cPeaks = GetConsensusPeaks(alpha: 5e-14F)[_chr];
-            var r1 = cPeaks.First(x => x.Source.Left == 5);
-            var r2 = cPeaks.First(x => x.Source.Left == 50);
-            var r3 = cPeaks.First(x => x.Source.Left == 500);
-            var r4 = cPeaks.First(x => x.Source.Left == 5000);
-
-            // Assert
-            Assert.Equal("3.093E-012", r1.AdjPValue.ToString("E3"));
-            Assert.Equal("5.353E-016", r2.AdjPValue.ToString("E3"));
-            Assert.Equal("9.871E-020", r3.AdjPValue.ToString("E3"));
-            Assert.Equal("2.343E-023", r4.AdjPValue.ToString("E3"));
-        }
-
-        [Fact]
-        public void FalseDiscovery()
-        {
-            // Arrange & Act
-            var cPeaks = GetConsensusPeaks(alpha: 5e-14F)[_chr];
-            var r1 = cPeaks.First(x => x.Source.Left == 5);
-            var r2 = cPeaks.First(x => x.Source.Left == 50);
-            var r3 = cPeaks.First(x => x.Source.Left == 500);
-            var r4 = cPeaks.First(x => x.Source.Left == 5000);
-
-            // Assert
-            Assert.Contains(Attributes.FalsePositive, r1.Classification);
-            Assert.Contains(Attributes.TruePositive, r2.Classification);
-            Assert.Contains(Attributes.TruePositive, r3.Classification);
-            Assert.Contains(Attributes.TruePositive, r4.Classification);
         }
     }
 }

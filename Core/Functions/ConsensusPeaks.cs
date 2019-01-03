@@ -19,7 +19,8 @@ namespace Genometric.MSPC.Core.Functions
         public Dictionary<string, List<ProcessedPeak<I>>> Compute(
             Dictionary<uint, Result<I>> analysisResults,
             IPeakConstructor<I> peakConstructor,
-            int degreeOfParallelisim)
+            int degreeOfParallelisim,
+            float alpha)
         {
             // Initialize data structures.
             _consensusPeaks = new Dictionary<string, SortedDictionary<Interval, Interval>>();
@@ -41,7 +42,10 @@ namespace Genometric.MSPC.Core.Functions
             }
 
             // Convert the type of determined consensus peaks.
-            return ConvertToListOfProcessedPeaks(peakConstructor, degreeOfParallelisim);
+            var processedPeaks = ConvertToListOfProcessedPeaks(peakConstructor, degreeOfParallelisim);
+            var fdr = new FalseDiscoveryRate<I>();
+            fdr.PerformMultipleTestingCorrection(processedPeaks, alpha);
+            return processedPeaks;
         }
 
         private void DetermineConsensusPeaks(string chr, IEnumerable<ProcessedPeak<I>> peaks)

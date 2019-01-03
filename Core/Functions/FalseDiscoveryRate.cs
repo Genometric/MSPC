@@ -5,7 +5,7 @@
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.Model;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Genometric.MSPC.Core.Functions
@@ -16,7 +16,7 @@ namespace Genometric.MSPC.Core.Functions
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(ReadOnlyDictionary<uint, Result<I>> results, float alpha)
+        public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha)
         {
             foreach (var result in results)
             {
@@ -41,6 +41,34 @@ namespace Genometric.MSPC.Core.Functions
                     // Sorts confirmed peaks set based on coordinates using default comparer.
                     confirmedPeaks.Sort();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Benjamini–Hochberg (step-up) procedure.
+        /// </summary>
+        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha)
+        {
+            foreach (var chr in peaks)
+            {
+                var confirmedPeaks = chr.Value;
+                int m = confirmedPeaks.Count;
+
+                // Sorts confirmed peaks set based on their p-values.
+                confirmedPeaks.Sort(new CompareProcessedPeaksByValue<I>());
+
+                for (int i = 0; i < m; i++)
+                {
+                    if (confirmedPeaks[i].Source.Value <= (i + 1) / (double)m * alpha)
+                        confirmedPeaks[i].Classification.Add(Attributes.TruePositive);
+                    else
+                        confirmedPeaks[i].Classification.Add(Attributes.FalsePositive);
+
+                    // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
+                    confirmedPeaks[i].AdjPValue = confirmedPeaks[i].Source.Value * (m / (i + 1));
+                }
+                // Sorts confirmed peaks set based on coordinates using default comparer.
+                confirmedPeaks.Sort();
             }
         }
     }

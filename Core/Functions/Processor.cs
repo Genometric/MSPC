@@ -83,11 +83,11 @@ namespace Genometric.MSPC.Core.Functions
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
             var fdr = new FalseDiscoveryRate<I>();
-            fdr.PerformMultipleTestingCorrection(AnalysisResults, _config.Alpha);
+            fdr.PerformMultipleTestingCorrection(_analysisResults, _config.Alpha);
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
-            _consensusPeaks = new ConsensusPeaks<I>().Compute(_analysisResults, _peakConstructor, DegreeOfParallelism);
+            _consensusPeaks = new ConsensusPeaks<I>().Compute(_analysisResults, _peakConstructor, DegreeOfParallelism, _config.Alpha);
         }
 
         private void CacheChiSqrdData()

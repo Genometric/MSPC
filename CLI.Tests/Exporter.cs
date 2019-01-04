@@ -23,6 +23,46 @@ namespace Genometric.MSPC.CLI.Tests
         private readonly List<Attributes> _attributes;
         private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)";
 
+        readonly List<Peak> peaks = new List<Peak>()
+            {
+                new Peak(10, 11, 1E-8),
+                new Peak(100, 110, 1E-8),
+                new Peak(1000, 1100, 1E-8),
+                new Peak(10000, 11000, 1E-8),
+                new Peak(100000, 110000, 1E-8),
+                new Peak(120000, 130000, 1E-8),
+                new Peak(150000, 160000, 1E-8),
+                new Peak(1000000, 1100000, 1E-8),
+                new Peak(1200000, 1300000, 1E-8),
+                new Peak(110000000, 120000000, 1E-8),
+                new Peak(130000000, 140000000, 1E-8),
+                new Peak(910000000, 920000000, 1E-8),
+                new Peak(930000000, 940000000, 1E-8)
+            };
+        readonly List<string> chrs = new List<string>()
+            {
+                "chr1", "chr3", "chr5", "chr8", "chr9", "chr9", "chr9", "chr18", "chr18", "chrX", "chrX", "chrY", "chrY"
+            };
+
+        private string RunMSPCAndExportResultsWithMultiChr()
+        {
+            var s0 = new Bed<Peak>();
+            for (int i = 0; i < peaks.Count; i++)
+                s0.Add(peaks[i], chrs[i], _strand);
+
+            var s1 = new Bed<Peak>();
+            s1.Add(new Peak(800, 900, 1E-2), "chr5", _strand);
+
+            var mspc = new Mspc();
+            mspc.AddSample(0, s0);
+            mspc.AddSample(1, s1);
+
+            mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
+            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            new Exporter<Peak>().Export(_sidfm, mspc.GetResults(), mspc.GetConsensusPeaks(), new Options(path, false, _attributes));
+            return path;
+        }
+
         // Sample ID Filename Mapping
         private readonly Dictionary<uint, string> _sidfm;
 
@@ -226,53 +266,43 @@ namespace Genometric.MSPC.CLI.Tests
         public void OutputIsSorted()
         {
             // Arrange & Act
-            var s0 = new Bed<Peak>();
-            var peaks = new List<Peak>()
-            {
-                new Peak(10, 11, 1E-8),
-                new Peak(100, 110, 1E-8),
-                new Peak(1000, 1100, 1E-8),
-                new Peak(10000, 11000, 1E-8),
-                new Peak(100000, 110000, 1E-8),
-                new Peak(120000, 130000, 1E-8),
-                new Peak(150000, 160000, 1E-8),
-                new Peak(1000000, 1100000, 1E-8),
-                new Peak(1200000, 1300000, 1E-8),
-                new Peak(110000000, 120000000, 1E-8),
-                new Peak(130000000, 140000000, 1E-8),
-                new Peak(910000000, 920000000, 1E-8),
-                new Peak(930000000, 940000000, 1E-8)
-            };
-
-            var chrs = new List<string>()
-            {
-                "chr1", "chr3", "chr5", "chr8", "chr9", "chr9", "chr9", "chr18", "chr18", "chrX", "chrX", "chrY", "chrY"
-            };
-
-            for (int i = 0; i < peaks.Count; i++)
-                s0.Add(peaks[i], chrs[i], _strand);
-
-            var s1 = new Bed<Peak>();
-            s1.Add(new Peak(800, 900, 1E-8), "chr5", _strand);
-
-            var mspc = new Mspc();
-            mspc.AddSample(0, s0);
-            mspc.AddSample(1, s1);
-
-            mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            new Exporter<Peak>().Export(_sidfm, mspc.GetResults(), mspc.GetConsensusPeaks(), new Options(path, false, _attributes));
+            var path = RunMSPCAndExportResultsWithMultiChr();
 
             // In the exported session folder, first finds the folder that contains 
             // analysis results for a given sample, then within that folder
             // finds the file that contains data belonging to a given attributes.
-            var file = Array.Find(
+            var filename = Array.Find(
                 Directory.GetFiles(Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[0]); })),
                 (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(Attributes.Confirmed.ToString()); });
 
             // Assert
             int lineCounter = 0;
-            using (var reader = new StreamReader(file))
+            using (var reader = new StreamReader(filename))
+            {
+                for (int i = 0; i < peaks.Count; i++)
+                {
+                    var line = reader.ReadLine().Split('\t');
+                    Assert.True(
+                        chrs[lineCounter] == line[0] &&
+                        peaks[lineCounter].Left.ToString() == line[1] &&
+                        peaks[lineCounter].Right.ToString() == line[2]);
+                    lineCounter++;
+                }
+            }
+
+            // Clean up
+            Directory.Delete(path, true);
+        }
+
+        [Fact]
+        public void ConsensusPeaksAreSorted()
+        {
+            // Arrange & Act
+            var path = RunMSPCAndExportResultsWithMultiChr();
+
+            // Assert
+            int lineCounter = 0;
+            using (var reader = new StreamReader(path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
             {
                 for (int i = 0; i < peaks.Count; i++)
                 {

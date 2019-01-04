@@ -25,7 +25,7 @@ namespace Genometric.MSPC.CLI
         {
             get
             {
-                return _samples.ToDictionary(x => x.FileHashKey, x => x.FileName);
+                return _samples.ToDictionary(x => x.FileHashKey, x => Path.GetFileNameWithoutExtension(x.FileName));
             }
         }
 

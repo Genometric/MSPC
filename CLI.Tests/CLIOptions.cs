@@ -204,7 +204,7 @@ namespace Genometric.MSPC.CLI.Tests
             var po = options.Parse(GenerateShortNameArguments(c: c).Split(' '), out bool _);
 
             // Assert
-            Assert.True(po.C == byte.Parse(c));
+            Assert.True(po.C == int.Parse(c));
         }
 
         [Theory]

@@ -87,7 +87,7 @@ namespace Genometric.MSPC.Core.Tests.Example
         [Theory]
         [MemberData(nameof(ExpectedAttributes))]
         public void AssertAttributeAssignment(
-            ReplicateType replicateType, byte c, uint sampleIndex,
+            ReplicateType replicateType, int c, uint sampleIndex,
             Peak peak, Attributes initial, Attributes processed)
         {
             // Arrange
@@ -125,7 +125,7 @@ namespace Genometric.MSPC.Core.Tests.Example
         [InlineData(ReplicateType.Biological, 2, 1, Attributes.Discarded, 1)]
         [InlineData(ReplicateType.Biological, 2, 2, Attributes.Confirmed, 2)]
         [InlineData(ReplicateType.Biological, 2, 2, Attributes.Discarded, 1)]
-        public void AssertSetsCount(ReplicateType replicateType, byte c, uint sampleIndex, Attributes attribute, int expectedCount)
+        public void AssertSetsCount(ReplicateType replicateType, int c, uint sampleIndex, Attributes attribute, int expectedCount)
         {
             // Arrange
             var mspc = InitializeMSPC();

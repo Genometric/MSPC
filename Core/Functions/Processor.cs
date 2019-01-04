@@ -94,7 +94,7 @@ namespace Genometric.MSPC.Core.Functions
         {
             _cachedChiSqrd = new List<double>();
             for (int i = 1; i <= _samples.Count; i++)
-                _cachedChiSqrd.Add(Math.Round(ChiSqrd.ChiSqrdINVRTP(_config.Gamma, (byte)(i * 2)), 3));
+                _cachedChiSqrd.Add(Math.Round(ChiSqrd.ChiSqrdINVRTP(_config.Gamma, i * 2), 3));
         }
 
         private void BuildDataStructures()

@@ -229,13 +229,13 @@ namespace Genometric.MSPC.CLI.Tests
             var s0 = new Bed<Peak>();
             var peaks = new List<Peak>()
             {
-                new Peak(1000, 1100, 1E-8),
                 new Peak(10, 11, 1E-8),
                 new Peak(100, 110, 1E-8),
+                new Peak(1000, 1100, 1E-8),
                 new Peak(10000, 11000, 1E-8),
                 new Peak(100000, 110000, 1E-8),
-                new Peak(150000, 160000, 1E-8),
                 new Peak(120000, 130000, 1E-8),
+                new Peak(150000, 160000, 1E-8),
                 new Peak(1000000, 1100000, 1E-8),
                 new Peak(1200000, 1300000, 1E-8),
                 new Peak(110000000, 120000000, 1E-8),
@@ -246,7 +246,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             var chrs = new List<string>()
             {
-                "chr5","chr1","chr3","chr8","chr9","chr9","chr9","chr18","chr18","chrX","chrX","chrY","chrY"
+                "chr1", "chr3", "chr5", "chr8", "chr9", "chr9", "chr9", "chr18", "chr18", "chrX", "chrX", "chrY", "chrY"
             };
 
             for (int i = 0; i < peaks.Count; i++)

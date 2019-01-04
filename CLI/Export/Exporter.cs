@@ -2,7 +2,6 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
 using System;
@@ -56,17 +55,20 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (_options.IncludeHeader)
                     writter.WriteLine(_header);
 
-                foreach (var chr in data.Chromosomes)
+                var sortedChrs = data.Chromosomes.Keys.ToArray();
+                Array.Sort(sortedChrs, new AlphanumComparer());
+
+                foreach (var chr in sortedChrs)
                 {
                     var sortedDictionary = from entry 
-                                           in chr.Value.Get(attribute)
+                                           in data.Chromosomes[chr].Get(attribute)
                                            orderby entry 
                                            ascending select entry;
 
                     foreach (var item in sortedDictionary)
                     {
                         writter.WriteLine(
-                            chr.Key + "\t" +
+                            chr + "\t" +
                             item.Source.Left.ToString() + "\t" +
                             item.Source.Right.ToString() + "\t" +
                             item.Source.Name + "\t" +
@@ -88,17 +90,20 @@ namespace Genometric.MSPC.CLI.Exporter
                 if (_options.IncludeHeader)
                     writter.WriteLine(_header);
 
-                foreach (var chr in peaks)
+                var sortedChrs = peaks.Keys.ToArray();
+                Array.Sort(sortedChrs, new AlphanumComparer());
+
+                foreach (var chr in sortedChrs)
                 {
                     var sortedPeaks = from entry
-                                      in chr.Value
+                                      in peaks[chr]
                                       orderby entry ascending
                                       select entry;
 
                     foreach (var peak in sortedPeaks)
                     {
                         writter.WriteLine(
-                            chr.Key + "\t" +
+                            chr + "\t" +
                             peak.Source.Left.ToString() + "\t" +
                             peak.Source.Right.ToString() + "\t" +
                             peak.Source.Name + "\t" +

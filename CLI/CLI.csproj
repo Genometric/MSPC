@@ -9,7 +9,7 @@
     <Version>3.2.0</Version>
     <Authors>Vahid Jalili</Authors>
     <Product>Genometric.MSPC.CLI</Product>
-    <PackageProjectUrl>https://github.com/Genometric/MSPC</PackageProjectUrl>
+    <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
     <PackageId>Genometric.MSPC.CLI</PackageId>
@@ -18,7 +18,7 @@
     <RootNamespace>Genometric.MSPC.CLI</RootNamespace>
     <Company>Genometric</Company>
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
-    <PackageIconUrl>https://github.com/Genometric/MSPC/blob/dev/website/static/img/mspc_logo.svg</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Genometric/MSPC/project_icon/website/static/img/mspc_logo_wireframe.svg</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

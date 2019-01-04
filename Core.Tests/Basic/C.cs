@@ -54,7 +54,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [InlineData(5, 6, 0, 1)]
         [InlineData(5, 7, 0, 1)]
         [InlineData(5, 8, 0, 1)]
-        public void AssertCRequirement(int samplesCount, byte c, int confirmedPeaksCount, int discardedPeaksCount)
+        public void AssertCRequirement(int samplesCount, int c, int confirmedPeaksCount, int discardedPeaksCount)
         {
             // Arrange
             uint id = 0;

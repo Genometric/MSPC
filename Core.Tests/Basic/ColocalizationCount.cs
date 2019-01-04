@@ -15,7 +15,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [Theory]
         [InlineData(1, 1)]
         [InlineData(2, 0)]
-        public void SingleNonOverlappingPeak(byte c, byte expected)
+        public void SingleNonOverlappingPeak(int c, int expected)
         {
             // Arrange
             var sA = new Bed<Peak>();
@@ -44,7 +44,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [Theory]
         [InlineData(1, 1)]
         [InlineData(2, 1)]
-        public void TwoOverlappingPeak(byte c, byte expected)
+        public void TwoOverlappingPeak(int c, int expected)
         {
             // Arrange
             var sA = new Bed<Peak>();
@@ -74,7 +74,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [InlineData(1, 1)]
         [InlineData(2, 1)]
         [InlineData(3, 1)]
-        public void ThreePeaksTwoOverlapping(byte c, byte expected)
+        public void ThreePeaksTwoOverlapping(int c, int expected)
         {
             // Arrange
             var sA = new Bed<Peak>();
@@ -109,7 +109,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [InlineData(1, 1)]
         [InlineData(2, 1)]
         [InlineData(3, 1)]
-        public void ThreePeaksThreeOverlapping(byte c, byte expected)
+        public void ThreePeaksThreeOverlapping(int c, int expected)
         {
             // Arrange
             var sA = new Bed<Peak>();
@@ -144,7 +144,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [InlineData(1, 1)]
         [InlineData(2, 0)]
         [InlineData(3, 0)]
-        public void ThreePeaksNoneOverlapping(byte c, byte expected)
+        public void ThreePeaksNoneOverlapping(int c, int expected)
         {
             // Arrange
             var sA = new Bed<Peak>();

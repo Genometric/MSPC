@@ -34,13 +34,8 @@ namespace Genometric.MSPC.CLI.Exporter
 
             foreach (var result in results)
             {
-                string samplePath =
-                    _options.Path +
-                    Path.DirectorySeparatorChar +
-                    Path.GetFileNameWithoutExtension(fileNames[result.Key]);
-
+                string samplePath = _options.Path + Path.DirectorySeparatorChar + fileNames[result.Key];
                 Directory.CreateDirectory(samplePath);
-
                 foreach(var attribute in options.AttributesToExport)
                     WriteToFile(samplePath, result.Value, attribute);
             }

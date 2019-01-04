@@ -9,7 +9,7 @@
     <Version>3.2.0</Version>
     <Authors>Vahid Jalili</Authors>
     <Product>Genometric.MSPC.CLI</Product>
-    <PackageProjectUrl>https://github.com/Genometric/MSPC</PackageProjectUrl>
+    <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
     <PackageId>Genometric.MSPC.CLI</PackageId>

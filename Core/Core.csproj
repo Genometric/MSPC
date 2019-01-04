@@ -7,7 +7,7 @@
     <Authors>Vahid Jalili</Authors>
     <Product>Genometric.MSPC.Core</Product>
     <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/Genometric/MSPC</PackageProjectUrl>
+    <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
     <AssemblyVersion>3.2.0.0</AssemblyVersion>
     <Copyright>GNU General Public License v3.0</Copyright>

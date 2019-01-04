@@ -36,9 +36,9 @@ namespace Genometric.MSPC.CLI
             foreach (var attribute in exportedAttributes)
                 columnWidth = Math.Max(attribute.ToString().Length, columnWidth);
 
-            rtv.Add("");
+            rtv.Add(" ");
             rtv.Add(".::. Summary statistics .::.");
-            rtv.Add("");
+            rtv.Add(" ");
 
             // Create table header
             int i = 2;
@@ -76,13 +76,13 @@ namespace Genometric.MSPC.CLI
             rtv.Add(RenderRow(columnWidth, headerLines));
 
             // Consensus peaks stats
-            rtv.Add("");
+            rtv.Add(" ");
             int cPeaksCount = 0;
             foreach (var chr in consensusPeaks)
                 cPeaksCount += chr.Value.Count;
             rtv.Add(".::. Consensus Peaks Count .::.");
             rtv.Add(cPeaksCount.ToString("N0"));
-            rtv.Add("");
+            rtv.Add(" ");
 
             return rtv;
         }

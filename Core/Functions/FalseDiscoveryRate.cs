@@ -5,6 +5,7 @@
 using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.Model;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,28 +20,32 @@ namespace Genometric.MSPC.Core.Functions
         /// </summary>
         public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha, int degreeOfParallelism)
         {
-            foreach (var result in results)
-                Parallel.ForEach(
-                    result.Value.Chromosomes,
-                    new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
-                    chr =>
-                    {
-                        PerformMultipleTestingCorrection(chr.Value.Get(Attributes.Confirmed).ToList(), alpha);
-                    });
+            Parallel.ForEach(
+                results,
+                new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
+                result =>
+                {
+                    PerformMultipleTestingCorrection(UnionChrs(result.Value.Chromosomes), alpha);
+                });
+        }
+
+        private List<ProcessedPeak<I>> UnionChrs(ConcurrentDictionary<string, Sets<I>> chrs)
+        {
+            IEnumerable<ProcessedPeak<I>> peaks = new List<ProcessedPeak<I>>();
+            foreach (var chr in chrs)
+                peaks = peaks.Union(chr.Value.Get(Attributes.Confirmed));
+            return peaks.ToList();
         }
 
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha, int degreeOfParallelism)
+        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha)
         {
-            Parallel.ForEach(
-                peaks,
-                new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
-                chr =>
-                {
-                    PerformMultipleTestingCorrection(chr.Value, alpha);
-                });
+            IEnumerable<ProcessedPeak<I>> ps = new List<ProcessedPeak<I>>();
+            foreach (var chr in peaks)
+                ps = ps.Union(chr.Value);
+            PerformMultipleTestingCorrection(ps.ToList(), alpha);
         }
 
         private void PerformMultipleTestingCorrection(List<ProcessedPeak<I>> peaks, float alpha)
@@ -60,8 +65,6 @@ namespace Genometric.MSPC.Core.Functions
                 // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
                 peaks[i].AdjPValue = peaks[i].Source.Value * (m / (i + 1.0));
             }
-            // Sorts confirmed peaks set based on coordinates using default comparer.
-            peaks.Sort();
         }
     }
 }

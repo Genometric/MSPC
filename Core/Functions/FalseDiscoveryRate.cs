@@ -40,15 +40,12 @@ namespace Genometric.MSPC.Core.Functions
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha, int degreeOfParallelism)
+        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha)
         {
-            Parallel.ForEach(
-                peaks,
-                new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
-                chr =>
-                {
-                    PerformMultipleTestingCorrection(chr.Value, alpha);
-                });
+            IEnumerable<ProcessedPeak<I>> ps = new List<ProcessedPeak<I>>();
+            foreach (var chr in peaks)
+                ps = ps.Union(chr.Value);
+            PerformMultipleTestingCorrection(ps.ToList(), alpha);
         }
 
         private void PerformMultipleTestingCorrection(List<ProcessedPeak<I>> peaks, float alpha)

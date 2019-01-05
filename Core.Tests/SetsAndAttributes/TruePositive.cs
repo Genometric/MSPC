@@ -104,7 +104,13 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var sample in results)
-                Assert.True(sample.Value.Chromosomes[_chr].Count(Attributes.TruePositive) == 4);
+            {
+                int count = 0;
+                foreach (var chr in sample.Value.Chromosomes)
+                    count += chr.Value.Count(Attributes.TruePositive);
+
+                Assert.True(count == 4);
+            }
         }
     }
 }

@@ -97,12 +97,16 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string msg = RunMSPC(rep1, rep2);
-            File.Delete(rep1);
-            File.Delete(rep2);
 
             // Assert
             Assert.Contains("Read peaks#:\t2\r\n", msg);
             Assert.Contains("Read peaks#:\t3\r\n", msg);
+
+            // Clean-up
+            File.Delete(rep1);
+            File.Delete(rep2);
+            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
+                Directory.Delete(path, true);
         }
 
         [Fact]
@@ -113,12 +117,16 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string msg = RunMSPC(rep1, rep2);
-            File.Delete(rep1);
-            File.Delete(rep2);
 
             // Assert
             Assert.Contains("Min p-value:\t1.000E-005\r\n", msg);
             Assert.Contains("Min p-value:\t1.000E-007\r\n", msg);
+
+            // Clean-up
+            File.Delete(rep1);
+            File.Delete(rep2);
+            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
+                Directory.Delete(path, true);
         }
 
         [Fact]
@@ -129,12 +137,16 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string msg = RunMSPC(rep1, rep2);
-            File.Delete(rep1);
-            File.Delete(rep2);
 
             // Assert
             Assert.Contains("Max p-value:\t1.000E-003\r\n", msg);
             Assert.Contains("Max p-value:\t1.000E-002\r\n", msg);
+
+            // Clean-up
+            File.Delete(rep1);
+            File.Delete(rep2);
+            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
+                Directory.Delete(path, true);
         }
 
         [Fact]
@@ -145,11 +157,15 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string msg = RunMSPC(rep1, rep2);
-            File.Delete(rep1);
-            File.Delete(rep2);
 
             // Assert
             Assert.Contains("All processes successfully finished [Analysis ET: ", msg);
+
+            // Clean-up
+            File.Delete(rep1);
+            File.Delete(rep2);
+            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
+                Directory.Delete(path, true);
         }
 
         [Fact]
@@ -187,7 +203,6 @@ namespace Genometric.MSPC.CLI.Tests
             using (StreamWriter w = new StreamWriter(path))
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
-
             // Act
             string console = null;
             using (StringWriter sw = new StringWriter())
@@ -199,7 +214,6 @@ namespace Genometric.MSPC.CLI.Tests
                 console = sw.ToString();
             }
 
-
             // Assert
             Assert.Contains("Read peaks#:\t2", console);
             Assert.Contains("Read peaks#:\t3", console);
@@ -208,6 +222,12 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains("Min p-value:\t3.981E-124", console);
             Assert.Contains("Min p-value:\t1.259E-100", console);
             Assert.Contains("Max p-value:\t3.981E-022", console);
+
+            // Clean up
+            File.Delete(rep1Path);
+            File.Delete(rep2Path);
+            foreach (var p in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
+                Directory.Delete(p, true);
         }
 
         [Fact]
@@ -239,7 +259,7 @@ namespace Genometric.MSPC.CLI.Tests
             using (StreamWriter w = new StreamWriter(parserConfigFile))
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
-            // ACt
+            // Act
             string consoleOutput = "";
             using (StringWriter sw = new StringWriter())
             {
@@ -250,6 +270,13 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.True(Regex.Matches(consoleOutput, "Read peaks#:	2").Count == 2);
+
+            // Clean up
+            File.Delete(rep1Path);
+            File.Delete(rep2Path);
+            File.Delete(parserConfigFile);
+            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
+                Directory.Delete(path, true);
         }
 
         [Theory]
@@ -259,7 +286,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void ShowsHelpText(string template)
         {
             // Arrange
-            string expected = 
+            string expected =
                 "\r\n\r\nUsage: MSPC CLI [options]" +
                 "\r\n\r\nOptions:\r\n  -? | -h | --help                      Show help information" +
                 "\r\n  -v | --version                        Show version information" +

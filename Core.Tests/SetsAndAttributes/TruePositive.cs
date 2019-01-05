@@ -16,14 +16,17 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
     {
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
-        private readonly List<Peak> setA = new List<Peak>()
+
+        private readonly string[] _chrs = new string[] { "chr1", "chr1", "chr5", "chrx" };
+
+        private readonly List<Peak> _setA = new List<Peak>()
         {
             new Peak(left: 10, right: 20, value: 1e-6),
             new Peak(left: 100, right: 200, value: 1e-8),
             new Peak(left: 1000, right: 2000, value: 1e-10),
             new Peak(left: 10000, right: 20000, value: 1e-12)
         };
-        private readonly List<Peak> setB = new List<Peak>()
+        private readonly List<Peak> _setB = new List<Peak>()
         {
             new Peak(left: 5, right: 12, value: 1e-7),
             new Peak(left: 50, right: 120, value: 1e-9),
@@ -35,11 +38,11 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
         {
             var sA = new Bed<Peak>();
             for (int i = 0; i < peakCount; i++)
-                sA.Add(setA[i], _chr, _strand);
+                sA.Add(_setA[i], _chrs[i], _strand);
 
             var sB = new Bed<Peak>();
             for (int i = 0; i < peakCount; i++)
-                sB.Add(setB[i], _chr, _strand);
+                sB.Add(_setB[i], _chrs[i], _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -74,7 +77,13 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var sample in results)
-                Assert.True(sample.Value.Chromosomes[_chr].Count(Attributes.TruePositive) == 2);
+            {
+                int count = 0;
+                foreach (var chr in sample.Value.Chromosomes)
+                    count += chr.Value.Count(Attributes.TruePositive);
+
+                Assert.True(count == 2);
+            }
         }
 
         [Fact]
@@ -84,7 +93,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var results = GetResults();
 
             // Assert
-            Assert.True(results[0].Chromosomes[_chr].Get(Attributes.TruePositive).First().Source.Equals(setA[2]));
+            Assert.True(results[0].Chromosomes[_chrs[2]].Get(Attributes.TruePositive).First().Source.Equals(_setA[2]));
         }
 
         [Fact]

@@ -8,7 +8,6 @@ using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
 
 namespace Genometric.MSPC.CLI
@@ -36,9 +35,7 @@ namespace Genometric.MSPC.CLI
             foreach (var attribute in exportedAttributes)
                 columnWidth = Math.Max(attribute.ToString().Length, columnWidth);
 
-            rtv.Add(" ");
-            rtv.Add(".::. Summary statistics .::.");
-            rtv.Add(" ");
+            rtv.Add(Environment.NewLine + ".::. Summary statistics .::." + Environment.NewLine);
 
             // Create table header
             int i = 2;
@@ -81,8 +78,7 @@ namespace Genometric.MSPC.CLI
             foreach (var chr in consensusPeaks)
                 cPeaksCount += chr.Value.Count;
             rtv.Add(".::. Consensus Peaks Count .::.");
-            rtv.Add(cPeaksCount.ToString("N0"));
-            rtv.Add(" ");
+            rtv.Add(cPeaksCount.ToString("N0") + Environment.NewLine);
 
             return rtv;
         }

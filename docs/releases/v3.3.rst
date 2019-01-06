@@ -1,0 +1,11 @@
+===== 
+v3.3 
+=====
+
+- Update to use GeUtilities v5.3;
+- Unions peaks on all chrs before running multiple testing correction;
+- Delete temporary files created by unit tests, once the tests are concluded;
+- Fix a bug formatting summary statistics;
+- Change type of C and DF from byte to int;
+- Sort exported peaks alphanumerically;
+- Fix bugs computing RTP and Adj p-value.

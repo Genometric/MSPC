@@ -9,10 +9,10 @@
     <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
     <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
-    <AssemblyVersion>3.2.0.0</AssemblyVersion>
+    <AssemblyVersion>3.3.0.0</AssemblyVersion>
     <Copyright>GNU General Public License v3.0</Copyright>
     <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
-    <Version>3.2.0</Version>
+    <Version>3.3.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>Genometric</Company>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

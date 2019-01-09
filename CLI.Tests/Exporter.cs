@@ -19,7 +19,7 @@ namespace Genometric.MSPC.CLI.Tests
     public class Exporter
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
         private readonly List<Attributes> _attributes;
         private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)";
 

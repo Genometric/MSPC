@@ -19,9 +19,8 @@ namespace Genometric.MSPC.CLI.Tests
     public class Exporter
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
         private readonly List<Attributes> _attributes;
-        private readonly string _header = "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)";
 
         readonly List<Peak> peaks = new List<Peak>()
             {
@@ -43,6 +42,13 @@ namespace Genometric.MSPC.CLI.Tests
             {
                 "chr1", "chr3", "chr5", "chr8", "chr9", "chr9", "chr9", "chr18", "chr18", "chrX", "chrX", "chrY", "chrY"
             };
+
+        private string Header(bool mspcFormat)
+        {
+            return mspcFormat ?
+                "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)" :
+                "chr\tstart\tstop\tname\t-1xlog10(p-value)";
+        }
 
         private string RunMSPCAndExportResultsWithMultiChr()
         {
@@ -138,7 +144,7 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
-        public void CreateOneAndOnlyOneFilePerAttribute()
+        public void CreateOneAndOnlyOneFilePerAttributeInMSPCPeaksFormat()
         {
             // Arrange & Act
             string path = RunMSPCAndExportResults();
@@ -151,8 +157,8 @@ namespace Genometric.MSPC.CLI.Tests
                 // Assert
                 foreach (var att in _attributes)
                 {
-                    Assert.Contains(files, (string p) => { return p.Equals(att + ".bed"); });
-                    Assert.True(files.Count(x => x.Equals(att + ".bed")) == 1);
+                    Assert.Contains(files, (string p) => { return p.Equals(att + "_mspc_peaks.txt"); });
+                    Assert.True(files.Count(x => x.Equals(att + "_mspc_peaks.txt")) == 1);
                 }
             }
 
@@ -161,33 +167,55 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
-        [InlineData(0, Attributes.Background, 1)]
-        [InlineData(1, Attributes.Background, 0)]
-        [InlineData(2, Attributes.Background, 0)]
-        [InlineData(0, Attributes.Confirmed, 1)]
-        [InlineData(1, Attributes.Confirmed, 2)]
-        [InlineData(2, Attributes.Confirmed, 1)]
-        [InlineData(0, Attributes.Discarded, 0)]
-        [InlineData(1, Attributes.Discarded, 1)]
-        [InlineData(2, Attributes.Discarded, 2)]
-        [InlineData(0, Attributes.FalsePositive, 0)]
-        [InlineData(1, Attributes.FalsePositive, 0)]
-        [InlineData(2, Attributes.FalsePositive, 0)]
-        [InlineData(0, Attributes.Stringent, 1)]
-        [InlineData(1, Attributes.Stringent, 1)]
-        [InlineData(2, Attributes.Stringent, 2)]
-        [InlineData(0, Attributes.TruePositive, 1)]
-        [InlineData(1, Attributes.TruePositive, 2)]
-        [InlineData(2, Attributes.TruePositive, 1)]
-        [InlineData(0, Attributes.Weak, 0)]
-        [InlineData(1, Attributes.Weak, 2)]
-        [InlineData(2, Attributes.Weak, 1)]
-        public void CountNumberOfExportedPeaksInEachSet(uint sampleID, Attributes attribute, int count)
+        [InlineData(true, 0, Attributes.Background, 1)]
+        [InlineData(true, 1, Attributes.Background, 0)]
+        [InlineData(true, 2, Attributes.Background, 0)]
+        [InlineData(true, 0, Attributes.Confirmed, 1)]
+        [InlineData(true, 1, Attributes.Confirmed, 2)]
+        [InlineData(true, 2, Attributes.Confirmed, 1)]
+        [InlineData(true, 0, Attributes.Discarded, 0)]
+        [InlineData(true, 1, Attributes.Discarded, 1)]
+        [InlineData(true, 2, Attributes.Discarded, 2)]
+        [InlineData(true, 0, Attributes.FalsePositive, 0)]
+        [InlineData(true, 1, Attributes.FalsePositive, 0)]
+        [InlineData(true, 2, Attributes.FalsePositive, 0)]
+        [InlineData(true, 0, Attributes.Stringent, 1)]
+        [InlineData(true, 1, Attributes.Stringent, 1)]
+        [InlineData(true, 2, Attributes.Stringent, 2)]
+        [InlineData(true, 0, Attributes.TruePositive, 1)]
+        [InlineData(true, 1, Attributes.TruePositive, 2)]
+        [InlineData(true, 2, Attributes.TruePositive, 1)]
+        [InlineData(true, 0, Attributes.Weak, 0)]
+        [InlineData(true, 1, Attributes.Weak, 2)]
+        [InlineData(true, 2, Attributes.Weak, 1)]
+        [InlineData(false, 0, Attributes.Background, 1)]
+        [InlineData(false, 1, Attributes.Background, 0)]
+        [InlineData(false, 2, Attributes.Background, 0)]
+        [InlineData(false, 0, Attributes.Confirmed, 1)]
+        [InlineData(false, 1, Attributes.Confirmed, 2)]
+        [InlineData(false, 2, Attributes.Confirmed, 1)]
+        [InlineData(false, 0, Attributes.Discarded, 0)]
+        [InlineData(false, 1, Attributes.Discarded, 1)]
+        [InlineData(false, 2, Attributes.Discarded, 2)]
+        [InlineData(false, 0, Attributes.FalsePositive, 0)]
+        [InlineData(false, 1, Attributes.FalsePositive, 0)]
+        [InlineData(false, 2, Attributes.FalsePositive, 0)]
+        [InlineData(false, 0, Attributes.Stringent, 1)]
+        [InlineData(false, 1, Attributes.Stringent, 1)]
+        [InlineData(false, 2, Attributes.Stringent, 2)]
+        [InlineData(false, 0, Attributes.TruePositive, 1)]
+        [InlineData(false, 1, Attributes.TruePositive, 2)]
+        [InlineData(false, 2, Attributes.TruePositive, 1)]
+        [InlineData(false, 0, Attributes.Weak, 0)]
+        [InlineData(false, 1, Attributes.Weak, 2)]
+        [InlineData(false, 2, Attributes.Weak, 1)]
+        public void CountNumberOfExportedPeaksInEachSet(bool mspcFormat, uint sampleID, Attributes attribute, int count)
         {
             // Arrange & Act
             string path = RunMSPCAndExportResults();
+            string filename = mspcFormat ? attribute.ToString() + "_mspc_peaks" : attribute.ToString();
             var sampleFolder = Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[sampleID]); });
-            var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(attribute.ToString()); });
+            var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(filename); });
             var bedParser = new BedParser
             {
                 PValueFormat = PValueFormats.minus1_Log10_pValue
@@ -209,30 +237,37 @@ namespace Genometric.MSPC.CLI.Tests
         [InlineData(false)]
         public void WriteHeaderToAllExportedData(bool write)
         {
-            // Arrange & Act
+            // Arrange & Act & Assert
             string path = RunMSPCAndExportResults(write);
             foreach (var sampleFolder in Directory.GetDirectories(path))
                 foreach (var file in Directory.GetFiles(sampleFolder))
                     using (StreamReader reader = new StreamReader(file))
-                        Assert.True(_header.Equals(reader.ReadLine()) == write);
+                        if (Path.GetFileNameWithoutExtension(file).Contains("_mspc_peaks"))
+                            Assert.True(Header(true).Equals(reader.ReadLine()) == write);
+                        else
+                            Assert.True(Header(false).Equals(reader.ReadLine()) == write);
 
             // Clean up
             Directory.Delete(path, true);
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void WriteHeaderToConsensusPeaksFile(bool write)
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void WriteHeaderToConsensusPeaksFile(bool mspcFormat, bool write)
         {
             // Arrange & Act
             string line;
+            string expectedHeader = Header(mspcFormat);
             string path = RunMSPCAndExportResults(write);
-            using (StreamReader reader = new StreamReader(path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+            string filename = mspcFormat ? "ConsensusPeaks_mspc_peaks.txt" : "ConsensusPeaks.bed";
+            using (StreamReader reader = new StreamReader(path + Path.DirectorySeparatorChar + filename))
                 line = reader.ReadLine();
 
             // Assert
-            Assert.True(line.Equals(_header) == write);
+            Assert.True(line.Equals(expectedHeader) == write);
 
             // Clean up
             Directory.Delete(path, true);
@@ -240,7 +275,7 @@ namespace Genometric.MSPC.CLI.Tests
 
         [Theory]
         [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, double.NaN, double.NaN, double.NaN)]
-        public void CorrectValuesForEachPropertyOfExportedPeak(
+        public void CorrectValuesForEachPropertyOfExportedPeakInMSPCPeakFile(
             uint sampleID, Attributes attribute,
             string chr, int left, int right, string name, double value, double xSqrd, double rtp, double adjustedPValue)
         {
@@ -249,7 +284,7 @@ namespace Genometric.MSPC.CLI.Tests
             string expectedLine = chr + "\t" + left + "\t" + right + "\t" + name + "\t" + value + "\t" + xSqrd + "\t" + rtp + "\t" + adjustedPValue;
             string readLine = "";
             var sampleFolder = Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[sampleID]); });
-            var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(attribute.ToString()); });
+            var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(attribute.ToString() + "_mspc_peaks"); });
 
             // Act
             using (StreamReader reader = new StreamReader(file))
@@ -262,18 +297,21 @@ namespace Genometric.MSPC.CLI.Tests
             Directory.Delete(path, true);
         }
 
-        [Fact]
-        public void OutputIsSorted()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void OutputIsSortedInMSPCPeaksFormat(bool mspcFormat)
         {
             // Arrange & Act
             var path = RunMSPCAndExportResultsWithMultiChr();
+            string name = mspcFormat ? Attributes.Confirmed.ToString() + "_mspc_peaks" : Attributes.Confirmed.ToString();
 
             // In the exported session folder, first finds the folder that contains 
             // analysis results for a given sample, then within that folder
             // finds the file that contains data belonging to a given attributes.
             var filename = Array.Find(
                 Directory.GetFiles(Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[0]); })),
-                (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(Attributes.Confirmed.ToString()); });
+                (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(name); });
 
             // Assert
             int lineCounter = 0;
@@ -294,15 +332,18 @@ namespace Genometric.MSPC.CLI.Tests
             Directory.Delete(path, true);
         }
 
-        [Fact]
-        public void ConsensusPeaksAreSorted()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ConsensusPeaksAreSorted(bool mspcFormat)
         {
             // Arrange & Act
             var path = RunMSPCAndExportResultsWithMultiChr();
+            string filename = mspcFormat ? "ConsensusPeaks_mspc_peaks.txt" : "ConsensusPeaks.bed";
 
             // Assert
             int lineCounter = 0;
-            using (var reader = new StreamReader(path + Path.DirectorySeparatorChar + "ConsensusPeaks.bed"))
+            using (var reader = new StreamReader(path + Path.DirectorySeparatorChar + filename))
             {
                 for (int i = 0; i < peaks.Count; i++)
                 {

@@ -176,6 +176,48 @@ namespace Genometric.MSPC.Core.Tests.Basic
         }
 
         [Fact]
+        public void FivePeaksThreeOverlapping()
+        {
+            // Arrange
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 18, value: 0.01), "chr1", '*');
+
+            var sC = new Bed<Peak>();
+            sC.Add(new Peak(left: 14, right: 25, value: 0.01), "chr1", '*');
+
+            var sD = new Bed<Peak>();
+            sD.Add(new Peak(left: 35, right: 40, value: 0.01), "chr1", '*');
+
+            var sE = new Bed<Peak>();
+            sE.Add(new Peak(left: 43, right: 50, value: 0.01), "chr1", '*');
+
+            var mspc = new Mspc();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+            mspc.AddSample(2, sC);
+            mspc.AddSample(3, sD);
+            mspc.AddSample(4, sE);
+
+            var config = new Config(ReplicateType.Biological, 1, 1, 1, 1, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+            Assert.True(new[]
+            {
+                res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
+                res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
+                res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
+                res[3].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
+                res[4].Chromosomes["chr1"].Get(Attributes.Confirmed).Count()
+            }.All(x => x == 1));
+        }
+
+        [Fact]
         public void OnlyOnePeakPerSampleIsConsideredForC()
         {
             // Arrange

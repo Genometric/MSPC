@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Core.Functions
@@ -19,6 +20,9 @@ namespace Genometric.MSPC.Core.Functions
     internal class Processor<I>
         where I : IPeak
     {
+        private int _processedPeaks;
+        private int _peaksToBeProcessed;
+
         private BackgroundWorker _worker;
         private DoWorkEventArgs _workerEventArgs;
 
@@ -69,7 +73,7 @@ namespace Genometric.MSPC.Core.Functions
             _worker = worker;
             _workerEventArgs = e;
 
-            uint step = 1, stepCount = 4;
+            int step = 1, stepCount = 4;
 
             OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Initializing"));
             CacheChiSqrdData();
@@ -111,7 +115,10 @@ namespace Genometric.MSPC.Core.Functions
                     foreach (var strand in chr.Value.Strands)
                         foreach (I p in strand.Value.Intervals)
                             if (p.Value < _config.TauW)
+                            {
                                 _trees[sample.Key][chr.Key].Add(p);
+                                _peaksToBeProcessed++;
+                            }
                 }
             }
 
@@ -143,6 +150,7 @@ namespace Genometric.MSPC.Core.Functions
         {
             Attributes attribute;
             foreach (var strand in chr.Value.Strands)
+            {
                 foreach (I peak in strand.Value.Intervals)
                 {
                     if (_worker.CancellationPending)
@@ -193,6 +201,9 @@ namespace Genometric.MSPC.Core.Functions
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                     }
                 }
+                Interlocked.Add(ref _processedPeaks, strand.Value.Intervals.Count);
+                OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, null));
+            }
         }
 
         private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)

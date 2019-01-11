@@ -29,15 +29,19 @@ namespace Genometric.MSPC.Core.IntervalTree
 
         public List<I> GetIntervals(I peak)
         {
-            Build();
+            BuildAndFinalize();
             return _head.Query(peak);
         }
 
-        public void Build()
+        public void BuildAndFinalize()
         {
             if (!_inSync)
             {
                 _head = new Node<I>(_intervalList);
+                /// If it is intended to only build this tree
+                /// without finalizing it, then remove the
+                /// following line.
+                _intervalList.Clear();
                 _inSync = true;
             }
         }

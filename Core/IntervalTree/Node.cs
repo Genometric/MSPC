@@ -46,8 +46,7 @@ namespace Genometric.MSPC.Core.IntervalTree
                     right.Add(interval);
                 else
                 {
-                    List<I> posting;
-                    if (!_intervals.TryGetValue(interval, out posting))
+                    if (!_intervals.TryGetValue(interval, out List<I> posting))
                     {
                         posting = new List<I>();
                         _intervals.Add(interval, posting);

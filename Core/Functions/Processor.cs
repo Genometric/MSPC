@@ -72,6 +72,7 @@ namespace Genometric.MSPC.Core.Functions
             _config = config;
             _worker = worker;
             _workerEventArgs = e;
+            _processedPeaks = 0;
 
             int step = 1, stepCount = 4;
 
@@ -81,6 +82,7 @@ namespace Genometric.MSPC.Core.Functions
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Processing samples"));
+            OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, null));
             ProcessSamples();
 
             if (CheckCancellationPending()) return;

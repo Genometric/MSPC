@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Genometric.MSPC.CLI
 {
@@ -70,7 +71,25 @@ namespace Genometric.MSPC.CLI
         }
         private void _mspc_statusChanged(object sender, ValueEventArgs e)
         {
-            Console.WriteLine("[" + e.Value.Step + "/" + e.Value.StepCount + "] " + e.Value.Message);
+            var msg = new StringBuilder();
+            if (e.Value.UpdatesPrevious)
+                msg.Append("\r");
+
+            if (e.Value.SubStep)
+                msg.Append(string.Format(
+                    "└───── {0}/{1}\t({2})\t{3}",
+                    e.Value.Step.ToString("N0"),
+                    e.Value.StepCount.ToString("N0"),
+                    (e.Value.Step / e.Value.StepCount).ToString("P"),
+                    e.Value.Message ?? ""));
+            else
+                msg.Append(string.Format(
+                    "[{0}/{1}] {2}",
+                    e.Value.Step,
+                    e.Value.StepCount,
+                    e.Value.Message));
+
+            Console.WriteLine(msg.ToString());
         }
 
         internal void Export(List<Attributes> attributesToExport = null)

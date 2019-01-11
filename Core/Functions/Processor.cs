@@ -114,6 +114,12 @@ namespace Genometric.MSPC.Core.Functions
                                 _trees[sample.Key][chr.Key].Add(p);
                 }
             }
+
+            foreach (var sampleTree in _trees)
+                Parallel.ForEach(
+                    sampleTree.Value,
+                    new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
+                    tree => { tree.Value.Build(); });
         }
 
         private void ProcessSamples()

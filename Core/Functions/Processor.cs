@@ -69,7 +69,7 @@ namespace Genometric.MSPC.Core.Functions
             _worker = worker;
             _workerEventArgs = e;
 
-            int step = 1, stepCount = 4;
+            uint step = 1, stepCount = 4;
 
             OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Initializing"));
             CacheChiSqrdData();
@@ -283,7 +283,7 @@ namespace Genometric.MSPC.Core.Functions
             if (_worker.CancellationPending)
             {
                 _analysisResults = new Dictionary<uint, Result<I>>();
-                OnProgressUpdate(new ProgressReport(-1, -1, false, false, "Canceled current task."));
+                OnProgressUpdate(new ProgressReport(0, 0, false, false, "Canceled current task."));
                 _workerEventArgs.Cancel = true;
                 return true;
             }

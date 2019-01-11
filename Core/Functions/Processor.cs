@@ -119,7 +119,7 @@ namespace Genometric.MSPC.Core.Functions
                 Parallel.ForEach(
                     sampleTree.Value,
                     new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
-                    tree => { tree.Value.Build(); });
+                    tree => { tree.Value.BuildAndFinalize(); });
         }
 
         private void ProcessSamples()

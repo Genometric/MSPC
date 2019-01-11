@@ -12,9 +12,35 @@ using System.Text;
 
 namespace Genometric.MSPC.CLI
 {
-    internal class StatusReport
+    internal class Logger
     {
         private readonly int _fileNameMaxLenght = 20;
+
+        public void Log(ProgressReport report)
+        {
+            var msg = new StringBuilder();
+            if (report.UpdatesPrevious)
+                msg.Append("\r");
+
+            if (report.SubStep)
+                msg.Append(string.Format(
+                    "  └── {0}/{1}\t({2})\t{3}",
+                    report.Step.ToString("N0"),
+                    report.StepCount.ToString("N0"),
+                    (report.Step / (double)report.StepCount).ToString("P"),
+                    report.Message ?? ""));
+            else
+                msg.Append(string.Format(
+                    "[{0}/{1}] {2}",
+                    report.Step,
+                    report.StepCount,
+                    report.Message));
+
+            if (report.UpdatesPrevious)
+                Console.Write(msg.ToString());
+            else
+                Console.WriteLine(msg.ToString());
+        }
 
         public void WriteToConsole(List<string> lines)
         {

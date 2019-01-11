@@ -41,7 +41,7 @@ namespace Genometric.MSPC.CLI
             }
         }
 
-        private StatusReport _statusReport { set; get; }
+        private Logger _logger { set; get; }
 
         internal Orchestrator(Config options)
         {
@@ -49,7 +49,7 @@ namespace Genometric.MSPC.CLI
             _mspc = new Mspc();
             _mspc.StatusChanged += _mspc_statusChanged;
             _samples = new List<Bed<Peak>>();
-            _statusReport = new StatusReport();
+            _logger = new Logger();
         }
 
         public Bed<Peak> LoadSample(string fileName, ParserConfig parserConfig)
@@ -74,28 +74,7 @@ namespace Genometric.MSPC.CLI
         }
         private void _mspc_statusChanged(object sender, ValueEventArgs e)
         {
-            var msg = new StringBuilder();
-            if (e.Value.UpdatesPrevious)
-                msg.Append("\r");
-
-            if (e.Value.SubStep)
-                msg.Append(string.Format(
-                    "  └── {0}/{1}\t({2})\t{3}",
-                    e.Value.Step.ToString("N0"),
-                    e.Value.StepCount.ToString("N0"),
-                    (e.Value.Step / (double)e.Value.StepCount).ToString("P"),
-                    e.Value.Message ?? ""));
-            else
-                msg.Append(string.Format(
-                    "[{0}/{1}] {2}",
-                    e.Value.Step,
-                    e.Value.StepCount,
-                    e.Value.Message));
-
-            if (e.Value.UpdatesPrevious)
-                Console.Write(msg.ToString());
-            else
-                Console.WriteLine(msg.ToString());
+            _logger.Log(e.Value);
         }
 
         internal void Export(List<Attributes> attributesToExport = null)
@@ -120,8 +99,8 @@ namespace Genometric.MSPC.CLI
             if (exportedAttributes == null)
                 exportedAttributes = _allAttributes;
 
-            var lines = _statusReport.CreateSummaryStats(_samples, _samplesDict, _mspc.GetResults(), _mspc.GetConsensusPeaks(), exportedAttributes);
-            _statusReport.WriteToConsole(lines);
+            var lines = _logger.CreateSummaryStats(_samples, _samplesDict, _mspc.GetResults(), _mspc.GetConsensusPeaks(), exportedAttributes);
+            _logger.WriteToConsole(lines);
         }
     }
 }

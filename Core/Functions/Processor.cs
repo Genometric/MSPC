@@ -71,21 +71,21 @@ namespace Genometric.MSPC.Core.Functions
 
             int step = 1, stepCount = 4;
 
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Initializing"));
             CacheChiSqrdData();
             BuildDataStructures();
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Processing samples"));
             ProcessSamples();
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Performing Multiple testing correction"));
             var fdr = new FalseDiscoveryRate<I>();
             fdr.PerformMultipleTestingCorrection(_analysisResults, _config.Alpha, DegreeOfParallelism);
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
+            OnProgressUpdate(new ProgressReport(step, stepCount, false, false, "Creating consensus peaks set"));
             _consensusPeaks = new ConsensusPeaks<I>().Compute(_analysisResults, _peakConstructor, DegreeOfParallelism, _config.Alpha);
         }
 
@@ -283,7 +283,7 @@ namespace Genometric.MSPC.Core.Functions
             if (_worker.CancellationPending)
             {
                 _analysisResults = new Dictionary<uint, Result<I>>();
-                OnProgressUpdate(new ProgressReport(-1, -1, "Canceled current task."));
+                OnProgressUpdate(new ProgressReport(-1, -1, false, false, "Canceled current task."));
                 _workerEventArgs.Cancel = true;
                 return true;
             }

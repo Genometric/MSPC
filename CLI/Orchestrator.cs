@@ -41,12 +41,15 @@ namespace Genometric.MSPC.CLI
             }
         }
 
+        private StatusReport _statusReport { set; get; }
+
         internal Orchestrator(Config options)
         {
             _options = options;
             _mspc = new Mspc();
             _mspc.StatusChanged += _mspc_statusChanged;
             _samples = new List<Bed<Peak>>();
+            _statusReport = new StatusReport();
         }
 
         public Bed<Peak> LoadSample(string fileName, ParserConfig parserConfig)
@@ -117,8 +120,8 @@ namespace Genometric.MSPC.CLI
             if (exportedAttributes == null)
                 exportedAttributes = _allAttributes;
 
-            var lines = SummaryStats.Create(_samples, _samplesDict, _mspc.GetResults(), _mspc.GetConsensusPeaks(), exportedAttributes);
-            SummaryStats.WriteToConsole(lines);
+            var lines = _statusReport.CreateSummaryStats(_samples, _samplesDict, _mspc.GetResults(), _mspc.GetConsensusPeaks(), exportedAttributes);
+            _statusReport.WriteToConsole(lines);
         }
     }
 }

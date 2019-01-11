@@ -12,17 +12,17 @@ using System.Text;
 
 namespace Genometric.MSPC.CLI
 {
-    internal static class SummaryStats
+    internal class StatusReport
     {
-        private static readonly int _fileNameMaxLenght = 20;
+        private readonly int _fileNameMaxLenght = 20;
 
-        public static void WriteToConsole(List<string> lines)
+        public void WriteToConsole(List<string> lines)
         {
             foreach (var line in lines)
                 Console.WriteLine(line);
         }
 
-        public static List<string> Create(
+        public List<string> CreateSummaryStats(
             List<Bed<Peak>> samples,
             Dictionary<uint, string> samplesDict,
             ReadOnlyDictionary<uint, Result<Peak>> results,
@@ -83,7 +83,7 @@ namespace Genometric.MSPC.CLI
             return rtv;
         }
 
-        private static string RenderRow(int columnwidth, params string[] columns)
+        private string RenderRow(int columnwidth, params string[] columns)
         {
             var row = new StringBuilder();
             row.Append(TruncateString(columns[0], _fileNameMaxLenght) + "\t");
@@ -92,7 +92,7 @@ namespace Genometric.MSPC.CLI
             return row.ToString();
         }
 
-        private static string TruncateString(string value, int maxLength)
+        private string TruncateString(string value, int maxLength)
         {
             return value.Length <= maxLength ? new string(' ', maxLength - value.Length) + value : "..." + value.Substring(value.Length - maxLength - 3, maxLength);
         }

@@ -77,10 +77,10 @@ namespace Genometric.MSPC.CLI
 
             if (e.Value.SubStep)
                 msg.Append(string.Format(
-                    "└───── {0}/{1}\t({2})\t{3}",
+                    "  └── {0}/{1}\t({2})\t{3}",
                     e.Value.Step.ToString("N0"),
                     e.Value.StepCount.ToString("N0"),
-                    (e.Value.Step / e.Value.StepCount).ToString("P"),
+                    (e.Value.Step / (double)e.Value.StepCount).ToString("P"),
                     e.Value.Message ?? ""));
             else
                 msg.Append(string.Format(
@@ -89,7 +89,10 @@ namespace Genometric.MSPC.CLI
                     e.Value.StepCount,
                     e.Value.Message));
 
-            Console.WriteLine(msg.ToString());
+            if (e.Value.UpdatesPrevious)
+                Console.Write(msg.ToString());
+            else
+                Console.WriteLine(msg.ToString());
         }
 
         internal void Export(List<Attributes> attributesToExport = null)

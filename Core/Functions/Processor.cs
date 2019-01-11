@@ -82,7 +82,7 @@ namespace Genometric.MSPC.Core.Functions
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Processing samples"));
-            OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, null));
+            OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks"));
             ProcessSamples();
 
             if (CheckCancellationPending()) return;
@@ -204,7 +204,7 @@ namespace Genometric.MSPC.Core.Functions
                     }
                 }
                 Interlocked.Add(ref _processedPeaks, strand.Value.Intervals.Count);
-                OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, null));
+                OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks"));
             }
         }
 

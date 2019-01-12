@@ -77,7 +77,9 @@ namespace Genometric.MSPC.CLI.Logging
 
         public static void LogException(string message)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
+            Console.ResetColor();
             log.Error(message);
         }
 

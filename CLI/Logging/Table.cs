@@ -23,10 +23,8 @@ namespace Genometric.MSPC.CLI.Logging
             var headerLines = new string[_columnsWidth.Length];
             for (int i = 0; i < headerLines.Length; i++)
                 headerLines[i] = new string('-', _columnsWidth[i]);
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine(RenderRow(headers));
             Console.WriteLine(RenderRow(headerLines));
-            Console.ResetColor();
         }
 
         public void AddRow(params string[] columns)

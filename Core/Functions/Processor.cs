@@ -204,7 +204,7 @@ namespace Genometric.MSPC.Core.Functions
                     }
                 }
                 Interlocked.Add(ref _processedPeaks, strand.Value.Intervals.Count);
-                OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks"));
+                OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks processed"));
             }
         }
 

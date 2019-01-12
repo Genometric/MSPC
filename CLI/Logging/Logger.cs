@@ -92,7 +92,7 @@ namespace Genometric.MSPC.CLI.Logging
 
             if (report.SubStep)
                 msg.Append(string.Format(
-                    "  └── {0}/{1}\t({2})\t{3}",
+                    "  └── {0}/{1}\t({2}) {3}",
                     report.Step.ToString("N0"),
                     report.StepCount.ToString("N0"),
                     (report.Step / (double)report.StepCount).ToString("P"),

@@ -6,6 +6,7 @@ using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Exporter;
+using Genometric.MSPC.CLI.Logging;
 using Genometric.MSPC.Core;
 using Genometric.MSPC.Core.Model;
 using System;
@@ -18,11 +19,18 @@ namespace Genometric.MSPC.CLI
 {
     internal class Orchestrator
     {
-        private Logging.Logger _logger { set; get; }
+        private readonly string _sessionPath;
 
         public Orchestrator()
         {
-            _logger = new Logging.Logger();
+            _sessionPath =
+                Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
+                DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+
+            if (!Directory.Exists(_sessionPath))
+                Directory.CreateDirectory(_sessionPath);
+
+            Logger.Setup(_sessionPath + Path.DirectorySeparatorChar + "EventsLog.txt");
         }
 
         public void Orchestrate(string[] args)
@@ -47,16 +55,16 @@ namespace Genometric.MSPC.CLI
             if (!Export(mspc, dict, attributes))
                 return;
 
-            _logger.LogStartOfASection("Summary Statistics");
-            _logger.LogSummary(samples, dict, mspc.GetResults(), mspc.GetConsensusPeaks(), attributes);
+            Logger.LogStartOfASection("Summary Statistics");
+            Logger.LogSummary(samples, dict, mspc.GetResults(), mspc.GetConsensusPeaks(), attributes);
 
-            _logger.LogStartOfASection("Consensus Peaks Count");
+            Logger.LogStartOfASection("Consensus Peaks Count");
             int cPeaksCount = 0;
             foreach (var chr in mspc.GetConsensusPeaks())
                 cPeaksCount += chr.Value.Count;
-            _logger.Log(cPeaksCount.ToString("N0"));
+            Logger.Log(cPeaksCount.ToString("N0"));
 
-            _logger.LogFinish();
+            Logger.LogFinish();
         }
 
         private bool ParseArgs(string[] args, out CommandLineOptions options)
@@ -72,7 +80,7 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                _logger.LogException(e);
+                Logger.LogException(e);
                 return false;
             }
         }
@@ -81,7 +89,7 @@ namespace Genometric.MSPC.CLI
         {
             if (input.Count < 2)
             {
-                _logger.LogException(
+                Logger.LogException(
                     string.Format("At least two samples are required; {0} is given.", input.Count));
                 return false;
             }
@@ -93,9 +101,9 @@ namespace Genometric.MSPC.CLI
                 if (!File.Exists(file))
                     missingFiles.Add(file);
 
-                if (missingFiles.Count>0)
+                if (missingFiles.Count > 0)
                 {
-                    _logger.LogException(
+                    Logger.LogException(
                         string.Format("The following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
                     return false;
                 }
@@ -112,9 +120,9 @@ namespace Genometric.MSPC.CLI
                 {
                     config = ParserConfig.LoadFromJSON(options.ParserConfig);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    _logger.LogException(e);
+                    Logger.LogException(e);
                     return false;
                 }
             }
@@ -125,8 +133,8 @@ namespace Genometric.MSPC.CLI
         {
             samples = new List<Bed<Peak>>();
             int counter = 0;
-            _logger.LogStartOfASection("Parsing Samples");
-            _logger.InitializeLoggingParser();
+            Logger.LogStartOfASection("Parsing Samples");
+            Logger.InitializeLoggingParser();
             foreach (var file in files)
             {
                 var bedParser = new BedParser(parserConfig)
@@ -138,7 +146,7 @@ namespace Genometric.MSPC.CLI
                 var parsedData = bedParser.Parse(file);
                 samples.Add(parsedData);
                 counter++;
-                _logger.LogParser(
+                Logger.LogParser(
                     counter,
                     files.Count,
                     Path.GetFileNameWithoutExtension(file),
@@ -155,9 +163,9 @@ namespace Genometric.MSPC.CLI
         {
             try
             {
-                _logger.LogStartOfASection("Analyzing Samples");
+                Logger.LogStartOfASection("Analyzing Samples");
                 mspc = new Mspc();
-                mspc.StatusChanged += _logger.LogMSPCStatus;
+                mspc.StatusChanged += Logger.LogMSPCStatus;
                 foreach (var sample in samples)
                     mspc.AddSample(sample.FileHashKey, sample);
                 mspc.RunAsync(config);
@@ -167,7 +175,7 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 mspc = null;
-                _logger.LogException(e);
+                Logger.LogException(e);
                 return false;
             }
         }
@@ -176,11 +184,10 @@ namespace Genometric.MSPC.CLI
         {
             try
             {
-                _logger.LogStartOfASection("Saving Results");
+                Logger.LogStartOfASection("Saving Results");
                 var exporter = new Exporter<Peak>();
                 var options = new Options(
-                    path: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
-                          DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture),
+                    path: _sessionPath,
                     includeHeader: true,
                     attributesToExport: attributesToExport);
 
@@ -189,9 +196,9 @@ namespace Genometric.MSPC.CLI
                     mspc.GetResults(), mspc.GetConsensusPeaks(), options);
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.LogException(e);
+                Logger.LogException(e);
                 return false;
             }
         }

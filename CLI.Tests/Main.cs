@@ -99,8 +99,8 @@ namespace Genometric.MSPC.CLI.Tests
             string msg = RunMSPC(rep1, rep2);
 
             // Assert
-            Assert.Contains("Read peaks#:\t2\r\n", msg);
-            Assert.Contains("Read peaks#:\t3\r\n", msg);
+            Assert.Contains("\t2\t", msg);
+            Assert.Contains("\t3\t", msg);
 
             // Clean-up
             File.Delete(rep1);
@@ -119,8 +119,8 @@ namespace Genometric.MSPC.CLI.Tests
             string msg = RunMSPC(rep1, rep2);
 
             // Assert
-            Assert.Contains("Min p-value:\t1.000E-005\r\n", msg);
-            Assert.Contains("Min p-value:\t1.000E-007\r\n", msg);
+            Assert.Contains("1.000E-005", msg);
+            Assert.Contains("1.000E-007", msg);
 
             // Clean-up
             File.Delete(rep1);
@@ -139,8 +139,8 @@ namespace Genometric.MSPC.CLI.Tests
             string msg = RunMSPC(rep1, rep2);
 
             // Assert
-            Assert.Contains("Max p-value:\t1.000E-003\r\n", msg);
-            Assert.Contains("Max p-value:\t1.000E-002\r\n", msg);
+            Assert.Contains("1.000E-003", msg);
+            Assert.Contains("1.000E-002", msg);
 
             // Clean-up
             File.Delete(rep1);

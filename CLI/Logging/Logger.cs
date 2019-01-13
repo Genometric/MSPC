@@ -133,6 +133,14 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(msg);
         }
 
+        public void ShutdownLogger()
+        {
+            LogManager.Flush(5000);
+            log4net.Repository.Hierarchy.Logger l = (log4net.Repository.Hierarchy.Logger)LogManager.GetLogger("mspc", "log").Logger;
+            l.RemoveAllAppenders();
+            LogManager.GetLogger("mspc", "log").Logger.Repository.Shutdown();
+        }
+
         public void InitializeLoggingParser()
         {
             var columnsWidth = new int[] { _indexColumnWidth, _fileNameMaxLenght, 11, 11, 12, 11 };

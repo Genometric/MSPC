@@ -40,12 +40,17 @@ namespace Genometric.MSPC.CLI
             }
         }
 
+        public string OutputPath { set; get; }
+
         internal Orchestrator(Config options)
         {
             _options = options;
             _mspc = new Mspc();
             _mspc.StatusChanged += _mspc_statusChanged;
             _samples = new List<Bed<Peak>>();
+            if (OutputPath == null)
+                OutputPath = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
+                      DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
         }
 
         public Bed<Peak> LoadSample(string fileName, ParserConfig parserConfig)
@@ -80,8 +85,7 @@ namespace Genometric.MSPC.CLI
 
             var exporter = new Exporter<Peak>();
             var options = new Options(
-                path: Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
-                      DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture),
+                path: OutputPath,
                 includeHeader: true,
                 attributesToExport: attributesToExport);
 

@@ -64,6 +64,11 @@ namespace Genometric.MSPC.CLI
                 "the one with highest p-value? Possible values are: { Lowest, Highest }"
         };
 
+        private readonly CommandOption _cOutput = new CommandOption("-o | --output <value>", CommandOptionType.SingleValue)
+        {
+            Description = "Sets a path where analysis results should be persisted."
+        };
+
         private ReplicateType _vreplicate;
         private double _vtauS = 1E-8;
         private double _vtauW = 1E-4;
@@ -72,11 +77,12 @@ namespace Genometric.MSPC.CLI
         private int _vc = 1;
         private MultipleIntersections _vm = MultipleIntersections.UseLowestPValue;
 
-
         public Config Options { private set; get; }
 
         private List<string> _inputFiles;
         public IReadOnlyList<string> Input { get { return _inputFiles.AsReadOnly(); } }
+
+        public string OutputPath { private set; get; }
 
         /// <summary>
         /// Gets the path of a parser configuration file in JSON.
@@ -112,6 +118,7 @@ namespace Genometric.MSPC.CLI
             _cla.Options.Add(_cC);
             _cla.Options.Add(_cM);
             _cla.Options.Add(_cParser);
+            _cla.Options.Add(_cOutput);
             Func<int> assertArguments = AssertArguments;
             _cla.OnExecute(assertArguments);
         }
@@ -216,6 +223,9 @@ namespace Genometric.MSPC.CLI
                     default:
                         throw new ArgumentException("Invalid value given for the `" + _cM.LongName + "` argument.");
                 }
+
+            if (_cOutput.HasValue())
+                OutputPath = _cOutput.Value();
         }
 
         private string[] ParseExpandedInput(string[] args)

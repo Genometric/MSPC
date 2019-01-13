@@ -21,7 +21,8 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 | [C](#c) |  | `-c` | `int` | `1` |
 | [Alpha](#alpha) |  | `-a` | `double` | `0.05` |
 | [Multiple Intersections](#multiple-intersections) |  | `-m` | `Lowest`, `Highest` |  `Lowest` |
-| [Input Parser Configuration](#input-parser-configuration) |   | `-p` | file path | none |
+| [Input Parser Configuration](#input-parser-configuration) |   | `-p` | File path | none |
+| [Output path](#output-path) | | `-o` | Directory path | `session_` + `<Timestamp>`|
 
 
 
@@ -188,3 +189,12 @@ for the input BED file parser.
 
 Refer to [this page](cli/parser.md) on how to configure the input parser
 using a JSON object.
+
+### Output Path
+
+Sets the path in which analysis results should be persisted.
+
+| Short | Long | Required | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-o`  | `--output` | Optional | Directory path | `session_` + `<Timestamp>`|
+

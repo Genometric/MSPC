@@ -20,6 +20,7 @@ namespace Genometric.MSPC.CLI
     internal class Orchestrator
     {
         private readonly string _sessionPath;
+        private Logger _logger;
 
         public Orchestrator()
         {
@@ -30,7 +31,8 @@ namespace Genometric.MSPC.CLI
             if (!Directory.Exists(_sessionPath))
                 Directory.CreateDirectory(_sessionPath);
 
-            Logger.Setup(_sessionPath + Path.DirectorySeparatorChar + "EventsLog.txt");
+            _logger = new Logger();
+            _logger.Setup(_sessionPath + Path.DirectorySeparatorChar + "EventsLog.txt");
         }
 
         public void Orchestrate(string[] args)
@@ -55,16 +57,17 @@ namespace Genometric.MSPC.CLI
             if (!Export(mspc, dict, attributes))
                 return;
 
-            Logger.LogStartOfASection("Summary Statistics");
-            Logger.LogSummary(samples, dict, mspc.GetResults(), mspc.GetConsensusPeaks(), attributes);
+            _logger.LogStartOfASection("Summary Statistics");
+            _logger.LogSummary(samples, dict, mspc.GetResults(), mspc.GetConsensusPeaks(), attributes);
 
-            Logger.LogStartOfASection("Consensus Peaks Count");
+            _logger.LogStartOfASection("Consensus Peaks Count");
             int cPeaksCount = 0;
             foreach (var chr in mspc.GetConsensusPeaks())
                 cPeaksCount += chr.Value.Count;
-            Logger.Log(cPeaksCount.ToString("N0"));
+            _logger.Log(cPeaksCount.ToString("N0"));
 
-            Logger.LogFinish();
+            _logger.LogFinish();
+            _logger.ShutdownLogger();
         }
 
         private bool ParseArgs(string[] args, out CommandLineOptions options)
@@ -80,7 +83,7 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Logger.LogException(e);
+                _logger.LogException(e);
                 return false;
             }
         }
@@ -89,7 +92,7 @@ namespace Genometric.MSPC.CLI
         {
             if (input.Count < 2)
             {
-                Logger.LogException(
+                _logger.LogException(
                     string.Format("At least two samples are required; {0} is given.", input.Count));
                 return false;
             }
@@ -103,7 +106,7 @@ namespace Genometric.MSPC.CLI
 
                 if (missingFiles.Count > 0)
                 {
-                    Logger.LogException(
+                    _logger.LogException(
                         string.Format("The following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
                     return false;
                 }
@@ -122,7 +125,7 @@ namespace Genometric.MSPC.CLI
                 }
                 catch (Exception e)
                 {
-                    Logger.LogException(e);
+                    _logger.LogException(e);
                     return false;
                 }
             }
@@ -133,8 +136,8 @@ namespace Genometric.MSPC.CLI
         {
             samples = new List<Bed<Peak>>();
             int counter = 0;
-            Logger.LogStartOfASection("Parsing Samples");
-            Logger.InitializeLoggingParser();
+            _logger.LogStartOfASection("Parsing Samples");
+            _logger.InitializeLoggingParser();
             foreach (var file in files)
             {
                 var bedParser = new BedParser(parserConfig)
@@ -146,7 +149,7 @@ namespace Genometric.MSPC.CLI
                 var parsedData = bedParser.Parse(file);
                 samples.Add(parsedData);
                 counter++;
-                Logger.LogParser(
+                _logger.LogParser(
                     counter,
                     files.Count,
                     Path.GetFileNameWithoutExtension(file),
@@ -163,9 +166,9 @@ namespace Genometric.MSPC.CLI
         {
             try
             {
-                Logger.LogStartOfASection("Analyzing Samples");
+                _logger.LogStartOfASection("Analyzing Samples");
                 mspc = new Mspc();
-                mspc.StatusChanged += Logger.LogMSPCStatus;
+                mspc.StatusChanged += _logger.LogMSPCStatus;
                 foreach (var sample in samples)
                     mspc.AddSample(sample.FileHashKey, sample);
                 mspc.RunAsync(config);
@@ -175,7 +178,7 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 mspc = null;
-                Logger.LogException(e);
+                _logger.LogException(e);
                 return false;
             }
         }
@@ -184,7 +187,7 @@ namespace Genometric.MSPC.CLI
         {
             try
             {
-                Logger.LogStartOfASection("Saving Results");
+                _logger.LogStartOfASection("Saving Results");
                 var exporter = new Exporter<Peak>();
                 var options = new Options(
                     path: _sessionPath,
@@ -198,7 +201,7 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Logger.LogException(e);
+                _logger.LogException(e);
                 return false;
             }
         }

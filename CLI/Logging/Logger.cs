@@ -17,18 +17,19 @@ using System.Text;
 
 namespace Genometric.MSPC.CLI.Logging
 {
-    public static class Logger
+    public class Logger
     {
-        private static readonly int _indexColumnWidth = 10;
-        private static readonly int _sectionHeaderLenght = 30;
-        private static readonly int _fileNameMaxLenght = 20;
-        private static readonly string _cannotContinue = "\r\nMSPC cannot continue.";
-        private static bool _lastStatusUpdatedItsPrevious;
-        private static Table _parserLogTable;
+        private readonly int _indexColumnWidth = 10;
+        private readonly int _sectionHeaderLenght = 30;
+        private readonly int _fileNameMaxLenght = 20;
+        private readonly string _cannotContinue = "\r\nMSPC cannot continue.";
+        private bool _lastStatusUpdatedItsPrevious;
+        private Table _parserLogTable;
 
-        private static ILog log;
+        private ILog log;
+        private RollingFileAppender roller;
 
-        public static void Setup(string logFilePath)
+        public void Setup(string logFilePath)
         {
             LogManager.CreateRepository("mspc");
             Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository("mspc");
@@ -37,7 +38,7 @@ namespace Genometric.MSPC.CLI.Logging
             patternLayout.ConversionPattern = "%date\t[%thread]\t%-5level\t%message%newline";
             patternLayout.ActivateOptions();
 
-            RollingFileAppender roller = new RollingFileAppender
+            roller = new RollingFileAppender
             {
                 AppendToFile = false,
                 File = logFilePath,
@@ -61,7 +62,7 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info("NOTE THAT THE LOG PATTERN IS: <Date> <#Thread> <Level> <Message>");
         }
 
-        public static void LogStartOfASection(string header)
+        public void LogStartOfASection(string header)
         {
             string msg = ".::." + header.PadLeft(((_sectionHeaderLenght - header.Length) / 2) + header.Length, '.').PadRight(_sectionHeaderLenght, '.') + ".::.";
             Console.ForegroundColor = ConsoleColor.Green;
@@ -70,12 +71,12 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(msg);
         }
 
-        public static void LogException(Exception e)
+        public void LogException(Exception e)
         {
             LogException(e.Message + _cannotContinue);
         }
 
-        public static void LogException(string message)
+        public void LogException(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
@@ -83,7 +84,7 @@ namespace Genometric.MSPC.CLI.Logging
             log.Error(message);
         }
 
-        public static void LogMSPCStatus(object sender, ValueEventArgs e)
+        public void LogMSPCStatus(object sender, ValueEventArgs e)
         {
             var msg = new StringBuilder();
             var report = e.Value;
@@ -119,20 +120,20 @@ namespace Genometric.MSPC.CLI.Logging
             }
         }
 
-        public static void Log(string message)
+        public void Log(string message)
         {
             Console.WriteLine(message);
             log.Info(message);
         }
 
-        public static void LogFinish()
+        public void LogFinish()
         {
             string msg = Environment.NewLine + "All processes successfully finished" + Environment.NewLine;
             Console.WriteLine(msg);
             log.Info(msg);
         }
 
-        public static void InitializeLoggingParser()
+        public void InitializeLoggingParser()
         {
             var columnsWidth = new int[] { _indexColumnWidth, _fileNameMaxLenght, 11, 11, 12, 11 };
             _parserLogTable = new Table(columnsWidth);
@@ -142,7 +143,7 @@ namespace Genometric.MSPC.CLI.Logging
             });
         }
 
-        public static void LogParser(
+        public void LogParser(
             int fileNumber,
             int filesToParse,
             string filename,
@@ -162,7 +163,7 @@ namespace Genometric.MSPC.CLI.Logging
             });
         }
 
-        public static void LogSummary(
+        public void LogSummary(
             List<Bed<Peak>> samples,
             Dictionary<uint, string> samplesDict,
             ReadOnlyDictionary<uint, Result<Peak>> results,

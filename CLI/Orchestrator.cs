@@ -25,11 +25,10 @@ namespace Genometric.MSPC.CLI
 
         public Orchestrator()
         {
-            _logFile =
-                Environment.CurrentDirectory + Path.DirectorySeparatorChar +
-                "EventsLog_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+            string repository = "EventsLog_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+            _logFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + repository;
             _logger = new Logger();
-            _logger.Setup(_logFile);
+            _logger.Setup(_logFile, repository, Guid.NewGuid().ToString());
         }
 
         public void Orchestrate(string[] args)

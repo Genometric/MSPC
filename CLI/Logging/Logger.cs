@@ -29,10 +29,15 @@ namespace Genometric.MSPC.CLI.Logging
         private ILog log;
         private RollingFileAppender roller;
 
-        public void Setup(string logFilePath)
+        private string _repository;
+        private string _name;
+
+        public void Setup(string logFilePath, string repository, string name)
         {
-            LogManager.CreateRepository("mspc");
-            Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository("mspc");
+            _repository = repository;
+            _name = name;
+            LogManager.CreateRepository(_repository);
+            Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository(_repository);
 
             PatternLayout patternLayout = new PatternLayout();
             patternLayout.ConversionPattern = "%date\t[%thread]\t%-5level\t%message%newline";
@@ -57,7 +62,7 @@ namespace Genometric.MSPC.CLI.Logging
 
             hierarchy.Root.Level = Level.Info;
             hierarchy.Configured = true;
-            log = LogManager.GetLogger("mspc", "log");
+            log = LogManager.GetLogger(_repository, _name);
 
             log.Info("NOTE THAT THE LOG PATTERN IS: <Date> <#Thread> <Level> <Message>");
         }
@@ -136,9 +141,9 @@ namespace Genometric.MSPC.CLI.Logging
         public void ShutdownLogger()
         {
             LogManager.Flush(5000);
-            log4net.Repository.Hierarchy.Logger l = (log4net.Repository.Hierarchy.Logger)LogManager.GetLogger("mspc", "log").Logger;
+            log4net.Repository.Hierarchy.Logger l = (log4net.Repository.Hierarchy.Logger)LogManager.GetLogger(_repository, _name).Logger;
             l.RemoveAllAppenders();
-            LogManager.GetLogger("mspc", "log").Logger.Repository.Shutdown();
+            LogManager.GetLogger(_repository, _name).Logger.Repository.Shutdown();
         }
 
         public void InitializeLoggingParser()

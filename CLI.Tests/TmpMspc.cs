@@ -64,7 +64,8 @@ namespace Genometric.MSPC.CLI.Tests
         {
             foreach (var sample in _samples)
                 File.Delete(sample);
-            Directory.Delete(_sessionPath, true);
+            if (Directory.Exists(_sessionPath))
+                Directory.Delete(_sessionPath, true);
         }
     }
 }

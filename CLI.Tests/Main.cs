@@ -58,9 +58,13 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void AssertInformingPeaksCount()
         {
-            // Arrange & Act
-            var msg = new TmpMspc().Run();
-            
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
+
             // Assert
             Assert.Contains("  2\t", msg);
             Assert.Contains("  3\t", msg);
@@ -69,8 +73,12 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void AssertInformingMinPValue()
         {
-            // Arrange & Act
-            var msg = new TmpMspc().Run();
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
 
             // Assert
             Assert.Contains("1.000E-005", msg);
@@ -80,8 +88,12 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void AssertInformingMaxPValue()
         {
-            // Arrange & Act
-            var msg = new TmpMspc().Run();
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
 
             // Assert
             Assert.Contains("1.000E-003", msg);
@@ -91,8 +103,12 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void SuccessfulAnalysis()
         {
-            // Arrange & Act
-            var msg = new TmpMspc().Run();
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
 
             // Assert
             Assert.Contains("All processes successfully finished", msg);
@@ -105,6 +121,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void ShowsHelpText(string template)
         {
             // Arrange
+            string msg;
             string expected =
                 "\r\n\r\nUsage: MSPC CLI [options]\r\n\r\nOptions:" +
                 "\r\n  -? | -h | --help                      Show help information" +
@@ -126,7 +143,8 @@ namespace Genometric.MSPC.CLI.Tests
                 "\n\r\r\n";
 
             // Act
-            var msg = new TmpMspc().Run(template);
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(template);
 
             // Assert
             Assert.Contains(expected, msg);
@@ -138,10 +156,12 @@ namespace Genometric.MSPC.CLI.Tests
         public void ShowVersion(string template)
         {
             // Arrange
+            string msg;
             string expected = "\r\nVersion ";
 
             // Act
-            var msg = new TmpMspc().Run(template);
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(template);
 
             // Assert
             Assert.Contains(expected, msg);

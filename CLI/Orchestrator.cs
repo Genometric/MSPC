@@ -67,6 +67,7 @@ namespace Genometric.MSPC.CLI
 
             _logger.LogFinish();
             _logger.ShutdownLogger();
+            File.Move(_logFile, _outputPath + Path.DirectorySeparatorChar + Path.GetFileName(_logFile));
         }
 
         private bool ParseArgs(string[] args, out CommandLineOptions options)

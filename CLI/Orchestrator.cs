@@ -19,25 +19,25 @@ namespace Genometric.MSPC.CLI
 {
     internal class Orchestrator
     {
-        private readonly string _sessionPath;
-        private Logger _logger;
+        private string _outputPath;
+        private readonly Logger _logger;
+        private readonly string _logFile;
 
         public Orchestrator()
         {
-            _sessionPath =
-                Environment.CurrentDirectory + Path.DirectorySeparatorChar + "session_" +
-                DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-
-            if (!Directory.Exists(_sessionPath))
-                Directory.CreateDirectory(_sessionPath);
-
+            _logFile =
+                Environment.CurrentDirectory + Path.DirectorySeparatorChar +
+                "EventsLog_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
             _logger = new Logger();
-            _logger.Setup(_sessionPath + Path.DirectorySeparatorChar + "EventsLog.txt");
+            _logger.Setup(_logFile);
         }
 
         public void Orchestrate(string[] args)
         {
             if (!ParseArgs(args, out CommandLineOptions options))
+                return;
+
+            if (!AssertOutputPath(options.OutputPath))
                 return;
 
             if (!AssertInput(options.Input))
@@ -82,6 +82,27 @@ namespace Genometric.MSPC.CLI
                 return true;
             }
             catch (Exception e)
+            {
+                _logger.LogException(e);
+                return false;
+            }
+        }
+
+        private bool AssertOutputPath(string path)
+        {
+            if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
+                path =
+                    Environment.CurrentDirectory + Path.DirectorySeparatorChar +
+                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+
+            _outputPath = path;
+            try
+            {
+                if (!Directory.Exists(_outputPath))
+                    Directory.CreateDirectory(_outputPath);
+                return true;
+            }
+            catch(Exception e)
             {
                 _logger.LogException(e);
                 return false;
@@ -190,7 +211,7 @@ namespace Genometric.MSPC.CLI
                 _logger.LogStartOfASection("Saving Results");
                 var exporter = new Exporter<Peak>();
                 var options = new Options(
-                    path: _sessionPath,
+                    path: _outputPath,
                     includeHeader: true,
                     attributesToExport: attributesToExport);
 

@@ -23,7 +23,7 @@ namespace Genometric.MSPC.CLI.Tests
                 Program.Main("-i rep1.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
 
                 // Assert
-                Assert.Equal("At least two samples are required; 1 is given.\r\nMSPC cannot continue.\r\n", sw.ToString());
+                Assert.Equal("At least two samples are required; 1 is given.\r\n", sw.ToString());
             }
         }
 
@@ -51,7 +51,7 @@ namespace Genometric.MSPC.CLI.Tests
                 Program.Main("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
 
                 // Assert
-                Assert.Equal("Missing file: rep1.bed\r\nMSPC cannot continue.\r\n", sw.ToString());
+                Assert.Contains("The following files are missing: rep1.bed", sw.ToString());
             }
         }
 
@@ -62,8 +62,8 @@ namespace Genometric.MSPC.CLI.Tests
             var msg = new TmpMspc().Run();
             
             // Assert
-            Assert.Contains("Read peaks#:\t2\r\n", msg);
-            Assert.Contains("Read peaks#:\t3\r\n", msg);
+            Assert.Contains("  2\t", msg);
+            Assert.Contains("  3\t", msg);
         }
 
         [Fact]
@@ -73,8 +73,8 @@ namespace Genometric.MSPC.CLI.Tests
             var msg = new TmpMspc().Run();
 
             // Assert
-            Assert.Contains("Min p-value:\t1.000E-005\r\n", msg);
-            Assert.Contains("Min p-value:\t1.000E-007\r\n", msg);
+            Assert.Contains("1.000E-005", msg);
+            Assert.Contains("1.000E-007", msg);
         }
 
         [Fact]
@@ -84,8 +84,8 @@ namespace Genometric.MSPC.CLI.Tests
             var msg = new TmpMspc().Run();
 
             // Assert
-            Assert.Contains("Max p-value:\t1.000E-003\r\n", msg);
-            Assert.Contains("Max p-value:\t1.000E-002\r\n", msg);
+            Assert.Contains("1.000E-003", msg);
+            Assert.Contains("1.000E-002", msg);
         }
 
         [Fact]
@@ -95,118 +95,7 @@ namespace Genometric.MSPC.CLI.Tests
             var msg = new TmpMspc().Run();
 
             // Assert
-            Assert.Contains("All processes successfully finished [Analysis ET: ", msg);
-        }
-
-        [Fact]
-        public void ParseBasedOnGivenParserConfig()
-        {
-            // Arrange
-            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-
-            FileStream stream = File.Create(rep1Path);
-            using (StreamWriter writter = new StreamWriter(stream))
-            {
-                writter.WriteLine("ABC\t____\t10\t+++++\t100.0\tchr1\t___====____\tmspc_peak_1\t20");
-                writter.WriteLine("ABC\t____\t25\t+++++\t123.4\tchr1\t___====____\tmspc_peak_2\t35");
-            }
-
-            stream = File.Create(rep2Path);
-            using (StreamWriter writter = new StreamWriter(stream))
-            {
-                writter.WriteLine("ABC\t____\t11\t+++++\t31.4\tchr1\t___====____\tmspc_peak_3\t18");
-                writter.WriteLine("ABC\t____\t22\t+++++\t21.4\tchr1\t___====____\tmspc_peak_4\t28");
-                writter.WriteLine("ABC\t____\t30\t+++++\t99.9\tchr1\t___====____\tmspc_peak_5\t40");
-            }
-
-            var cols = new BedColumns()
-            {
-                Chr = 5,
-                Left = 2,
-                Right = 8,
-                Name = 7,
-                Strand = -1,
-                Summit = -1
-            };
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            using (StreamWriter w = new StreamWriter(path))
-                w.WriteLine(JsonConvert.SerializeObject(cols));
-
-            // Act
-            string console = null;
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-1 -s 1E-4 -c 1 -p {2}", rep1Path, rep2Path, path).Split(' '));
-                File.Delete(rep1Path);
-                File.Delete(rep2Path);
-                console = sw.ToString();
-            }
-
-            // Assert
-            Assert.Contains("Read peaks#:\t2", console);
-            Assert.Contains("Read peaks#:\t3", console);
-
-            Assert.Contains("Max p-value:\t1.000E-100", console);
-            Assert.Contains("Min p-value:\t3.981E-124", console);
-            Assert.Contains("Min p-value:\t1.259E-100", console);
-            Assert.Contains("Max p-value:\t3.981E-022", console);
-
-            // Clean up
-            File.Delete(rep1Path);
-            File.Delete(rep2Path);
-            foreach (var p in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
-                Directory.Delete(p, true);
-        }
-
-        [Fact]
-        public void AssertUsingParserConfig()
-        {
-            // Arrange
-            var rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            var rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            using (var writter = new StreamWriter(rep1Path))
-            {
-                writter.WriteLine("10\t20\tchr1");
-                writter.WriteLine("50\t60\tchr1");
-            }
-            using (var writter = new StreamWriter(rep2Path))
-            {
-                writter.WriteLine("15\t25\tchr1");
-                writter.WriteLine("55\t65\tchr1");
-            }
-
-            ParserConfig cols = new ParserConfig()
-            {
-                Chr = 2,
-                Left = 0,
-                Right = 1,
-                DefaultValue = 1E-8,
-                DropPeakIfInvalidValue = false
-            };
-            var parserConfigFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            using (StreamWriter w = new StreamWriter(parserConfigFile))
-                w.WriteLine(JsonConvert.SerializeObject(cols));
-
-            // Act
-            string consoleOutput = "";
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-4 -s 1E-6 -p {2}", rep1Path, rep2Path, parserConfigFile).Split(' '));
-                consoleOutput = sw.ToString();
-            }
-
-            // Assert
-            Assert.True(Regex.Matches(consoleOutput, "Read peaks#:	2").Count == 2);
-
-            // Clean up
-            File.Delete(rep1Path);
-            File.Delete(rep2Path);
-            File.Delete(parserConfigFile);
-            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
-                Directory.Delete(path, true);
+            Assert.Contains("All processes successfully finished", msg);
         }
 
         [Theory]

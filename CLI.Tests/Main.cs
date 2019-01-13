@@ -13,40 +13,6 @@ namespace Genometric.MSPC.CLI.Tests
 {
     public class Main
     {
-        private void CreateTempSamples(out string rep1Path, out string rep2Path)
-        {
-            rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-
-            FileStream stream = File.Create(rep1Path);
-            using (StreamWriter writter = new StreamWriter(stream))
-            {
-                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t3");
-                writter.WriteLine("chr1\t25\t35\tmspc_peak_1\t5");
-            }
-
-            stream = File.Create(rep2Path);
-            using (StreamWriter writter = new StreamWriter(stream))
-            {
-                writter.WriteLine("chr1\t11\t18\tmspc_peak_2\t2");
-                writter.WriteLine("chr1\t22\t28\tmspc_peak_2\t3");
-                writter.WriteLine("chr1\t30\t40\tmspc_peak_2\t7");
-            }
-        }
-
-        private string RunMSPC(string rep1 = null, string rep2 = null, string template = null)
-        {
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                if (template != null)
-                    Program.Main(template.Split(' '));
-                else
-                    Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", rep1, rep2).Split(' '));
-                return sw.ToString();
-            }
-        }
-
         [Fact]
         public void ErrorIfLessThanTwoSamplesAreGiven()
         {
@@ -92,80 +58,44 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void AssertInformingPeaksCount()
         {
-            // Arrange
-            CreateTempSamples(out string rep1, out string rep2);
-
-            // Act
-            string msg = RunMSPC(rep1, rep2);
-
+            // Arrange & Act
+            var msg = new TmpMspc().Run();
+            
             // Assert
-            Assert.Contains("\t2\t", msg);
-            Assert.Contains("\t3\t", msg);
-
-            // Clean-up
-            File.Delete(rep1);
-            File.Delete(rep2);
-            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
-                Directory.Delete(path, true);
+            Assert.Contains("Read peaks#:\t2\r\n", msg);
+            Assert.Contains("Read peaks#:\t3\r\n", msg);
         }
 
         [Fact]
         public void AssertInformingMinPValue()
         {
-            // Arrange
-            CreateTempSamples(out string rep1, out string rep2);
-
-            // Act
-            string msg = RunMSPC(rep1, rep2);
+            // Arrange & Act
+            var msg = new TmpMspc().Run();
 
             // Assert
-            Assert.Contains("1.000E-005", msg);
-            Assert.Contains("1.000E-007", msg);
-
-            // Clean-up
-            File.Delete(rep1);
-            File.Delete(rep2);
-            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
-                Directory.Delete(path, true);
+            Assert.Contains("Min p-value:\t1.000E-005\r\n", msg);
+            Assert.Contains("Min p-value:\t1.000E-007\r\n", msg);
         }
 
         [Fact]
         public void AssertInformingMaxPValue()
         {
-            // Arrange
-            CreateTempSamples(out string rep1, out string rep2);
-
-            // Act
-            string msg = RunMSPC(rep1, rep2);
+            // Arrange & Act
+            var msg = new TmpMspc().Run();
 
             // Assert
-            Assert.Contains("1.000E-003", msg);
-            Assert.Contains("1.000E-002", msg);
-
-            // Clean-up
-            File.Delete(rep1);
-            File.Delete(rep2);
-            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
-                Directory.Delete(path, true);
+            Assert.Contains("Max p-value:\t1.000E-003\r\n", msg);
+            Assert.Contains("Max p-value:\t1.000E-002\r\n", msg);
         }
 
         [Fact]
         public void SuccessfulAnalysis()
         {
-            // Arrange
-            CreateTempSamples(out string rep1, out string rep2);
-
-            // Act
-            string msg = RunMSPC(rep1, rep2);
+            // Arrange & Act
+            var msg = new TmpMspc().Run();
 
             // Assert
             Assert.Contains("All processes successfully finished [Analysis ET: ", msg);
-
-            // Clean-up
-            File.Delete(rep1);
-            File.Delete(rep2);
-            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
-                Directory.Delete(path, true);
         }
 
         [Fact]
@@ -287,8 +217,8 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string expected =
-                "\r\n\r\nUsage: MSPC CLI [options]" +
-                "\r\n\r\nOptions:\r\n  -? | -h | --help                      Show help information" +
+                "\r\n\r\nUsage: MSPC CLI [options]\r\n\r\nOptions:" +
+                "\r\n  -? | -h | --help                      Show help information" +
                 "\r\n  -v | --version                        Show version information" +
                 "\r\n  -i | --input <value>                  Input samples to be processed in Browser Extensible Data (BED) Format." +
                 "\r\n  -r | --replicate <value>              Sets the replicate type of samples. Possible values are: { Bio, Biological, Tec, Technical }" +
@@ -297,16 +227,17 @@ namespace Genometric.MSPC.CLI.Tests
                 "\r\n  -g | --gamma <value>                  Sets combined stringency threshold. The peaks with their combined p-values satisfying this threshold will be confirmed." +
                 "\r\n  -a | --alpha <value>                  Sets false discovery rate of Benjamini–Hochberg step-up procedure." +
                 "\r\n  -c <value>                            Sets minimum number of overlapping peaks before combining p-values." +
-                "\r\n  -m | --multipleIntersections <value>  When multiple peaks from a sample overlap with a given peak, this argument defines which of the peaks to be " +
-                "considered: the one with lowest p-value, or the one with highest p-value? Possible values are: { Lowest, Highest }" +
+                "\r\n  -m | --multipleIntersections <value>  When multiple peaks from a sample overlap with a given peak, this argument defines which of the peaks to be considered: the one with lowest p-value, or the one with highest p-value? Possible values are: { Lowest, Highest }" +
                 "\r\n  -p | --parser <value>                 Sets the path to the parser configuration file in JSON." +
-                "\r\n\n\rDocumentation:\thttps://genometric.github.io/MSPC/" +
+                "\r\n  -o | --output <value>                 Sets a path where analysis results should be persisted." +
+                "\r\n" +
+                "\n\rDocumentation:\thttps://genometric.github.io/MSPC/" +
                 "\n\rSource Code:\thttps://github.com/Genometric/MSPC" +
                 "\n\rPublications:\thttps://genometric.github.io/MSPC/publications" +
                 "\n\r\r\n";
 
             // Act
-            string msg = RunMSPC(template: template);
+            var msg = new TmpMspc().Run(template);
 
             // Assert
             Assert.Contains(expected, msg);
@@ -321,7 +252,7 @@ namespace Genometric.MSPC.CLI.Tests
             string expected = "\r\nVersion ";
 
             // Act
-            string msg = RunMSPC(template: template);
+            var msg = new TmpMspc().Run(template);
 
             // Assert
             Assert.Contains(expected, msg);

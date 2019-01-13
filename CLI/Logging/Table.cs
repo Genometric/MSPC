@@ -11,11 +11,12 @@ namespace Genometric.MSPC.CLI.Logging
     internal class Table
     {
         private readonly int[] _columnsWidth;
-        private static ILog log = LogManager.GetLogger("mspc", "log");
+        private readonly ILog log;
 
-        public Table(int[] columnsWidth)
+        public Table(int[] columnsWidth, string repository, string name)
         {
             _columnsWidth = columnsWidth;
+            log = LogManager.GetLogger(repository, name);
         }
 
         public void AddHeader(params string[] headers)

@@ -5,7 +5,6 @@
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.Intervals.Genome;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
-using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.IntervalTree;
 using Genometric.MSPC.Core.Model;
 using System;
@@ -115,6 +114,12 @@ namespace Genometric.MSPC.Core.Functions
                                 _trees[sample.Key][chr.Key].Add(p);
                 }
             }
+
+            foreach (var sampleTree in _trees)
+                Parallel.ForEach(
+                    sampleTree.Value,
+                    new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
+                    tree => { tree.Value.BuildAndFinalize(); });
         }
 
         private void ProcessSamples()

@@ -97,11 +97,24 @@ namespace Genometric.MSPC.CLI
             _outputPath = path;
             try
             {
-                if (!Directory.Exists(_outputPath))
+                if (Directory.Exists(_outputPath))
+                {
+                    if (Directory.GetFiles(_outputPath).Any())
+                    {
+                        int c = 0;
+                        do _outputPath = path + c++;
+                        while (Directory.Exists(_outputPath));
+                        Directory.CreateDirectory(_outputPath);
+                    }
+                }
+                else
+                {
                     Directory.CreateDirectory(_outputPath);
+                }
+
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogException(e);
                 return false;

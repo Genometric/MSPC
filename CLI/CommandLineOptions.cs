@@ -69,6 +69,11 @@ namespace Genometric.MSPC.CLI
             Description = "Sets a path where analysis results should be persisted."
         };
 
+        private readonly CommandOption _cLog = new CommandOption("-l | --log <value>", CommandOptionType.SingleValue)
+        {
+            Description = "Sets a filename in which events log will be presisted."
+        };
+
         private ReplicateType _vreplicate;
         private double _vtauS = 1E-8;
         private double _vtauW = 1E-4;
@@ -83,6 +88,8 @@ namespace Genometric.MSPC.CLI
         public IReadOnlyList<string> Input { get { return _inputFiles.AsReadOnly(); } }
 
         public string OutputPath { private set; get; }
+
+        public string LogFile { private set; get; }
 
         /// <summary>
         /// Gets the path of a parser configuration file in JSON.
@@ -226,6 +233,9 @@ namespace Genometric.MSPC.CLI
 
             if (_cOutput.HasValue())
                 OutputPath = _cOutput.Value();
+
+            if (_cLog.HasValue())
+                LogFile = _cLog.Value();
         }
 
         private string[] ParseExpandedInput(string[] args)

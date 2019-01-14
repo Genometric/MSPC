@@ -11,12 +11,13 @@ namespace Genometric.MSPC.CLI.Tests
 {
     public class TmpMspc : IDisposable
     {
-        private string _sessionPath;
         private List<string> _samples;
+
+        public string SessionPath { private set; get; }
 
         public string Run(string template = null)
         {
-            _sessionPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+            SessionPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
             CreateTempSamples();
 
             using (StringWriter sw = new StringWriter())
@@ -26,7 +27,7 @@ namespace Genometric.MSPC.CLI.Tests
                 if (template != null)
                     Program.Main(template.Split(' '));
                 else
-                    Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8 -o {2}", _samples[0], _samples[1], _sessionPath).Split(' '));
+                    Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8 -o {2}", _samples[0], _samples[1], SessionPath).Split(' '));
                 return sw.ToString();
             }
         }
@@ -64,8 +65,8 @@ namespace Genometric.MSPC.CLI.Tests
         {
             foreach (var sample in _samples)
                 File.Delete(sample);
-            if (Directory.Exists(_sessionPath))
-                Directory.Delete(_sessionPath, true);
+            if (Directory.Exists(SessionPath))
+                Directory.Delete(SessionPath, true);
         }
     }
 }

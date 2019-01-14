@@ -48,7 +48,7 @@ namespace Genometric.MSPC.CLI.Tests
                 Program.Main("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
 
                 // Assert
-                Assert.Contains("The following files are missing: rep1.bed", sw.ToString());
+                Assert.Contains("The following files are missing: rep1.bed; rep2.bed", sw.ToString());
             }
         }
 

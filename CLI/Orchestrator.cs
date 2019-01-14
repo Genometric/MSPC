@@ -141,20 +141,17 @@ namespace Genometric.MSPC.CLI
                 return false;
             }
 
+            var missingFiles = new List<string>();
             foreach (var file in input)
-            {
-                var missingFiles = new List<string>();
-
                 if (!File.Exists(file))
                     missingFiles.Add(file);
-
-                if (missingFiles.Count > 0)
-                {
-                    _logger.LogException(
-                        string.Format("The following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
-                    return false;
-                }
+            if (missingFiles.Count > 0)
+            {
+                _logger.LogException(
+                    string.Format("The following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
+                return false;
             }
+
             return true;
         }
 

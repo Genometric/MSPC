@@ -34,7 +34,7 @@ namespace Genometric.MSPC.CLI.Tests
                 Program.Main("-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' '));
 
                 // Assert
-                Assert.Equal("The following required arguments are missing: r|replicate; \r\nMSPC cannot continue.\r\n", sw.ToString());
+                Assert.Contains("The following required arguments are missing: r|replicate;", sw.ToString());
             }
         }
 

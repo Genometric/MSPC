@@ -10,7 +10,7 @@ namespace Genometric.MSPC.CLI.Tests
     public class Logger
     {
         [Fact]
-        public void LogFileIsMovedToSessionFolder()
+        public void LogFileExistsInSessionPath()
         {
             // Arrange
             string[] files;

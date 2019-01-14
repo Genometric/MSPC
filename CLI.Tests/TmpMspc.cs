@@ -17,7 +17,10 @@ namespace Genometric.MSPC.CLI.Tests
 
         public string Run(string template = null)
         {
-            SessionPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+            SessionPath =
+                "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture) +
+                new Random().Next(100000, 999999).ToString("N6");
+
             CreateTempSamples();
 
             using (StringWriter sw = new StringWriter())

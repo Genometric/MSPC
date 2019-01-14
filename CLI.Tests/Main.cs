@@ -13,43 +13,43 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void ErrorIfLessThanTwoSamplesAreGiven()
         {
-            // Arrange & Act
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main("-i rep1.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+            // Arrange
+            string msg;
 
-                // Assert
-                Assert.Equal("At least two samples are required; 1 is given.\r\n", sw.ToString());
-            }
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(false, "-i rep1.bed -r bio -w 1E-2 -s 1E-8");
+
+            // Assert
+            Assert.Contains("At least two samples are required; 1 is given.", msg);
         }
 
         [Fact]
         public void ErrorIfARequiredArgumentIsMissing()
         {
-            // Arrange & Act
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main("-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' '));
+            // Arrange
+            string msg;
 
-                // Assert
-                Assert.Contains("The following required arguments are missing: r|replicate;", sw.ToString());
-            }
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
+
+            // Assert
+            Assert.Contains("The following required arguments are missing: r|replicate;", msg);
         }
 
         [Fact]
         public void ErrorIfASpecifiedFileIsMissing()
         {
-            // Arrange & Act
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+            // Arrange
+            string msg;
 
-                // Assert
-                Assert.Contains("The following files are missing: rep1.bed; rep2.bed", sw.ToString());
-            }
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8");
+
+            // Assert
+            Assert.Contains("The following files are missing: rep1.bed; rep2.bed", msg);
         }
 
         [Fact]
@@ -141,7 +141,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template);
+                msg = tmpMspc.Run(template: template);
 
             // Assert
             Assert.Contains(expected, msg);
@@ -158,7 +158,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template);
+                msg = tmpMspc.Run(template: template);
 
             // Assert
             Assert.Contains(expected, msg);

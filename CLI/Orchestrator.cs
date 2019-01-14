@@ -17,10 +17,11 @@ using System.Linq;
 
 namespace Genometric.MSPC.CLI
 {
-    internal class Orchestrator
+    internal class Orchestrator : IDisposable
     {
         private string _outputPath;
         private Logger _logger;
+        private string _defaultLoggerRepoName = "EventsLog";
 
         public void Orchestrate(string[] args)
         {
@@ -58,9 +59,6 @@ namespace Genometric.MSPC.CLI
             foreach (var chr in mspc.GetConsensusPeaks())
                 cPeaksCount += chr.Value.Count;
             _logger.Log(cPeaksCount.ToString("N0"));
-
-            _logger.LogFinish();
-            _logger.ShutdownLogger();
         }
 
         private bool ParseArgs(string[] args, out CommandLineOptions options)
@@ -119,15 +117,40 @@ namespace Genometric.MSPC.CLI
         {
             try
             {
-                _logger = new Logger();
-                var repository = "EventsLog_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-                var logFile = _outputPath + Path.DirectorySeparatorChar + repository;
-                _logger.Setup(logFile, repository, Guid.NewGuid().ToString());
+                if (_logger != null)
+                    return true;
+
+                int tries = 4;
+                string repository;
+                while (tries > 0)
+                {
+                    repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+                    var logFile = _outputPath + Path.DirectorySeparatorChar + repository;
+
+                    /// If a repository with the same name as the value of 
+                    /// `repository` with an appended timestamp already exists,
+                    /// then try renaming repo with different timestamp.
+                    /// Two repositories with exact same name is possible 
+                    /// under scenarios such as initializing two MSPC 
+                    /// instances at the exact same time (considering even msec),
+                    /// which can happen when running unit tests.
+                    try
+                    {
+                        _logger = new Logger(logFile, repository, Guid.NewGuid().ToString());
+                        break;
+                    }
+                    catch (log4net.Core.LogException)
+                    {
+                        tries--;
+                    }
+                }
+                if (tries == 0)
+                    throw new InvalidOperationException("Cannot create a logger.");
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.LogException(e);
+                Console.WriteLine(e.Message);
                 return false;
             }
         }
@@ -244,6 +267,21 @@ namespace Genometric.MSPC.CLI
             {
                 _logger.LogException(e);
                 return false;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_logger != null)
+            {
+                _logger.LogFinish();
+                _logger.ShutdownLogger();
             }
         }
     }

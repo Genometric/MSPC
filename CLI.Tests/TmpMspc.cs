@@ -15,22 +15,23 @@ namespace Genometric.MSPC.CLI.Tests
 
         public string SessionPath { private set; get; }
 
-        public string Run(string template = null)
+        public string Run(bool createSample = true, string template = null)
         {
             SessionPath =
-                "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture) +
-                new Random().Next(100000, 999999).ToString("N6");
+                "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
+                new Random().Next(100000, 999999).ToString();
 
-            CreateTempSamples();
+            if (createSample)
+                CreateTempSamples();
+
+            if (template == null)
+                template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", _samples[0], _samples[1]);
+            template += string.Format(" -o {0}", SessionPath);
 
             using (StringWriter sw = new StringWriter())
             {
                 Console.SetOut(sw);
-
-                if (template != null)
-                    Program.Main(template.Split(' '));
-                else
-                    Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8 -o {2}", _samples[0], _samples[1], SessionPath).Split(' '));
+                Program.Main(template.Split(' '));
                 return sw.ToString();
             }
         }
@@ -66,8 +67,9 @@ namespace Genometric.MSPC.CLI.Tests
 
         protected virtual void Dispose(bool disposing)
         {
-            foreach (var sample in _samples)
-                File.Delete(sample);
+            if (_samples != null)
+                foreach (var sample in _samples)
+                    File.Delete(sample);
             if (Directory.Exists(SessionPath))
                 Directory.Delete(SessionPath, true);
         }

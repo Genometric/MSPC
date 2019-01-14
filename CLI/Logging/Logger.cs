@@ -27,12 +27,15 @@ namespace Genometric.MSPC.CLI.Logging
         private Table _parserLogTable;
 
         private ILog log;
-        private RollingFileAppender roller;
-
         private string _repository;
         private string _name;
 
-        public void Setup(string logFilePath, string repository, string name)
+        public Logger(string logFilePath, string repository, string name)
+        {
+            Setup(logFilePath, repository, name);
+        }
+
+        private void Setup(string logFilePath, string repository, string name)
         {
             _repository = repository;
             _name = name;
@@ -43,7 +46,7 @@ namespace Genometric.MSPC.CLI.Logging
             patternLayout.ConversionPattern = "%date\t[%thread]\t%-5level\t%message%newline";
             patternLayout.ActivateOptions();
 
-            roller = new RollingFileAppender
+            var roller = new RollingFileAppender
             {
                 AppendToFile = false,
                 File = logFilePath,

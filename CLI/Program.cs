@@ -11,8 +11,8 @@ namespace Genometric.MSPC.CLI
     {
         public static void Main(string[] args)
         {
-            var orchestrator = new Orchestrator();
-            orchestrator.Orchestrate(args);
+            using (var orchestrator = new Orchestrator())
+                orchestrator.Orchestrate(args);
         }
     }
 }

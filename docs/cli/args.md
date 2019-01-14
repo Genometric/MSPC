@@ -23,7 +23,6 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 | [Multiple Intersections](#multiple-intersections) |  | `-m` | `Lowest`, `Highest` |  `Lowest` |
 | [Input Parser Configuration](#input-parser-configuration) |   | `-p` | File path | none |
 | [Output path](#output-path) | | `-o` | Directory path | `session_` + `<Timestamp>`|
-| [Log file](#log-file)  | | `-l` | File path | `Eventslog_` + `<Timestamp>` |
 
 
 
@@ -199,10 +198,3 @@ Sets the path in which analysis results should be persisted.
 | ----- | ---- | ---- | ------------ | ------------- |
 | `-o`  | `--output` | Optional | Directory path | `session_` + `<Timestamp>`|
 
-### Log File
-
-Sets a filename in which events log will be presisted.
-
-| Short | Long | Required | Valid values | Default value |
-| ----- | ---- | ---- | ------------ | ------------- |
-| `-l`  | `--log` | Optional | File path | `Eventslog_` + `<Timestamp>`|

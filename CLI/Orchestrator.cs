@@ -20,16 +20,7 @@ namespace Genometric.MSPC.CLI
     internal class Orchestrator
     {
         private string _outputPath;
-        private readonly Logger _logger;
-        private readonly string _logFile;
-
-        public Orchestrator()
-        {
-            string repository = "EventsLog_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-            _logFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + repository;
-            _logger = new Logger();
-            _logger.Setup(_logFile, repository, Guid.NewGuid().ToString());
-        }
+        private Logger _logger;
 
         public void Orchestrate(string[] args)
         {
@@ -37,6 +28,9 @@ namespace Genometric.MSPC.CLI
                 return;
 
             if (!AssertOutputPath(options.OutputPath))
+                return;
+
+            if (!SetupLogger())
                 return;
 
             if (!AssertInput(options.Input))
@@ -67,7 +61,6 @@ namespace Genometric.MSPC.CLI
 
             _logger.LogFinish();
             _logger.ShutdownLogger();
-            File.Move(_logFile, _outputPath + Path.DirectorySeparatorChar + Path.GetFileName(_logFile));
         }
 
         private bool ParseArgs(string[] args, out CommandLineOptions options)
@@ -83,7 +76,7 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                _logger.LogException(e);
+                Console.WriteLine(e.Message);
                 return false;
             }
         }
@@ -116,6 +109,23 @@ namespace Genometric.MSPC.CLI
                 return true;
             }
             catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+        }
+
+        private bool SetupLogger()
+        {
+            try
+            {
+                _logger = new Logger();
+                var repository = "EventsLog_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+                var logFile = _outputPath + Path.DirectorySeparatorChar + repository;
+                _logger.Setup(logFile, repository, Guid.NewGuid().ToString());
+                return true;
+            }
+            catch(Exception e)
             {
                 _logger.LogException(e);
                 return false;

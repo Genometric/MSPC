@@ -2,6 +2,9 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
@@ -173,6 +176,51 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.True(!string.IsNullOrEmpty(o.OutputPath) && !string.IsNullOrWhiteSpace(o.OutputPath));
+        }
+
+        [Fact]
+        public void AppendNumberToGivenPathIfAlreadyExists()
+        {
+            // Arrange
+            var o = new Orchestrator();
+            string baseName = @"TT" + new Random().Next().ToString();
+            var dirs = new List<string>
+            {
+                baseName, baseName + "0", baseName + "1"
+            };
+
+            foreach (var dir in dirs)
+            {
+                Directory.CreateDirectory(dir);
+                File.Create(dir + Path.DirectorySeparatorChar + "test").Dispose();
+            }
+
+            // Act
+            o.Orchestrate(string.Format("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8 -o {0}", dirs[0]).Split(' '));
+
+            // Assert
+            Assert.Equal(o.OutputPath, dirs[0] + "2");
+
+            // Clean up
+            o.Dispose();
+            foreach (var dir in dirs)
+                Directory.Delete(dir, true);
+            Directory.Delete(dirs[0] + "2", true);
+        }
+
+        [Fact]
+        public void RaiseExceptionWritingToIllegalPath()
+        {
+            // Arrange
+            string msg;
+            var illegalPath = "C:\\*<>*\\//";
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(sessionPath: illegalPath);
+
+            // Assert
+            Assert.Contains("Illegal characters in path.", msg);
         }
     }
 }

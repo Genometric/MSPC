@@ -15,11 +15,14 @@ namespace Genometric.MSPC.CLI.Tests
 
         public string SessionPath { private set; get; }
 
-        public string Run(bool createSample = true, string template = null)
+        public string Run(bool createSample = true, string template = null, string sessionPath = null)
         {
-            SessionPath =
-                "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
-                new Random().Next(100000, 999999).ToString();
+            if (sessionPath != null)
+                SessionPath = sessionPath;
+            else
+                SessionPath =
+                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
+                    new Random().Next(100000, 999999).ToString();
 
             if (createSample)
                 CreateTempSamples();

@@ -96,8 +96,6 @@ namespace Genometric.MSPC.CLI.Logging
         {
             var msg = new StringBuilder();
             var report = e.Value;
-            if (report.UpdatesPrevious)
-                msg.Append("\r");
 
             if (report.SubStep)
                 msg.Append(string.Format(
@@ -116,6 +114,7 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(msg.ToString());
             if (report.UpdatesPrevious)
             {
+                msg.Insert(0, "\r");
                 Console.Write(msg.ToString());
                 _lastStatusUpdatedItsPrevious = true;
             }
@@ -136,8 +135,8 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void LogFinish()
         {
-            string msg = Environment.NewLine + "All processes successfully finished" + Environment.NewLine;
-            Console.WriteLine(msg);
+            string msg = "All processes successfully finished";
+            Console.WriteLine(Environment.NewLine + msg + Environment.NewLine);
             log.Info(msg);
         }
 

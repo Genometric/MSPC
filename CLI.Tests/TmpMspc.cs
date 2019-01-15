@@ -28,12 +28,20 @@ namespace Genometric.MSPC.CLI.Tests
                 template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", _samples[0], _samples[1]);
             template += string.Format(" -o {0}", SessionPath);
 
+            string output;
             using (StringWriter sw = new StringWriter())
             {
                 Console.SetOut(sw);
                 Program.Main(template.Split(' '));
-                return sw.ToString();
+                output = sw.ToString();
             }
+
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
+            {
+                AutoFlush = true
+            };
+            Console.SetOut(standardOutput);
+            return output;
         }
 
         private void CreateTempSamples()

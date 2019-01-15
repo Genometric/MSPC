@@ -21,7 +21,7 @@ namespace Genometric.MSPC.CLI
     {
         private string _outputPath;
         private Logger _logger;
-        private string _defaultLoggerRepoName = "EventsLog";
+        private readonly string _defaultLoggerRepoName = "EventsLog";
 
         public void Orchestrate(string[] args)
         {

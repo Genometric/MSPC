@@ -19,9 +19,9 @@ namespace Genometric.MSPC.CLI
 {
     internal class Orchestrator : IDisposable
     {
-        private string _outputPath;
         private Logger _logger;
         private readonly string _defaultLoggerRepoName = "EventsLog";
+        public string OutputPath { set; get; }
 
         public void Orchestrate(string[] args)
         {
@@ -86,22 +86,22 @@ namespace Genometric.MSPC.CLI
                     Environment.CurrentDirectory + Path.DirectorySeparatorChar +
                     "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
 
-            _outputPath = path;
+            OutputPath = path;
             try
             {
-                if (Directory.Exists(_outputPath))
+                if (Directory.Exists(OutputPath))
                 {
-                    if (Directory.GetFiles(_outputPath).Any())
+                    if (Directory.GetFiles(OutputPath).Any())
                     {
                         int c = 0;
-                        do _outputPath = path + c++;
-                        while (Directory.Exists(_outputPath));
-                        Directory.CreateDirectory(_outputPath);
+                        do OutputPath = path + c++;
+                        while (Directory.Exists(OutputPath));
+                        Directory.CreateDirectory(OutputPath);
                     }
                 }
                 else
                 {
-                    Directory.CreateDirectory(_outputPath);
+                    Directory.CreateDirectory(OutputPath);
                 }
 
                 return true;
@@ -125,7 +125,7 @@ namespace Genometric.MSPC.CLI
                 while (tries > 0)
                 {
                     repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-                    var logFile = _outputPath + Path.DirectorySeparatorChar + repository;
+                    var logFile = OutputPath + Path.DirectorySeparatorChar + repository;
 
                     /// If a repository with the same name as the value of 
                     /// `repository` with an appended timestamp already exists,
@@ -254,7 +254,7 @@ namespace Genometric.MSPC.CLI
                 _logger.LogStartOfASection("Saving Results");
                 var exporter = new Exporter<Peak>();
                 var options = new Options(
-                    path: _outputPath,
+                    path: OutputPath,
                     includeHeader: true,
                     attributesToExport: attributesToExport);
 

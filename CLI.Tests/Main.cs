@@ -2,8 +2,6 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.IO;
 using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
@@ -162,6 +160,19 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(expected, msg);
+        }
+
+        [Fact]
+        public void GenerateOutputPathIfNotGiven()
+        {
+            // Arrange
+            var o = new Orchestrator();
+
+            // Act
+            o.Orchestrate("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+
+            // Assert
+            Assert.True(!string.IsNullOrEmpty(o.OutputPath) && !string.IsNullOrWhiteSpace(o.OutputPath));
         }
     }
 }

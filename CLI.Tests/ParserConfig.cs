@@ -95,5 +95,15 @@ namespace Genometric.MSPC.CLI.Tests
                     "Error reading parser configuration JSON object: Newtonsoft.Json.JsonReaderException: " +
                     "Unexpected character encountered while parsing value"));
         }
+
+        [Fact]
+        public void DoesNotEqualToANullObject()
+        {
+            // Arrange
+            var config = new ParserConfig();
+
+            // Act & Assert
+            Assert.True(!config.Equals(null));
+        }
     }
 }

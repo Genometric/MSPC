@@ -2,7 +2,9 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.MSPC.CLI.Tests.MockTypes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -281,6 +283,48 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.Contains("The method or operation is not implemented.", message);
             Assert.DoesNotContain("All processes successfully finished", message);
+        }
+
+        [Fact]
+        public void ReadDataAccordingToParserConfig()
+        {
+            // Arrange
+            ParserConfig cols = new ParserConfig()
+            {
+                Chr = 0,
+                Left = 3,
+                Right = 4,
+                Name = 1,
+                Strand = 2,
+                Summit = 6,
+                Value = 5,
+                DefaultValue = 1.23E-45,
+                PValueFormat = PValueFormats.minus1_Log10_pValue,
+                DropPeakIfInvalidValue = false,
+            };
+            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            using (StreamWriter w = new StreamWriter(path))
+                w.WriteLine(JsonConvert.SerializeObject(cols));
+
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            FileStream stream = File.Create(rep1Path);
+            using (StreamWriter writter = new StreamWriter(stream))
+                writter.WriteLine("chr1\tMSPC_PEAK\t.\t10\t20\t16\t15");
+
+            stream = File.Create(rep2Path);
+            using (StreamWriter writter = new StreamWriter(stream))
+                writter.WriteLine("chr1\tMSPC_PEAK\t.\t15\t25\tEEE\t20");
+
+            // Act
+            string msg;
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(createSample: false, template: string.Format("-i {0} -i {1} -p {2} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path, path));
+
+            // Assert
+            Assert.Contains("1.000E-016", msg);
+            Assert.Contains("1.230E-045", msg);
         }
     }
 }

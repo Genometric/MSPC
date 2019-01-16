@@ -47,6 +47,25 @@ namespace Genometric.MSPC.CLI.Tests
             return output;
         }
 
+        public List<string> FailRun(string template = null)
+        {
+            string logFile;
+            using (var o = new Orchestrator())
+            {
+                o.Orchestrate("-i rep1 -i rep2 -r bio -s 1e-8 -w 1e-4".Split(' '));
+                o.Orchestrate("-r bio -s 1e-8 -w 1e-4".Split(' '));
+                logFile = o.LogFile;
+            }
+
+            var messages = new List<string>();
+            string line;
+            using (var reader = new StreamReader(logFile))
+                while ((line = reader.ReadLine()) != null)
+                    messages.Add(line);
+            return messages;
+
+        }
+
         private void CreateTempSamples()
         {
             string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";

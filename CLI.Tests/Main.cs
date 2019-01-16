@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
@@ -221,6 +222,35 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("Illegal characters in path.", msg);
+        }
+
+        [Fact]
+        public void ReuseExistingLogger()
+        {
+            // Arrange
+            List<string> messages;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                messages = tmpMspc.FailRun();
+
+            // Assert
+            Assert.Contains(messages, x => x.Contains("The following files are missing: rep1; rep2"));
+            Assert.Contains(messages, x => x.Contains("The following required arguments are missing: i|input"));
+        }
+
+        [Fact]
+        public void DontReportSuccessfullyFinishedIfExitedAfterAnError()
+        {
+            // Arrange
+            List<string> messages;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                messages = tmpMspc.FailRun();
+                
+            // Assert
+            Assert.DoesNotContain(messages, x => x.Contains("All processes successfully finished"));
         }
     }
 }

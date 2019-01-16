@@ -22,6 +22,7 @@ namespace Genometric.MSPC.CLI
         private Logger _logger;
         private readonly string _defaultLoggerRepoName = "EventsLog";
         public string OutputPath { private set; get; }
+        public string LogFile { private set; get; }
 
         public void Orchestrate(string[] args)
         {
@@ -59,6 +60,8 @@ namespace Genometric.MSPC.CLI
             foreach (var chr in mspc.GetConsensusPeaks())
                 cPeaksCount += chr.Value.Count;
             _logger.Log(cPeaksCount.ToString("N0"));
+
+            _logger.LogFinish();
         }
 
         private bool ParseArgs(string[] args, out CommandLineOptions options)
@@ -74,7 +77,10 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                if (_logger == null)
+                    Console.WriteLine(e.Message);
+                else
+                    _logger.LogException(e);
                 return false;
             }
         }
@@ -108,7 +114,10 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                if (_logger == null)
+                    Console.WriteLine(e.Message);
+                else
+                    _logger.LogException(e);
                 return false;
             }
         }
@@ -125,7 +134,7 @@ namespace Genometric.MSPC.CLI
                 while (tries > 0)
                 {
                     repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-                    var logFile = OutputPath + Path.DirectorySeparatorChar + repository;
+                    LogFile = OutputPath + Path.DirectorySeparatorChar + repository;
 
                     /// If a repository with the same name as the value of 
                     /// `repository` with an appended timestamp already exists,
@@ -136,7 +145,7 @@ namespace Genometric.MSPC.CLI
                     /// which can happen when running unit tests.
                     try
                     {
-                        _logger = new Logger(logFile, repository, Guid.NewGuid().ToString());
+                        _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
                         break;
                     }
                     catch (log4net.Core.LogException)
@@ -279,10 +288,7 @@ namespace Genometric.MSPC.CLI
         protected virtual void Dispose(bool disposing)
         {
             if (_logger != null)
-            {
-                _logger.LogFinish();
                 _logger.ShutdownLogger();
-            }
         }
     }
 }

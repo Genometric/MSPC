@@ -22,7 +22,7 @@ namespace Genometric.MSPC.CLI.Logging
         private readonly int _indexColumnWidth = 10;
         private readonly int _sectionHeaderLenght = 30;
         private readonly int _fileNameMaxLenght = 20;
-        private readonly string _cannotContinue = "\r\nMSPC cannot continue.";
+        private readonly string _cannotContinue = "MSPC cannot continue.";
         private bool _lastStatusUpdatedItsPrevious;
         private Table _parserLogTable;
 
@@ -81,7 +81,7 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void LogException(Exception e)
         {
-            LogException(e.Message + _cannotContinue);
+            LogException(e.Message);
         }
 
         public void LogException(string message)
@@ -89,7 +89,9 @@ namespace Genometric.MSPC.CLI.Logging
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
             Console.ResetColor();
+            Console.WriteLine(_cannotContinue);
             log.Error(message);
+            log.Info(_cannotContinue);
         }
 
         public void LogMSPCStatus(object sender, ValueEventArgs e)

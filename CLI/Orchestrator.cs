@@ -6,6 +6,7 @@ using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Exporter;
+using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.CLI.Logging;
 using Genometric.MSPC.Core;
 using Genometric.MSPC.Core.Model;
@@ -20,9 +21,17 @@ namespace Genometric.MSPC.CLI
     internal class Orchestrator : IDisposable
     {
         private Logger _logger;
+        private readonly IExporter<Peak> _exporter;
         private readonly string _defaultLoggerRepoName = "EventsLog";
         public string OutputPath { private set; get; }
         public string LogFile { private set; get; }
+
+        public Orchestrator() : this(new Exporter<Peak>()) { }
+
+        public Orchestrator(IExporter<Peak> exporter)
+        {
+            _exporter = exporter;
+        }
 
         public void Orchestrate(string[] args)
         {
@@ -261,13 +270,12 @@ namespace Genometric.MSPC.CLI
             try
             {
                 _logger.LogStartOfASection("Saving Results");
-                var exporter = new Exporter<Peak>();
                 var options = new Options(
                     path: OutputPath,
                     includeHeader: true,
                     attributesToExport: attributesToExport);
 
-                exporter.Export(
+                _exporter.Export(
                     samplesDictionary,
                     mspc.GetResults(), mspc.GetConsensusPeaks(), options);
                 return true;

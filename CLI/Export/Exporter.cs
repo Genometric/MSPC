@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
+using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Linq;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
-    public class Exporter<I>
+    public class Exporter<I> : IExporter<I>
         where I : IPeak
     {
         private Options _options;

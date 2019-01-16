@@ -2,10 +2,10 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using Genometric.MSPC.CLI.Tests.MockTypes;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
@@ -266,6 +266,21 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.Contains(messages, x => x.Contains("The following files are missing: rep1; rep2"));
             Assert.Contains(messages, x => x.Contains("Illegal characters in path."));
+        }
+
+        [Fact]
+        public void CaptureExporterExceptions()
+        {
+            // Arrange
+            string message;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                message = tmpMspc.Run(new MExporter());
+
+            // Assert
+            Assert.Contains("The method or operation is not implemented.", message);
+            Assert.DoesNotContain("All processes successfully finished", message);
         }
     }
 }

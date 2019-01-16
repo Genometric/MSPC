@@ -2,6 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.MSPC.CLI.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -64,6 +66,31 @@ namespace Genometric.MSPC.CLI.Tests
                     messages.Add(line);
             return messages;
 
+        }
+
+        public string Run(IExporter<Peak> exporter)
+        {
+            SessionPath =
+                "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
+                new Random().Next(100000, 999999).ToString();
+
+            CreateTempSamples();
+            var template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", _samples[0], _samples[1]);
+
+            string output;
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw); var o = new Orchestrator(exporter);
+                o.Orchestrate(template.Split(' '));
+                output = sw.ToString();
+            }
+
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
+            {
+                AutoFlush = true
+            };
+            Console.SetOut(standardOutput);
+            return output;
         }
 
         private void CreateTempSamples()

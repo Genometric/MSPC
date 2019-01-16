@@ -198,7 +198,7 @@ namespace Genometric.MSPC.CLI
             samples = new List<Bed<Peak>>();
             int counter = 0;
             _logger.LogStartOfASection("Parsing Samples");
-            _logger.InitializeLoggingParser();
+            _logger.InitializeLoggingParser(files.Count);
             foreach (var file in files)
             {
                 var bedParser = new BedParser(parserConfig)

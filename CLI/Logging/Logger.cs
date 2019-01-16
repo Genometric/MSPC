@@ -14,12 +14,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using static Genometric.MSPC.CLI.Logging.Table;
 
 namespace Genometric.MSPC.CLI.Logging
 {
     public class Logger
     {
-        private readonly int _indexColumnWidth = 10;
         private readonly int _sectionHeaderLenght = 30;
         private readonly int _fileNameMaxLenght = 20;
         private readonly string _cannotContinue = "MSPC cannot continue.";
@@ -150,10 +150,12 @@ namespace Genometric.MSPC.CLI.Logging
             LogManager.GetLogger(_repository, _name).Logger.Repository.Shutdown();
         }
 
-        public void InitializeLoggingParser()
+        public void InitializeLoggingParser(int samplesCount)
         {
-            var columnsWidth = new int[] { _indexColumnWidth, _fileNameMaxLenght, 11, 11, 12, 11 };
-            _parserLogTable = new Table(columnsWidth, _repository, _name);
+            var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLenght, 11, 11, 12, 11 };
+            var orientations = new Orientation[columnsWidth.Length];
+            orientations[0] = Orientation.Left;
+            _parserLogTable = new Table(columnsWidth, _repository, _name, orientations);
             _parserLogTable.AddHeader(new string[]
             {
                 "#", "Filename", "Read peaks#", "Min p-value", "Mean p-value", "Max p-value"
@@ -171,7 +173,7 @@ namespace Genometric.MSPC.CLI.Logging
         {
             _parserLogTable.AddRow(new string[]
             {
-                string.Format("{0}/{1}", fileNumber.ToString("N0"), filesToParse.ToString("N0")),
+                IdxColFormat(fileNumber, filesToParse),
                 filename,
                 peaksCount.ToString("N0"),
                 string.Format("{0:E3}", minPValue),
@@ -195,7 +197,7 @@ namespace Genometric.MSPC.CLI.Logging
             headerColumns[0] = "#";
             headerColumns[1] = "Filename";
             headerColumns[2] = "Read peaks#";
-            columnsWidth[0] = _indexColumnWidth;
+            columnsWidth[0] = IdxColChars(samples.Count);
             columnsWidth[1] = _fileNameMaxLenght;
             columnsWidth[2] = headerColumns[2].Length;
             for (i = 3; i < columnsCount; i++)
@@ -203,7 +205,9 @@ namespace Genometric.MSPC.CLI.Logging
                 headerColumns[i] = exportedAttributes[i - 3].ToString();
                 columnsWidth[i] = headerColumns[i].Length > 8 ? headerColumns[i].Length : 8;
             }
-            var table = new Table(columnsWidth, _repository, _name);
+            var orientations = new Orientation[columnsWidth.Length];
+            orientations[0] = Orientation.Left;
+            var table = new Table(columnsWidth, _repository, _name, orientations);
             table.AddHeader(headerColumns);
 
             // Per sample stats
@@ -212,7 +216,7 @@ namespace Genometric.MSPC.CLI.Logging
             {
                 double totalPeaks = samples.Find(x => x.FileHashKey == res.Key).IntervalsCount;
                 var sampleSummary = new string[columnsCount];
-                sampleSummary[0] = string.Format("{0}/{1}", (j++).ToString("N0"), results.Count.ToString("N0"));
+                sampleSummary[0] = IdxColFormat(j++, results.Count);
                 sampleSummary[1] = samplesDict[res.Key];
                 sampleSummary[2] = totalPeaks.ToString("N0");
                 i = 3;

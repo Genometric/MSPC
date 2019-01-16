@@ -13,9 +13,13 @@ namespace Genometric.MSPC.CLI.Logging
         private readonly int[] _columnsWidth;
         private readonly ILog log;
 
-        public Table(int[] columnsWidth, string repository, string name)
+        public enum Orientation:byte { Right = 0, Left = 1  };
+        private readonly Orientation[] _truncateOrientation;
+
+        public Table(int[] columnsWidth, string repository, string name, Orientation[] truncateOrientation)
         {
             _columnsWidth = columnsWidth;
+            _truncateOrientation = truncateOrientation;
             log = LogManager.GetLogger(repository, name);
         }
 
@@ -35,23 +39,57 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(row);
         }
 
+        /// <summary>
+        /// Computes the number of characters required to render index
+        /// column of a table without truncating the characters.
+        /// 
+        /// For instance, for 12345 possible rows, it computes 
+        /// how many chars would require to fit "  12,345/12,345".
+        /// </summary>
+        /// <param name="rowCount">Sets the maximum number of rows 
+        /// (excluding header) that will be rendered.</param>
+        /// <returns></returns>
+        public static int IdxColChars(int rowCount)
+        {
+            return ((int)(Math.Floor(Math.Log10(rowCount)) + Math.Floor(Math.Floor(Math.Log10(rowCount)) / 3) + 1) * 2) + 2;
+        }
+
+        public static string IdxColFormat(int rowNumber, int totalRows)
+        {
+            /// NOTE:
+            /// Any changes to the following format, should also 
+            /// be reflect in the IdxColChars method.
+            return string.Format("{0}/{1}", rowNumber.ToString("N0"), totalRows.ToString("N0"));
+        }
+
         private string RenderRow(params string[] columns)
         {
             var row = new StringBuilder();
             for (int i = 0; i < columns.Length; i++)
-                if (columns[i].Length < _columnsWidth[i])
-                    row.Append(columns[i].PadLeft(_columnsWidth[i]) + "\t");
-                else
-                    row.Append(TruncateString(columns[i], _columnsWidth[i]) + "\t");
+                row.Append(TruncateString(columns[i], _columnsWidth[i], _truncateOrientation[i]) + "\t");
             return row.ToString();
         }
 
-        private string TruncateString(string value, int maxLength)
+        private string TruncateString(string value, int maxLength, Orientation orientation)
         {
-            return
-                value.Length <= maxLength ?
-                new string(' ', maxLength - value.Length) + value :
-                "..." + value.Substring(value.Length - maxLength - 3, maxLength);
+            if (value.Length <= maxLength)
+            {
+                return value.PadLeft(maxLength);
+            }
+            else
+            {
+                switch (orientation)
+                {
+                    case Orientation.Right:
+                        int i = value.Length - maxLength - 3;
+                        if (i < 0)
+                            i = 0;
+                        return "..." + value.Substring(i, maxLength);
+                    default:
+                    case Orientation.Left:
+                        return value.Substring(0, maxLength - 3) + "...";
+                }
+            }
         }
     }
 }

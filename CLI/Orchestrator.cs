@@ -138,32 +138,9 @@ namespace Genometric.MSPC.CLI
                 if (_logger != null)
                     return true;
 
-                int tries = 4;
-                string repository;
-                while (tries > 0)
-                {
-                    repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-                    LogFile = OutputPath + Path.DirectorySeparatorChar + repository;
-
-                    /// If a repository with the same name as the value of 
-                    /// `repository` with an appended timestamp already exists,
-                    /// then try renaming repo with different timestamp.
-                    /// Two repositories with exact same name is possible 
-                    /// under scenarios such as initializing two MSPC 
-                    /// instances at the exact same time (considering even msec),
-                    /// which can happen when running unit tests.
-                    try
-                    {
-                        _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
-                        break;
-                    }
-                    catch (log4net.Core.LogException)
-                    {
-                        tries--;
-                    }
-                }
-                if (tries == 0)
-                    throw new InvalidOperationException("Cannot create a logger.");
+                var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfffffff", CultureInfo.InvariantCulture);
+                LogFile = OutputPath + Path.DirectorySeparatorChar + repository;
+                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
                 return true;
             }
             catch (Exception e)

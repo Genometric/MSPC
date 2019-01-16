@@ -80,7 +80,8 @@ namespace Genometric.MSPC.CLI.Tests
             string output;
             using (StringWriter sw = new StringWriter())
             {
-                Console.SetOut(sw); var o = new Orchestrator(exporter);
+                Console.SetOut(sw);
+                var o = new Orchestrator(exporter);
                 o.Orchestrate(template.Split(' '));
                 output = sw.ToString();
             }

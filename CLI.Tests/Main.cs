@@ -286,6 +286,36 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void CaptureExceptionsRaisedCreatingLogger()
+        {
+            // Arrange
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            var o = new Orchestrator
+            {
+                loggerTimeStampFormat = "yyyyMMdd_HHmmssffffffffffff"
+            };
+
+            // Act
+            string output;
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                output = sw.ToString();
+            }
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
+            {
+                AutoFlush = true
+            };
+            Console.SetOut(standardOutput);
+
+            // Assert
+            Assert.Contains("Input string was not in a correct format.", output);
+        }
+
+        [Fact]
         public void ReadDataAccordingToParserConfig()
         {
             // Arrange

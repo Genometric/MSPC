@@ -26,6 +26,8 @@ namespace Genometric.MSPC.CLI
         public string OutputPath { private set; get; }
         public string LogFile { private set; get; }
 
+        internal string loggerTimeStampFormat = "yyyyMMdd_HHmmssfffffff";
+
         public Orchestrator() : this(new Exporter<Peak>()) { }
 
         public Orchestrator(IExporter<Peak> exporter)
@@ -138,7 +140,7 @@ namespace Genometric.MSPC.CLI
                 if (_logger != null)
                     return true;
 
-                var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfffffff", CultureInfo.InvariantCulture);
+                var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString(loggerTimeStampFormat, CultureInfo.InvariantCulture);
                 LogFile = OutputPath + Path.DirectorySeparatorChar + repository;
                 _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
                 return true;

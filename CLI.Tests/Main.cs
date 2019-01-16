@@ -252,5 +252,20 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.DoesNotContain(messages, x => x.Contains("All processes successfully finished"));
         }
+
+        [Fact]
+        public void WriteOutputPathExceptionToLoggerIfAvailable()
+        {
+            // Arrange
+            List<string> messages;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                messages = tmpMspc.FailRun(template2: "-i rep1 -i rep2 -o C:\\*<>*\\// -r bio -s 1e-8 -w 1e-4");
+
+            // Assert
+            Assert.Contains(messages, x => x.Contains("The following files are missing: rep1; rep2"));
+            Assert.Contains(messages, x => x.Contains("Illegal characters in path."));
+        }
     }
 }

@@ -47,13 +47,13 @@ namespace Genometric.MSPC.CLI.Tests
             return output;
         }
 
-        public List<string> FailRun(string template = null)
+        public List<string> FailRun(string template1 = null, string template2 = null)
         {
             string logFile;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate("-i rep1 -i rep2 -r bio -s 1e-8 -w 1e-4".Split(' '));
-                o.Orchestrate("-r bio -s 1e-8 -w 1e-4".Split(' '));
+                o.Orchestrate((template1 ?? "-i rep1 -i rep2 -r bio -s 1e-8 -w 1e-4").Split(' '));
+                o.Orchestrate((template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
                 logFile = o.LogFile;
             }
 

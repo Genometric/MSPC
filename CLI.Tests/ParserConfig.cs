@@ -108,6 +108,17 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void TwoNotEqualConfigs()
+        {
+            // Arrange
+            var c1 = new ParserConfig() { Chr = 1 };
+            var c2 = new ParserConfig() { Chr = 2 };
+
+            // Act & Assert
+            Assert.NotEqual(c1, c2);
+        }
+
+        [Fact]
         public void DoesNotEqualToANullObject()
         {
             // Arrange

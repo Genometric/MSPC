@@ -13,13 +13,9 @@ namespace Genometric.MSPC.CLI.Logging
         private readonly int[] _columnsWidth;
         private readonly ILog log;
 
-        public enum Orientation:byte { Right = 0, Left = 1  };
-        private readonly Orientation[] _truncateOrientation;
-
-        public Table(int[] columnsWidth, string repository, string name, Orientation[] truncateOrientation)
+        public Table(int[] columnsWidth, string repository, string name)
         {
             _columnsWidth = columnsWidth;
-            _truncateOrientation = truncateOrientation;
             log = LogManager.GetLogger(repository, name);
         }
 
@@ -66,30 +62,16 @@ namespace Genometric.MSPC.CLI.Logging
         {
             var row = new StringBuilder();
             for (int i = 0; i < columns.Length; i++)
-                row.Append(TruncateString(columns[i], _columnsWidth[i], _truncateOrientation[i]) + "\t");
+                row.Append(TruncateString(columns[i], _columnsWidth[i]) + "\t");
             return row.ToString();
         }
 
-        private string TruncateString(string value, int maxLength, Orientation orientation)
+        private string TruncateString(string value, int maxLength)
         {
             if (value.Length <= maxLength)
-            {
                 return value.PadLeft(maxLength);
-            }
             else
-            {
-                switch (orientation)
-                {
-                    case Orientation.Right:
-                        int i = value.Length - maxLength - 3;
-                        if (i < 0)
-                            i = 0;
-                        return "..." + value.Substring(i, maxLength);
-                    default:
-                    case Orientation.Left:
-                        return value.Substring(0, maxLength - 3) + "...";
-                }
-            }
+                return "..." + value.Substring(value.Length - maxLength - 3, maxLength);
         }
     }
 }

@@ -6,6 +6,7 @@ using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -224,6 +225,39 @@ namespace Genometric.MSPC.Core.Tests
 
             // Assert
             Assert.Equal(mspc.DegreeOfParallelism, dp);
+        }
+
+        [Theory]
+        [InlineData(1e-1)] // No background peaks.
+        [InlineData(1e-6)] // Background should not be counted
+        public void StepNotMoreThanStepCount(double tauW)
+        {
+            // Arrange
+            var s1 = new Bed<Peak>();
+            s1.Add(new Peak(10, 20, 1E-4), _chr, _strand);
+            s1.Add(new Peak(30, 40, 1E-5), _chr, _strand);
+            s1.Add(new Peak(50, 60, 1E-6), _chr, _strand);
+            s1.Add(new Peak(70, 80, 1E-7), _chr, _strand);
+            s1.Add(new Peak(90, 99, 1E-8), _chr, _strand);
+
+            var s2 = new Bed<Peak>();
+            s2.Add(new Peak(11, 18, 1E-4), _chr, _strand);
+            s2.Add(new Peak(33, 38, 1E-5), _chr, _strand);
+            s2.Add(new Peak(55, 58, 1E-6), _chr, _strand);
+
+            var mspc = new Mspc();
+            mspc.AddSample(0, s1);
+            mspc.AddSample(1, s2);
+
+            var messages = new List<ProgressReport>();
+            mspc.StatusChanged += (object sender, ValueEventArgs e) => messages.Add(e.Value);
+
+            // Act
+            mspc.RunAsync(new Config(ReplicateType.Biological, tauW, tauW, tauW, 2, 0.05F, MultipleIntersections.UseLowestPValue));
+            mspc.Done.WaitOne();
+
+            // Assert
+            Assert.DoesNotContain(messages, x => x.Step > x.StepCount);
         }
     }
 }

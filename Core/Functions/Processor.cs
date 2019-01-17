@@ -73,6 +73,7 @@ namespace Genometric.MSPC.Core.Functions
             _worker = worker;
             _workerEventArgs = e;
             _processedPeaks = 0;
+            _peaksToBeProcessed = 0;
 
             int step = 1, stepCount = 4;
 
@@ -202,8 +203,9 @@ namespace Genometric.MSPC.Core.Functions
                         pp.reason = Messages.Codes.M002;
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                     }
+
+                    Interlocked.Increment(ref _processedPeaks);
                 }
-                Interlocked.Add(ref _processedPeaks, strand.Value.Intervals.Count);
                 OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks processed"));
             }
         }

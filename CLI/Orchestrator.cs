@@ -195,32 +195,42 @@ namespace Genometric.MSPC.CLI
 
         private bool ParseFiles(IReadOnlyList<string> files, ParserConfig parserConfig, out List<Bed<Peak>> samples)
         {
-            samples = new List<Bed<Peak>>();
-            int counter = 0;
-            _logger.LogStartOfASection("Parsing Samples");
-            _logger.InitializeLoggingParser(files.Count);
-            foreach (var file in files)
+            try
             {
-                var bedParser = new BedParser(parserConfig)
-                {
-                    PValueFormat = parserConfig.PValueFormat,
-                    DefaultValue = parserConfig.DefaultValue,
-                    DropPeakIfInvalidValue = parserConfig.DropPeakIfInvalidValue
-                };
-                var parsedData = bedParser.Parse(file);
-                samples.Add(parsedData);
-                counter++;
-                _logger.LogParser(
-                    counter,
-                    files.Count,
-                    Path.GetFileNameWithoutExtension(file),
-                    parsedData.IntervalsCount,
-                    parsedData.PValueMin.Value,
-                    parsedData.PValueMean,
-                    parsedData.PValueMax.Value);
-            }
+                samples = new List<Bed<Peak>>();
+                _logger.LogStartOfASection("Parsing Samples");
+                _logger.InitializeLoggingParser(files.Count);
 
-            return true;
+                int counter = 0;
+                foreach (var file in files)
+                {
+                    var bedParser = new BedParser(parserConfig)
+                    {
+                        PValueFormat = parserConfig.PValueFormat,
+                        DefaultValue = parserConfig.DefaultValue,
+                        DropPeakIfInvalidValue = parserConfig.DropPeakIfInvalidValue
+                    };
+                    var parsedData = bedParser.Parse(file);
+                    samples.Add(parsedData);
+                    counter++;
+                    _logger.LogParser(
+                        counter,
+                        files.Count,
+                        Path.GetFileNameWithoutExtension(file),
+                        parsedData.IntervalsCount,
+                        parsedData.PValueMin.Value,
+                        parsedData.PValueMean,
+                        parsedData.PValueMax.Value);
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                samples = null;
+                _logger.LogException("Error parsing data: " + e.Message);
+                return false;
+            }
         }
 
         private bool Run(List<Bed<Peak>> samples, Config config, out Mspc mspc)

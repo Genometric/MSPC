@@ -65,7 +65,6 @@ namespace Genometric.MSPC.CLI.Tests
                 while ((line = reader.ReadLine()) != null)
                     messages.Add(line);
             return messages;
-
         }
 
         public string Run(IExporter<Peak> exporter)

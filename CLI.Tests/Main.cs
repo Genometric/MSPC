@@ -250,7 +250,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             using (var tmpMspc = new TmpMspc())
                 messages = tmpMspc.FailRun();
-                
+
             // Assert
             Assert.DoesNotContain(messages, x => x.Contains("All processes successfully finished"));
         }
@@ -355,6 +355,47 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.Contains("1.000E-016", msg);
             Assert.Contains("1.230E-045", msg);
+        }
+
+        [Fact]
+        public void CaptureExceptionReadingFile()
+        {
+            // Arrange
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            new StreamWriter(rep1Path).Close();
+            new StreamWriter(rep2Path).Close();
+
+            // Lock the file so the parser cannot access it.
+            var fs = new FileStream(path: rep1Path, mode: FileMode.OpenOrCreate, access: FileAccess.Write, share: FileShare.None);
+
+            // Act
+            string logFile;
+            string path;
+            using (var o = new Orchestrator())
+            {
+                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                logFile = o.LogFile;
+                path = o.OutputPath;
+            }
+
+            string line;
+            var messages = new List<string>();
+            using (var reader = new StreamReader(logFile))
+                while ((line = reader.ReadLine()) != null)
+                    messages.Add(line);
+            fs.Close();
+
+            // Assert
+            Assert.Contains(messages, x => 
+            x.Contains("The process cannot access the file") && 
+            x.Contains("because it is being used by another process."));
+
+            // Clean up
+            File.Delete(rep1Path);
+            File.Delete(rep2Path);
+            Directory.Delete(path, true);
         }
     }
 }

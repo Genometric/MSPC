@@ -141,7 +141,7 @@ namespace Genometric.MSPC.CLI
                     return true;
 
                 var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString(loggerTimeStampFormat, CultureInfo.InvariantCulture);
-                LogFile = OutputPath + Path.DirectorySeparatorChar + repository;
+                LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
                 _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
                 return true;
             }

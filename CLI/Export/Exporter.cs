@@ -139,6 +139,9 @@ namespace Genometric.MSPC.CLI.Exporter
 
         private string ConvertPValue(double pValue)
         {
+            /// When p-value=0, the result of this conversion is Infinity,
+            /// hence to avoid exporting `Infinity` that may not be an 
+            /// acceptable input by some tools, MSPC reports 0 instead.
             if (pValue != 0)
                 return (Math.Round((-1) * Math.Log10(pValue), 3)).ToString();
             return "0";

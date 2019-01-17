@@ -359,5 +359,49 @@ namespace Genometric.MSPC.CLI.Tests
             // Clean up
             Directory.Delete(path, true);
         }
+
+        [Fact]
+        public void ExportPeaksWithPValueZero()
+        {
+            // Arrange
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            using (var w = new StreamWriter(rep1Path))
+                w.WriteLine("chr1\t10\t20\tA\t326");
+            using (var w = new StreamWriter(rep2Path))
+                w.WriteLine("chr1\t15\t25\tB\t326");
+
+            // Act
+            string outputPath;
+            using (var o = new Orchestrator())
+            {
+                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                outputPath = o.OutputPath;
+            }
+
+            string rep1Confirmed;
+            using (var reader = new StreamReader(outputPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(rep1Path) + Path.DirectorySeparatorChar + Attributes.Confirmed + ".bed"))
+            {
+                reader.ReadLine();
+                rep1Confirmed = reader.ReadLine();
+            }
+
+            string rep2Confirmed;
+            using (var reader = new StreamReader(outputPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(rep2Path) + Path.DirectorySeparatorChar + Attributes.Confirmed + ".bed"))
+            {
+                reader.ReadLine();
+                rep2Confirmed = reader.ReadLine();
+            }
+
+            // Assert
+            Assert.Equal("chr1\t10\t20\tA\t0", rep1Confirmed);
+            Assert.Equal("chr1\t15\t25\tB\t0", rep2Confirmed);
+
+            // Clean up
+            File.Delete(rep1Path);
+            File.Delete(rep2Path);
+            Directory.Delete(outputPath, true);
+        }
     }
 }

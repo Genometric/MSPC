@@ -25,7 +25,7 @@ namespace Genometric.MSPC.Core.Model
             SupportingPeaks = supportingPeaks;
         }
 
-        public ProcessedPeak(I source, double xSquared, int supportingPeaksCount):
+        public ProcessedPeak(I source, double xSquared, int supportingPeaksCount = 0) :
             base(source)
         {
             AdjPValue = double.NaN;

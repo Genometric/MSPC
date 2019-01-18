@@ -47,6 +47,8 @@ namespace Genometric.MSPC.Core.Functions
 
         private List<double> _cachedChiSqrd { set; get; }
 
+        private bool _trackSupportingRegions;
+
         private Config _config { set; get; }
 
         private Dictionary<uint, Bed<I>> _samples { set; get; }
@@ -55,10 +57,11 @@ namespace Genometric.MSPC.Core.Functions
 
         internal int SamplesCount { get { return _samples.Count; } }
 
-        internal Processor(IPeakConstructor<I> peakConstructor)
+        internal Processor(IPeakConstructor<I> peakConstructor, bool trackSupportingRegions)
         {
             _samples = new Dictionary<uint, Bed<I>>();
             _peakConstructor = peakConstructor;
+            _trackSupportingRegions = trackSupportingRegions;
             DegreeOfParallelism = Environment.ProcessorCount;
         }
 
@@ -165,7 +168,7 @@ namespace Genometric.MSPC.Core.Functions
                         attribute = Attributes.Weak;
                     else
                     {
-                        var pp = new ProcessedPeak<I>(peak, double.NaN, new List<SupportingPeak<I>>());
+                        var pp = new ProcessedPeak<I>(peak, double.NaN);
                         pp.Classification.Add(Attributes.Background);
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                         continue;

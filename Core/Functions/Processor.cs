@@ -204,7 +204,7 @@ namespace Genometric.MSPC.Core.Functions
                     }
                     else
                     {
-                        var pp = new ProcessedPeak<I>(peak, 0, supportingPeaks);
+                        var pp = new ProcessedPeak<I>(peak, 0, supportingPeaks.Count);
                         pp.Classification.Add(attribute);
                         pp.Classification.Add(Attributes.Discarded);
                         pp.reason = Messages.Codes.M002;
@@ -268,7 +268,12 @@ namespace Genometric.MSPC.Core.Functions
                     if (supPeak.CompareTo(sP) != 0)
                         tSupPeak.Add(sP);
 
-                var pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak);
+                ProcessedPeak<I> pp;
+                if (_trackSupportingRegions)
+                    pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak);
+                else
+                    pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak.Count);
+
                 pp.Classification.Add(attribute);
                 pp.reason = message;
 

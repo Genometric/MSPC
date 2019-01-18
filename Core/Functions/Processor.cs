@@ -178,7 +178,11 @@ namespace Genometric.MSPC.Core.Functions
                     if (supportingPeaks.Count + 1 >= _config.C)
                     {
                         double xsqrd = CalculateXsqrd(peak, supportingPeaks);
-                        var pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks);
+                        ProcessedPeak<I> pp;
+                        if (_trackSupportingRegions)
+                            pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks);
+                        else
+                            pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks.Count);
                         pp.Classification.Add(attribute);
                         if (xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                         {
@@ -236,9 +240,9 @@ namespace Genometric.MSPC.Core.Functions
                     default:
                         var chosenPeak = sps[0];
                         foreach (var sp in sps.Skip(1))
-                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue 
+                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue
                                 && sp.Value < chosenPeak.Value) ||
-                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue 
+                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue
                                 && sp.Value > chosenPeak.Value))
                                 chosenPeak = sp;
 

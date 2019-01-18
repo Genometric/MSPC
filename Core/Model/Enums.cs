@@ -6,13 +6,13 @@ namespace Genometric.MSPC.Core.Model
 {
     public enum Attributes : byte
     {
-        Background = 0,
-        Weak = 1,
-        Stringent = 2,
-        Confirmed = 3,
-        Discarded = 4,
-        TruePositive = 5,
-        FalsePositive = 6
+        Background = 2,
+        Weak = 4,
+        Stringent = 8,
+        Confirmed = 16,
+        Discarded = 32,
+        TruePositive = 64,
+        FalsePositive = 128
     };
 
     public enum MultipleIntersections : byte

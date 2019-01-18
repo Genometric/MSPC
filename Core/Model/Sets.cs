@@ -26,14 +26,14 @@ namespace Genometric.MSPC.Core.Model
             {
                 if (_replicateType == ReplicateType.Biological)
                 {
-                    if ((oldValue.Classification.Contains(Attributes.Discarded) && processedPeak.Classification.Contains(Attributes.Confirmed)) ||
-                        (!oldValue.Classification.Contains(Attributes.Confirmed) && !oldValue.Classification.Contains(Attributes.Discarded)))
+                    if ((oldValue.HasAttribute(Attributes.Discarded) && processedPeak.HasAttribute(Attributes.Confirmed)) ||
+                        (!oldValue.HasAttribute(Attributes.Confirmed) && !oldValue.HasAttribute(Attributes.Discarded)))
                         _peaks[processedPeak.Source.GetHashCode()] = processedPeak;
                 }
                 else
                 {
-                    if (oldValue.Classification.Contains(Attributes.Confirmed) && processedPeak.Classification.Contains(Attributes.Discarded) ||
-                        (!oldValue.Classification.Contains(Attributes.Confirmed) && !oldValue.Classification.Contains(Attributes.Discarded)))
+                    if (oldValue.HasAttribute(Attributes.Confirmed) && processedPeak.HasAttribute(Attributes.Discarded) ||
+                        (!oldValue.HasAttribute(Attributes.Confirmed) && !oldValue.HasAttribute(Attributes.Discarded)))
                         _peaks[processedPeak.Source.GetHashCode()] = processedPeak;
                 }
             }
@@ -45,12 +45,12 @@ namespace Genometric.MSPC.Core.Model
 
         public IEnumerable<ProcessedPeak<I>> Get(Attributes attributes)
         {
-            return _peaks.Where(kvp => kvp.Value.Classification.Contains(attributes)).Select(kvp => kvp.Value);
+            return _peaks.Where(kvp => kvp.Value.HasAttribute(attributes)).Select(kvp => kvp.Value);
         }
 
         public int Count(Attributes attribute)
         {
-            return _peaks.Count(kvp => kvp.Value.Classification.Contains(attribute));
+            return _peaks.Count(kvp => kvp.Value.HasAttribute(attribute));
         }
     }
 }

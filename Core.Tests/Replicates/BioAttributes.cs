@@ -20,11 +20,11 @@ namespace Genometric.MSPC.Core.Tests.Replicates
 
             var confirmedPeak = new ProcessedPeak<Peak>(
                 new Peak(1, 10, 100), 10, new List<SupportingPeak<Peak>>());
-            confirmedPeak.Classification.Add(Attributes.Confirmed);
+            confirmedPeak.AddClassification(Attributes.Confirmed);
 
             var discardedPeak = new ProcessedPeak<Peak>(
                 new Peak(1, 10, 100), 10, new List<SupportingPeak<Peak>>());
-            discardedPeak.Classification.Add(Attributes.Discarded);
+            discardedPeak.AddClassification(Attributes.Discarded);
 
             // Act
             sets.AddOrUpdate(discardedPeak);

@@ -34,7 +34,6 @@ namespace Genometric.MSPC.Core.Model
                 RTP = double.NaN;
             else
                 RTP = ChiSqrd.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaksCount * 2));
-            Classification = new HashSet<Attributes>();
         }
             
 
@@ -57,10 +56,28 @@ namespace Genometric.MSPC.Core.Model
         public string Reason { get { return Decode(reason); } }
         internal Codes reason = Codes.M000;
 
-        /// <summary>
-        /// Sets and gets classification type. 
-        /// </summary>
-        public HashSet<Attributes> Classification { internal set; get; }
+        private byte _classification;
+
+        public void AddClassification(Attributes attribute)
+        {
+            if (!HasAttribute(attribute))
+                _classification += (byte)attribute;
+        }
+
+        public bool HasAttribute(Attributes attribute)
+        {
+            return (_classification & (byte)attribute) == (byte)attribute;
+        }
+
+        public bool Different(Attributes attribute)
+        {
+            return _classification != (byte)attribute;
+        }
+
+        public bool Different(byte attribute)
+        {
+            return _classification != attribute;
+        }
 
         /// <summary>
         /// Sets and gets adjusted p-value (false discovery rate) using the 
@@ -82,7 +99,7 @@ namespace Genometric.MSPC.Core.Model
                    ((double.IsNaN(XSquared) && double.IsNaN(peak.XSquared)) || XSquared == peak.XSquared) &&
                    ((double.IsNaN(RTP) && double.IsNaN(peak.RTP)) || RTP == peak.RTP) &&
                    Reason == peak.Reason &&
-                   !Classification.Except(peak.Classification).Any() &&
+                   !peak.Different(_classification) &&
                    ((double.IsNaN(AdjPValue) && double.IsNaN(peak.AdjPValue)) || AdjPValue == peak.AdjPValue);
         }
 

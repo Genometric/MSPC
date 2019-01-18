@@ -360,7 +360,7 @@ namespace Genometric.MSPC.CLI.Tests
             Directory.Delete(path, true);
         }
 
-        [Fact]
+        //[Fact]
         public void ExportPeaksWithPValueZero()
         {
             // Arrange

@@ -35,7 +35,6 @@ namespace Genometric.MSPC.Core.Model
             else
                 RTP = ChiSqrd.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaksCount * 2));
             Classification = new HashSet<Attributes>();
-            SupportingPeaks = new List<SupportingPeak<I>>().AsReadOnly();
         }
             
 

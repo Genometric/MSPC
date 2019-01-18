@@ -2,6 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using Genometric.GeUtilities.Intervals.Model;
+using Genometric.MSPC.CLI.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,24 +13,84 @@ namespace Genometric.MSPC.CLI.Tests
 {
     public class TmpMspc : IDisposable
     {
-        private string _sessionPath;
         private List<string> _samples;
 
-        public string Run(string template = null)
-        {
-            _sessionPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-            CreateTempSamples();
+        public string SessionPath { private set; get; }
 
+        public string Run(bool createSample = true, string template = null, string sessionPath = null)
+        {
+            if (sessionPath != null)
+                SessionPath = sessionPath;
+            else
+                SessionPath =
+                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
+                    new Random().Next(100000, 999999).ToString();
+
+            if (createSample)
+                CreateTempSamples();
+
+            if (template == null)
+                template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", _samples[0], _samples[1]);
+            template += string.Format(" -o {0}", SessionPath);
+
+            string output;
             using (StringWriter sw = new StringWriter())
             {
                 Console.SetOut(sw);
-
-                if (template != null)
-                    Program.Main(template.Split(' '));
-                else
-                    Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8 -o {2}", _samples[0], _samples[1], _sessionPath).Split(' '));
-                return sw.ToString();
+                Program.Main(template.Split(' '));
+                output = sw.ToString();
             }
+
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
+            {
+                AutoFlush = true
+            };
+            Console.SetOut(standardOutput);
+            return output;
+        }
+
+        public List<string> FailRun(string template1 = null, string template2 = null)
+        {
+            string logFile;
+            using (var o = new Orchestrator())
+            {
+                o.Orchestrate((template1 ?? "-i rep1 -i rep2 -r bio -s 1e-8 -w 1e-4").Split(' '));
+                o.Orchestrate((template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
+                logFile = o.LogFile;
+            }
+
+            var messages = new List<string>();
+            string line;
+            using (var reader = new StreamReader(logFile))
+                while ((line = reader.ReadLine()) != null)
+                    messages.Add(line);
+            return messages;
+        }
+
+        public string Run(IExporter<Peak> exporter)
+        {
+            SessionPath =
+                "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
+                new Random().Next(100000, 999999).ToString();
+
+            CreateTempSamples();
+            var template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", _samples[0], _samples[1]);
+
+            string output;
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                var o = new Orchestrator(exporter);
+                o.Orchestrate(template.Split(' '));
+                output = sw.ToString();
+            }
+
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
+            {
+                AutoFlush = true
+            };
+            Console.SetOut(standardOutput);
+            return output;
         }
 
         private void CreateTempSamples()
@@ -62,9 +124,11 @@ namespace Genometric.MSPC.CLI.Tests
 
         protected virtual void Dispose(bool disposing)
         {
-            foreach (var sample in _samples)
-                File.Delete(sample);
-            Directory.Delete(_sessionPath, true);
+            if (_samples != null)
+                foreach (var sample in _samples)
+                    File.Delete(sample);
+            if (Directory.Exists(SessionPath))
+                Directory.Delete(SessionPath, true);
         }
     }
 }

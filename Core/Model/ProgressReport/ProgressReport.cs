@@ -10,18 +10,24 @@ namespace Genometric.MSPC.Core.Model
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="step">this step number</param>
-        /// <param name="stepCount">all steps count</param>
-        /// <param name="message">message explaining the step</param>
-        public ProgressReport(int step, int stepCount, string message)
+        /// <param name="step">The number of current step out of the total steps to be taken.</param>
+        /// <param name="stepCount">The number of all the steps that will be taken.</param>
+        /// <param name="subStep">Sets if this reports the status of a sub process.</param>
+        /// <param name="updatesPrevious">Sets if this report updates the previous report.</param>
+        /// <param name="message">A message explaining the step</param>
+        public ProgressReport(int step, int stepCount, bool subStep, bool updatesPrevious, string message)
         {
             Step = step;
             StepCount = stepCount;
             Message = message;
+            SubStep = subStep;
+            UpdatesPrevious = updatesPrevious;
         }
 
         public int Step { private set; get; }
         public int StepCount { private set; get; }
         public string Message { private set; get; }
+        public bool SubStep { get; }
+        public bool UpdatesPrevious { get; }
     }
 }

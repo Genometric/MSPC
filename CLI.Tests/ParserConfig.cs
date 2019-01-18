@@ -5,6 +5,7 @@
 using Genometric.GeUtilities.Intervals.Parsers;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
@@ -58,6 +59,73 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.True(parsedCols.Equals(expected));
+        }
+
+        [Fact]
+        public void HandleExceptionReadingInvalidJSON()
+        {
+            // Arrange
+            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            using (StreamWriter w = new StreamWriter(path))
+                w.WriteLine("abc");
+
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            new StreamWriter(rep1Path).Close();
+            new StreamWriter(rep2Path).Close();
+
+            // Act
+            string logFile;
+            using (var o = new Orchestrator())
+            {
+                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", rep1Path, rep2Path, path).Split(' '));
+                logFile = o.LogFile;
+            }
+
+            var log = new List<string>();
+            string line;
+            using (var reader = new StreamReader(logFile))
+                while ((line = reader.ReadLine()) != null)
+                    log.Add(line);
+
+            // Assert
+            Assert.Contains(
+                log, 
+                x => x.Contains(
+                    "Error reading parser configuration JSON object: Newtonsoft.Json.JsonReaderException: " +
+                    "Unexpected character encountered while parsing value"));
+        }
+
+        [Fact]
+        public void TwoEqualConfigs()
+        {
+            // Arrange
+            var c1 = new ParserConfig();
+            var c2 = new ParserConfig();
+
+            // Act & Assert
+            Assert.Equal(c1, c2);
+        }
+
+        [Fact]
+        public void TwoNotEqualConfigs()
+        {
+            // Arrange
+            var c1 = new ParserConfig() { Chr = 1 };
+            var c2 = new ParserConfig() { Chr = 2 };
+
+            // Act & Assert
+            Assert.NotEqual(c1, c2);
+        }
+
+        [Fact]
+        public void DoesNotEqualToANullObject()
+        {
+            // Arrange
+            var config = new ParserConfig();
+
+            // Act & Assert
+            Assert.True(!config.Equals(null));
         }
     }
 }

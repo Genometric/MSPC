@@ -2,11 +2,12 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Parsers.Model;
+using Genometric.GeUtilities.Intervals.Parsers;
+using Genometric.MSPC.CLI.Tests.MockTypes;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
@@ -16,197 +17,102 @@ namespace Genometric.MSPC.CLI.Tests
         [Fact]
         public void ErrorIfLessThanTwoSamplesAreGiven()
         {
-            // Arrange & Act
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main("-i rep1.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+            // Arrange
+            string msg;
 
-                // Assert
-                Assert.Equal("At least two samples are required; 1 is given.\r\nMSPC cannot continue.\r\n", sw.ToString());
-            }
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(false, "-i rep1.bed -r bio -w 1E-2 -s 1E-8");
+
+            // Assert
+            Assert.Contains("At least two samples are required; 1 is given.", msg);
         }
 
         [Fact]
         public void ErrorIfARequiredArgumentIsMissing()
         {
-            // Arrange & Act
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main("-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' '));
+            // Arrange
+            string msg;
 
-                // Assert
-                Assert.Equal("The following required arguments are missing: r|replicate; \r\nMSPC cannot continue.\r\n", sw.ToString());
-            }
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
+
+            // Assert
+            Assert.Contains("The following required arguments are missing: r|replicate;", msg);
         }
 
         [Fact]
         public void ErrorIfASpecifiedFileIsMissing()
         {
-            // Arrange & Act
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+            // Arrange
+            string msg;
 
-                // Assert
-                Assert.Equal("Missing file: rep1.bed\r\nMSPC cannot continue.\r\n", sw.ToString());
-            }
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8");
+
+            // Assert
+            Assert.Contains("The following files are missing: rep1.bed; rep2.bed", msg);
         }
 
         [Fact]
         public void AssertInformingPeaksCount()
         {
-            // Arrange & Act
-            var msg = new TmpMspc().Run();
-            
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
+
             // Assert
-            Assert.Contains("Read peaks#:\t2\r\n", msg);
-            Assert.Contains("Read peaks#:\t3\r\n", msg);
+            Assert.Contains("  2\t", msg);
+            Assert.Contains("  3\t", msg);
         }
 
         [Fact]
         public void AssertInformingMinPValue()
         {
-            // Arrange & Act
-            var msg = new TmpMspc().Run();
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("Min p-value:\t1.000E-005\r\n", msg);
-            Assert.Contains("Min p-value:\t1.000E-007\r\n", msg);
+            Assert.Contains("1.000E-005", msg);
+            Assert.Contains("1.000E-007", msg);
         }
 
         [Fact]
         public void AssertInformingMaxPValue()
         {
-            // Arrange & Act
-            var msg = new TmpMspc().Run();
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("Max p-value:\t1.000E-003\r\n", msg);
-            Assert.Contains("Max p-value:\t1.000E-002\r\n", msg);
+            Assert.Contains("1.000E-003", msg);
+            Assert.Contains("1.000E-002", msg);
         }
 
         [Fact]
         public void SuccessfulAnalysis()
         {
-            // Arrange & Act
-            var msg = new TmpMspc().Run();
-
-            // Assert
-            Assert.Contains("All processes successfully finished [Analysis ET: ", msg);
-        }
-
-        [Fact]
-        public void ParseBasedOnGivenParserConfig()
-        {
             // Arrange
-            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-
-            FileStream stream = File.Create(rep1Path);
-            using (StreamWriter writter = new StreamWriter(stream))
-            {
-                writter.WriteLine("ABC\t____\t10\t+++++\t100.0\tchr1\t___====____\tmspc_peak_1\t20");
-                writter.WriteLine("ABC\t____\t25\t+++++\t123.4\tchr1\t___====____\tmspc_peak_2\t35");
-            }
-
-            stream = File.Create(rep2Path);
-            using (StreamWriter writter = new StreamWriter(stream))
-            {
-                writter.WriteLine("ABC\t____\t11\t+++++\t31.4\tchr1\t___====____\tmspc_peak_3\t18");
-                writter.WriteLine("ABC\t____\t22\t+++++\t21.4\tchr1\t___====____\tmspc_peak_4\t28");
-                writter.WriteLine("ABC\t____\t30\t+++++\t99.9\tchr1\t___====____\tmspc_peak_5\t40");
-            }
-
-            var cols = new BedColumns()
-            {
-                Chr = 5,
-                Left = 2,
-                Right = 8,
-                Name = 7,
-                Strand = -1,
-                Summit = -1
-            };
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            using (StreamWriter w = new StreamWriter(path))
-                w.WriteLine(JsonConvert.SerializeObject(cols));
+            string msg;
 
             // Act
-            string console = null;
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-1 -s 1E-4 -c 1 -p {2}", rep1Path, rep2Path, path).Split(' '));
-                File.Delete(rep1Path);
-                File.Delete(rep2Path);
-                console = sw.ToString();
-            }
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("Read peaks#:\t2", console);
-            Assert.Contains("Read peaks#:\t3", console);
-
-            Assert.Contains("Max p-value:\t1.000E-100", console);
-            Assert.Contains("Min p-value:\t3.981E-124", console);
-            Assert.Contains("Min p-value:\t1.259E-100", console);
-            Assert.Contains("Max p-value:\t3.981E-022", console);
-
-            // Clean up
-            File.Delete(rep1Path);
-            File.Delete(rep2Path);
-            foreach (var p in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
-                Directory.Delete(p, true);
-        }
-
-        [Fact]
-        public void AssertUsingParserConfig()
-        {
-            // Arrange
-            var rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            var rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            using (var writter = new StreamWriter(rep1Path))
-            {
-                writter.WriteLine("10\t20\tchr1");
-                writter.WriteLine("50\t60\tchr1");
-            }
-            using (var writter = new StreamWriter(rep2Path))
-            {
-                writter.WriteLine("15\t25\tchr1");
-                writter.WriteLine("55\t65\tchr1");
-            }
-
-            ParserConfig cols = new ParserConfig()
-            {
-                Chr = 2,
-                Left = 0,
-                Right = 1,
-                DefaultValue = 1E-8,
-                DropPeakIfInvalidValue = false
-            };
-            var parserConfigFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            using (StreamWriter w = new StreamWriter(parserConfigFile))
-                w.WriteLine(JsonConvert.SerializeObject(cols));
-
-            // Act
-            string consoleOutput = "";
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Program.Main(string.Format("-i {0} -i {1} -r bio -w 1E-4 -s 1E-6 -p {2}", rep1Path, rep2Path, parserConfigFile).Split(' '));
-                consoleOutput = sw.ToString();
-            }
-
-            // Assert
-            Assert.True(Regex.Matches(consoleOutput, "Read peaks#:	2").Count == 2);
-
-            // Clean up
-            File.Delete(rep1Path);
-            File.Delete(rep2Path);
-            File.Delete(parserConfigFile);
-            foreach (var path in Directory.GetDirectories(Environment.CurrentDirectory, "session_*"))
-                Directory.Delete(path, true);
+            Assert.Contains("All processes successfully finished", msg);
         }
 
         [Theory]
@@ -216,6 +122,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void ShowsHelpText(string template)
         {
             // Arrange
+            string msg;
             string expected =
                 "\r\n\r\nUsage: MSPC CLI [options]\r\n\r\nOptions:" +
                 "\r\n  -? | -h | --help                      Show help information" +
@@ -237,7 +144,8 @@ namespace Genometric.MSPC.CLI.Tests
                 "\n\r\r\n";
 
             // Act
-            var msg = new TmpMspc().Run(template);
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(template: template);
 
             // Assert
             Assert.Contains(expected, msg);
@@ -249,13 +157,245 @@ namespace Genometric.MSPC.CLI.Tests
         public void ShowVersion(string template)
         {
             // Arrange
+            string msg;
             string expected = "\r\nVersion ";
 
             // Act
-            var msg = new TmpMspc().Run(template);
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(template: template);
 
             // Assert
             Assert.Contains(expected, msg);
+        }
+
+        [Fact]
+        public void GenerateOutputPathIfNotGiven()
+        {
+            // Arrange
+            var o = new Orchestrator();
+
+            // Act
+            o.Orchestrate("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+
+            // Assert
+            Assert.True(!string.IsNullOrEmpty(o.OutputPath) && !string.IsNullOrWhiteSpace(o.OutputPath));
+        }
+
+        [Fact]
+        public void AppendNumberToGivenPathIfAlreadyExists()
+        {
+            // Arrange
+            var o = new Orchestrator();
+            string baseName = @"TT" + new Random().Next().ToString();
+            var dirs = new List<string>
+            {
+                baseName, baseName + "0", baseName + "1"
+            };
+
+            foreach (var dir in dirs)
+            {
+                Directory.CreateDirectory(dir);
+                File.Create(dir + Path.DirectorySeparatorChar + "test").Dispose();
+            }
+
+            // Act
+            o.Orchestrate(string.Format("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8 -o {0}", dirs[0]).Split(' '));
+
+            // Assert
+            Assert.Equal(o.OutputPath, dirs[0] + "2");
+
+            // Clean up
+            o.Dispose();
+            foreach (var dir in dirs)
+                Directory.Delete(dir, true);
+            Directory.Delete(dirs[0] + "2", true);
+        }
+
+        [Fact]
+        public void RaiseExceptionWritingToIllegalPath()
+        {
+            // Arrange
+            string msg;
+            var illegalPath = "C:\\*<>*\\//";
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(sessionPath: illegalPath);
+
+            // Assert
+            Assert.Contains("Illegal characters in path.", msg);
+        }
+
+        [Fact]
+        public void ReuseExistingLogger()
+        {
+            // Arrange
+            List<string> messages;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                messages = tmpMspc.FailRun();
+
+            // Assert
+            Assert.Contains(messages, x => x.Contains("The following files are missing: rep1; rep2"));
+            Assert.Contains(messages, x => x.Contains("The following required arguments are missing: i|input"));
+        }
+
+        [Fact]
+        public void DontReportSuccessfullyFinishedIfExitedAfterAnError()
+        {
+            // Arrange
+            List<string> messages;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                messages = tmpMspc.FailRun();
+
+            // Assert
+            Assert.DoesNotContain(messages, x => x.Contains("All processes successfully finished"));
+        }
+
+        [Fact]
+        public void WriteOutputPathExceptionToLoggerIfAvailable()
+        {
+            // Arrange
+            List<string> messages;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                messages = tmpMspc.FailRun(template2: "-i rep1 -i rep2 -o C:\\*<>*\\// -r bio -s 1e-8 -w 1e-4");
+
+            // Assert
+            Assert.Contains(messages, x => x.Contains("The following files are missing: rep1; rep2"));
+            Assert.Contains(messages, x => x.Contains("Illegal characters in path."));
+        }
+
+        [Fact]
+        public void CaptureExporterExceptions()
+        {
+            // Arrange
+            string message;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                message = tmpMspc.Run(new MExporter());
+
+            // Assert
+            Assert.Contains("The method or operation is not implemented.", message);
+            Assert.DoesNotContain("All processes successfully finished", message);
+        }
+
+        [Fact]
+        public void CaptureExceptionsRaisedCreatingLogger()
+        {
+            // Arrange
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            var o = new Orchestrator
+            {
+                loggerTimeStampFormat = "yyyyMMdd_HHmmssffffffffffff"
+            };
+
+            // Act
+            string output;
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                output = sw.ToString();
+            }
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
+            {
+                AutoFlush = true
+            };
+            Console.SetOut(standardOutput);
+
+            // Assert
+            Assert.Contains("Input string was not in a correct format.", output);
+        }
+
+        [Fact]
+        public void ReadDataAccordingToParserConfig()
+        {
+            // Arrange
+            ParserConfig cols = new ParserConfig()
+            {
+                Chr = 0,
+                Left = 3,
+                Right = 4,
+                Name = 1,
+                Strand = 2,
+                Summit = 6,
+                Value = 5,
+                DefaultValue = 1.23E-45,
+                PValueFormat = PValueFormats.minus1_Log10_pValue,
+                DropPeakIfInvalidValue = false,
+            };
+            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            using (StreamWriter w = new StreamWriter(path))
+                w.WriteLine(JsonConvert.SerializeObject(cols));
+
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            FileStream stream = File.Create(rep1Path);
+            using (StreamWriter writter = new StreamWriter(stream))
+                writter.WriteLine("chr1\tMSPC_PEAK\t.\t10\t20\t16\t15");
+
+            stream = File.Create(rep2Path);
+            using (StreamWriter writter = new StreamWriter(stream))
+                writter.WriteLine("chr1\tMSPC_PEAK\t.\t15\t25\tEEE\t20");
+
+            // Act
+            string msg;
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(createSample: false, template: string.Format("-i {0} -i {1} -p {2} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path, path));
+
+            // Assert
+            Assert.Contains("1.000E-016", msg);
+            Assert.Contains("1.230E-045", msg);
+        }
+
+        [Fact]
+        public void CaptureExceptionReadingFile()
+        {
+            // Arrange
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+
+            new StreamWriter(rep1Path).Close();
+            new StreamWriter(rep2Path).Close();
+
+            // Lock the file so the parser cannot access it.
+            var fs = new FileStream(path: rep1Path, mode: FileMode.OpenOrCreate, access: FileAccess.Write, share: FileShare.None);
+
+            // Act
+            string logFile;
+            string path;
+            using (var o = new Orchestrator())
+            {
+                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                logFile = o.LogFile;
+                path = o.OutputPath;
+            }
+
+            string line;
+            var messages = new List<string>();
+            using (var reader = new StreamReader(logFile))
+                while ((line = reader.ReadLine()) != null)
+                    messages.Add(line);
+            fs.Close();
+
+            // Assert
+            Assert.Contains(messages, x => 
+            x.Contains("The process cannot access the file") && 
+            x.Contains("because it is being used by another process."));
+
+            // Clean up
+            File.Delete(rep1Path);
+            File.Delete(rep2Path);
+            Directory.Delete(path, true);
         }
     }
 }

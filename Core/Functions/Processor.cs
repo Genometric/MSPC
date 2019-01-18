@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Core.Functions
@@ -19,6 +20,9 @@ namespace Genometric.MSPC.Core.Functions
     internal class Processor<I>
         where I : IPeak
     {
+        private int _processedPeaks;
+        private int _peaksToBeProcessed;
+
         private BackgroundWorker _worker;
         private DoWorkEventArgs _workerEventArgs;
 
@@ -68,24 +72,27 @@ namespace Genometric.MSPC.Core.Functions
             _config = config;
             _worker = worker;
             _workerEventArgs = e;
+            _processedPeaks = 0;
+            _peaksToBeProcessed = 0;
 
             int step = 1, stepCount = 4;
 
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Initializing"));
             CacheChiSqrdData();
             BuildDataStructures();
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Processing samples"));
+            OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks"));
             ProcessSamples();
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Performing Multiple testing correction"));
             var fdr = new FalseDiscoveryRate<I>();
             fdr.PerformMultipleTestingCorrection(_analysisResults, _config.Alpha, DegreeOfParallelism);
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
+            OnProgressUpdate(new ProgressReport(step, stepCount, false, false, "Creating consensus peaks set"));
             _consensusPeaks = new ConsensusPeaks<I>().Compute(_analysisResults, _peakConstructor, DegreeOfParallelism, _config.Alpha);
         }
 
@@ -111,7 +118,10 @@ namespace Genometric.MSPC.Core.Functions
                     foreach (var strand in chr.Value.Strands)
                         foreach (I p in strand.Value.Intervals)
                             if (p.Value < _config.TauW)
+                            {
                                 _trees[sample.Key][chr.Key].Add(p);
+                                _peaksToBeProcessed++;
+                            }
                 }
             }
 
@@ -143,6 +153,7 @@ namespace Genometric.MSPC.Core.Functions
         {
             Attributes attribute;
             foreach (var strand in chr.Value.Strands)
+            {
                 foreach (I peak in strand.Value.Intervals)
                 {
                     if (_worker.CancellationPending)
@@ -192,7 +203,11 @@ namespace Genometric.MSPC.Core.Functions
                         pp.reason = Messages.Codes.M002;
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                     }
+
+                    Interlocked.Increment(ref _processedPeaks);
                 }
+                OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks processed"));
+            }
         }
 
         private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)
@@ -283,7 +298,7 @@ namespace Genometric.MSPC.Core.Functions
             if (_worker.CancellationPending)
             {
                 _analysisResults = new Dictionary<uint, Result<I>>();
-                OnProgressUpdate(new ProgressReport(-1, -1, "Canceled current task."));
+                OnProgressUpdate(new ProgressReport(0, 0, false, false, "Canceled current task."));
                 _workerEventArgs.Cancel = true;
                 return true;
             }

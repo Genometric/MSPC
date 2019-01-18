@@ -99,8 +99,8 @@ namespace Genometric.MSPC.Core.Tests.Example
 
             // Assert
             Assert.NotNull(qres);
-            Assert.Contains(initial, qres.Classification);
-            Assert.Contains(processed, qres.Classification);
+            Assert.True(qres.HasAttribute(initial));
+            Assert.True(qres.HasAttribute(processed));
         }
 
         [Theory]

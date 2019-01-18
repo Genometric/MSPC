@@ -142,10 +142,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var r4 = cPeaks[_chrs[4]].First(x => x.Source.Left == 70);
 
             // Assert
-            Assert.Contains(Attributes.TruePositive, r1.Classification);
-            Assert.Contains(Attributes.TruePositive, r2.Classification);
-            Assert.Contains(Attributes.TruePositive, r3.Classification);
-            Assert.Contains(Attributes.FalsePositive, r4.Classification);
+            Assert.True(r1.HasAttribute(Attributes.TruePositive));
+            Assert.True(r2.HasAttribute(Attributes.TruePositive));
+            Assert.True(r3.HasAttribute(Attributes.TruePositive));
+            Assert.True(r4.HasAttribute(Attributes.FalsePositive));
         }
     }
 }

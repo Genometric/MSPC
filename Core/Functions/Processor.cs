@@ -169,7 +169,7 @@ namespace Genometric.MSPC.Core.Functions
                     else
                     {
                         var pp = new ProcessedPeak<I>(peak, double.NaN);
-                        pp.Classification.Add(Attributes.Background);
+                        pp.AddClassification(Attributes.Background);
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                         continue;
                     }
@@ -183,10 +183,10 @@ namespace Genometric.MSPC.Core.Functions
                             pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks);
                         else
                             pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks.Count);
-                        pp.Classification.Add(attribute);
+                        pp.AddClassification(attribute);
                         if (xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                         {
-                            pp.Classification.Add(Attributes.Confirmed);
+                            pp.AddClassification(Attributes.Confirmed);
                             _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                             ProcessSupportingPeaks(
                                 sampleKey, chr.Key, peak, supportingPeaks,
@@ -195,7 +195,7 @@ namespace Genometric.MSPC.Core.Functions
                         else
                         {
                             pp.reason = Messages.Codes.M001;
-                            pp.Classification.Add(Attributes.Discarded);
+                            pp.AddClassification(Attributes.Discarded);
                             _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                             ProcessSupportingPeaks(
                                 sampleKey, chr.Key, peak, supportingPeaks,
@@ -205,8 +205,8 @@ namespace Genometric.MSPC.Core.Functions
                     else
                     {
                         var pp = new ProcessedPeak<I>(peak, 0, supportingPeaks.Count);
-                        pp.Classification.Add(attribute);
-                        pp.Classification.Add(Attributes.Discarded);
+                        pp.AddClassification(attribute);
+                        pp.AddClassification(Attributes.Discarded);
                         pp.reason = Messages.Codes.M002;
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                     }
@@ -274,13 +274,13 @@ namespace Genometric.MSPC.Core.Functions
                 else
                     pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak.Count);
 
-                pp.Classification.Add(attribute);
+                pp.AddClassification(attribute);
                 pp.reason = message;
 
                 if (supPeak.Source.Value <= _config.TauS)
-                    pp.Classification.Add(Attributes.Stringent);
+                    pp.AddClassification(Attributes.Stringent);
                 else
-                    pp.Classification.Add(Attributes.Weak);
+                    pp.AddClassification(Attributes.Weak);
 
                 _analysisResults[supPeak.SampleID].Chromosomes[chr].AddOrUpdate(pp);
             }

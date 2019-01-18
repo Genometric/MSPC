@@ -37,9 +37,9 @@ namespace Genometric.MSPC.Core
             get { return _processor.DegreeOfParallelism; }
         }
 
-        public Mspc(IPeakConstructor<I> peakConstructor)
+        public Mspc(IPeakConstructor<I> peakConstructor, bool trackSupportingRegions = false)
         {
-            _processor = new Processor<I>(peakConstructor);
+            _processor = new Processor<I>(peakConstructor, trackSupportingRegions);
             _processor.OnProgressUpdate += _processorOnProgressUpdate;
             _backgroundProcessor = new BackgroundWorker();
             _backgroundProcessor.DoWork += _doWork;

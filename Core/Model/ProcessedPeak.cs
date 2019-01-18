@@ -25,7 +25,7 @@ namespace Genometric.MSPC.Core.Model
             SupportingPeaks = supportingPeaks;
         }
 
-        public ProcessedPeak(I source, double xSquared, int supportingPeaksCount):
+        public ProcessedPeak(I source, double xSquared, int supportingPeaksCount = 0) :
             base(source)
         {
             AdjPValue = double.NaN;
@@ -35,7 +35,6 @@ namespace Genometric.MSPC.Core.Model
             else
                 RTP = ChiSqrd.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaksCount * 2));
             Classification = new HashSet<Attributes>();
-            SupportingPeaks = new List<SupportingPeak<I>>().AsReadOnly();
         }
             
 
@@ -82,7 +81,6 @@ namespace Genometric.MSPC.Core.Model
                    EqualityComparer<I>.Default.Equals(Source, peak.Source) &&
                    ((double.IsNaN(XSquared) && double.IsNaN(peak.XSquared)) || XSquared == peak.XSquared) &&
                    ((double.IsNaN(RTP) && double.IsNaN(peak.RTP)) || RTP == peak.RTP) &&
-                   !SupportingPeaks.Except(peak.SupportingPeaks).Any() &&
                    Reason == peak.Reason &&
                    !Classification.Except(peak.Classification).Any() &&
                    ((double.IsNaN(AdjPValue) && double.IsNaN(peak.AdjPValue)) || AdjPValue == peak.AdjPValue);
@@ -90,7 +88,7 @@ namespace Genometric.MSPC.Core.Model
 
         public override int GetHashCode()
         {
-            string key = base.GetHashCode() + "_" + XSquared + "_" + RTP + "_" + SupportingPeaks.Count;
+            string key = base.GetHashCode() + "_" + XSquared + "_" + RTP;
             int l = key.Length;
 
             int hashKey = 0;

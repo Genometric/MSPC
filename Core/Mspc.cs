@@ -8,7 +8,7 @@ namespace Genometric.MSPC.Core
 {
     public class Mspc : Mspc<Peak>
     {
-        public Mspc() : base(new PeakConstructor())
+        public Mspc(bool trackSupportingRegions = false) : base(new PeakConstructor(), trackSupportingRegions)
         { }
     }
 }

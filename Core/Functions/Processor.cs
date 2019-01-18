@@ -47,6 +47,8 @@ namespace Genometric.MSPC.Core.Functions
 
         private List<double> _cachedChiSqrd { set; get; }
 
+        private bool _trackSupportingRegions;
+
         private Config _config { set; get; }
 
         private Dictionary<uint, Bed<I>> _samples { set; get; }
@@ -55,10 +57,11 @@ namespace Genometric.MSPC.Core.Functions
 
         internal int SamplesCount { get { return _samples.Count; } }
 
-        internal Processor(IPeakConstructor<I> peakConstructor)
+        internal Processor(IPeakConstructor<I> peakConstructor, bool trackSupportingRegions)
         {
             _samples = new Dictionary<uint, Bed<I>>();
             _peakConstructor = peakConstructor;
+            _trackSupportingRegions = trackSupportingRegions;
             DegreeOfParallelism = Environment.ProcessorCount;
         }
 
@@ -165,7 +168,7 @@ namespace Genometric.MSPC.Core.Functions
                         attribute = Attributes.Weak;
                     else
                     {
-                        var pp = new ProcessedPeak<I>(peak, double.NaN, new List<SupportingPeak<I>>());
+                        var pp = new ProcessedPeak<I>(peak, double.NaN);
                         pp.Classification.Add(Attributes.Background);
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                         continue;
@@ -175,7 +178,11 @@ namespace Genometric.MSPC.Core.Functions
                     if (supportingPeaks.Count + 1 >= _config.C)
                     {
                         double xsqrd = CalculateXsqrd(peak, supportingPeaks);
-                        var pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks);
+                        ProcessedPeak<I> pp;
+                        if (_trackSupportingRegions)
+                            pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks);
+                        else
+                            pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks.Count);
                         pp.Classification.Add(attribute);
                         if (xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                         {
@@ -197,7 +204,7 @@ namespace Genometric.MSPC.Core.Functions
                     }
                     else
                     {
-                        var pp = new ProcessedPeak<I>(peak, 0, supportingPeaks);
+                        var pp = new ProcessedPeak<I>(peak, 0, supportingPeaks.Count);
                         pp.Classification.Add(attribute);
                         pp.Classification.Add(Attributes.Discarded);
                         pp.reason = Messages.Codes.M002;
@@ -233,9 +240,9 @@ namespace Genometric.MSPC.Core.Functions
                     default:
                         var chosenPeak = sps[0];
                         foreach (var sp in sps.Skip(1))
-                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue 
+                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue
                                 && sp.Value < chosenPeak.Value) ||
-                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue 
+                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue
                                 && sp.Value > chosenPeak.Value))
                                 chosenPeak = sp;
 
@@ -261,7 +268,12 @@ namespace Genometric.MSPC.Core.Functions
                     if (supPeak.CompareTo(sP) != 0)
                         tSupPeak.Add(sP);
 
-                var pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak);
+                ProcessedPeak<I> pp;
+                if (_trackSupportingRegions)
+                    pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak);
+                else
+                    pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak.Count);
+
                 pp.Classification.Add(attribute);
                 pp.reason = message;
 

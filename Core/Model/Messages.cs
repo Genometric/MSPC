@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Genometric.MSPC.Core.Model
 {
-    internal static class Messages
+    public static class Messages
     {
         public enum Codes : byte
         {

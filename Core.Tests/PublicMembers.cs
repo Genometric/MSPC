@@ -2,13 +2,10 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
 using Xunit;
 
@@ -26,35 +23,77 @@ namespace Genometric.MSPC.Core.Tests
 
         public enum Status { Init, Process, MTC, Consensu }; 
 
-        private ReadOnlyDictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount, Status status)
+        private List<Bed<PPeak>> RunThenCancelMSPC(int iCount, Status status)
         {
-            var sA = new Bed<Peak>();
-            var sB = new Bed<Peak>();
+            /// TODO:
+            /// -----------------------------------------------------------
+            /// Assertion of whether MSPC has successfully canceled a 
+            /// process and responded to the new invocation, based on 
+            /// the analysis results, was a valid test when MSPC was 
+            /// creating a separate list of peaks for its results without 
+            /// modifying the input. However, with the new method 
+            /// where MSPC is modifying the input instead, this assertion 
+            /// cannot be valid anymore, because, if canceled, MSPC does 
+            /// not undo the changes, hence the re-analysis of the modified 
+            /// collection does not have the same result as the re-analysis 
+            /// of an immutable input. Therefore, this assertion should be 
+            /// updated to leverage a different property to assert if MSPC 
+            /// has successfully canceled a process, and responded to a new 
+            /// invocation.
+            /// -----------------------------------------------------------
+
+            var sABefore = new Bed<PPeak>() { FileHashKey = 0 };
+            var sBBefore = new Bed<PPeak>() { FileHashKey = 1 };
             for (int i = 0; i < iCount; i++)
             {
-                sA.Add(new Peak(
+                sABefore.Add(new PPeak(
                     left: (10 * i) + 1,
                     right: (10 * i) + 4,
                     value: 1E-4,
                     summit: 0,
-                    name: "r1" + i),
+                    name: "r1" + i,
+                    hashSeed: "0"),
                     _chr, _strand);
 
-                sB.Add(new Peak(
+                sBBefore.Add(new PPeak(
                     left: (10 * i) + 6,
                     right: (10 * i) + 9,
                     value: 1E-5,
                     summit: 0,
-                    name: "r1" + i),
+                    name: "r1" + i,
+                    hashSeed: "1"),
                 _chr, _strand);
             }
 
-            var mspc = new Mspc();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
+            var sAAfter = new Bed<PPeak>() { FileHashKey = 0 };
+            var sBAfter = new Bed<PPeak>() { FileHashKey = 1 };
+            for (int i = 0; i < iCount; i++)
+            {
+                sAAfter.Add(new PPeak(
+                    left: (10 * i) + 1,
+                    right: (10 * i) + 4,
+                    value: 1E-4,
+                    summit: 0,
+                    name: "r1" + i,
+                    hashSeed: "0"),
+                    _chr, _strand);
+
+                sBAfter.Add(new PPeak(
+                    left: (10 * i) + 6,
+                    right: (10 * i) + 9,
+                    value: 1E-5,
+                    summit: 0,
+                    name: "r1" + i,
+                    hashSeed: "1"),
+                _chr, _strand);
+            }
+
+            var samplesBefore = new List<Bed<PPeak>>() { sABefore, sBBefore };
+            var samplesAfter = new List<Bed<PPeak>>() { sAAfter, sBAfter };
 
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 1, 0.05F, MultipleIntersections.UseLowestPValue);
 
+            var mspc = new Mspc();
             switch (status)
             {
                 case Status.Init:
@@ -62,7 +101,7 @@ namespace Genometric.MSPC.Core.Tests
                     _continueIni.Reset();
                     mspc.StatusChanged += WaitingIni;
                     // MSPC is expected to confirm peaks using the following configuration.
-                    mspc.RunAsync(config);
+                    mspc.RunAsync(samplesBefore, config);
                     _continueIni.WaitOne();
                     break;
 
@@ -71,7 +110,7 @@ namespace Genometric.MSPC.Core.Tests
                     _continuePrc.Reset();
                     mspc.StatusChanged += WaitingPrc;
                     // MSPC is expected to confirm peaks using the following configuration.
-                    mspc.RunAsync(config);
+                    mspc.RunAsync(samplesBefore, config);
                     _continuePrc.WaitOne();
                     break;
 
@@ -80,7 +119,7 @@ namespace Genometric.MSPC.Core.Tests
                     _continueMtc.Reset();
                     mspc.StatusChanged += WaitingMtc;
                     // MSPC is expected to confirm peaks using the following configuration.
-                    mspc.RunAsync(config);
+                    mspc.RunAsync(samplesBefore, config);
                     _continueMtc.WaitOne();
                     break;
 
@@ -89,7 +128,7 @@ namespace Genometric.MSPC.Core.Tests
                     _continueCon.Reset();
                     mspc.StatusChanged += WaitingCon;
                     // MSPC is expected to confirm peaks using the following configuration.
-                    mspc.RunAsync(config);
+                    mspc.RunAsync(samplesBefore, config);
                     _continueCon.WaitOne();
                     break;
             }
@@ -98,10 +137,10 @@ namespace Genometric.MSPC.Core.Tests
             // This can help asserting if the asynchronous process of 
             // the previous execution is canceled, and instead the following asynchronous 
             // execution is completed.
-            mspc.RunAsync(new Config(ReplicateType.Biological, 1e-10, 1e-20, 1e-200, 1, 0.05F, MultipleIntersections.UseLowestPValue));
+            mspc.RunAsync(samplesAfter, new Config(ReplicateType.Biological, 1e-10, 1e-20, 1e-200, 1, 0.05F, MultipleIntersections.UseLowestPValue));
             mspc.Done.WaitOne();
 
-            return mspc.GetResults();
+            return samplesAfter;
         }
 
         private void WaitingIni(object sender, ValueEventArgs e)
@@ -148,27 +187,27 @@ namespace Genometric.MSPC.Core.Tests
             // Arrange
             int c = 10000;
             int tries = 10;
-            ReadOnlyDictionary<uint, Result<Peak>> results = null;
+            List<Bed<PPeak>> samples = null;
             for (int i = 0; i < tries; i++)
             {
                 // Act
-                results = RunThenCancelMSPC(c, status);
-                if (results.Count > 0 &&
-                    results[0].Chromosomes.Count > 0 &&
-                    results[0].Chromosomes.ContainsKey(_chr) &&
-                    !results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any() &&
-                    results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c)
+                samples = RunThenCancelMSPC(c, status);
+                if (samples.Count > 0 &&
+                    samples[0].Chromosomes.Count > 0 &&
+                    samples[0].Chromosomes.ContainsKey(_chr) &&
+                    Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Confirmed) == 0 &&
+                    Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Background) == c)
                     break;
-                Thread.Sleep(10000);
+                Thread.Sleep(1000);
             }
 
-            if (results == null)
+            if (samples == null)
                 throw new InvalidOperationException(
                     string.Format("Tried CancelCurrentAsyncRun unit test on {0} status for {1} times, all tries failed.", status, tries));
 
             // Assert
-            Assert.True(!results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
-            Assert.True(results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c);
+            Assert.True(Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Confirmed) == 0);
+            Assert.True(Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Background) == c);
         }
 
         [Fact]
@@ -187,13 +226,14 @@ namespace Genometric.MSPC.Core.Tests
         public void RunIfAtLeastTwoInputIsGiven(int inputCount)
         {
             // Arrange
-            var mspc = new Mspc();
+            var samples = new List<Bed<PPeak>>();
             if (inputCount == 1)
-                mspc.AddSample(0, new Bed<Peak>());
+                samples.Add(new Bed<PPeak>());
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
 
             // Act & Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => mspc.Run(config));
+            var mspc = new Mspc();
+            var exception = Assert.Throws<InvalidOperationException>(() => mspc.Run(samples, config));
             Assert.Equal(string.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
         }
 
@@ -203,13 +243,14 @@ namespace Genometric.MSPC.Core.Tests
         public void RunAsyncIfAtLeastTwoInputIsGiven(int inputCount)
         {
             // Arrange
-            var mspc = new Mspc();
+            var samples = new List<Bed<PPeak>>();
             if (inputCount == 1)
-                mspc.AddSample(0, new Bed<Peak>());
+                samples.Add(new Bed<PPeak>());
             var config = new Config(ReplicateType.Biological, 1e-1, 1e-2, 1e-2, 2, 0.05F, MultipleIntersections.UseLowestPValue);
 
             // Act & Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => mspc.RunAsync(config));
+            var mspc = new Mspc();
+            var exception = Assert.Throws<InvalidOperationException>(() => mspc.RunAsync(samples, config));
             Assert.Equal(string.Format("Minimum two samples are required; {0} is given.", inputCount), exception.Message);
         }
 
@@ -233,27 +274,25 @@ namespace Genometric.MSPC.Core.Tests
         public void StepNotMoreThanStepCount(double tauW)
         {
             // Arrange
-            var s1 = new Bed<Peak>();
-            s1.Add(new Peak(10, 20, 1E-4), _chr, _strand);
-            s1.Add(new Peak(30, 40, 1E-5), _chr, _strand);
-            s1.Add(new Peak(50, 60, 1E-6), _chr, _strand);
-            s1.Add(new Peak(70, 80, 1E-7), _chr, _strand);
-            s1.Add(new Peak(90, 99, 1E-8), _chr, _strand);
+            var s1 = new Bed<PPeak>();
+            s1.Add(new PPeak(10, 20, 1E-4), _chr, _strand);
+            s1.Add(new PPeak(30, 40, 1E-5), _chr, _strand);
+            s1.Add(new PPeak(50, 60, 1E-6), _chr, _strand);
+            s1.Add(new PPeak(70, 80, 1E-7), _chr, _strand);
+            s1.Add(new PPeak(90, 99, 1E-8), _chr, _strand);
 
-            var s2 = new Bed<Peak>();
-            s2.Add(new Peak(11, 18, 1E-4), _chr, _strand);
-            s2.Add(new Peak(33, 38, 1E-5), _chr, _strand);
-            s2.Add(new Peak(55, 58, 1E-6), _chr, _strand);
+            var s2 = new Bed<PPeak>();
+            s2.Add(new PPeak(11, 18, 1E-4), _chr, _strand);
+            s2.Add(new PPeak(33, 38, 1E-5), _chr, _strand);
+            s2.Add(new PPeak(55, 58, 1E-6), _chr, _strand);
 
-            var mspc = new Mspc();
-            mspc.AddSample(0, s1);
-            mspc.AddSample(1, s2);
-
+            var samples = new List<Bed<PPeak>>() { s1, s2 };
             var messages = new List<ProgressReport>();
+            var mspc = new Mspc();
             mspc.StatusChanged += (object sender, ValueEventArgs e) => messages.Add(e.Value);
 
             // Act
-            mspc.RunAsync(new Config(ReplicateType.Biological, tauW, tauW, tauW, 2, 0.05F, MultipleIntersections.UseLowestPValue));
+            mspc.RunAsync(samples, new Config(ReplicateType.Biological, tauW, tauW, tauW, 2, 0.05F, MultipleIntersections.UseLowestPValue));
             mspc.Done.WaitOne();
 
             // Assert

@@ -278,7 +278,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                message = tmpMspc.Run(new MExporter());
+                message = tmpMspc.Run(exporter: new MExporter());
 
             // Assert
             Assert.Contains("The method or operation is not implemented.", message);

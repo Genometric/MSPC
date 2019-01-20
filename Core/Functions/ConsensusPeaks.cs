@@ -3,41 +3,56 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
+using Genometric.MSPC.Core.Interfaces;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Core.Functions
 {
     internal class ConsensusPeaks<I>
-        where I : IPeak
+        where I : IPPeak
     {
         private Dictionary<string, SortedDictionary<Interval, Interval>> _consensusPeaks { set; get; }
 
-        public Dictionary<string, List<ProcessedPeak<I>>> Compute(
-            Dictionary<uint, Result<I>> analysisResults,
+        public Dictionary<string, List<I>> Compute(
+            List<Bed<I>> samples,
             IPeakConstructor<I> peakConstructor,
             int degreeOfParallelisim,
             float alpha)
         {
             // Initialize data structures.
             _consensusPeaks = new Dictionary<string, SortedDictionary<Interval, Interval>>();
-            foreach (var result in analysisResults)
-                foreach (var chr in result.Value.Chromosomes)
+            foreach (var sample in samples)
+                foreach (var chr in sample.Chromosomes)
                     if (!_consensusPeaks.ContainsKey(chr.Key))
                         _consensusPeaks.Add(chr.Key, new SortedDictionary<Interval, Interval>());
 
             // Determin consensus peaks; stored in mutable and light-weight types.
-            foreach (var result in analysisResults)
+            foreach (var result in samples)
             {
                 Parallel.ForEach(
-                    result.Value.Chromosomes,
+                    result.Chromosomes,
                     new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelisim },
                     chr =>
                     {
-                        DetermineConsensusPeaks(chr.Key, chr.Value.Get(Attributes.Confirmed));
+                        if (chr.Value.Strands.Count > 1)
+                        {
+                            int size = 0;
+                            foreach (var strand in chr.Value.Strands)
+                                size += strand.Value.Intervals.Count;
+
+                            var peaks = new List<I>(size);
+                            foreach (var strand in chr.Value.Strands)
+                                peaks.AddRange(strand.Value.Intervals.Where(x => x.HasAttribute(Attributes.Confirmed)));
+                            DetermineConsensusPeaks(chr.Key, peaks);
+                        }
+                        else
+                            DetermineConsensusPeaks(chr.Key, chr.Value.Strands.First().Value.Intervals.Where(x => x.HasAttribute(Attributes.Confirmed)));
                     });
             }
 
@@ -48,16 +63,16 @@ namespace Genometric.MSPC.Core.Functions
             return processedPeaks;
         }
 
-        private void DetermineConsensusPeaks(string chr, IEnumerable<ProcessedPeak<I>> peaks)
+        private void DetermineConsensusPeaks(string chr, IEnumerable<I> peaks)
         {
             foreach (var confirmedPeak in peaks)
             {
                 var interval = new Interval()
                 {
-                    left = confirmedPeak.Source.Left,
-                    right = confirmedPeak.Source.Right,
+                    left = confirmedPeak.Left,
+                    right = confirmedPeak.Right,
                     involvedPeaksCount = 1,
-                    xSquard = (-2) * Math.Log(confirmedPeak.Source.Value == 0 ? Config.default0PValue : confirmedPeak.Source.Value, Math.E)
+                    xSquard = (-2) * Math.Log(confirmedPeak.Value == 0 ? Config.default0PValue : confirmedPeak.Value, Math.E)
                 };
 
                 while (_consensusPeaks[chr].TryGetValue(interval, out Interval mergedInterval))
@@ -72,11 +87,11 @@ namespace Genometric.MSPC.Core.Functions
             }
         }
 
-        private Dictionary<string, List<ProcessedPeak<I>>> ConvertToListOfProcessedPeaks(IPeakConstructor<I> peakConstructor, int degreeOfParallelism)
+        private Dictionary<string, List<I>> ConvertToListOfProcessedPeaks(IPeakConstructor<I> peakConstructor, int degreeOfParallelism)
         {
-            var rtv = new Dictionary<string, List<ProcessedPeak<I>>>();
+            var rtv = new Dictionary<string, List<I>>();
             foreach (var chr in _consensusPeaks)
-                rtv.Add(chr.Key, new List<ProcessedPeak<I>>(capacity: chr.Value.Count));
+                rtv.Add(chr.Key, new List<I>(capacity: chr.Value.Count));
 
             int counter = 0;
             Parallel.ForEach(
@@ -86,15 +101,17 @@ namespace Genometric.MSPC.Core.Functions
                 {
                     foreach (var peak in chr.Value)
                     {
-                        rtv[chr.Key].Add(new ProcessedPeak<I>(
-                            peakConstructor.Construct(
-                                peak.Key.left,
-                                peak.Key.right,
-                                ChiSqrd.ChiSqrdDistRTP(peak.Key.xSquard, peak.Key.involvedPeaksCount * 2),
-                                "MSPC_Peak_" + Interlocked.Increment(ref counter),
-                                (peak.Key.right - peak.Key.left) / 2),
-                            peak.Key.xSquard,
-                            peak.Key.involvedPeaksCount - 1));
+                        var p = peakConstructor.Construct(
+                            peak.Key.left,
+                            peak.Key.right,
+                            ChiSqrd.ChiSqrdDistRTP(peak.Key.xSquard, peak.Key.involvedPeaksCount * 2),
+                            "MSPC_Peak_" + Interlocked.Increment(ref counter),
+                            (peak.Key.right - peak.Key.left) / 2);
+
+                        p.XSquared = peak.Key.xSquard;
+                        p.SupportingPeaksCount = peak.Key.involvedPeaksCount - 1;
+
+                        rtv[chr.Key].Add(p);
                     }
                 });
 

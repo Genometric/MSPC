@@ -2,9 +2,9 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -31,27 +31,25 @@ namespace Genometric.MSPC.Core.Tests.Replicates
         public void T1()
         {
             // Arrange
-            var sA = new Bed<Peak>();
-            var r11 = new Peak(left: 10, right: 20, value: 1e-4, name: "r11");
+            var sA = new Bed<PPeak>() { FileHashKey = 0 };
+            var r11 =  new PPeak(left: 10, right: 20, value: 1e-4, name: "r11");
             sA.Add(r11, _chr, _strand);
 
-            var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 1e-4, name: "r21"), _chr, _strand);
-            sB.Add(new Peak(left: 18, right: 25, value: 1e-4, name: "r22"), _chr, _strand);
+            var sB = new Bed<PPeak>() { FileHashKey = 1 };
+            sB.Add( new PPeak(left: 5, right: 12, value: 1e-4, name: "r21"), _chr, _strand);
+            sB.Add( new PPeak(left: 18, right: 25, value: 1e-4, name: "r22"), _chr, _strand);
 
-            var mspc = new Mspc();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-
+            var samples = new List<Bed<PPeak>>() { sA, sB };
             var config = new Config(ReplicateType.Biological, 1e-3, 1e-8, 1e-8, 2, 1F, MultipleIntersections.UseLowestPValue);
 
             // Act
-            var res = mspc.Run(config);
+            var mspc = new Mspc();
+            mspc.Run(samples, config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 1);
-            Assert.False(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r11) == 0);
+            Assert.True(Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Discarded) == 1);
+            Assert.True(Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Confirmed) == 0);
+            Assert.True(Helpers<PPeak>.Get(samples[0], _chr, _strand, Attributes.Discarded).ToList()[0].CompareTo(r11) == 0);
         }
 
         /// <summary>
@@ -70,37 +68,35 @@ namespace Genometric.MSPC.Core.Tests.Replicates
         public void T2()
         {
             // Arrange
-            var sA = new Bed<Peak>();
-            var r11 = new Peak(left: 10, right: 26, value: 1e-4, name: "r11");
+            var sA = new Bed<PPeak>() { FileHashKey = 0 };
+            var r11 =  new PPeak(left: 10, right: 26, value: 1e-4, name: "r11");
             sA.Add(r11, _chr, _strand);
 
-            var sB = new Bed<Peak>();
-            var r21 = new Peak(left: 5, right: 12, value: 1e-4, name: "r21");
-            var r22 = new Peak(left: 16, right: 18, value: 1e-7, name: "r22");
-            var r23 = new Peak(left: 22, right: 28, value: 1e-4, name: "r23");
+            var sB = new Bed<PPeak>() { FileHashKey = 1 };
+            var r21 =  new PPeak(left: 5, right: 12, value: 1e-4, name: "r21");
+            var r22 =  new PPeak(left: 16, right: 18, value: 1e-7, name: "r22");
+            var r23 =  new PPeak(left: 22, right: 28, value: 1e-4, name: "r23");
             sB.Add(r21, _chr, _strand);
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);
 
-            var mspc = new Mspc();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-
+            var samples = new List<Bed<PPeak>>() { sA, sB };
             var config = new Config(ReplicateType.Biological, 1e-3, 1e-8, 1e-8, 2, 1F, MultipleIntersections.UseLowestPValue);
 
             // Act
-            var res = mspc.Run(config);
+            var mspc = new Mspc();
+            mspc.Run(samples, config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
-            Assert.False(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Any());
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.CompareTo(r11) == 0);
+            Assert.True(Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Confirmed) == 1);
+            Assert.True(Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Discarded) == 0);
+            Assert.True(Helpers<PPeak>.Get(samples[0], _chr, _strand, Attributes.Confirmed).ToList()[0].CompareTo(r11) == 0);
 
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 2);
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.CompareTo(r22) == 0);
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r21) == 0);
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[1].Source.CompareTo(r23) == 0);
+            Assert.True(Helpers<PPeak>.Count(samples[1], _chr, _strand, Attributes.Confirmed) == 1);
+            Assert.True(Helpers<PPeak>.Count(samples[1], _chr, _strand, Attributes.Discarded) == 2);
+            Assert.True(Helpers<PPeak>.Get(samples[1], _chr, _strand, Attributes.Confirmed).ToList()[0].CompareTo(r22) == 0);
+            Assert.True(Helpers<PPeak>.Get(samples[1], _chr, _strand, Attributes.Discarded).ToList()[0].CompareTo(r21) == 0);
+            Assert.True(Helpers<PPeak>.Get(samples[1], _chr, _strand, Attributes.Discarded).ToList()[1].CompareTo(r23) == 0);
         }
     }
 }

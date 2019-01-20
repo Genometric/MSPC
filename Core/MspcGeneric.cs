@@ -3,19 +3,19 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Core.Model;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Functions;
+using Genometric.MSPC.Core.Interfaces;
+using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
-using Genometric.GeUtilities.Intervals.Parsers.Model;
 
 namespace Genometric.MSPC.Core
 {
     public class Mspc<I>
-        where I : IPeak
+        where I : IPPeak
     {
         public event EventHandler<ValueEventArgs> StatusChanged;
         private void OnStatusValueChaned(ProgressReport value)
@@ -28,8 +28,6 @@ namespace Genometric.MSPC.Core
 
         private Processor<I> _processor { set; get; }
         private BackgroundWorker _backgroundProcessor { set; get; }
-
-        private ReadOnlyDictionary<uint, Result<I>> _results { set; get; }
 
         public int DegreeOfParallelism
         {
@@ -49,32 +47,25 @@ namespace Genometric.MSPC.Core
             Canceled = new AutoResetEvent(false);
         }
 
-        public void AddSample(uint id, Bed<I> sample)
+        public void Run(List<Bed<I>> samples, Config config)
         {
-            _processor.AddSample(id, sample);
+            if (samples.Count < 2)
+                throw new InvalidOperationException(string.Format("Minimum two samples are required; {0} is given.", samples.Count));
+
+            _processor.Run(samples, config, new BackgroundWorker(), new DoWorkEventArgs(null));
         }
 
-        public ReadOnlyDictionary<uint, Result<I>> Run(Config config)
-        {
-            if (_processor.SamplesCount < 2)
-                throw new InvalidOperationException(string.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
-
-            _processor.Run(config, new BackgroundWorker(), new DoWorkEventArgs(null));
-            _results = _processor.AnalysisResults;
-            return GetResults();
-        }
-
-        public void RunAsync(Config config)
+        public void RunAsync(List<Bed<I>> samples, Config config)
         {
             Done.Reset();
             Canceled.Reset();
 
-            if (_processor.SamplesCount < 2)
-                throw new InvalidOperationException(string.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
+            if (samples.Count < 2)
+                throw new InvalidOperationException(string.Format("Minimum two samples are required; {0} is given.", samples.Count));
 
             if (_backgroundProcessor.IsBusy)
                 Cancel();
-            _backgroundProcessor.RunWorkerAsync(config);
+            _backgroundProcessor.RunWorkerAsync(new List<object>() { samples, config });
         }
 
         public void Cancel()
@@ -86,20 +77,15 @@ namespace Genometric.MSPC.Core
             Canceled.Reset();
         }
 
-        public ReadOnlyDictionary<uint, Result<I>> GetResults()
-        {
-            return _results;
-        }
-
-        public ReadOnlyDictionary<string, List<ProcessedPeak<I>>> GetConsensusPeaks()
+        public Dictionary<string, List<I>> GetConsensusPeaks()
         {
             return _processor.ConsensusPeaks;
         }
 
         private void _doWork(object sender, DoWorkEventArgs e)
         {
-            _processor.Run((Config)e.Argument, sender as BackgroundWorker, e);
-            _results = _processor.AnalysisResults;
+            var args = (List<object>)e.Argument;
+            _processor.Run((List<Bed<I>>)args[0], (Config)args[1], sender as BackgroundWorker, e);
         }
 
         private void _runWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

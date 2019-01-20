@@ -2,26 +2,24 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.Model;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class CompareProcessedPeaksByValue
     {
-        private ProcessedPeak<Peak> GetP(int left = 1000, int right = 10000, double value = 100)
+        private PPeak GetP(int left = 1000, int right = 10000, double value = 100)
         {
-            return new ProcessedPeak<Peak>(new Peak(left, right, value), 10, new List<SupportingPeak<Peak>>());
+            return new PPeak(left, right, value) { XSquared = 10, AdjPValue = 12, SupportingPeaks = null, SupportingPeaksCount = 2 };
         }
 
         [Fact]
         public void BothAreNull()
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var comparer = new CompareProcessedPeaksByValue<PPeak>();
 
             // Act
             var result = comparer.Compare(null, null);
@@ -34,7 +32,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void XIsNull()
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var comparer = new CompareProcessedPeaksByValue<PPeak>();
             var y = GetP();
 
             // Act
@@ -48,7 +46,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void YIsNull()
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var comparer = new CompareProcessedPeaksByValue<PPeak>();
             var x = GetP();
 
             // Act
@@ -65,7 +63,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void CompareByValue(int xValue, int yValue, int expectedResult)
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var comparer = new CompareProcessedPeaksByValue<PPeak>();
             var x = GetP(value: xValue);
             var y = GetP(value: yValue);
 
@@ -83,7 +81,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void EqualValueCompareByIntervalLeft(int xLeft, int yLeft, int expectedResult)
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var comparer = new CompareProcessedPeaksByValue<PPeak>();
             var x = GetP(left: xLeft);
             var y = GetP(left: yLeft);
 
@@ -101,7 +99,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void EqualValueCompareByIntervalRight(int xRight, int yRight, int expectedResult)
         {
             // Arrange
-            var comparer = new CompareProcessedPeaksByValue<Peak>();
+            var comparer = new CompareProcessedPeaksByValue<PPeak>();
             var x = GetP(right: xRight);
             var y = GetP(right: yRight);
 

@@ -11,9 +11,9 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class TProcessedPeak
     {
-        private ProcessedPeak<Peak> GetP(int left = 1000, int right = 10000, double value = 100, string name = "", int summit = 0)
+        private PPeak GetP(int left = 1000, int right = 10000, double value = 100, string name = "", int summit = 0)
         {
-            return new ProcessedPeak<Peak>(new Peak(left, right, value, name, summit), 10, new List<SupportingPeak<Peak>>());
+            return new PPeak(left, right, value, name, summit) { XSquared = 10, SupportingPeaks = null };
         }
 
         [Fact]
@@ -35,29 +35,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void CompareTwoEqualInstances(double xSquared)
         {
             // Arrange
-            var p = new Peak
-            (
-                left : 10,
-                summit : 15,
-                right : 20,
-                name : "MSPC_Peak",
-                value : 100
-            );
-
-            var sup = new List<SupportingPeak<Peak>>
-            {
-                new SupportingPeak<Peak>(new Peak
-                (
-                    left : 5,
-                    right : 25,
-                    summit : 15,
-                    name : "MSPC_SupPeak",
-                    value : 123
-                ), 1)
-            };
-
-            var pp1 = new ProcessedPeak<Peak>(p, xSquared, sup);
-            var pp2 = new ProcessedPeak<Peak>(p, xSquared, sup);
+            var pp1 = new PPeak(10, 20, 100, "MSPC_Peak", 15) { AdjPValue = 11, XSquared = 22, SupportingPeaksCount = 33, SupportingPeaks = null };
+            var pp2 = new PPeak(10, 20, 100, "MSPC_Peak", 15) { AdjPValue = 11, XSquared = 22, SupportingPeaksCount = 33, SupportingPeaks = null };
 
             // Act
             var r = pp1.Equals(pp2);

@@ -2,10 +2,9 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -22,19 +21,19 @@ namespace Genometric.MSPC.Core.Tests.Basic
         private readonly string _chr = "chr1";
         private readonly char _strand = '*';
 
-        private ReadOnlyDictionary<uint, Result<Peak>> RunMSPCAndReturnResult(Config config)
+        private List<Bed<PPeak>> RunMSPCAndReturnResult(Config config)
         {
-            var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 1E-5), _chr, _strand);
+            var sA = new Bed<PPeak>() { FileHashKey = 0 };
+            sA.Add(new PPeak(left: 10, right: 20, value: 1E-5), _chr, _strand);
 
-            var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 12, right: 18, value: 1E-5), _chr, _strand);
+            var sB = new Bed<PPeak>() { FileHashKey = 1 };
+            sB.Add(new PPeak(left: 12, right: 18, value: 1E-5), _chr, _strand);
+
+            var samples = new List<Bed<PPeak>>() { sA, sB };
 
             var mspc = new Mspc();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-
-            return mspc.Run(config);
+            mspc.Run(samples, config);
+            return samples;
         }
 
         [Fact]
@@ -45,7 +44,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
                 new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-4, 1, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).First().Reason == "");
+            Assert.Equal("", Helpers<PPeak>.Get(res[0], _chr, _strand, Attributes.Confirmed).First().Reason);
         }
 
 
@@ -59,7 +58,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.Equal(
                 "X-squared is below chi-squared of Gamma.",
-                res[0].Chromosomes[_chr].Get(Attributes.Discarded).First().Reason);
+                Helpers<PPeak>.Get(res[0], _chr, _strand, Attributes.Discarded).First().Reason);
         }
 
         [Fact]
@@ -72,7 +71,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.Equal(
                 "Intersecting peaks count doesn't comply minimum C requirement.",
-                res[0].Chromosomes[_chr].Get(Attributes.Discarded).First().Reason);
+                Helpers<PPeak>.Get(res[0], _chr, _strand, Attributes.Discarded).First().Reason);
         }
     }
 }

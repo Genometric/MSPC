@@ -3,10 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Exporter;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Genometric.MSPC.CLI.Interfaces
 {
@@ -15,8 +15,8 @@ namespace Genometric.MSPC.CLI.Interfaces
     {
         void Export(
             Dictionary<uint, string> fileNames,
-            ReadOnlyDictionary<uint, Result<I>> results,
-            ReadOnlyDictionary<string, List<ProcessedPeak<I>>> consensusPeaks,
+            List<Bed<PPeak>> samples,
+            Dictionary<string, List<PPeak>> consensusPeaks,
             Options options);
     }
 }

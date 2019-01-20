@@ -122,7 +122,7 @@ namespace Genometric.MSPC.Core.Functions
                         foreach (I p in strand.Value.Intervals)
                             if (p.Value < _config.TauW)
                             {
-                                _trees[sample.Key][chr.Key].Add(p);
+                                _trees[sample.Key][chr.Key].Add(p, sample.Key);
                                 _peaksToBeProcessed++;
                             }
                 }
@@ -225,7 +225,7 @@ namespace Genometric.MSPC.Core.Functions
                 if (tree.Key == id)
                     continue;
 
-                var sps = new List<I>();
+                var sps = new List<NodeData<I>>();
                 if (_trees[tree.Key].ContainsKey(chr))
                     sps = _trees[tree.Key][chr].GetIntervals(p);
 
@@ -234,19 +234,19 @@ namespace Genometric.MSPC.Core.Functions
                     case 0: break;
 
                     case 1:
-                        supportingPeaks.Add(new SupportingPeak<I>(sps[0], tree.Key));
+                        supportingPeaks.Add(new SupportingPeak<I>(sps[0].Peak, tree.Key));
                         break;
 
                     default:
                         var chosenPeak = sps[0];
                         foreach (var sp in sps.Skip(1))
                             if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue
-                                && sp.Value < chosenPeak.Value) ||
+                                && sp.Peak.Value < chosenPeak.Peak.Value) ||
                                 (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue
-                                && sp.Value > chosenPeak.Value))
+                                && sp.Peak.Value > chosenPeak.Peak.Value))
                                 chosenPeak = sp;
 
-                        supportingPeaks.Add(new SupportingPeak<I>(chosenPeak, tree.Key));
+                        supportingPeaks.Add(new SupportingPeak<I>(chosenPeak.Peak, tree.Key));
                         break;
                 }
             }

@@ -2,14 +2,14 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IGenomics;
+using Genometric.MSPC.Core.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Genometric.MSPC.Core.IntervalTree
 {
     internal class Node<I>
-        where I : IPeak
+        where I : IPPeak
     {
         private readonly SortedDictionary<I, List<I>> _intervals;
         private readonly int _center;

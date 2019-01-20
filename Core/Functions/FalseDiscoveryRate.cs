@@ -2,10 +2,10 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Comparers;
+using Genometric.MSPC.Core.Interfaces;
 using Genometric.MSPC.Core.Model;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,42 +13,43 @@ using System.Threading.Tasks;
 namespace Genometric.MSPC.Core.Functions
 {
     internal class FalseDiscoveryRate<I>
-        where I : IPeak
+        where I : IPPeak
     {
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha, int degreeOfParallelism)
+        public void PerformMultipleTestingCorrection(List<Bed<I>> samples, float alpha, int degreeOfParallelism)
         {
             Parallel.ForEach(
-                results,
+                samples,
                 new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
-                result =>
+                sample =>
                 {
-                    PerformMultipleTestingCorrection(UnionChrs(result.Value.Chromosomes), alpha);
+                    PerformMultipleTestingCorrection(UnionChrs(sample), alpha);
                 });
         }
 
-        private List<ProcessedPeak<I>> UnionChrs(ConcurrentDictionary<string, Sets<I>> chrs)
+        private List<I> UnionChrs(Bed<I> sample)
         {
-            IEnumerable<ProcessedPeak<I>> peaks = new List<ProcessedPeak<I>>();
-            foreach (var chr in chrs)
-                peaks = peaks.Union(chr.Value.Get(Attributes.Confirmed));
+            IEnumerable<I> peaks = new List<I>();
+            foreach (var chr in sample.Chromosomes)
+                foreach (var strand in chr.Value.Strands)
+                    peaks = peaks.Union(strand.Value.Intervals.Where(i => i.HasAttribute(Attributes.Confirmed)));
             return peaks.ToList();
         }
 
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha)
+        public void PerformMultipleTestingCorrection(Dictionary<string, List<I>> peaks, float alpha)
         {
-            IEnumerable<ProcessedPeak<I>> ps = new List<ProcessedPeak<I>>();
+            IEnumerable<I> ps = new List<I>();
             foreach (var chr in peaks)
                 ps = ps.Union(chr.Value);
             PerformMultipleTestingCorrection(ps.ToList(), alpha);
         }
 
-        private void PerformMultipleTestingCorrection(List<ProcessedPeak<I>> peaks, float alpha)
+        private void PerformMultipleTestingCorrection(List<I> peaks, float alpha)
         {
             int m = peaks.Count;
 
@@ -57,13 +58,13 @@ namespace Genometric.MSPC.Core.Functions
 
             for (int i = 0; i < m; i++)
             {
-                if (peaks[i].Source.Value <= (i + 1) / (double)m * alpha)
+                if (peaks[i].Value <= (i + 1) / (double)m * alpha)
                     peaks[i].AddClassification(Attributes.TruePositive);
                 else
                     peaks[i].AddClassification(Attributes.FalsePositive);
 
                 // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
-                peaks[i].AdjPValue = peaks[i].Source.Value * (m / (i + 1.0));
+                peaks[i].AdjPValue = peaks[i].Value * (m / (i + 1.0));
             }
         }
     }

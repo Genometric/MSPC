@@ -12,18 +12,19 @@ namespace Genometric.MSPC.Core.Tests.Replicates
 {
     public class BioAttributes
     {
+        /*
         [Fact]
         public void IfConfirmedAndDiscardedThenKeepOnlyConfirmed()
         {
             // Arrange
-            var sets = new Sets<Peak>(2, ReplicateType.Biological);
+            var sets = new Sets<PPeak>(2, ReplicateType.Biological);
 
-            var confirmedPeak = new ProcessedPeak<Peak>(
-                new Peak(1, 10, 100), 10, new List<SupportingPeak<Peak>>());
+            var confirmedPeak = new PPeak<PPeak>(
+                new Peak(1, 10, 100), 10, new List<SupportingPeak<PPeak>>());
             confirmedPeak.AddClassification(Attributes.Confirmed);
 
-            var discardedPeak = new ProcessedPeak<Peak>(
-                new Peak(1, 10, 100), 10, new List<SupportingPeak<Peak>>());
+            var discardedPeak = new PPeak<PPeak>(
+                new Peak(1, 10, 100), 10, new List<SupportingPeak<PPeak>>());
             discardedPeak.AddClassification(Attributes.Discarded);
 
             // Act
@@ -33,6 +34,6 @@ namespace Genometric.MSPC.Core.Tests.Replicates
             // Assert
             Assert.True(sets.Get(Attributes.Confirmed).Any());
             Assert.False(sets.Get(Attributes.Discarded).Any());
-        }
+        }*/
     }
 }

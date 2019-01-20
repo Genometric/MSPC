@@ -2,7 +2,6 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Exporter;
@@ -22,21 +21,21 @@ namespace Genometric.MSPC.CLI.Tests
         private readonly char _strand = '.';
         private readonly List<Attributes> _attributes;
 
-        readonly List<Peak> peaks = new List<Peak>()
+        readonly List<PPeak> peaks = new List<PPeak>()
             {
-                new Peak(10, 11, 1E-8),
-                new Peak(100, 110, 1E-8),
-                new Peak(1000, 1100, 1E-8),
-                new Peak(10000, 11000, 1E-8),
-                new Peak(100000, 110000, 1E-8),
-                new Peak(120000, 130000, 1E-8),
-                new Peak(150000, 160000, 1E-8),
-                new Peak(1000000, 1100000, 1E-8),
-                new Peak(1200000, 1300000, 1E-8),
-                new Peak(110000000, 120000000, 1E-8),
-                new Peak(130000000, 140000000, 1E-8),
-                new Peak(910000000, 920000000, 1E-8),
-                new Peak(930000000, 940000000, 1E-8)
+                new  PPeak(10, 11, 1E-8),
+                new  PPeak(100, 110, 1E-8),
+                new  PPeak(1000, 1100, 1E-8),
+                new  PPeak(10000, 11000, 1E-8),
+                new  PPeak(100000, 110000, 1E-8),
+                new  PPeak(120000, 130000, 1E-8),
+                new  PPeak(150000, 160000, 1E-8),
+                new  PPeak(1000000, 1100000, 1E-8),
+                new  PPeak(1200000, 1300000, 1E-8),
+                new  PPeak(110000000, 120000000, 1E-8),
+                new  PPeak(130000000, 140000000, 1E-8),
+                new  PPeak(910000000, 920000000, 1E-8),
+                new  PPeak(930000000, 940000000, 1E-8)
             };
         readonly List<string> chrs = new List<string>()
             {
@@ -52,20 +51,18 @@ namespace Genometric.MSPC.CLI.Tests
 
         private string RunMSPCAndExportResultsWithMultiChr()
         {
-            var s0 = new Bed<Peak>();
+            var s0 = new Bed<PPeak>() { FileHashKey = 0, FileName = "sA" };
             for (int i = 0; i < peaks.Count; i++)
                 s0.Add(peaks[i], chrs[i], _strand);
 
-            var s1 = new Bed<Peak>();
-            s1.Add(new Peak(800, 900, 1E-2), "chr5", _strand);
+            var s1 = new Bed<PPeak>() { FileHashKey = 1, FileName = "sB" };
+            s1.Add(new  PPeak(800, 900, 1E-2), "chr5", _strand);
+            var samples = new List<Bed<PPeak>>() { s0, s1 };
 
             var mspc = new Mspc();
-            mspc.AddSample(0, s0);
-            mspc.AddSample(1, s1);
-
-            mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
+            mspc.Run(samples, new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            new Exporter<Peak>().Export(_sidfm, mspc.GetResults(), mspc.GetConsensusPeaks(), new Options(path, false, _attributes));
+            new Exporter<PPeak>().Export(_sidfm, samples, mspc.GetConsensusPeaks(), new Options(path, false, _attributes));
             return path;
         }
 
@@ -86,7 +83,7 @@ namespace Genometric.MSPC.CLI.Tests
             };
         }
 
-        private Mspc InitializeMSPC()
+        private List<Bed<PPeak>> GetSamples()
         {
             ///                 r11                r12
             /// Sample 0: --░░░░░░░░░░░-------████████████----------------------------
@@ -97,48 +94,44 @@ namespace Genometric.MSPC.CLI.Tests
             ///
             /// Legend: [░░ Background peak], [▒▒ Weak peak], [██ Stringent peak]
 
-            var r11 = new Peak(left: 3, right: 13, value: 1e-2, summit: 10, name: "r11");
-            var r12 = new Peak(left: 21, right: 32, value: 1e-12, summit: 25, name: "r12");
-            var r21 = new Peak(left: 10, right: 25, value: 1e-8, summit: 20, name: "r21");
-            var r22 = new Peak(left: 30, right: 37, value: 1e-5, summit: 35, name: "r22");
-            var r23 = new Peak(left: 41, right: 48, value: 1e-6, summit: 45, name: "r23");
-            var r31 = new Peak(left: 0, right: 4, value: 1e-6, summit: 2, name: "r31");
-            var r32 = new Peak(left: 8, right: 17, value: 1e-12, summit: 12, name: "r32");
-            var r33 = new Peak(left: 51, right: 58, value: 1e-18, summit: 55, name: "r33");
+            var r11 = new  PPeak(left: 3, right: 13, value: 1e-2, summit: 10, name: "r11");
+            var r12 = new  PPeak(left: 21, right: 32, value: 1e-12, summit: 25, name: "r12");
+            var r21 = new  PPeak(left: 10, right: 25, value: 1e-8, summit: 20, name: "r21");
+            var r22 = new  PPeak(left: 30, right: 37, value: 1e-5, summit: 35, name: "r22");
+            var r23 = new  PPeak(left: 41, right: 48, value: 1e-6, summit: 45, name: "r23");
+            var r31 = new  PPeak(left: 0, right: 4, value: 1e-6, summit: 2, name: "r31");
+            var r32 = new  PPeak(left: 8, right: 17, value: 1e-12, summit: 12, name: "r32");
+            var r33 = new  PPeak(left: 51, right: 58, value: 1e-18, summit: 55, name: "r33");
 
-            var sA = new Bed<Peak>();
+            var sA = new Bed<PPeak>() { FileHashKey = 0, FileName = "sA.bed" };
             sA.Add(r11, _chr, _strand);
             sA.Add(r12, _chr, _strand);
 
-            var sB = new Bed<Peak>();
+            var sB = new Bed<PPeak>() { FileHashKey = 1, FileName = "sB.bed" };
             sB.Add(r21, _chr, _strand);
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);
 
-            var sC = new Bed<Peak>();
+            var sC = new Bed<PPeak>() { FileHashKey = 2, FileName = "sC.bed" };
             sC.Add(r31, _chr, _strand);
             sC.Add(r32, _chr, _strand);
             sC.Add(r33, _chr, _strand);
 
-            var mspc = new Mspc();
-            mspc.AddSample(0, sA);
-            mspc.AddSample(1, sB);
-            mspc.AddSample(2, sC);
-
-            return mspc;
+            return new List<Bed<PPeak>>() { sA, sB, sC };
         }
 
         private string RunMSPCAndExportResults(bool includeHeader = false)
         {
-            var mspc = InitializeMSPC();
-            mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 0.05F, MultipleIntersections.UseLowestPValue));
+            var samples = GetSamples();
+            var mspc = new Mspc();
+            mspc.Run(samples, new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 0.05F, MultipleIntersections.UseLowestPValue));
 
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
 
-            var exporter = new Exporter<Peak>();
+            var exporter = new Exporter<PPeak>();
             var options = new Options(path, includeHeader, _attributes);
 
-            exporter.Export(_sidfm, mspc.GetResults(), mspc.GetConsensusPeaks(), options);
+            exporter.Export(_sidfm, samples, mspc.GetConsensusPeaks(), options);
 
             return path;
         }

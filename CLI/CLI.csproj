@@ -34,7 +34,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Genometric.GeUtilities" Version="5.4.0" />
+    <PackageReference Include="Genometric.GeUtilities" Version="6.0.0" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />

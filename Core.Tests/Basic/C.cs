@@ -2,7 +2,6 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Generic;
@@ -26,14 +25,14 @@ namespace Genometric.MSPC.Core.Tests.Basic
         // Sample 4: -----------------█████████----
         //                        r51
         // Sample 4: -------------███--------------
-        private static IEnumerable<Peak> GetPeaks(int count)
+        private static IEnumerable<PPeak> GetPeaks(int count)
         {
-            var peaks = new List<Peak>() {
-                new Peak(left: 10, right: 20, name: "r11", value: 1e-18),
-                new Peak(left: 05, right: 12, name: "r21", value: 1e-22),
-                new Peak(left: 08, right: 22, name: "r31", value: 1e-47),
-                new Peak(left: 18, right: 26, name: "r41", value: 1e-55),
-                new Peak(left: 14, right: 16, name: "r51", value: 1e-61)};
+            var peaks = new List<PPeak>() {
+                new PPeak(left: 10, right: 20, name: "r11", value: 1e-18),
+                new PPeak(left: 05, right: 12, name: "r21", value: 1e-22),
+                new PPeak(left: 08, right: 22, name: "r31", value: 1e-47),
+                new PPeak(left: 18, right: 26, name: "r41", value: 1e-55),
+                new PPeak(left: 14, right: 16, name: "r51", value: 1e-61)};
             return peaks.Take(count);
         }
 
@@ -57,21 +56,22 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void AssertCRequirement(int samplesCount, int c, int confirmedPeaksCount, int discardedPeaksCount)
         {
             // Arrange
-            uint id = 0;
-            var mspc = new Mspc();
-            foreach(var peak in GetPeaks(samplesCount))
+            uint counter = 0;
+            var samples = new List<Bed<PPeak>>();
+            foreach (var peak in GetPeaks(samplesCount))
             {
-                var sample = new Bed<Peak>();
+                var sample = new Bed<PPeak>() { FileHashKey = counter++ };
                 sample.Add(peak, _chr, _strand);
-                mspc.AddSample(id++, sample);
+                samples.Add(sample);
             }
 
             // Act
-            var res = mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-8, c, 1F, MultipleIntersections.UseLowestPValue));
+            var mspc = new Mspc();
+            mspc.Run(samples, new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-8, c, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == confirmedPeaksCount);
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == discardedPeaksCount);
+            Assert.True(Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Confirmed) == confirmedPeaksCount);
+            Assert.True(Helpers<PPeak>.Count(samples[0], _chr, _strand, Attributes.Discarded) == discardedPeaksCount);
         }
     }
 }

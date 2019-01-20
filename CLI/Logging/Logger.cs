@@ -13,6 +13,8 @@ using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Text;
 using static Genometric.MSPC.CLI.Logging.Table;
 
@@ -181,10 +183,8 @@ namespace Genometric.MSPC.CLI.Logging
         }
 
         public void LogSummary(
-            List<Bed<Peak>> samples,
-            Dictionary<uint, string> samplesDict,
-            ReadOnlyDictionary<uint, Result<Peak>> results,
-            ReadOnlyDictionary<string, List<ProcessedPeak<Peak>>> consensusPeaks,
+            List<Bed<PPeak>> samples,
+            Dictionary<string, List<PPeak>> consensusPeaks,
             List<Attributes> exportedAttributes = null)
         {
             // Create table header
@@ -208,20 +208,20 @@ namespace Genometric.MSPC.CLI.Logging
 
             // Per sample stats
             int j = 1;
-            foreach (var res in results)
+            foreach(var s in samples)
             {
-                double totalPeaks = samples.Find(x => x.FileHashKey == res.Key).IntervalsCount;
                 var sampleSummary = new string[columnsCount];
-                sampleSummary[0] = IdxColFormat(j++, results.Count);
-                sampleSummary[1] = samplesDict[res.Key];
-                sampleSummary[2] = totalPeaks.ToString("N0");
+                sampleSummary[0] = IdxColFormat(j++, samples.Count);
+                sampleSummary[1] = Path.GetFileNameWithoutExtension(s.FileName);
+                sampleSummary[2] = s.IntervalsCount.ToString("N0");
                 i = 3;
                 foreach (var att in exportedAttributes)
                 {
                     int value = 0;
-                    foreach (var chr in res.Value.Chromosomes)
-                        value += chr.Value.Count(att);
-                    sampleSummary[i++] = (value / totalPeaks).ToString("P");
+                    foreach (var chr in s.Chromosomes)
+                        foreach (var strand in chr.Value.Strands)
+                            value += strand.Value.Intervals.Count(x => x.HasAttribute(att));
+                    sampleSummary[i++] = (value / s.IntervalsCount).ToString("P");
                 }
                 table.AddRow(sampleSummary);
             }

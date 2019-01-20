@@ -2,8 +2,8 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.CLI.Interfaces;
+using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -67,7 +67,7 @@ namespace Genometric.MSPC.CLI.Tests
             return messages;
         }
 
-        public string Run(IExporter<Peak> exporter)
+        public string Run(IExporter<PPeak> exporter)
         {
             SessionPath =
                 "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +

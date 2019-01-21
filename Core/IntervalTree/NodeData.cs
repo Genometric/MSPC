@@ -3,10 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.IGenomics;
+using System;
 
 namespace Genometric.MSPC.Core.IntervalTree
 {
-    internal class NodeData<I>
+    internal class NodeData<I> : IComparable<NodeData<I>>
         where I : IPeak
     {
         public I Peak { get; }
@@ -16,6 +17,13 @@ namespace Genometric.MSPC.Core.IntervalTree
         {
             Peak = peak;
             SampleID = sampleID;
+        }
+
+        public int CompareTo(NodeData<I> other)
+        {
+            int c = SampleID.CompareTo(other.SampleID);
+            if (c != 0) return c;
+            return Peak.CompareTo(other.Peak);    
         }
     }
 }

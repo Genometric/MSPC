@@ -62,7 +62,7 @@ namespace Genometric.MSPC.Core.IntervalTree
                 _rightNode = new Node<I, D>(right);
         }
 
-        public List<NodeData<I>> Query(D target)
+        public List<NodeData<I>> Query(D target, uint skipID)
         {
             var result = new List<NodeData<I>>();
 
@@ -70,14 +70,17 @@ namespace Genometric.MSPC.Core.IntervalTree
                 if (target.Peak.Right.CompareTo(entry.Key.Peak.Left) > 0 &&
                     target.Peak.Left.CompareTo(entry.Key.Peak.Right) < 0)
                     foreach (var interval in entry.Value)
-                        result.Add(interval);
-                else if (entry.Key.Peak.Left.CompareTo(target.Peak.Right) > 0)
-                    break;
+                    {
+                        if (interval.SampleID != skipID)
+                            result.Add(interval);
+                    }
+                /// else if (entry.Key.Peak.Left.CompareTo(target.Peak.Right) > 0)
+                ///     break;
 
             if (target.Peak.Left.CompareTo(_center) < 0 && _leftNode != null)
-                result.AddRange(_leftNode.Query(target));
+                result.AddRange(_leftNode.Query(target, skipID));
             if (target.Peak.Right.CompareTo(_center) > 0 && _rightNode != null)
-                result.AddRange(_rightNode.Query(target));
+                result.AddRange(_rightNode.Query(target, skipID));
             return result;
         }
     }

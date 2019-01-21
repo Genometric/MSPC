@@ -27,10 +27,9 @@ namespace Genometric.MSPC.Core.IntervalTree
             _inSync = false;
         }
 
-        public List<NodeData<I>> GetIntervals(I peak)
+        public List<NodeData<I>> GetIntervals(I peak, uint skipID)
         {
-            BuildAndFinalize();
-            return _head.Query(new NodeData<I>(peak, 0));
+            return _head.Query(new NodeData<I>(peak, 0), skipID);
         }
 
         public void BuildAndFinalize()

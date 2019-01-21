@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,13 +34,15 @@ namespace Genometric.MSPC.Core.Functions
             get { return new ReadOnlyDictionary<uint, Result<I>>(_analysisResults); }
         }
 
-        private Dictionary<uint, Dictionary<string, Tree<I>>> _trees { set; get; }
+        private Dictionary<string, Tree<I>> _tree { set; get; }
 
         private Dictionary<string, List<ProcessedPeak<I>>> _consensusPeaks { set; get; }
         public ReadOnlyDictionary<string, List<ProcessedPeak<I>>> ConsensusPeaks
         {
             get { return new ReadOnlyDictionary<string, List<ProcessedPeak<I>>>(_consensusPeaks); }
         }
+
+        private Dictionary<uint, SupportingPeak<I>> _supPeakFilterHelper;
 
         public int DegreeOfParallelism { set; get; }
 
@@ -108,31 +109,31 @@ namespace Genometric.MSPC.Core.Functions
 
         private void BuildDataStructures()
         {
-            _trees = new Dictionary<uint, Dictionary<string, Tree<I>>>();
+            _tree = new Dictionary<string, Tree<I>>();
             _analysisResults = new Dictionary<uint, Result<I>>();
+            _supPeakFilterHelper = new Dictionary<uint, SupportingPeak<I>>(capacity: _samples.Count);
             foreach (var sample in _samples)
             {
-                _trees.Add(sample.Key, new Dictionary<string, Tree<I>>());
                 _analysisResults.Add(sample.Key, new Result<I>(_config.ReplicateType));
                 foreach (var chr in sample.Value.Chromosomes)
                 {
-                    _trees[sample.Key].Add(chr.Key, new Tree<I>());
+                    if (!_tree.ContainsKey(chr.Key))
+                        _tree.Add(chr.Key, new Tree<I>());
                     _analysisResults[sample.Key].AddChromosome(chr.Key, chr.Value.Statistics.Count);
                     foreach (var strand in chr.Value.Strands)
                         foreach (I p in strand.Value.Intervals)
                             if (p.Value < _config.TauW)
                             {
-                                _trees[sample.Key][chr.Key].Add(p, sample.Key);
+                                _tree[chr.Key].Add(p, sample.Key);
                                 _peaksToBeProcessed++;
                             }
                 }
             }
 
-            foreach (var sampleTree in _trees)
-                Parallel.ForEach(
-                    sampleTree.Value,
-                    new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
-                    tree => { tree.Value.BuildAndFinalize(); });
+            Parallel.ForEach(
+                _tree,
+                new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
+                tree => { tree.Value.BuildAndFinalize(); });
         }
 
         private void ProcessSamples()
@@ -217,38 +218,44 @@ namespace Genometric.MSPC.Core.Functions
             }
         }
 
-        private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)
+        private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I queryPeak)
         {
             var supportingPeaks = new List<SupportingPeak<I>>();
-            foreach (var tree in _trees)
+            if (!_tree.ContainsKey(chr))
+                return supportingPeaks;
+
+            var overlappingPeaks = new List<NodeData<I>>();
+            overlappingPeaks = _tree[chr].GetIntervals(queryPeak, id);
+
+            switch (overlappingPeaks.Count)
             {
-                if (tree.Key == id)
-                    continue;
+                case 0: break;
 
-                var sps = new List<NodeData<I>>();
-                if (_trees[tree.Key].ContainsKey(chr))
-                    sps = _trees[tree.Key][chr].GetIntervals(p);
+                case 1:
+                    if (overlappingPeaks[0].SampleID != id)
+                        supportingPeaks.Add(new SupportingPeak<I>(overlappingPeaks[0].Peak, overlappingPeaks[0].SampleID));
+                    break;
 
-                switch (sps.Count)
-                {
-                    case 0: break;
-
-                    case 1:
-                        supportingPeaks.Add(new SupportingPeak<I>(sps[0].Peak, tree.Key));
-                        break;
-
-                    default:
-                        var chosenPeak = sps[0];
-                        foreach (var sp in sps.Skip(1))
+                default:
+                    _supPeakFilterHelper.Clear();
+                    foreach (var p in overlappingPeaks)
+                    {
+                        if (_supPeakFilterHelper.TryGetValue(p.SampleID, out SupportingPeak<I> chosenPeak))
+                        {
                             if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue
-                                && sp.Peak.Value < chosenPeak.Peak.Value) ||
-                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue
-                                && sp.Peak.Value > chosenPeak.Peak.Value))
-                                chosenPeak = sp;
+                            && p.Peak.Value < chosenPeak.Source.Value) ||
+                            (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue
+                            && p.Peak.Value > chosenPeak.Source.Value))
+                                chosenPeak.Source = p.Peak;
+                        }
+                        else
+                        {
+                            _supPeakFilterHelper.Add(p.SampleID, new SupportingPeak<I>(p.Peak, p.SampleID));
+                        }
+                    }
 
-                        supportingPeaks.Add(new SupportingPeak<I>(chosenPeak.Peak, tree.Key));
-                        break;
-                }
+                    supportingPeaks.AddRange(_supPeakFilterHelper.Values);
+                    break;
             }
 
             return supportingPeaks;

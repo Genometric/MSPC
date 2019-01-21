@@ -244,5 +244,66 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.False(res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Any());
         }
+
+        [Fact]
+        public void DoNotCountOverlapsFromSameSample()
+        {
+            // Arrange
+            var sA = new Bed<Peak>();
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+
+            var sB = new Bed<Peak>();
+            sB.Add(new Peak(left: 5, right: 12, value: 0.01), "chr1", '*');
+
+            var sC = new Bed<Peak>();
+            sC.Add(new Peak(left: 18, right: 25, value: 0.01), "chr1", '*');
+
+            var mspc = new Mspc();
+            mspc.AddSample(0, sA);
+            mspc.AddSample(1, sB);
+            mspc.AddSample(2, sC);
+
+            var config = new Config(ReplicateType.Biological, 1, 1, 1, 5, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+            Assert.True(res[0].Chromosomes["chr1"].Count(Attributes.Confirmed) == 0);
+        }
+
+        [Fact]
+        public void IntervalsWithExactSameCoordinates()
+        {
+            // Arrange
+            int sampleCount = 22;
+            var mspc = new Mspc();
+            for (uint i = 0; i < sampleCount - 2; i++)
+            {
+                var bed = new Bed<Peak>();
+                bed.Add(new Peak(10, 20, 0.01), "chr1", '*');
+                mspc.AddSample(i, bed);
+            }
+
+            var bedB = new Bed<Peak>();
+            bedB.Add(new Peak(8, 12, 0.01), "chr1", '*');
+            mspc.AddSample((uint)sampleCount - 2, bedB);
+
+            var bedC = new Bed<Peak>();
+            bedC.Add(new Peak(18, 25, 0.01), "chr1", '*');
+            mspc.AddSample((uint)sampleCount - 1, bedC);
+
+            var config = new Config(ReplicateType.Biological, 1, 1, 1, sampleCount, 1F, MultipleIntersections.UseLowestPValue);
+
+            // Act
+            var res = mspc.Run(config);
+
+            // Assert
+            for (uint i = 0; i < sampleCount; i++)
+                Assert.True(res[i].Chromosomes["chr1"].Count(Attributes.Confirmed) == 1);
+        }
     }
 }

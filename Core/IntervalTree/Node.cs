@@ -12,14 +12,14 @@ namespace Genometric.MSPC.Core.IntervalTree
         where I : IPeak
         where D : NodeData<I>
     {
-        private readonly SortedDictionary<D, List<D>> _intervals;
+        private readonly SortedDictionary<D, uint> _intervals;
         private readonly int _center;
         private readonly Node<I, D> _leftNode;
         private readonly Node<I, D> _rightNode;
 
         public Node()
         {
-            _intervals = new SortedDictionary<D, List<D>>();
+            _intervals = new SortedDictionary<D, uint>();
             _center = 0;
             _leftNode = null;
             _rightNode = null;
@@ -27,7 +27,7 @@ namespace Genometric.MSPC.Core.IntervalTree
 
         public Node(List<D> intervalsList)
         {
-            _intervals = new SortedDictionary<D, List<D>>();
+            _intervals = new SortedDictionary<D, uint>();
             var endpoints = new SortedSet<int>();
             foreach (var interval in intervalsList)
             {
@@ -47,12 +47,7 @@ namespace Genometric.MSPC.Core.IntervalTree
                     right.Add(interval);
                 else
                 {
-                    if (!_intervals.TryGetValue(interval, out List<D> posting))
-                    {
-                        posting = new List<D>();
-                        _intervals.Add(interval, posting);
-                    }
-                    posting.Add(interval);
+                    _intervals.Add(interval, interval.SampleID);
                 }
             }
 
@@ -69,11 +64,10 @@ namespace Genometric.MSPC.Core.IntervalTree
             foreach (var entry in _intervals)
                 if (target.Peak.Right.CompareTo(entry.Key.Peak.Left) > 0 &&
                     target.Peak.Left.CompareTo(entry.Key.Peak.Right) < 0)
-                    foreach (var interval in entry.Value)
-                    {
-                        if (interval.SampleID != skipID)
-                            result.Add(interval);
-                    }
+                {
+                    if (entry.Value != skipID)
+                        result.Add(entry.Key);
+                }
                 else if (entry.Key.Peak.Left.CompareTo(target.Peak.Right) > 0)
                     break;
 

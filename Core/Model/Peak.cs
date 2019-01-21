@@ -20,7 +20,7 @@ namespace Genometric.MSPC.Core.Model
             Source = source;
         }
 
-        public I Source { private set; get; }
+        public I Source { internal set; get; }
 
         public int CompareTo(Peak<I> other)
         {

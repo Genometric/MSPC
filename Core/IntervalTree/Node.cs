@@ -74,8 +74,8 @@ namespace Genometric.MSPC.Core.IntervalTree
                         if (interval.SampleID != skipID)
                             result.Add(interval);
                     }
-                /// else if (entry.Key.Peak.Left.CompareTo(target.Peak.Right) > 0)
-                ///     break;
+                else if (entry.Key.Peak.Left.CompareTo(target.Peak.Right) > 0)
+                    break;
 
             if (target.Peak.Left.CompareTo(_center) < 0 && _leftNode != null)
                 result.AddRange(_leftNode.Query(target, skipID));

@@ -21,8 +21,6 @@ namespace Genometric.MSPC.Core.IntervalTree
 
         public int CompareTo(NodeData<I> other)
         {
-            int c = SampleID.CompareTo(other.SampleID);
-            if (c != 0) return c;
             return Peak.CompareTo(other.Peak);    
         }
     }

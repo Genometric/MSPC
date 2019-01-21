@@ -42,8 +42,6 @@ namespace Genometric.MSPC.Core.Functions
             get { return new ReadOnlyDictionary<string, List<ProcessedPeak<I>>>(_consensusPeaks); }
         }
 
-        private Dictionary<uint, SupportingPeak<I>> _supPeakFilterHelper;
-
         public int DegreeOfParallelism { set; get; }
 
         private List<double> _cachedChiSqrd { set; get; }
@@ -111,7 +109,6 @@ namespace Genometric.MSPC.Core.Functions
         {
             _tree = new Dictionary<string, Tree<I>>();
             _analysisResults = new Dictionary<uint, Result<I>>();
-            _supPeakFilterHelper = new Dictionary<uint, SupportingPeak<I>>(capacity: _samples.Count);
             foreach (var sample in _samples)
             {
                 _analysisResults.Add(sample.Key, new Result<I>(_config.ReplicateType));
@@ -237,7 +234,7 @@ namespace Genometric.MSPC.Core.Functions
                     break;
 
                 default:
-                    _supPeakFilterHelper.Clear();
+                    var _supPeakFilterHelper = new Dictionary<uint, SupportingPeak<I>>(overlappingPeaks.Count);
                     foreach (var p in overlappingPeaks)
                     {
                         if (_supPeakFilterHelper.TryGetValue(p.SampleID, out SupportingPeak<I> chosenPeak))

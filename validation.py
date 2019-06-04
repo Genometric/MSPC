@@ -1,25 +1,3 @@
-
-
-Skip to content
-Using Gmail with screen readers
-
-Search
-label:5---phd 
-
-1 of 1,786
-mspc_fe code
-5 - PhD
-x
-
-Fernando Palluzzi
-Attachments
-10:27 AM (0 minutes ago)
-to Vahid, Marzia
-
-
-Attachments area
-
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 

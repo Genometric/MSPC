@@ -12,18 +12,17 @@ namespace Genometric.MSPC.CLI.Tests
         [InlineData("aaaaaa", 5)]
         [InlineData("aaaaaa", 4)]
         [InlineData("aaaaaa", 3)]
-        [InlineData("aaaaaa", 2)]
-        [InlineData("aaaaaa", 1)]
         public void ColumnWidthLessThanContentLenght(string content, int length)
         {
             // Arrange
             var table = new Logging.Table(new int[] { length });
 
             // Act
-            var row = table.GetRow(new string[] { content });
+            var row = table.GetRow(new string[] { content }).Replace('\t', ' ').Trim();
 
             // Assert
             Assert.Contains("...", row);
+            Assert.Equal(row.Length, length);
         }
     }
 }

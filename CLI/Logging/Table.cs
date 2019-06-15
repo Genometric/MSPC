@@ -66,7 +66,7 @@ namespace Genometric.MSPC.CLI.Logging
             if (value.Length <= maxLength)
                 return value.PadLeft(maxLength);
             else
-                return "..." + value.Substring(value.Length - maxLength - 3, maxLength);
+                return "..." + value.Substring(value.Length - (maxLength - 3));
         }
     }
 }

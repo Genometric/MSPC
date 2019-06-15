@@ -2,7 +2,6 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
-using log4net;
 using System;
 using System.Text;
 
@@ -11,12 +10,10 @@ namespace Genometric.MSPC.CLI.Logging
     internal class Table
     {
         private readonly int[] _columnsWidth;
-        private readonly ILog log;
 
-        public Table(int[] columnsWidth, string repository, string name)
+        public Table(int[] columnsWidth)
         {
             _columnsWidth = columnsWidth;
-            log = LogManager.GetLogger(repository, name);
         }
 
         public void AddHeader(params string[] headers)

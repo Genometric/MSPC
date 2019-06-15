@@ -19,7 +19,7 @@ clone_depth: 1
 
 build_script:
   - choco install "msbuild-sonarqube-runner" -y
-  - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.analysis.mode=preview"
+  - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io"
   - MSBuild.exe /t:Rebuild
   - SonarScanner.MSBuild.exe end 
 

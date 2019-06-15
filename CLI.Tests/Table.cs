@@ -24,5 +24,21 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains("...", row);
             Assert.Equal(row.Length, length);
         }
+
+        [Theory]
+        [InlineData("aaaaaa", 8)]
+        [InlineData("aaaaaa", 7)]
+        [InlineData("aaaaaa", 6)]
+        public void ShouldNotTruncateWhenEnoughSpaceAvailable(string content, int length)
+        {
+            // Arrange
+            var table = new Logging.Table(new int[] { length });
+
+            // Act
+            var row = table.GetRow(new string[] { content }).Replace('\t', ' ').Trim();
+
+            // Assert
+            Assert.DoesNotContain("...", row);
+        }
     }
 }

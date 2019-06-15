@@ -28,11 +28,9 @@ namespace Genometric.MSPC.CLI.Logging
             Console.WriteLine(RenderRow(headerLines));
         }
 
-        public void AddRow(params string[] columns)
+        public string GetRow(params string[] columns)
         {
-            string row = RenderRow(columns);
-            Console.WriteLine(row);
-            log.Info(row);
+            return RenderRow(columns);
         }
 
         /// <summary>

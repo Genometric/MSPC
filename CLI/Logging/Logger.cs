@@ -153,7 +153,7 @@ namespace Genometric.MSPC.CLI.Logging
         public void InitializeLoggingParser(int samplesCount)
         {
             var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLenght, 11, 11, 12, 11 };
-            _parserLogTable = new Table(columnsWidth, _repository, _name);
+            _parserLogTable = new Table(columnsWidth);
             _parserLogTable.AddHeader(new string[]
             {
                 "#", "Filename", "Read peaks#", "Min p-value", "Mean p-value", "Max p-value"
@@ -169,7 +169,7 @@ namespace Genometric.MSPC.CLI.Logging
             double meanPValue,
             double maxPValue)
         {
-            _parserLogTable.AddRow(new string[]
+            var row = _parserLogTable.GetRow(new string[]
             {
                 IdxColFormat(fileNumber, filesToParse),
                 filename,
@@ -178,6 +178,9 @@ namespace Genometric.MSPC.CLI.Logging
                 string.Format("{0:E3}", meanPValue),
                 string.Format("{0:E3}", maxPValue)
             });
+
+            Console.WriteLine(row);
+            log.Info(row);
         }
 
         public void LogSummary(
@@ -203,7 +206,7 @@ namespace Genometric.MSPC.CLI.Logging
                 headerColumns[i] = exportedAttributes[i - 3].ToString();
                 columnsWidth[i] = headerColumns[i].Length > 8 ? headerColumns[i].Length : 8;
             }
-            var table = new Table(columnsWidth, _repository, _name);
+            var table = new Table(columnsWidth);
             table.AddHeader(headerColumns);
 
             // Per sample stats
@@ -223,7 +226,10 @@ namespace Genometric.MSPC.CLI.Logging
                         value += chr.Value.Count(att);
                     sampleSummary[i++] = (value / totalPeaks).ToString("P");
                 }
-                table.AddRow(sampleSummary);
+
+                var row = table.GetRow(sampleSummary);
+                Console.WriteLine(row);
+                log.Info(row);
             }
         }
     }

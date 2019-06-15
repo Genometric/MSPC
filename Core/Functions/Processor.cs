@@ -264,19 +264,19 @@ namespace Genometric.MSPC.Core.Functions
         {
             foreach (var supPeak in supportingPeaks)
             {
-                var tSupPeak = new List<SupportingPeak<I>>
-                {
-                    new SupportingPeak<I>(p, id)
-                };
-                foreach (var sP in supportingPeaks)
-                    if (supPeak.CompareTo(sP) != 0)
-                        tSupPeak.Add(sP);
-
                 ProcessedPeak<I> pp;
                 if (_trackSupportingRegions)
+                {
+                    var tSupPeak = new List<SupportingPeak<I>> { new SupportingPeak<I>(p, id) };
+                    foreach (var sP in supportingPeaks)
+                        if (supPeak.CompareTo(sP) != 0)
+                            tSupPeak.Add(sP);
                     pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak);
+                }
                 else
-                    pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak.Count);
+                {
+                    pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, supportingPeaks.Count);
+                }
 
                 pp.AddClassification(attribute);
                 pp.reason = message;

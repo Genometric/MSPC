@@ -98,7 +98,7 @@ namespace Genometric.MSPC.CLI
 
         private static string TruncateString(string value, int maxLength)
         {
-            return value.Length <= maxLength ? new string(' ', maxLength - value.Length) + value : "..." + value.Substring(value.Length - maxLength - 3, maxLength);
+            return value.Length <= maxLength ? new string(' ', maxLength - value.Length) + value : "..." + value.Substring(value.Length - (maxLength - 3));
         }
     }
 }

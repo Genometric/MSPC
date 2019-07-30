@@ -103,7 +103,7 @@ def bedSize(bed, genomeSize):
 				N += 1
 	return [N, C, C/float(genomeSize)]
 
-def coverageDifference(pA, nA, pB, nB, pooled = True, percent = False):
+def coverageDifference(pA, nA, pB, nB, b0 = 0, level = 0.95, pooled = True, percent = False):
 	try:
 		if percent:
 			b = (pA - pB)/float(pB)
@@ -114,10 +114,12 @@ def coverageDifference(pA, nA, pB, nB, pooled = True, percent = False):
 			SE = math.sqrt(q*(1 - q)*(1/float(nA) + 1/float(nB)))
 		else:
 			SE = math.sqrt(pA*(1 - pA)/float(nA) + pB*(1 - pB)/float(nB))
-		z = b/SE
+		z = (b-b0)/SE
 		P = 2*(1 - stats.norm.cdf(abs(z)))
-		l95 = b - 1.96*SE
-		u95 = b + 1.96*SE
+		l95 = b - stats.norm.ppf(level)*SE
+		u95 = b + stats.norm.ppf(level)*SE
+		# l95 = b - 1.96*SE
+		# u95 = b + 1.96*SE
 	except:
 		b, SE, z, P, l95, u95 = (0, 1, 0, 1,
 		                         -float("inf"), float("inf"))

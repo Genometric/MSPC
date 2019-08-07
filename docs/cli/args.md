@@ -21,6 +21,7 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 | [C](#c) |  | `-c` | `int` | `1` |
 | [Alpha](#alpha) |  | `-a` | `double` | `0.05` |
 | [Multiple Intersections](#multiple-intersections) |  | `-m` | `Lowest`, `Highest` |  `Lowest` |
+| [Degree of Parallelism](#degree-of-parallelism) | `-d` | `int` | number of processors on the current machine |
 | [Input Parser Configuration](#input-parser-configuration) |   | `-p` | File path | none |
 | [Output path](#output-path) | | `-o` | Directory path | `session_` + `<Timestamp>`|
 
@@ -176,6 +177,19 @@ Example:
 
 ```shell
 dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -m lowest
+```
+
+### Degree of Parallelism
+It sets the number of parallel threads MSPC can utilize simultaneously when processing data.
+
+| Short | Long | Required | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-d`  | `--degreeOfParallelism` | Optional | `int` |  Number of logical processors on the current machine |
+
+Example:
+
+```shell
+dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -d 12
 ```
 
 ### Input Parser Configuration 

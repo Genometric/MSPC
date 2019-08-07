@@ -50,8 +50,7 @@ namespace Genometric.MSPC.CLI
             if (!AssertInput(options.Input))
                 return;
 
-            if (!AssertDegreeOfParallelism(options.DegreeOfParallelism))
-                return;
+            AssertDegreeOfParallelism(options.DegreeOfParallelism);
 
             if (!LoadParserConfig(options, out ParserConfig config))
                 return;
@@ -179,13 +178,12 @@ namespace Genometric.MSPC.CLI
             return true;
         }
 
-        private bool AssertDegreeOfParallelism(int dp)
+        private void AssertDegreeOfParallelism(int dp)
         {
             if (dp > 0)
                 _degreeOfParallelism = dp;
             
             _logger.Log(string.Format("Degree of parallelism is set to {0}.", _degreeOfParallelism));
-            return true;
         }
 
         private bool LoadParserConfig(CommandLineOptions options, out ParserConfig config)

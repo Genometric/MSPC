@@ -20,6 +20,7 @@ namespace Genometric.MSPC.CLI
 {
     internal class Orchestrator : IDisposable
     {
+        private int _degreeOfParallelism = Environment.ProcessorCount;
         private Logger _logger;
         private readonly IExporter<Peak> _exporter;
         private readonly string _defaultLoggerRepoName = "EventsLog";
@@ -47,6 +48,9 @@ namespace Genometric.MSPC.CLI
                 return;
 
             if (!AssertInput(options.Input))
+                return;
+
+            if (!AssertDegreeOfParallelism(options.DegreeOfParallelism))
                 return;
 
             if (!LoadParserConfig(options, out ParserConfig config))
@@ -175,6 +179,15 @@ namespace Genometric.MSPC.CLI
             return true;
         }
 
+        private bool AssertDegreeOfParallelism(int dp)
+        {
+            if (dp > 0)
+                _degreeOfParallelism = dp;
+            
+            _logger.Log(string.Format("Degree of parallelism is set to {0}.", _degreeOfParallelism));
+            return true;
+        }
+
         private bool LoadParserConfig(CommandLineOptions options, out ParserConfig config)
         {
             config = new ParserConfig();
@@ -238,7 +251,10 @@ namespace Genometric.MSPC.CLI
             try
             {
                 _logger.LogStartOfASection("Analyzing Samples");
-                mspc = new Mspc();
+                mspc = new Mspc()
+                {
+                    DegreeOfParallelism = _degreeOfParallelism
+                };
                 mspc.StatusChanged += _logger.LogMSPCStatus;
                 foreach (var sample in samples)
                     mspc.AddSample(sample.FileHashKey, sample);

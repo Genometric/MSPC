@@ -25,10 +25,12 @@ namespace Genometric.MSPC.CLI.Tests
         private const string _c = "2";
         private const string _m = "lowest";
         private const string _r = "bio";
+        private const string _d = "4";
 
         private string GenerateShortNameArguments(
             string rep1 = _rep1, string rep2 = _rep2, string rep3 = _rep3, double tauW = _tauW, double tauS = _tauS,
-            double gamma = _gamma, float alpha = _alpha, string c = _c, string m = _m, string r = _r, string p = _p)
+            double gamma = _gamma, float alpha = _alpha, string c = _c, string m = _m, string r = _r, string p = _p,
+            string d = _d)
         {
             var builder = new StringBuilder();
             if (rep1 != null) builder.Append("-i " + rep1 + " ");
@@ -40,8 +42,10 @@ namespace Genometric.MSPC.CLI.Tests
             if (!float.IsNaN(alpha)) builder.Append("-a " + alpha + " ");
             builder.Append("-c " + c + " ");
             builder.Append("-m " + m + " ");
-            builder.Append("-r " + r);
-            if (p != null) builder.Append(" -p " + p);
+            builder.Append("-r " + r + " ");
+            if (p != null)
+                builder.Append("-p " + p + " ");
+            builder.Append("-d " + d);
             return builder.ToString();
         }
 
@@ -259,6 +263,19 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.True(po.ReplicateType == expectedValue);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(100)]
+        public void ReadDP(int dp)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            options.Parse(GenerateShortNameArguments(d: dp.ToString()).Split(' '), out bool _);
+
+            // Assert
+            Assert.True(options.DegreeOfParallelism == dp);
         }
 
         [Fact]

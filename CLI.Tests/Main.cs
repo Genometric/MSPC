@@ -135,6 +135,7 @@ namespace Genometric.MSPC.CLI.Tests
                 "\r\n  -a | --alpha <value>                  Sets false discovery rate of Benjamini–Hochberg step-up procedure." +
                 "\r\n  -c <value>                            Sets minimum number of overlapping peaks before combining p-values." +
                 "\r\n  -m | --multipleIntersections <value>  When multiple peaks from a sample overlap with a given peak, this argument defines which of the peaks to be considered: the one with lowest p-value, or the one with highest p-value? Possible values are: { Lowest, Highest }" +
+                "\r\n  -d | --degreeOfParallelism <value>    Set the degree of parallelism." +
                 "\r\n  -p | --parser <value>                 Sets the path to the parser configuration file in JSON." +
                 "\r\n  -o | --output <value>                 Sets a path where analysis results should be persisted." +
                 "\r\n" +

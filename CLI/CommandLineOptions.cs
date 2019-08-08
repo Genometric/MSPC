@@ -64,6 +64,11 @@ namespace Genometric.MSPC.CLI
                 "the one with highest p-value? Possible values are: { Lowest, Highest }"
         };
 
+        private readonly CommandOption _cDP = new CommandOption("-d | --degreeOfParallelism <value>", CommandOptionType.SingleValue)
+        {
+            Description = "Set the degree of parallelism."
+        };
+
         private readonly CommandOption _cOutput = new CommandOption("-o | --output <value>", CommandOptionType.SingleValue)
         {
             Description = "Sets a path where analysis results should be persisted."
@@ -81,6 +86,11 @@ namespace Genometric.MSPC.CLI
 
         private List<string> _inputFiles;
         public IReadOnlyList<string> Input { get { return _inputFiles.AsReadOnly(); } }
+
+        /// <summary>
+        /// Gets a degree of parallelism.
+        /// </summary>
+        public int DegreeOfParallelism { private set; get; }
 
         public string OutputPath { private set; get; }
 
@@ -117,6 +127,7 @@ namespace Genometric.MSPC.CLI
             _cla.Options.Add(_cAlpha);
             _cla.Options.Add(_cC);
             _cla.Options.Add(_cM);
+            _cla.Options.Add(_cDP);
             _cla.Options.Add(_cParser);
             _cla.Options.Add(_cOutput);
             Func<int> assertArguments = AssertArguments;
@@ -226,6 +237,14 @@ namespace Genometric.MSPC.CLI
 
             if (_cOutput.HasValue())
                 OutputPath = _cOutput.Value();
+
+            if(_cDP.HasValue())
+            {
+                if (int.TryParse(_cDP.Value(), out int dp))
+                    DegreeOfParallelism = dp;
+                else
+                    throw new ArgumentException("Invalid value given for the `" + _cDP.LongName + "` argument.");
+            }
         }
 
         private string[] ParseExpandedInput(string[] args)

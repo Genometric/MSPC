@@ -143,25 +143,31 @@ elif sys.argv[1] == '--usage':
 	      '   Example:\n' +\
 	      '    mspc_fe.py --run MSPC_FunctionalEnrichment/data/test ' +\
 	      'ConsensusPeaks.bed optimal.bed\n\n' +\
-	      '4. Update annotations:\n' +\
+	      '4. Run IDR [URL: https://github.com/nboley/idr]:\n' +\
+	      '    mspc_fe.py --idr INPUT_DIRECTORY REP1_BED_TAG ' +\
+	      'REP2_BED_TAG IDR_PVALUE_THRESHOLD [--soft]\n' +\
+	      '   Example:\n' +\
+	      '    mspc_fe.py --idr MSPC_FunctionalEnrichment/data/test ' +\
+	      'replicate_1.bed replicate_2.bed 0.0001\n\n' +\
+	      '5. Update annotations:\n' +\
 	      '    mspc_fe.py --update FEATURE_FILE CONFIG_FILE\n' +\
 	      '   Example:\n' +\
 	      '    mspc_fe.py --update CpG_islands_hg19.bed ' +\
 	      'MSPC_FunctionalEnrichment/annotations/hg19_annotations/' +\
 	      'hg19.conf.txt\n\n' +\
-	      '5. Update genome:\n' +\
+	      '6. Update genome:\n' +\
 	      '    mspc_fe.py --update-genome GENOME_RELEASE SIZE_(bp) ' +\
 	      'CONFIG_FILE\n' +\
 	      '   Example:\n' +\
 	      '    mspc_fe.py --update-genome hg19 3100000000 ' +\
 	      'MSPC_FunctionalEnrichment/annotations/hg19_annotations/' +\
 	      'hg19.conf.txt\n\n' +\
-	      '6. Change annotation directory:\n' +\
+	      '7. Change annotation directory:\n' +\
 	      '    mspc_fe.py --ann-directory ANNOTATION_BED_DIR ' +\
 	      'CONFIG_FILE\n\n' +\
-	      '7. Remove backups for the current configuration:\n' +\
+	      '8. Remove backups for the current configuration:\n' +\
 	      '    mspc_fe.py --rmconf\n\n' +\
-	      '8. Enable/disable DNA sequence retrieval ' +\
+	      '9. Enable/disable DNA sequence retrieval ' +\
 	      'for the current configuration:\n' +\
 	      '    mspc_fe.py --dna-sequence\n'
 
@@ -335,8 +341,11 @@ elif sys.argv[1] == '--run':
 				bkg = os.path.join(bkgdir,\
 				      os.path.basename(annotation).split('.')[0] +\
 				      '_' + base + '.bkg')
-				call('bedtools intersect -a ' + x +\
-				     ' -b ' + annotation + ' -wa > ' + gan + '.tmp',
+				#call('bedtools intersect -a ' + x +\
+				#     ' -b ' + annotation + ' -wa > ' + gan + '.tmp',
+				#     shell = True)
+				call('bedtools intersect -a ' + annotation +\
+				     ' -b ' + x + ' -wa > ' + gan + '.tmp',
 				     shell = True)
 				call('awk \'!seen[$0]++\' ' + gan + '.tmp > ' + gan,
 				     shell = True)
@@ -360,23 +369,11 @@ elif sys.argv[1] == '--run':
 					y[1] = 1
 				# -----------
 				#print Q[0], B[0], B[1]/float(y[1])
-				
-				# A(+)/G vs FP/U
-				#A[tag] = coverageDifference(Q[2], Q[0],\
-				#                            B[1]/float(y[1]), B[0])
-				
-				# TP/A vs FP/U
-				#A[tag] = coverageDifference(Q[1]/float(MspcFE_conf[tag][1]),\
-				#                            Q[0], B[1]/float(y[1]),\
-				#                            B[0])
-				
-				# TP/U vs A/G
+								
+				# A/U vs notA/(G-U)
 				#print Q[1]/float(y[1]), Q[0], B[2], B[0]
-				A[tag] = coverageDifference(Q[1]/float(y[1]), Q[0],
-				                            B[2], B[0])
-				#A[tag] = coverageDifference(Q[1]/float(y[1]), Q[0],\
-				#                            MspcFE_conf[tag][2],\
-				#                            MspcFE_conf[tag][0])
+				A[tag] = coverageDifference(Q[1]/float(y[1]), Q[1],
+				                            B[2], B[1])
 				
 				#print A[tag]
 				if (Q[0] == 1):

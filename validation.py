@@ -456,6 +456,47 @@ elif sys.argv[1] == '--run':
 	
 	print '## END.\n'
 
+elif sys.argv[1] == '--idr':
+	
+	print '\n## IDR computation started ...\n'
+	
+	if len(sys.argv) > 6 and sys.argv[6] == '--soft':
+		P = '--soft-idr-threshold ' + sys.argv[5]
+		soft = True
+	else:
+		P = '--idr-threshold ' + sys.argv[5]
+		soft = False
+	
+	DATA = [x for x in os.listdir(sys.argv[2]) \
+	        if os.path.isdir(os.path.join(sys.argv[2], x))]
+	
+	for root in DATA:
+		print '# Processing data:', root
+		pfx = os.path.join(sys.argv[2], root)
+		if soft:
+			out = os.path.join(pfx, 'idrValues.txt')
+		else:
+			out = os.path.join(pfx, 'idrValues_p' + sys.argv[5] +\
+			                   '.txt')			
+		for f in absPaths(pfx):
+			if f.find(sys.argv[3]) > -1:
+				rep1 = f
+			if f.find(sys.argv[4]) > -1:
+				rep2 = f
+		sortBed(rep1)
+		sortBed(rep2)
+		call('idr --samples ' + rep1 + ' ' + rep2 + ' ' + P +\
+		     ' --output-file ' + out,
+		     shell = True)
+		if soft:
+			p = str(-1*math.log(float(sys.argv[5]))/math.log(10))
+			call("awk '{ if($12 >= " + p + ") { print }}' " + out +\
+			     " > " + os.path.join(os.path.dirname(out),
+			     "idrValues_postFilter_p" + sys.argv[5] + ".txt"),
+			     shell = True)
+	
+	print '## END.\n'
+
 else:
 	print 'OSError:', sys.argv[1] + ': invalid command\n'+\
 	      'Please, use "mspc_fe.py --usage" for help'

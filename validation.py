@@ -350,12 +350,12 @@ elif sys.argv[1] == '--run':
 				call('awk \'!seen[$0]++\' ' + gan + '.tmp > ' + gan,
 				     shell = True)
 				os.remove(gan + '.tmp')
-				#call('bedtools intersect -a ' + x +\
-				#     ' -b ' + annotation + ' -v > ' + bkg,
-				#     shell = True)
-				call('bedtools intersect -a ' + annotation +\
-				     ' -b ' + x + ' -v > ' + bkg,
+				call('bedtools intersect -a ' + x +\
+				     ' -b ' + annotation + ' -v > ' + bkg,
 				     shell = True)
+				#call('bedtools intersect -a ' + annotation +\
+				#     ' -b ' + x + ' -v > ' + bkg,
+				#     shell = True)
 				
 				Q = bedSize(gan, MspcFE_conf['genomeSize'])
 				#B = bedSize(bkg, MspcFE_conf['genomeSize'])
@@ -372,8 +372,8 @@ elif sys.argv[1] == '--run':
 								
 				# A/U vs notA/(G-U)
 				#print Q[1]/float(y[1]), Q[0], B[2], B[0]
-				A[tag] = coverageDifference(Q[1]/float(y[1]), Q[1],
-				                            B[2], B[1])
+				A[tag] = coverageDifference(Q[1]/float(y[1]), Q[0],
+				                            B[2], B[0])
 				
 				#print A[tag]
 				if (Q[0] == 1):

@@ -16,7 +16,17 @@ namespace Genometric.MSPC.CLI.Tests
         [Theory]
         [InlineData(0, 1, 2, 3, 4, 5, 6, true, 1E-4, PValueFormats.minus1_Log10_pValue)]
         [InlineData(5, 0, -1, 12, -1, -1, 1, false, 123.456, PValueFormats.SameAsInput)]
-        public void ReadParserConfig(byte chr, byte left, sbyte right, byte name, sbyte strand, sbyte summit, byte value, bool dropPeakIfInvalidValue, double defaultValue, PValueFormats pValueFormat)
+        public void ReadParserConfig(
+            byte chr, 
+            byte left, 
+            sbyte right, 
+            byte name, 
+            sbyte strand, 
+            sbyte summit, 
+            byte value, 
+            bool dropPeakIfInvalidValue, 
+            double defaultValue, 
+            PValueFormats pValueFormat)
         {
             // Arrange
             ParserConfig cols = new ParserConfig()

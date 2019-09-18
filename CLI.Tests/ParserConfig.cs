@@ -107,6 +107,41 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void RaiseExceptionForInvalidParserFiles()
+        {
+            // Arrange
+            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            new StreamWriter(rep1Path).Close();
+            new StreamWriter(rep2Path).Close();
+
+            // Act
+            string logFile;
+            using (var o = new Orchestrator())
+            {
+                o.Orchestrate(string.Format(
+                    "-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", 
+                    rep1Path, 
+                    rep2Path, 
+                    Path.GetTempFileName()).Split(' '));
+                logFile = o.LogFile;
+            }
+
+            var log = new List<string>();
+            string line;
+            using (var reader = new StreamReader(logFile))
+                while ((line = reader.ReadLine()) != null)
+                    log.Add(line);
+
+            // Assert
+            Assert.Contains(
+                log,
+                x => x.Contains(
+                    "Error reading parser configuration " +
+                    "JSON object, check if the given file"));
+        }
+
+        [Fact]
         public void TwoEqualConfigs()
         {
             // Arrange

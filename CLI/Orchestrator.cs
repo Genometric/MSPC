@@ -194,6 +194,14 @@ namespace Genometric.MSPC.CLI
                 try
                 {
                     config = ParserConfig.LoadFromJSON(options.ParserConfig);
+                    if (config == null)
+                    {
+                        _logger.LogException(string.Format(
+                            "Error reading parser configuration JSON object, " +
+                            "check if the given file '{0}' exists and is accessible.",
+                            options.ParserConfig));
+                        return false;
+                    }
                 }
                 catch (Exception e)
                 {

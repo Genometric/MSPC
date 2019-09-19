@@ -25,7 +25,7 @@ namespace Genometric.MSPC.CLI.Tests
                 msg = tmpMspc.Run(false, "-i rep1.bed -r bio -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("At least two samples are required; 1 is given.", msg);
+            Assert.Contains("at least two samples are required; 1 is given.", msg);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace Genometric.MSPC.CLI.Tests
                 msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("The following required arguments are missing: r|replicate;", msg);
+            Assert.Contains("the following required arguments are missing: r|replicate;", msg);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace Genometric.MSPC.CLI.Tests
                 msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("The following files are missing: rep1.bed; rep2.bed", msg);
+            Assert.Contains("the following files are missing: rep1.bed; rep2.bed", msg);
         }
 
         [Fact]
@@ -238,8 +238,8 @@ namespace Genometric.MSPC.CLI.Tests
                 messages = tmpMspc.FailRun();
 
             // Assert
-            Assert.Contains(messages, x => x.Contains("The following files are missing: rep1; rep2"));
-            Assert.Contains(messages, x => x.Contains("The following required arguments are missing: i|input"));
+            Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
+            Assert.Contains(messages, x => x.Contains("the following required arguments are missing: i|input"));
         }
 
         [Fact]
@@ -267,7 +267,7 @@ namespace Genometric.MSPC.CLI.Tests
                 messages = tmpMspc.FailRun(template2: "-i rep1 -i rep2 -o C:\\*<>*\\// -r bio -s 1e-8 -w 1e-4");
 
             // Assert
-            Assert.Contains(messages, x => x.Contains("The following files are missing: rep1; rep2"));
+            Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
             Assert.Contains(messages, x => x.Contains("Illegal characters in path."));
         }
 

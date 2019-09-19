@@ -92,7 +92,7 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 if (_logger == null)
-                    Console.WriteLine(e.Message);
+                    Logger.LogExceptionStatic(e.Message);
                 else
                     _logger.LogException(e);
                 return false;
@@ -129,7 +129,7 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 if (_logger == null)
-                    Console.WriteLine(e.Message);
+                    Logger.LogExceptionStatic(e.Message);
                 else
                     _logger.LogException(e);
                 return false;
@@ -150,7 +150,7 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Logger.LogExceptionStatic(e.Message);
                 return false;
             }
         }
@@ -160,7 +160,7 @@ namespace Genometric.MSPC.CLI
             if (input.Count < 2)
             {
                 _logger.LogException(
-                    string.Format("At least two samples are required; {0} is given.", input.Count));
+                    string.Format("at least two samples are required; {0} is given.", input.Count));
                 return false;
             }
 
@@ -171,7 +171,7 @@ namespace Genometric.MSPC.CLI
             if (missingFiles.Count > 0)
             {
                 _logger.LogException(
-                    string.Format("The following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
+                    string.Format("the following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
                 return false;
             }
 
@@ -197,7 +197,7 @@ namespace Genometric.MSPC.CLI
                     if (config == null)
                     {
                         _logger.LogException(string.Format(
-                            "Error reading parser configuration JSON object, " +
+                            "error reading parser configuration JSON object, " +
                             "check if the given file '{0}' exists and is accessible.",
                             options.ParserConfig));
                         return false;
@@ -205,7 +205,7 @@ namespace Genometric.MSPC.CLI
                 }
                 catch (Exception e)
                 {
-                    _logger.LogException("Error reading parser configuration JSON object: " + e);
+                    _logger.LogException("error reading parser configuration JSON object: " + e);
                     return false;
                 }
             }
@@ -247,7 +247,7 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 samples = null;
-                _logger.LogException("Error parsing data: " + e.Message);
+                _logger.LogException("error parsing data: " + e.Message);
                 return false;
             }
         }

@@ -20,9 +20,9 @@ namespace Genometric.MSPC.CLI.Logging
 {
     public class Logger
     {
-        private readonly int _sectionHeaderLenght = 30;
+        private readonly int _sectionHeaderLenght = 20;
         private readonly int _fileNameMaxLenght = 20;
-        private readonly string _cannotContinue = "MSPC cannot continue.";
+        private static readonly string _cannotContinue = "MSPC cannot continue.";
         private bool _lastStatusUpdatedItsPrevious;
         private Table _parserLogTable;
 
@@ -73,8 +73,8 @@ namespace Genometric.MSPC.CLI.Logging
         public void LogStartOfASection(string header)
         {
             string msg = ".::." + header.PadLeft(((_sectionHeaderLenght - header.Length) / 2) + header.Length, '.').PadRight(_sectionHeaderLenght, '.') + ".::.";
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(Environment.NewLine + msg + Environment.NewLine);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(Environment.NewLine + msg);
             Console.ResetColor();
             log.Info(msg);
         }
@@ -86,12 +86,17 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void LogException(string message)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
-            Console.ResetColor();
-            Console.WriteLine(_cannotContinue);
+            LogExceptionStatic(message);
             log.Error(message);
             log.Info(_cannotContinue);
+        }
+
+        public static void LogExceptionStatic(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(string.Format("Error: {0}", message));
+            Console.ResetColor();
+            Console.WriteLine(_cannotContinue);
         }
 
         public void LogMSPCStatus(object sender, ValueEventArgs e)
@@ -135,11 +140,12 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(message);
         }
 
-        public void LogFinish()
+        public void LogFinish(string message = "All processes successfully finished.")
         {
-            string msg = "All processes successfully finished";
-            Console.WriteLine(Environment.NewLine + msg + Environment.NewLine);
-            log.Info(msg);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(Environment.NewLine + message + Environment.NewLine);
+            Console.ResetColor();
+            log.Info(message);
         }
 
         public void ShutdownLogger()

@@ -102,7 +102,7 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains(
                 log, 
                 x => x.Contains(
-                    "Error reading parser configuration JSON object: Newtonsoft.Json.JsonReaderException: " +
+                    "error reading parser configuration JSON object: Newtonsoft.Json.JsonReaderException: " +
                     "Unexpected character encountered while parsing value"));
         }
 
@@ -137,7 +137,7 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains(
                 log,
                 x => x.Contains(
-                    "Error reading parser configuration " +
+                    "error reading parser configuration " +
                     "JSON object, check if the given file"));
         }
 

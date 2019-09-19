@@ -152,7 +152,7 @@ namespace Genometric.MSPC.CLI
 
             if (missingArgs.Count > 0)
             {
-                var msgBuilder = new StringBuilder("The following required arguments are missing: ");
+                var msgBuilder = new StringBuilder("the following required arguments are missing: ");
                 foreach (var item in missingArgs)
                     msgBuilder.Append(item + "; ");
                 throw new ArgumentException(msgBuilder.ToString());

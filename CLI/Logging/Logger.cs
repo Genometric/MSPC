@@ -140,11 +140,12 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(message);
         }
 
-        public void LogFinish()
+        public void LogFinish(string message = "All processes successfully finished.")
         {
-            string msg = "All processes successfully finished";
-            Console.WriteLine(Environment.NewLine + msg + Environment.NewLine);
-            log.Info(msg);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(Environment.NewLine + message + Environment.NewLine);
+            Console.ResetColor();
+            log.Info(message);
         }
 
         public void ShutdownLogger()

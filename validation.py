@@ -256,7 +256,8 @@ elif sys.argv[1] == '--run':
 	if DIM > 1:
 		otf = os.path.join(sys.argv[2], 'EnrichmentTest_results.txt')
 		oth = open(otf, 'w')
-		oth.write('dataset\tannotation\tN_anno\tpeakset\tN_peaks\t' +\
+		oth.write('dataset\tannotation\tN_anno\tanno_bp\tpeakset\t' +\
+		          'N_annoPeaks\tannoPeaks_bp\tannoNotPeaks_bp\t' +\
 		          'estimate\tCI95\tz\tSE\tpvalue\n')
 	for root in DATA:
 		#print root

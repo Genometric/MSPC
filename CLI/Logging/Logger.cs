@@ -158,7 +158,7 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void InitializeLoggingParser(int samplesCount)
         {
-            var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLengths, 11, 11, 12, 11 };
+            var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLength, 11, 11, 12, 11 };
             _parserLogTable = new Table(columnsWidth);
             _parserLogTable.AddHeader(new string[]
             {

@@ -21,7 +21,7 @@ namespace Genometric.MSPC.CLI.Logging
     public class Logger
     {
         private readonly int _sectionHeaderLenght = 20;
-        private readonly int _fileNameMaxLenght = 20;
+        private readonly int _fileNameMaxLength = 20;
         private static readonly string _cannotContinue = "MSPC cannot continue.";
         private bool _lastStatusUpdatedItsPrevious;
         private Table _parserLogTable;
@@ -158,7 +158,7 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void InitializeLoggingParser(int samplesCount)
         {
-            var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLenght, 11, 11, 12, 11 };
+            var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLengths, 11, 11, 12, 11 };
             _parserLogTable = new Table(columnsWidth);
             _parserLogTable.AddHeader(new string[]
             {
@@ -205,7 +205,7 @@ namespace Genometric.MSPC.CLI.Logging
             headerColumns[1] = "Filename";
             headerColumns[2] = "Read peaks#";
             columnsWidth[0] = IdxColChars(samples.Count);
-            columnsWidth[1] = _fileNameMaxLenght;
+            columnsWidth[1] = _fileNameMaxLength;
             columnsWidth[2] = headerColumns[2].Length;
             for (i = 3; i < columnsCount; i++)
             {

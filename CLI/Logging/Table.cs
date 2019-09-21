@@ -21,13 +21,13 @@ namespace Genometric.MSPC.CLI.Logging
             var headerLines = new string[_columnsWidth.Length];
             for (int i = 0; i < headerLines.Length; i++)
                 headerLines[i] = new string('-', _columnsWidth[i]);
-            Console.WriteLine(RenderRow(headers));
-            Console.WriteLine(RenderRow(headerLines));
+            Console.WriteLine(RenderRow(true, headers));
+            Console.WriteLine(RenderRow(true, headerLines));
         }
 
-        public string GetRow(params string[] columns)
+        public string GetRow(bool truncate = true, params string[] columns)
         {
-            return RenderRow(columns);
+            return RenderRow(truncate, columns);
         }
 
         /// <summary>
@@ -53,11 +53,15 @@ namespace Genometric.MSPC.CLI.Logging
             return string.Format("{0}/{1}", rowNumber.ToString("N0"), totalRows.ToString("N0"));
         }
 
-        private string RenderRow(params string[] columns)
+        private string RenderRow(bool truncate = true, params string[] columns)
         {
             var row = new StringBuilder();
-            for (int i = 0; i < columns.Length; i++)
-                row.Append(TruncateString(columns[i], _columnsWidth[i]) + "\t");
+            if (truncate)
+                for (int i = 0; i < columns.Length; i++)
+                    row.Append(TruncateString(columns[i], _columnsWidth[i]) + "\t");
+            else
+                for (int i = 0; i < columns.Length; i++)
+                    row.Append(columns[i] + "\t");
             return row.ToString();
         }
 

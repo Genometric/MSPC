@@ -18,7 +18,7 @@ namespace Genometric.MSPC.CLI.Tests
             var table = new Logging.Table(new int[] { length });
 
             // Act
-            var row = table.GetRow(new string[] { content }).Replace('\t', ' ').Trim();
+            var row = table.GetRow(columns: new string[] { content }).Replace('\t', ' ').Trim();
 
             // Assert
             Assert.Contains("...", row);
@@ -35,7 +35,7 @@ namespace Genometric.MSPC.CLI.Tests
             var table = new Logging.Table(new int[] { length });
 
             // Act
-            var row = table.GetRow(new string[] { content }).Replace('\t', ' ').Trim();
+            var row = table.GetRow(columns: new string[] { content }).Replace('\t', ' ').Trim();
 
             // Assert
             Assert.DoesNotContain("...", row);

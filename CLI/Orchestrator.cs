@@ -235,7 +235,7 @@ namespace Genometric.MSPC.CLI
                     _logger.LogParser(
                         counter,
                         files.Count,
-                        Path.GetFileNameWithoutExtension(file),
+                        file,
                         parsedData.IntervalsCount,
                         parsedData.PValueMin.Value,
                         parsedData.PValueMean,

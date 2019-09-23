@@ -13,6 +13,7 @@ using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using static Genometric.MSPC.CLI.Logging.Table;
 
@@ -21,7 +22,7 @@ namespace Genometric.MSPC.CLI.Logging
     public class Logger
     {
         private readonly int _sectionHeaderLenght = 20;
-        private readonly int _fileNameMaxLenght = 20;
+        private readonly int _fileNameMaxLength = 20;
         private static readonly string _cannotContinue = "MSPC cannot continue.";
         private bool _lastStatusUpdatedItsPrevious;
         private Table _parserLogTable;
@@ -158,7 +159,7 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void InitializeLoggingParser(int samplesCount)
         {
-            var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLenght, 11, 11, 12, 11 };
+            var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLength, 11, 11, 12, 11 };
             _parserLogTable = new Table(columnsWidth);
             _parserLogTable.AddHeader(new string[]
             {
@@ -175,7 +176,7 @@ namespace Genometric.MSPC.CLI.Logging
             double meanPValue,
             double maxPValue)
         {
-            var row = _parserLogTable.GetRow(new string[]
+            var columns = new string[]
             {
                 IdxColFormat(fileNumber, filesToParse),
                 filename,
@@ -183,10 +184,13 @@ namespace Genometric.MSPC.CLI.Logging
                 string.Format("{0:E3}", minPValue),
                 string.Format("{0:E3}", meanPValue),
                 string.Format("{0:E3}", maxPValue)
-            });
+            };
 
-            Console.WriteLine(row);
-            log.Info(row);
+            columns[1] = Path.GetFileNameWithoutExtension(filename);
+            Console.WriteLine(_parserLogTable.GetRow(true, columns));
+
+            columns[1] = filename;
+            log.Info(_parserLogTable.GetRow(false, columns));
         }
 
         public void LogSummary(
@@ -205,7 +209,7 @@ namespace Genometric.MSPC.CLI.Logging
             headerColumns[1] = "Filename";
             headerColumns[2] = "Read peaks#";
             columnsWidth[0] = IdxColChars(samples.Count);
-            columnsWidth[1] = _fileNameMaxLenght;
+            columnsWidth[1] = _fileNameMaxLength;
             columnsWidth[2] = headerColumns[2].Length;
             for (i = 3; i < columnsCount; i++)
             {
@@ -233,7 +237,7 @@ namespace Genometric.MSPC.CLI.Logging
                     sampleSummary[i++] = (value / totalPeaks).ToString("P");
                 }
 
-                var row = table.GetRow(sampleSummary);
+                var row = table.GetRow(true, sampleSummary);
                 Console.WriteLine(row);
                 log.Info(row);
             }

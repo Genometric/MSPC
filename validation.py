@@ -344,18 +344,18 @@ elif sys.argv[1] == '--run':
 				
 				#### DEFINING ANNOTATION SETS
 				
-				# Genomic Annotations (variable: gan) overlapping peaks (variable: x)
+				# Part of Genomic Annotations (variable: gan) within peaks (variable: x)
 				call('bedtools intersect -a ' + annotation +\
-				     ' -b ' + x + ' -wa > ' + gan + '.tmp',
+				     ' -b ' + x + ' > ' + gan + '.tmp',
 				     shell = True)
 				# Removing possible duplicates from gan
 				call('awk \'!seen[$0]++\' ' + gan + '.tmp > ' + gan,
 				     shell = True)
 				os.remove(gan + '.tmp')
 				
-				# Genomic annotations not overlapping peaks (variable: bkg)
-				call('bedtools intersect -a ' + annotation +\
-				     ' -b ' + x + ' -v > ' + bkg,
+				# Part of Genomic annotations outside peaks (variable: bkg)
+				call('bedtools subtract -a ' + annotation +\
+				     ' -b ' + x + ' > ' + bkg,
 				     shell = True)
 				
 				#### COVERAGE CALCULATION
@@ -364,7 +364,7 @@ elif sys.argv[1] == '--run':
 				U = bedSize(x, MspcFE_conf['genomeSize'])
 				# Coverage of annotations overlapping peaks
 				Q = bedSize(gan, U[1] + 1)
-				# Coverage of annotations overlapping peaks
+				# Coverage of annotations not overlapping peaks
 				B = bedSize(bkg, MspcFE_conf['genomeSize'] - U[1] - 1)
 				
 				'''
@@ -388,7 +388,8 @@ elif sys.argv[1] == '--run':
 				else:
 					#### COVERAGE ENRICHMENT TESTING
 					
-					A[tag] = coverageDifference(Q[2], Q[1], B[2], B[1])
+					# input: prop of annotations within peaks, peak coverage, proportion of annotations outside peaks, genome size - peak coverage
+					A[tag] = coverageDifference(Q[2], U[1]+1, B[2], MspcFE_conf['genomeSize'] - U[1] - 1)
 					
 					line = root + '\t' + tag + '\t' +\
 					       str(MspcFE_conf[tag][0]) + '\t' +\

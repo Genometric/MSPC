@@ -10,7 +10,7 @@ import scipy.stats as stats
 from shutil import copyfile, rmtree
 from subprocess import call
 
-defaultConf = 'MSPC_FunctionalEnrichment/annotations/hg19_annotations/hg19.conf.txt'
+defaultConf = 'MSPC_FunctionalEnrichment/annotations/hg38_annotations/hg38.conf.txt'
 
 def absPaths(directory):
 	paths = []
@@ -91,11 +91,6 @@ def bedSize(bed, genomeSize):
 	with open(bed, 'r') as b:
 		for line in b:
 			if bedHeader:
-				m = re.search('^chr\d+', line)
-				if m == None and not line[:4] in ('chrX', 'chrY', 'chrM'):
-					line = line.strip().split()
-					C += int(line[2]) - int(line[1])
-					N += 1
 				bedHeader = False
 			else:
 				line = line.strip().split()
@@ -114,7 +109,7 @@ def coverageDifference(pA, nA, pB, nB, b0 = 0, level = 0.95, pooled = True, perc
 			SE = math.sqrt(q*(1 - q)*(1/float(nA) + 1/float(nB)))
 		else:
 			SE = math.sqrt(pA*(1 - pA)/float(nA) + pB*(1 - pB)/float(nB))
-		z = (b-b0)/SE
+		z = (b - b0)/SE
 		P = 2*(1 - stats.norm.cdf(abs(z)))
 		l95 = b - stats.norm.ppf(level)*SE
 		u95 = b + stats.norm.ppf(level)*SE
@@ -261,7 +256,8 @@ elif sys.argv[1] == '--run':
 	if DIM > 1:
 		otf = os.path.join(sys.argv[2], 'EnrichmentTest_results.txt')
 		oth = open(otf, 'w')
-		oth.write('dataset\tannotation\tN_anno\tpeakset\tN_peaks\t' +\
+		oth.write('dataset\tannotation\tN_anno\tanno_bp\tpeakset\t' +\
+		          'N_annoPeaks\tannoPeaks_bp\tannoNotPeaks_bp\t' +\
 		          'estimate\tCI95\tz\tSE\tpvalue\n')
 	for root in DATA:
 		#print root
@@ -278,11 +274,17 @@ elif sys.argv[1] == '--run':
 			if f.find(sys.argv[4]) > -1:
 				alt = f
 		
+		#print pfx
+		#print cpf
+		#print spf
+		#print mpf
+		#print sbj
+		#print alt
+		
 		sortBed(sbj)
 		sortBed(alt)
 		raw = alt
 		alt = alt.split('.')[0] + '_merged.bed'
-		#alt = alt.replace('-', '_')
 		
 		call('bedtools merge -i ' + raw + ' > ' + alt + '.tmp',
 		     shell = True)
@@ -314,11 +316,6 @@ elif sys.argv[1] == '--run':
 		MspcFE_conf = loadConf(defaultConf)
 		anndir = os.path.join(os.path.dirname(cpf), 'annotations')
 		bkgdir = os.path.join(os.path.dirname(cpf), 'background')
-		C = bedSize(cpf, MspcFE_conf['genomeSize'])
-		S = bedSize(spf, MspcFE_conf['genomeSize'])
-		M = bedSize(mpf, MspcFE_conf['genomeSize'])
-		#U = bedSize(sbj, MspcFE_conf['genomeSize'])
-		U = (C, S, M)
 		if not os.path.exists(anndir):
 			os.mkdir(anndir)
 		if not os.path.exists(bkgdir):
@@ -327,13 +324,16 @@ elif sys.argv[1] == '--run':
 		A = {}
 		res = os.path.join(pfx, root + "_results.txt")
 		ran = open(res, 'w')
-		ran.write('dataset\tannotation\tN_anno\tpeakset\tN_peaks\t' +\
+		ran.write('dataset\tannotation\tN_anno\tanno_bp\tpeakset\t' +\
+		          'N_annoPeaks\tannoPeaks_bp\tannoNotPeaks_bp\t' +\
 		          'estimate\tCI95\tz\tSE\tpvalue\n')
+		
 		for annotation in absPaths(MspcFE_conf['annotationDirectory']):
 			tag = os.path.basename(annotation).split('.')[0]
-			#print '# Annotating', tag, '...'
+			#print tag
+			
 			A[tag] = []
-			for x, y in zip((cpf, spf, mpf), U):
+			for x in (cpf, spf, mpf):
 				base = os.path.basename(x).split('.')[0]
 				gan = os.path.join(anndir,\
 				      os.path.basename(annotation).split('.')[0] +\
@@ -341,60 +341,72 @@ elif sys.argv[1] == '--run':
 				bkg = os.path.join(bkgdir,\
 				      os.path.basename(annotation).split('.')[0] +\
 				      '_' + base + '.bkg')
-				#call('bedtools intersect -a ' + x +\
-				#     ' -b ' + annotation + ' -wa > ' + gan + '.tmp',
-				#     shell = True)
+				
+				#### DEFINING ANNOTATION SETS
+				
+				# Genomic Annotations (variable: gan) overlapping peaks (variable: x)
 				call('bedtools intersect -a ' + annotation +\
 				     ' -b ' + x + ' -wa > ' + gan + '.tmp',
 				     shell = True)
+				# Removing possible duplicates from gan
 				call('awk \'!seen[$0]++\' ' + gan + '.tmp > ' + gan,
 				     shell = True)
 				os.remove(gan + '.tmp')
-				call('bedtools intersect -a ' + x +\
-				     ' -b ' + annotation + ' -v > ' + bkg,
+				
+				# Genomic annotations not overlapping peaks (variable: bkg)
+				call('bedtools intersect -a ' + annotation +\
+				     ' -b ' + x + ' -v > ' + bkg,
 				     shell = True)
-				#call('bedtools intersect -a ' + annotation +\
-				#     ' -b ' + x + ' -v > ' + bkg,
-				#     shell = True)
 				
-				Q = bedSize(gan, MspcFE_conf['genomeSize'])
-				#B = bedSize(bkg, MspcFE_conf['genomeSize'])
-				B = bedSize(bkg, MspcFE_conf['genomeSize'] - y[1])
+				#### COVERAGE CALCULATION
 				
+				# Peak coverage calculation (variable U[1] = coverage of peaks)
+				U = bedSize(x, MspcFE_conf['genomeSize'])
+				# Coverage of annotations overlapping peaks
+				Q = bedSize(gan, U[1] + 1)
+				# Coverage of annotations overlapping peaks
+				B = bedSize(bkg, MspcFE_conf['genomeSize'] - U[1] - 1)
+				
+				'''
 				# pseudocount
 				Q[0] += 1
 				if B[0] == 0:
 					B[0] = 1
-				if y[1] == 0:
-					y[1] = 1
+				if U[1] == 0:
+					U[1] = 1
 				# -----------
-				#print Q[0], B[0], B[1]/float(y[1])
-								
-				# A/U vs notA/(G-U)
-				#print Q[1]/float(y[1]), Q[0], B[2], B[0]
-				A[tag] = coverageDifference(Q[1]/float(y[1]), Q[0],
-				                            B[2], B[0])
+				'''
 				
 				#print A[tag]
-				if (Q[0] == 1):
+				if (Q[1] == 0):
 					line = root + '\t' + tag + '\t' +\
 					       str(MspcFE_conf[tag][0]) + '\t' +\
+					       str(MspcFE_conf[tag][1]) + '\t' +\
 					       os.path.basename(x).split('.')[0] + '\t' +\
-					       str(Q[0] - 1) + '\t0\tNA\t0\tNA\t1\n'
+					       str(Q[0]) + '\tNA\tNA\t' +\
+					       '0\tNA\t0\tNA\t1\n'
 				else:
+					#### COVERAGE ENRICHMENT TESTING
+					
+					A[tag] = coverageDifference(Q[2], Q[1], B[2], B[1])
+					
 					line = root + '\t' + tag + '\t' +\
 					       str(MspcFE_conf[tag][0]) + '\t' +\
+					       str(MspcFE_conf[tag][1]) + '\t' +\
 					       os.path.basename(x).split('.')[0] + '\t' +\
-					       str(Q[0] - 1) + '\t' +\
+					       str(Q[0]) + '\t' +\
+					       str(Q[1]) + '\t' + str(B[1]) + '\t' +\
 					       str(A[tag]['estimate']) + '\t' +\
-					       str(round(A[tag]['ci95'][0], 5)) + '-' +\
+					       str(round(A[tag]['ci95'][0], 5)) + ', ' +\
 					       str(round(A[tag]['ci95'][1], 5)) + '\t' +\
 					       str(A[tag]['z']) + '\t' +\
 					       str(A[tag]['SE']) + '\t' +\
 					       str(A[tag]['pvalue']) + '\n'
+				
 				ran.write(line)
 				if DIM > 1:
 					oth.write(line)
+				
 				# Unlock to increase verbosity
 				'''
 				print
@@ -424,18 +436,10 @@ elif sys.argv[1] == '--run':
 			print '# Fetching genomic DNA sequence ...'
 			print '# Genome release:', MspcFE_conf['genome']
 			
-			for x in (cpf, spf, mpf):
-				pass
-			
-			# !!! WORK IN PROGRESS !!! #
-			
 			#for x in (cpf, spf, mpf):
-			#	call('euNet.py filter ' + x + ' -c 1 -o ' + x +\
-			#	     '.tmp -v', shell = True)
-			#	os.rename(x + ".tmp", x)
-			#	call("euNet.py refinder " + x + " " +\
-			#	     MspcFE_conf['genome'],
-			#		 shell = True)
+			#	pass
+			
+			print '#### WORK IN PROGRESS !! ####'
 			
 			print '# Done.\n'
 	

@@ -39,7 +39,7 @@ namespace Genometric.MSPC.CLI.Tests
                 msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("the following required arguments are missing: r|replicate;", msg);
+            Assert.Contains("the following required arguments are missing: -r|--replicate;", msg);
         }
 
         [Fact]
@@ -241,7 +241,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
-            Assert.Contains(messages, x => x.Contains("the following required arguments are missing: i|input"));
+            Assert.Contains(messages, x => x.Contains("the following required arguments are missing: -i|--input"));
         }
 
         [Fact]

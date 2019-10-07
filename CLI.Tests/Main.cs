@@ -224,7 +224,9 @@ namespace Genometric.MSPC.CLI.Tests
                 msg = tmpMspc.Run(sessionPath: illegalPath);
 
             // Assert
-            Assert.Contains("Illegal characters in path.", msg);
+            Assert.True(
+                msg.Contains("Illegal characters in path.") || 
+                msg.Contains("The filename, directory name, or volume label syntax is incorrect"));
         }
 
         [Fact]
@@ -268,7 +270,10 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
-            Assert.Contains(messages, x => x.Contains("Illegal characters in path."));
+            Assert.Contains(
+                messages, 
+                x => x.Contains("Illegal characters in path.") || 
+                x.Contains("The filename, directory name, or volume label syntax is incorrect"));
         }
 
         [Fact]

@@ -348,7 +348,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("the following required arguments are missing: r|replicate; ", exception.Message);
+            Assert.Equal("the following required arguments are missing: -r|--replicate; ", exception.Message);
         }
 
         [Fact]

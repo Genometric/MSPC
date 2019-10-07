@@ -145,10 +145,10 @@ namespace Genometric.MSPC.CLI
         private void AssertRequiredArgsAreGiven()
         {
             var missingArgs = new List<string>();
-            if (!_cInput.HasValue()) missingArgs.Add(_cInput.ShortName + "|" + _cInput.LongName);
-            if (!_cReplicate.HasValue()) missingArgs.Add(_cReplicate.ShortName + "|" + _cReplicate.LongName);
-            if (!_cTauS.HasValue()) missingArgs.Add(_cTauS.ShortName + "|" + _cTauS.LongName);
-            if (!_cTauW.HasValue()) missingArgs.Add(_cTauW.ShortName + "|" + _cTauW.LongName);
+            if (!_cInput.HasValue()) missingArgs.Add(FormatMissingArg(_cInput));
+            if (!_cReplicate.HasValue()) missingArgs.Add(FormatMissingArg(_cReplicate));
+            if (!_cTauS.HasValue()) missingArgs.Add(FormatMissingArg(_cTauS));
+            if (!_cTauW.HasValue()) missingArgs.Add(FormatMissingArg(_cTauW));
 
             if (missingArgs.Count > 0)
             {
@@ -279,6 +279,11 @@ namespace Genometric.MSPC.CLI
             }
 
             return rtv.ToArray();
+        }
+
+        private string FormatMissingArg(CommandOption arg)
+        {
+            return string.Format("-{0}|--{1}", arg.ShortName, arg.LongName);
         }
 
         public Config Parse(string[] args, out bool helpIsDisplayed)

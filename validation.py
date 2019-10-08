@@ -256,9 +256,9 @@ elif sys.argv[1] == '--run':
 	if DIM > 1:
 		otf = os.path.join(sys.argv[2], 'EnrichmentTest_results.txt')
 		oth = open(otf, 'w')
-		oth.write('dataset\tannotation\tN_anno\tanno_bp\tpeakset\t' +\
-		          'N_annoPeaks\tannoPeaks_bp\tannoNotPeaks_bp\t' +\
-		          'estimate\tCI95\tz\tSE\tpvalue\n')
+		oth.write('dataset\tannotation\tN_anno\tannoCoverage\tpeakset\t' +\
+		          'propAnnoPeaks\tpeaksCoverage\tpropAnnoNotPeaks\t' +\
+		          'genomeSize\testimate\tCI95\tz\tSE\tpvalue\n')
 	for root in DATA:
 		#print root
 		print '# Processing data:', root
@@ -324,9 +324,9 @@ elif sys.argv[1] == '--run':
 		A = {}
 		res = os.path.join(pfx, root + "_results.txt")
 		ran = open(res, 'w')
-		ran.write('dataset\tannotation\tN_anno\tanno_bp\tpeakset\t' +\
-		          'N_annoPeaks\tannoPeaks_bp\tannoNotPeaks_bp\t' +\
-		          'estimate\tCI95\tz\tSE\tpvalue\n')
+		ran.write('dataset\tannotation\tN_anno\tannoCoverage\tpeakset\t' +\
+		          'propAnnoPeaks\tpeaksCoverage\tpropAnnoNotPeaks\t' +\
+		          'genomeSize\testimate\tCI95\tz\tSE\tpvalue\n')
 		
 		for annotation in absPaths(MspcFE_conf['annotationDirectory']):
 			tag = os.path.basename(annotation).split('.')[0]
@@ -384,19 +384,23 @@ elif sys.argv[1] == '--run':
 					       str(MspcFE_conf[tag][1]) + '\t' +\
 					       os.path.basename(x).split('.')[0] + '\t' +\
 					       str(Q[0]) + '\tNA\tNA\t' +\
-					       '0\tNA\t0\tNA\t1\n'
+					       '0\tNA\tNA\t0\tNA\t1\n'
 				else:
 					#### COVERAGE ENRICHMENT TESTING
 					
-					# input: prop of annotations within peaks, peak coverage, proportion of annotations outside peaks, genome size - peak coverage
-					A[tag] = coverageDifference(Q[2], U[1]+1, B[2], MspcFE_conf['genomeSize'] - U[1] - 1)
+					# input: prop of annotations within peaks,
+					#        peak coverage,
+					#        proportion of annotations outside peaks,
+					#        genome size - peak coverage
+					A[tag] = coverageDifference(Q[2], U[1] + 1, B[2], MspcFE_conf['genomeSize'] - U[1] - 1)
 					
 					line = root + '\t' + tag + '\t' +\
 					       str(MspcFE_conf[tag][0]) + '\t' +\
 					       str(MspcFE_conf[tag][1]) + '\t' +\
 					       os.path.basename(x).split('.')[0] + '\t' +\
-					       str(Q[0]) + '\t' +\
-					       str(Q[1]) + '\t' + str(B[1]) + '\t' +\
+					       str(Q[2]) + '\t' +\
+					       str(U[1]) + '\t' + str(B[2]) + '\t' +\
+					       str(MspcFE_conf['genomeSize']) + '\t' +\
 					       str(A[tag]['estimate']) + '\t' +\
 					       str(round(A[tag]['ci95'][0], 5)) + ', ' +\
 					       str(round(A[tag]['ci95'][1], 5)) + '\t' +\

@@ -1,8 +1,12 @@
 #! /usr/bin/Rscript
 
+# MSPC enrichment plots
+
 suppressPackageStartupMessages(library("ggplot2"))
 
 args <- (commandArgs(TRUE))
+#getwd()
+#args <- c("MSPC_comparison_results.txt", "all")
 setwd(dirname(args[1]))
 etest <- read.delim(args[1], stringsAsFactors = FALSE)
 
@@ -10,15 +14,17 @@ if (args[2] %in% c("boxplot", "all")) {
 	box <- paste(c(strsplit(args[1], "\\.")[[1]][1],
 	             "_boxplot.pdf"),
 	             collapse = "")
+	#print(box)
 	# Enriched peaks threshold
-	E <- etest[etest$N_peaks >= 20,]
+	E <- etest[etest$propAnnoPeaks > 0,]
 	# Using enrichment test z score
 	Enrichment_score <- E$z
 	# Using enrichment test P-value
 	#Enrichment_score <- -log10(E$pvalue + 2.2E-16)
+		
+	#jpeg(boxplot, width = 15, height = 15, units = 'in', res = 300)
+	#pdf(box)
 	Dataset <- as.factor(E$peakset)
-	# Boxplot building
-	
 	ggplot(E, aes(x = Dataset, y = Enrichment_score, fill = Dataset)) +
 	geom_boxplot(outlier.size = 0.5) +
 	#geom_boxplot(outlier.size = -1) +                # No outliers
@@ -33,6 +39,7 @@ if (args[2] %in% c("boxplot", "all")) {
 		  legend.text = element_text(size = 12))
 	# +
 	#scale_y_continuous(limits = c(-40, 40))         # rescale y axis
+	#dev.off()
 }
 
 if (args[2] %in% c("density", "all")) {
@@ -42,6 +49,7 @@ if (args[2] %in% c("density", "all")) {
 	
 	E <- etest[etest$N_peaks >= 20,]
 	
+	pdf(den)
 	plot(density(E$z[E$peakset == "common"], bw = 5),
 		 col = "blue",
 		 lwd = 2,
@@ -62,6 +70,7 @@ if (args[2] %in% c("density", "all")) {
 			   "IDR-specific enrichment"),
 	lty = c(1, 1, 1))
 	abline(v = 0, lty = 2)
+	dev.off()
 }
 
 if (args[2] %in% c("scatter", "all")) {
@@ -83,6 +92,8 @@ if (args[2] %in% c("scatter", "all")) {
 	x <- Enrichment_score
 	y <- Pvalue
 	
+	#jpeg(scatter, width = 15, height = 15, units = 'in', res = 300)
+	pdf(scatter)
 	ggplot(E, aes(x = Enrichment_score, y = Pvalue)) +
 	geom_point(shape = 5, col = Dataset) +
 	#geom_smooth(method = lm, formula = y ~ x,
@@ -107,4 +118,5 @@ if (args[2] %in% c("scatter", "all")) {
 	# +
 	#scale_x_continuous(limits = c(0, 6)) +
 	#scale_y_continuous(limits = c(0, 10))
+	dev.off()
 }

@@ -182,11 +182,18 @@ namespace Genometric.MSPC.CLI
             }
             else
             {
-                var files = Directory.GetFiles(
-                    Path.GetDirectoryName(_cFolderInput.Values[0]),
-                    Path.GetFileName(_cFolderInput.Values[0]));
-                foreach (var file in files)
-                    _inputFiles.Add(file);
+                try
+                {
+                    var files = Directory.GetFiles(
+                        Path.GetDirectoryName(_cFolderInput.Values[0]),
+                        Path.GetFileName(_cFolderInput.Values[0]));
+                    foreach (var file in files)
+                        _inputFiles.Add(file);
+                }
+                catch(Exception e)
+                {
+                    throw new ArgumentException(e.Message);
+                }
             }
         }
 

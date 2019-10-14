@@ -180,7 +180,8 @@ namespace Genometric.MSPC.CLI
                     else
                         _inputFiles.Add(input);
             }
-            else
+
+            if (_cFolderInput.HasValue())
             {
                 try
                 {
@@ -190,7 +191,7 @@ namespace Genometric.MSPC.CLI
                     foreach (var file in files)
                         _inputFiles.Add(file);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     throw new ArgumentException(e.Message);
                 }

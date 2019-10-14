@@ -71,7 +71,7 @@ namespace Genometric.MSPC.CLI.Tests
         [InlineData("BED", 10, 20)]
         [InlineData("TXT", 2, 200)]
         [InlineData("NARROWPEAK", 20, 0)]
-        public void ReadInputFolder(string inputFileType, int inputFilesCount, int otherFilesCount = 20)
+        public void ReadInputFolder(string inputFileType, int inputFilesCount, int otherFilesCount)
         {
             // Arrange
             var options = new CommandLineOptions();
@@ -92,6 +92,39 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Clean up
             Directory.Delete(tmpPath, true);
+        }
+
+        [Fact]
+        public void ReadInputFileAndFolderInCombination()
+        {
+            // Arrange
+            string inputFileType = "BED";
+            int inputFilesCount = 10;
+            var options = new CommandLineOptions();
+            var tmpPath = Path.GetTempPath() + new Random().Next() + Path.DirectorySeparatorChar;
+            Directory.CreateDirectory(tmpPath);
+            for (int i = 0; i < inputFilesCount; i++)
+                File.Create(string.Format("{0}{1}.{2}", tmpPath, i, inputFileType)).Dispose();
+            var anotherTmpPath = Path.GetTempPath() + new Random().Next() + Path.DirectorySeparatorChar;
+            var anotherTmpFile = string.Format("{0}{1}.{2}", tmpPath, 1, inputFileType);
+            Directory.CreateDirectory(anotherTmpPath);
+            File.Create(anotherTmpFile).Dispose();
+
+            // Act
+            options.Parse(string.Format(
+                "-i {0} -f {1} -r bio -s 1e-8 -w 1e-4", 
+                anotherTmpFile, 
+                tmpPath + "*." + inputFileType).Split(' '), out bool _);
+
+            // Assert
+            Assert.True(options.Input.Count == inputFilesCount + 1);
+            for (int i = 0; i < inputFilesCount; i++)
+                Assert.Contains(options.Input, x => x == string.Format("{0}{1}.{2}", tmpPath, i, inputFileType));
+            Assert.Contains(options.Input, x => x == anotherTmpFile);
+
+            // Clean up
+            Directory.Delete(tmpPath, true);
+            Directory.Delete(anotherTmpPath, true);
         }
 
         [Theory]

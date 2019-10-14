@@ -13,7 +13,8 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 
 | Argument | Required | Short arg | Valid Values | Default Value |
 | -------- | -------- | -------------- | ------------ | ------------- |
-| [Input](#input)          | ✓ | `-i` | BED file | none |
+| [Input](#input)          | ✓* | `-i` | BED file | none |
+| [Input Folder](#input-folder)  | ✓* | `-f` | Folder path | none |
 | [Replicate Type](#replicate-type) | ✓ | `-r` | `bio`, `tec` | none |
 | [Stringency threshold](#stringency-threshold) | ✓ | `-s` | `double` | none |
 | [Weak threshold](#weak-threshold) | ✓ | `-w` | `double` | none |
@@ -25,6 +26,7 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 | [Input Parser Configuration](#input-parser-configuration) |   | `-p` | File path | none |
 | [Output path](#output-path) | | `-o` | Directory path | `session_` + `<Timestamp>`|
 
+* At least one of these arguments should be provided.
 
 
 ## Arguments
@@ -43,7 +45,6 @@ Example:
 dotnet CLI.dll -i rep1.bed -i rep2.bed -i rep3.bed -r bio -w 1e-4 -s 1e-8
 ```
 
-
 [Wildcard characters](https://en.wikipedia.org/wiki/Wildcard_character) can be 
 used to specify multiple files; for instance:
 
@@ -53,6 +54,38 @@ $ dotnet CLI.dll -i *.bed -r bio -w 1e-4 -s 1e-8
 
 # read multiple set of files in different directories:
 $ dotnet CLI.dll -i C:\setA\*.bed -i C:\setB\sci-ATAC*.bed -r bio -w 1e-4 -s 1e-8
+```
+
+The [`--input`](#input) argument can be used toghether with [`--folder`](#input-folder) argument.
+
+Example:
+
+```shell
+dotnet CLI.dll -f C:\data\*.bed -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+```
+
+See [`--folder`](#input-folder) argument section for details.
+
+
+### Input Folder
+Sample files can be read from a folder specified using wildcard characters.
+
+| Short | Long | Required | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-f` | `--folder` |  | Folder path | none |
+
+Example:
+
+```shell
+dotnet CLI.dll -f C:\data\*.bed -r bio -w 1e-4 -s 1e-8
+```
+
+The [`--folder`](#input-folder) argument can be used together with the [`--input`](#input) argument. 
+
+Example:
+
+```shell
+dotnet CLI.dll -f C:\data\*.bed -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 ### Replicate Type

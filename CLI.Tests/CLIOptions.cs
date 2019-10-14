@@ -68,6 +68,66 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
+        [InlineData("BED", 10, 20)]
+        [InlineData("TXT", 2, 200)]
+        [InlineData("NARROWPEAK", 20, 0)]
+        public void ReadInputFolder(string inputFileType, int inputFilesCount, int otherFilesCount)
+        {
+            // Arrange
+            var options = new CommandLineOptions();
+            var tmpPath = Path.GetTempPath() + new Random().Next() + Path.DirectorySeparatorChar;
+            Directory.CreateDirectory(tmpPath);
+            for (int i = 0; i < inputFilesCount; i++)
+                File.Create(string.Format("{0}{1}.{2}", tmpPath, i, inputFileType)).Dispose();
+            for (int i = 0; i < otherFilesCount; i++)
+                File.Create(string.Format("{0}{1}.{2}", tmpPath, i, Utilities.GetRandomString(3))).Dispose();
+
+            // Act
+            options.Parse(string.Format("-f {0} -r bio -s 1e-8 -w 1e-4", tmpPath + "*." + inputFileType).Split(' '), out bool _);
+
+            // Assert
+            Assert.True(options.Input.Count == inputFilesCount);
+            for (int i = 0; i < inputFilesCount; i++)
+                Assert.Contains(options.Input, x => x == string.Format("{0}{1}.{2}", tmpPath, i, inputFileType));
+
+            // Clean up
+            Directory.Delete(tmpPath, true);
+        }
+
+        [Fact]
+        public void ReadInputFileAndFolderInCombination()
+        {
+            // Arrange
+            string inputFileType = "BED";
+            int inputFilesCount = 10;
+            var options = new CommandLineOptions();
+            var tmpPath = Path.GetTempPath() + new Random().Next() + Path.DirectorySeparatorChar;
+            Directory.CreateDirectory(tmpPath);
+            for (int i = 0; i < inputFilesCount; i++)
+                File.Create(string.Format("{0}{1}.{2}", tmpPath, i, inputFileType)).Dispose();
+            var anotherTmpPath = Path.GetTempPath() + new Random().Next() + Path.DirectorySeparatorChar;
+            var anotherTmpFile = string.Format("{0}{1}.{2}", tmpPath, 1, inputFileType);
+            Directory.CreateDirectory(anotherTmpPath);
+            File.Create(anotherTmpFile).Dispose();
+
+            // Act
+            options.Parse(string.Format(
+                "-i {0} -f {1} -r bio -s 1e-8 -w 1e-4", 
+                anotherTmpFile, 
+                tmpPath + "*." + inputFileType).Split(' '), out bool _);
+
+            // Assert
+            Assert.True(options.Input.Count == inputFilesCount + 1);
+            for (int i = 0; i < inputFilesCount; i++)
+                Assert.Contains(options.Input, x => x == string.Format("{0}{1}.{2}", tmpPath, i, inputFileType));
+            Assert.Contains(options.Input, x => x == anotherTmpFile);
+
+            // Clean up
+            Directory.Delete(tmpPath, true);
+            Directory.Delete(anotherTmpPath, true);
+        }
+
+        [Theory]
         [InlineData("rep1.bed rep2.bed rep3.bed", null, 3)]
         [InlineData("rep1.bed rep2.bed rep3.bed", "rep4.bed rep5.bed", 5)]
         public void ReadInputWhenWildCardCharAreExpanded(string inputArg1, string inputArg2, int inputCount)
@@ -318,6 +378,17 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void ThrowExceptionForInvalidInputFolder()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-f /none/existing/path -w 1E-4 -s 1E-8 -r bio".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+        }
+
+        [Fact]
         public void ThrowExceptionForMissingTauS()
         {
             // Arrange & Act
@@ -348,7 +419,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("the following required arguments are missing: -r|--replicate; ", exception.Message);
+            Assert.Equal("the following required arguments are missing: -r|--replicate.", exception.Message);
         }
 
         [Fact]

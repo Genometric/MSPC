@@ -39,7 +39,7 @@ namespace Genometric.MSPC.CLI.Tests
                 msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("the following required arguments are missing: -r|--replicate;", msg);
+            Assert.Contains("the following required arguments are missing: -r|--replicate.", msg);
         }
 
         [Fact]
@@ -128,6 +128,7 @@ namespace Genometric.MSPC.CLI.Tests
                 "\r\n  -? | -h | --help                      Show help information" +
                 "\r\n  -v | --version                        Show version information" +
                 "\r\n  -i | --input <value>                  Input samples to be processed in Browser Extensible Data (BED) Format." +
+                "\r\n  -f | --folder-input <value>           Sets a path to a folder that all its containing files in BED format are considered as inputs." +
                 "\r\n  -r | --replicate <value>              Sets the replicate type of samples. Possible values are: { Bio, Biological, Tec, Technical }" +
                 "\r\n  -w | --tauW <value>                   Sets weak threshold. All peaks with p-values higher than this value are considered as weak peaks." +
                 "\r\n  -s | --tauS <value>                   Sets stringency threshold. All peaks with p-values lower than this value are considered as stringent peaks." +
@@ -241,7 +242,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
-            Assert.Contains(messages, x => x.Contains("the following required arguments are missing: -i|--input"));
+            Assert.Contains(messages, x => x.Contains("the following required arguments are missing: (-i|--input or -f|--folder-input)."));
         }
 
         [Fact]

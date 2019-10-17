@@ -411,7 +411,8 @@ elif sys.argv[1] == '--run':
 					       str(round(A[tag]['ci95'][1], 5)) + '\t' +\
 					       str(A[tag]['z']) + '\t' +\
 					       str(A[tag]['SE']) + '\t' +\
-					       str(A[tag]['pvalue']) + '\n'
+					       str(A[tag]['pvalue']) + '\t' +\
+					       str(A[tag]['warning']) + '\n'
 				
 				ran.write(line)
 				if DIM > 1:

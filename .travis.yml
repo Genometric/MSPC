@@ -1,27 +1,27 @@
 os:
-  - linux
-matrix:
-  include:
-    - language: csharp
-      solution: MSPC.sln
+- linux
+
+matrix: 
+  include: 
+    - 
+      dotnet: "2.0.3"
+      install: 
+        - "dotnet restore"
+      language: csharp
       mono: none
-      dotnet: 2.0.3
-      install:
-        - dotnet restore
-      addons:
-        sonarcloud:
-          organization: "genometric"
-      script:
-      - dotnet build
-      - dotnet test Core.Tests/Core.Tests.csproj
-      
-    - language: node_js
-      node_js:
-        - '8'
-      cache:
+      script: 
+        - "dotnet build"
+        - "dotnet test Core.Tests/Core.Tests.csproj"
+      solution: MSPC.sln
+    - 
+      cache: 
         yarn: true
-      script:
-        - git config --global user.name "${GH_NAME}"
-        - git config --global user.email "${GH_EMAIL}"
-        - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd website && yarn install && GIT_USER="${GH_NAME}" yarn run publish-gh-pages; fi'
+      language: node_js
+      node_js: 
+        - "8"
+      script: 
+        - "git config --global user.name \"${GH_NAME}\""
+        - "git config --global user.email \"${GH_EMAIL}\""
+        - "echo \"machine github.com login ${GH_NAME} password ${GH_TOKEN}\" > ~/.netrc"
+        - "if [ \"$TRAVIS_PULL_REQUEST\" = \"false\" ]; then cd website && yarn install && GIT_USER=\"${GH_NAME}\" yarn run publish-gh-pages; fi"
+

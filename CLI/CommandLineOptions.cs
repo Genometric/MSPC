@@ -22,6 +22,11 @@ namespace Genometric.MSPC.CLI
             Description = "Input samples to be processed in Browser Extensible Data (BED) Format."
         };
 
+        private readonly CommandOption _cFolderInput = new CommandOption("-f | --folder-input <value>", CommandOptionType.MultipleValue)
+        {
+            Description = "Sets a path to a folder that all its containing files in BED format are considered as inputs."
+        };
+
         private readonly CommandOption _cParser = new CommandOption("-p | --parser <value>", CommandOptionType.MultipleValue)
         {
             Description = "Sets the path to the parser configuration file in JSON."
@@ -120,6 +125,7 @@ namespace Genometric.MSPC.CLI
             });
 
             _cla.Options.Add(_cInput);
+            _cla.Options.Add(_cFolderInput);
             _cla.Options.Add(_cReplicate);
             _cla.Options.Add(_cTauW);
             _cla.Options.Add(_cTauS);
@@ -145,7 +151,8 @@ namespace Genometric.MSPC.CLI
         private void AssertRequiredArgsAreGiven()
         {
             var missingArgs = new List<string>();
-            if (!_cInput.HasValue()) missingArgs.Add(FormatMissingArg(_cInput));
+            if (!_cInput.HasValue() && !_cFolderInput.HasValue())
+                missingArgs.Add(string.Format("({0} or {1})", FormatMissingArg(_cInput), FormatMissingArg(_cFolderInput)));
             if (!_cReplicate.HasValue()) missingArgs.Add(FormatMissingArg(_cReplicate));
             if (!_cTauS.HasValue()) missingArgs.Add(FormatMissingArg(_cTauS));
             if (!_cTauW.HasValue()) missingArgs.Add(FormatMissingArg(_cTauW));
@@ -153,8 +160,10 @@ namespace Genometric.MSPC.CLI
             if (missingArgs.Count > 0)
             {
                 var msgBuilder = new StringBuilder("the following required arguments are missing: ");
-                foreach (var item in missingArgs)
-                    msgBuilder.Append(item + "; ");
+                for (int i = 0; i < missingArgs.Count - 1; i++)
+                    msgBuilder.Append(missingArgs[i] + "; and ");
+                msgBuilder.Append(missingArgs[missingArgs.Count - 1] + ".");
+
                 throw new ArgumentException(msgBuilder.ToString());
             }
         }
@@ -162,12 +171,31 @@ namespace Genometric.MSPC.CLI
         private void ReadInputFiles()
         {
             _inputFiles = new List<string>();
-            foreach (var input in _cInput.Values)
-                if (input.Contains("*") || input.Contains("?"))
-                    foreach (var file in Directory.GetFiles(Path.GetDirectoryName(input), Path.GetFileName(input)))
+            if (_cInput.HasValue())
+            {
+                foreach (var input in _cInput.Values)
+                    if (input.Contains("*") || input.Contains("?"))
+                        foreach (var file in Directory.GetFiles(Path.GetDirectoryName(input), Path.GetFileName(input)))
+                            _inputFiles.Add(file);
+                    else
+                        _inputFiles.Add(input);
+            }
+
+            if (_cFolderInput.HasValue())
+            {
+                try
+                {
+                    var files = Directory.GetFiles(
+                        Path.GetDirectoryName(_cFolderInput.Values[0]),
+                        Path.GetFileName(_cFolderInput.Values[0]));
+                    foreach (var file in files)
                         _inputFiles.Add(file);
-                else
-                    _inputFiles.Add(input);
+                }
+                catch (Exception e)
+                {
+                    throw new ArgumentException(e.Message);
+                }
+            }
         }
 
         private void AssertGivenValuesAreValid()

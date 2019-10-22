@@ -8,6 +8,9 @@ matrix:
       dotnet: 2.0.3
       install:
         - dotnet restore
+      addons:
+        sonarcloud:
+          organization: "genometric"
       script:
       - dotnet build
       - dotnet test Core.Tests/Core.Tests.csproj

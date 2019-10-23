@@ -106,7 +106,7 @@ def coverageDifference(pA, nA, pB, nB, b0 = 0, level = 0.95, pooled = True, perc
 			b = pA - pB
 		if pooled:
 			q = (pA*nA + pB*nB)/float(nA + nB)
-			SE = math.sqrt(q*(1 - q)*((nA+nb)/(float(nA)*float(nB)))
+			SE = math.sqrt(q*(1 - q)*((nA + nB)/(float(nA)*float(nB))))
 		else:
 			SE = math.sqrt(pA*(1 - pA)/float(nA) + pB*(1 - pB)/float(nB))
 		z = (b - b0)/SE
@@ -115,16 +115,19 @@ def coverageDifference(pA, nA, pB, nB, b0 = 0, level = 0.95, pooled = True, perc
 		u95 = b + stats.norm.ppf(level)*SE
 		# l95 = b - 1.96*SE
 		# u95 = b + 1.96*SE
-		# ADD A CHECK HERE: 
-		if q*nA<5 or q*nB<5 or (1-q)*nA<5 or (1-q)*nB<5:
-			WARNING='Normal approximation may be incorrect'	
+		if q*nA < 5 or q*nB < 5 or (1 - q)*nA < 5 or (1 - q)*nB < 5:
+			WARNING = 'Normal approximation may be incorrect'
 		else:
-			WARNING=' '
+			WARNING = 'None'
 	except:
-		b, SE, z, P, l95, u95 = (0, 1, 0, 1,
-		                         -float("inf"), float("inf"))
+		b, SE, z, P, l95, u95, WARNING = (0, 1, 0, 1,
+		                                  -float("inf"),
+		                                  float("inf"),
+		                                  'None')
 	return {'estimate': b, 'z': z, 'SE': SE,
-	        'ci95': (l95, u95), 'pvalue': P, 'warning': WARNING}
+	        'ci95': (l95, u95),
+	        'pvalue': P,
+	        'warning': WARNING}
 
 if len(sys.argv) == 1:
 	print 'OSError: MspcFE missing operand: ' +\
@@ -263,9 +266,8 @@ elif sys.argv[1] == '--run':
 		oth = open(otf, 'w')
 		oth.write('dataset\tannotation\tN_anno\tannoCoverage\tpeakset\t' +\
 		          'propAnnoPeaks\tpeaksCoverage\tpropAnnoNotPeaks\t' +\
-		          'genomeSize\testimate\tCI95\tz\tSE\tpvalue\n')
+		          'genomeSize\testimate\tCI95\tz\tSE\tpvalue\twarnings\n')
 	for root in DATA:
-		#print root
 		print '# Processing data:', root
 		pfx = os.path.join(sys.argv[2], root)
 		cpf = os.path.join(pfx, "common.bed")
@@ -278,13 +280,6 @@ elif sys.argv[1] == '--run':
 				sbj = f
 			if f.find(sys.argv[4]) > -1:
 				alt = f
-		
-		#print pfx
-		#print cpf
-		#print spf
-		#print mpf
-		#print sbj
-		#print alt
 		
 		sortBed(sbj)
 		sortBed(alt)
@@ -331,7 +326,7 @@ elif sys.argv[1] == '--run':
 		ran = open(res, 'w')
 		ran.write('dataset\tannotation\tN_anno\tannoCoverage\tpeakset\t' +\
 		          'propAnnoPeaks\tpeaksCoverage\tpropAnnoNotPeaks\t' +\
-		          'genomeSize\testimate\tCI95\tz\tSE\tpvalue\n')
+		          'genomeSize\testimate\tCI95\tz\tSE\tpvalue\twarnings\n')
 		
 		for annotation in absPaths(MspcFE_conf['annotationDirectory']):
 			tag = os.path.basename(annotation).split('.')[0]
@@ -389,7 +384,7 @@ elif sys.argv[1] == '--run':
 					       str(MspcFE_conf[tag][1]) + '\t' +\
 					       os.path.basename(x).split('.')[0] + '\t' +\
 					       str(Q[0]) + '\tNA\tNA\t' +\
-					       '0\tNA\tNA\t0\tNA\t1\n'
+					       '0\tNA\tNA\t0\tNA\t1\tNone\n'
 				else:
 					#### COVERAGE ENRICHMENT TESTING
 					

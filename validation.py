@@ -106,7 +106,7 @@ def coverageDifference(pA, nA, pB, nB, b0 = 0, level = 0.95, pooled = True, perc
 			b = pA - pB
 		if pooled:
 			q = (pA*nA + pB*nB)/float(nA + nB)
-			SE = math.sqrt(q*(1 - q)*(1/float(nA) + 1/float(nB)))
+			SE = math.sqrt(q*(1 - q)*((nA+nb)/(float(nA)*float(nB)))
 		else:
 			SE = math.sqrt(pA*(1 - pA)/float(nA) + pB*(1 - pB)/float(nB))
 		z = (b - b0)/SE
@@ -115,11 +115,16 @@ def coverageDifference(pA, nA, pB, nB, b0 = 0, level = 0.95, pooled = True, perc
 		u95 = b + stats.norm.ppf(level)*SE
 		# l95 = b - 1.96*SE
 		# u95 = b + 1.96*SE
+		# ADD A CHECK HERE: 
+		if q*nA<5 or q*nB<5 or (1-q)*nA<5 or (1-q)*nB<5:
+			WARNING='Normal approximation may be incorrect'	
+		else:
+			WARNING=' '
 	except:
 		b, SE, z, P, l95, u95 = (0, 1, 0, 1,
 		                         -float("inf"), float("inf"))
 	return {'estimate': b, 'z': z, 'SE': SE,
-	        'ci95': (l95, u95), 'pvalue': P}
+	        'ci95': (l95, u95), 'pvalue': P, 'warning': WARNING}
 
 if len(sys.argv) == 1:
 	print 'OSError: MspcFE missing operand: ' +\
@@ -406,7 +411,8 @@ elif sys.argv[1] == '--run':
 					       str(round(A[tag]['ci95'][1], 5)) + '\t' +\
 					       str(A[tag]['z']) + '\t' +\
 					       str(A[tag]['SE']) + '\t' +\
-					       str(A[tag]['pvalue']) + '\n'
+					       str(A[tag]['pvalue']) + '\t' +\
+					       str(A[tag]['warning']) + '\n'
 				
 				ran.write(line)
 				if DIM > 1:

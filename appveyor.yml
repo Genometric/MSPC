@@ -23,10 +23,7 @@ test_script:
     -
         cmd: 'cd Core.Tests'
     - 'OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle'
-after_test:
-    -
-        ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\n"
-on_finish: null
+# on_finish: any clean up code here
 deploy: off
 for:
     -
@@ -38,7 +35,7 @@ for:
         build_script:
             - 'MSBuild.exe /t:Rebuild'
         after_test:
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f \"Core.Tests/mspc_coverage.xml\" -t $env:codecovtoken\n"}
+            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f \"mspc_coverage.xml\" -t $env:codecovtoken\n"}
             - 'MSBuild.exe /t:Rebuild'
             - {ps: 'cd Core.Tests'}
             - 'OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:"mspc_coverage.xml" -oldstyle'
@@ -54,4 +51,4 @@ for:
             only: ['/dev*/']
         configuration: Debug
         after_test:
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f \"Core.Tests/mspc_coverage.xml\"\n"}
+            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f \"mspc_coverage.xml\"\n"}

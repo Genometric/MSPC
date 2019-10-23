@@ -6,7 +6,10 @@ init:
   # Good practice, because Windows line endings are different from Unix/Linux ones
   - cmd: git config --global core.autocrlf true
 install:
+  - nuget restore
   - dotnet restore
+  - choco install opencover.portable
+  - choco install codecov
 
 before_build:
 - nuget restore
@@ -21,6 +24,7 @@ test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore Core.Tests\Core.Tests.csproj --verbosity m
   - cmd: dotnet test Core.Tests\Core.Tests.csproj
+  - cmd: cd Core.Tests
   - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle
 after_test:
   - ps: |
@@ -43,26 +47,21 @@ for:
   configuration: Release
   
   environment:
-    sonartoken:
-      secure: kR8M18MAnrL4rIJ7GRLhTrZ7D0kSDB1fYcgVlyunWscK2exbqvqLv+E7nLbPOy3x
     codecovtoken:
       secure: dKCzX4gNxZYO3rxHOCnB+PzxeJIZZTsQLC5rczdcp/egmD1IN9u+b8srqxrj65jy
   
   build_script:
-    - choco install "msbuild-sonarqube-runner" -y
-    - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%"
     - MSBuild.exe /t:Rebuild
-    - SonarScanner.MSBuild.exe end /d:"sonar.login=%sonartoken%"
     
   after_test:
     - ps: |
         $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-        bash codecov.sh -f "mspc_coverage.xml" -t $env:codecovtoken
-    - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%" /d:sonar.cs.opencover.reportsPaths=".\mspc_coverage.xml"
+        bash codecov.sh -f "Core.Tests/mspc_coverage.xml" -t $env:codecovtoken
     - MSBuild.exe /t:Rebuild
-    - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle
-    - SonarScanner.MSBuild.exe end /d:"sonar.login=%sonartoken%"
+    - ps: cd Core.Tests
+    - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:"mspc_coverage.xml" -oldstyle
+    - ps: cd ..
   
   artifacts: 
     - path: Core/bin/Release/Genometric.MSPC.Core*.nupkg  
@@ -86,4 +85,4 @@ for:
     - ps: |
         $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-        bash codecov.sh -f "mspc_coverage.xml"
+        bash codecov.sh -f "Core.Tests/mspc_coverage.xml"

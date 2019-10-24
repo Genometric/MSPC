@@ -178,8 +178,8 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             var parserFilename = 
-                Environment.CurrentDirectory + Path.DirectorySeparatorChar + 
-                "MSPCTests_" + new Random().NextDouble().ToString();
+                Environment.CurrentDirectory + Path.DirectorySeparatorChar +
+                Guid.NewGuid().ToString() + ".json";
 
             // Create an json file with a `culture` field containing 
             // invalid culture name. 

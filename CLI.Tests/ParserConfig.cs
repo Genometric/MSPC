@@ -14,8 +14,8 @@ namespace Genometric.MSPC.CLI.Tests
     public class TParserConfig
     {
         [Theory]
-        [InlineData(0, 1, 2, 3, 4, 5, 6, true, 1E-4, PValueFormats.minus1_Log10_pValue)]
-        [InlineData(5, 0, -1, 12, -1, -1, 1, false, 123.456, PValueFormats.SameAsInput)]
+        [InlineData(0, 1, 2, 3, 4, 5, 6, true, 1E-4, PValueFormats.minus1_Log10_pValue, "fa-IR")]
+        [InlineData(5, 0, -1, 12, -1, -1, 1, false, 123.456, PValueFormats.SameAsInput, "fa-IR")]
         public void ReadParserConfig(
             byte chr, 
             byte left, 
@@ -26,7 +26,8 @@ namespace Genometric.MSPC.CLI.Tests
             byte value, 
             bool dropPeakIfInvalidValue, 
             double defaultValue, 
-            PValueFormats pValueFormat)
+            PValueFormats pValueFormat,
+            string culture)
         {
             // Arrange
             ParserConfig cols = new ParserConfig()
@@ -41,6 +42,7 @@ namespace Genometric.MSPC.CLI.Tests
                 DefaultValue = defaultValue,
                 PValueFormat = pValueFormat,
                 DropPeakIfInvalidValue = dropPeakIfInvalidValue,
+                Culture = culture
             };
             var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
             using (StreamWriter w = new StreamWriter(path))

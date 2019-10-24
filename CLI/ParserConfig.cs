@@ -6,7 +6,9 @@ using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Genometric.MSPC.CLI
 {
@@ -16,11 +18,29 @@ namespace Genometric.MSPC.CLI
         public double DefaultValue { set; get; }
         public PValueFormats PValueFormat { set; get; }
 
+        public string Culture
+        {
+            set
+            {
+                if (!CultureInfo.GetCultures(CultureTypes.AllCultures).Any(x => x.Name == value))
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "Invalid culture info.");
+                _culture = value;
+            }
+            get
+            {
+                return _culture;
+            }
+        }
+
+        private string _culture;
+
+
         public ParserConfig()
         {
             DropPeakIfInvalidValue = true;
             DefaultValue = 1E-8;
             PValueFormat = PValueFormats.minus1_Log10_pValue;
+            Culture = CultureInfo.CurrentCulture.Name;
         }
 
         public static ParserConfig LoadFromJSON(string path)

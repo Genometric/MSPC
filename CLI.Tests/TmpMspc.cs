@@ -12,6 +12,9 @@ using System.Text;
 
 namespace Genometric.MSPC.CLI.Tests
 {
+    // TODO: THIS MOCK CLASS SHOULD BE GENERALIZED TO SUPPORT MSPC ACCESS NEEDS
+    // OF ALL THE CLI TESTS, HENCE SIMPLIFIE THOSE TESTS IMPLEMENTATION.
+
     public class TmpMspc : IDisposable
     {
         public List<string> TmpSamples { set; get; }

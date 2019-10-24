@@ -7,6 +7,7 @@ using Genometric.MSPC.CLI.Tests.MockTypes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Xunit;
 
@@ -113,6 +114,96 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("All processes successfully finished", msg);
+        }
+
+        [Fact]
+        public void CorrectAndSuccessfulAnalysis()
+        {
+            /// TODO: This is a big test as it does an end-to-end assertion 
+            /// of many aspects. However, using some mock types this test 
+            /// implementation can be significantly simplified. 
+            /// 
+
+            // Arrange
+            string outputPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) + new Random().Next(100000, 999999).ToString();
+            string culture = "fa-IR";
+            double pValue;
+            string rep1Filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            using (StreamWriter writter = new StreamWriter(rep1Filename))
+            {
+                pValue = 7.12;
+                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+                pValue = 5.5067;
+                writter.WriteLine("chr1\t25\t35\tmspc_peak_2\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+            }
+
+            string rep2Filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            using (StreamWriter writter = new StreamWriter(rep2Filename))
+            {
+                pValue = 19.9;
+                writter.WriteLine("chr1\t4\t12\tmspc_peak_3\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+                pValue = 8.999999;
+                writter.WriteLine("chr1\t30\t45\tmspc_peak_4\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+            }
+
+            ParserConfig cols = new ParserConfig() { Culture = culture };
+            var configFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
+            using (StreamWriter w = new StreamWriter(configFilename))
+                w.WriteLine(JsonConvert.SerializeObject(cols));
+
+            string args = $"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -p {configFilename} -o {outputPath}";
+
+
+            // Act
+            string output;
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Program.Main(args.Split(' '));
+                output = sw.ToString();
+            }
+
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
+            {
+                AutoFlush = true
+            };
+            Console.SetOut(standardOutput);
+
+            // Assert
+            Assert.Contains("All processes successfully finished", output);
+            using (var reader = new StreamReader(Directory.GetFiles(outputPath, "*ConsensusPeaks.bed")[0]))
+            {
+                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)", reader.ReadLine());
+                Assert.Equal("chr1\t4\t20\tMSPC_Peak_2\t25.219", reader.ReadLine());
+                Assert.Equal("chr1\t25\t45\tMSPC_Peak_1\t12.97", reader.ReadLine());
+                Assert.Null(reader.ReadLine());
+            }
+
+            var dirs = Directory.GetDirectories(outputPath);
+            Assert.True(dirs.Length == 2);
+
+            Assert.True(Directory.GetFiles(dirs[0]).Length == 14);
+            using (var reader = new StreamReader(Directory.GetFiles(dirs[0], "*TruePositive.bed")[0]))
+            {
+                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)", reader.ReadLine());
+                Assert.Equal("chr1\t10\t20\tmspc_peak_1\t7.12", reader.ReadLine());
+                Assert.Equal("chr1\t25\t35\tmspc_peak_2\t5.507", reader.ReadLine());
+                Assert.Null(reader.ReadLine());
+            }
+
+            Assert.True(Directory.GetFiles(dirs[1]).Length == 14);
+            using (var reader = new StreamReader(Directory.GetFiles(dirs[1], "*TruePositive.bed")[0]))
+            {
+                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)", reader.ReadLine());
+                Assert.Equal("chr1\t4\t12\tmspc_peak_3\t19.9", reader.ReadLine());
+                Assert.Equal("chr1\t30\t45\tmspc_peak_4\t9", reader.ReadLine());
+                Assert.Null(reader.ReadLine());
+            }
+
+            // Clean up
+            Directory.Delete(outputPath, true);
+            File.Delete(rep1Filename);
+            File.Delete(rep2Filename);
         }
 
         [Theory]

@@ -8,6 +8,7 @@ using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -143,7 +144,10 @@ namespace Genometric.MSPC.CLI.Exporter
             /// hence to avoid exporting `Infinity` that may not be an 
             /// acceptable input by some tools, MSPC reports 0 instead.
             if (pValue != 0)
-                return (Math.Round((-1) * Math.Log10(pValue), 3)).ToString();
+                return
+                    (Math.Round((-1) * Math.Log10(pValue), 3))
+                    .ToString(CultureInfo.CreateSpecificCulture(
+                        CultureInfo.CurrentCulture.Name));
             return "0";
         }
     }

@@ -205,7 +205,7 @@ namespace Genometric.MSPC.CLI
                 }
                 catch (Exception e)
                 {
-                    _logger.LogException("error reading parser configuration JSON object: " + e);
+                    _logger.LogException("error reading parser configuration JSON object: " + e.Message);
                     return false;
                 }
             }

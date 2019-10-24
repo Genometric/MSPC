@@ -102,10 +102,8 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(
-                log, 
-                x => x.Contains(
-                    "error reading parser configuration JSON object: Newtonsoft.Json.JsonReaderException: " +
-                    "Unexpected character encountered while parsing value"));
+                log,
+                x => x.Contains("Unexpected character encountered while parsing value"));
         }
 
         [Fact]
@@ -173,6 +171,28 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act & Assert
             Assert.True(!config.Equals(null));
+        }
+
+        [Fact]
+        public void ThrowExceptionForInvalidCultureValue()
+        {
+            // Arrange
+            var parserFilename = 
+                Environment.CurrentDirectory + Path.DirectorySeparatorChar + 
+                "MSPCTests_" + new Random().NextDouble().ToString();
+
+            // Create an json file with a `culture` field containing 
+            // invalid culture name. 
+            using (StreamWriter w = new StreamWriter(parserFilename))
+                w.WriteLine("{\"Culture\":\"xyz\"}");
+
+            // Act
+            string msg;
+            using (var tmpMSPC = new TmpMspc())
+                msg = tmpMSPC.Run(parserFilename: parserFilename);
+            
+            // Assert
+            Assert.Contains("Error setting value to 'Culture'", msg);
         }
     }
 }

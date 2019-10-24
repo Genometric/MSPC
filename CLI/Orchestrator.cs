@@ -205,7 +205,7 @@ namespace Genometric.MSPC.CLI
                 }
                 catch (Exception e)
                 {
-                    _logger.LogException("error reading parser configuration JSON object: " + e);
+                    _logger.LogException("error reading parser configuration JSON object: " + e.Message);
                     return false;
                 }
             }
@@ -227,7 +227,8 @@ namespace Genometric.MSPC.CLI
                     {
                         PValueFormat = parserConfig.PValueFormat,
                         DefaultValue = parserConfig.DefaultValue,
-                        DropPeakIfInvalidValue = parserConfig.DropPeakIfInvalidValue
+                        DropPeakIfInvalidValue = parserConfig.DropPeakIfInvalidValue,
+                        Culture = parserConfig.Culture
                     };
                     var parsedData = bedParser.Parse(file);
                     samples.Add(parsedData);

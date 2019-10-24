@@ -250,10 +250,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "0"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "1"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "2"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "3"), "chr1", '*');
 
             var sB = new Bed<Peak>();
             sB.Add(new Peak(left: 5, right: 12, value: 0.01), "chr1", '*');

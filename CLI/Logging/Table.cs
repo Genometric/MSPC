@@ -16,13 +16,16 @@ namespace Genometric.MSPC.CLI.Logging
             _columnsWidth = columnsWidth;
         }
 
-        public void AddHeader(params string[] headers)
+        public void AddHeader(
+            out string renderedHeaders,
+            out string renderedHeaderLines,
+            params string[] headers)
         {
             var headerLines = new string[_columnsWidth.Length];
             for (int i = 0; i < headerLines.Length; i++)
                 headerLines[i] = new string('-', _columnsWidth[i]);
-            Console.WriteLine(RenderRow(true, headers));
-            Console.WriteLine(RenderRow(true, headerLines));
+            renderedHeaders = RenderRow(true, headers);
+            renderedHeaderLines = RenderRow(true, headerLines);
         }
 
         public string GetRow(bool truncate = true, params string[] columns)

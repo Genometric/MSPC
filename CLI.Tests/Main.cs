@@ -322,7 +322,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.True(
-                msg.Contains("Illegal characters in path.") || 
+                msg.Contains("Illegal characters in path.") ||
                 msg.Contains("The filename, directory name, or volume label syntax is incorrect"));
         }
 
@@ -368,8 +368,8 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
             Assert.Contains(
-                messages, 
-                x => x.Contains("Illegal characters in path.") || 
+                messages,
+                x => x.Contains("Illegal characters in path.") ||
                 x.Contains("The filename, directory name, or volume label syntax is incorrect"));
         }
 
@@ -491,8 +491,8 @@ namespace Genometric.MSPC.CLI.Tests
             fs.Close();
 
             // Assert
-            Assert.Contains(messages, x => 
-            x.Contains("The process cannot access the file") && 
+            Assert.Contains(messages, x =>
+            x.Contains("The process cannot access the file") &&
             x.Contains("because it is being used by another process."));
 
             // Clean up
@@ -564,8 +564,17 @@ namespace Genometric.MSPC.CLI.Tests
                     messages.Add(line);
 
             // Assert
-            Assert.True(messages.FindAll(x => x.Contains("Filename\tRead peaks#\tMin p-value\tMean p-value\tMax p-value\t")).Count == 1);
-            Assert.True(messages.FindAll(x => x.Contains("Filename\tRead peaks#\tBackground\t    Weak\tStringent\tConfirmed\tDiscarded\tTruePositive\tFalsePositive\t")).Count == 1);
+            Assert.True(
+                messages.FindAll(
+                    x => x.Contains("Filename\tRead peaks#\tMin p-value\tMean p-value\tMax p-value\t"))
+                .Count == 1);
+
+            Assert.True(
+                messages.FindAll(
+                    x => x.Contains(
+                        "Filename\tRead peaks#\tBackground\t    Weak\tStringent" +
+                        "\tConfirmed\tDiscarded\tTruePositive\tFalsePositive\t"))
+                .Count == 1);
 
             // Clean up
             File.Delete(rep1Path);

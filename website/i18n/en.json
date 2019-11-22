@@ -6,7 +6,7 @@
     "tagline": "Using combined evidence from replicates to evaluate ChIP-seq peaks",
     "docs": {
       "cli/about": {
-        "title": "About"
+        "title": "cli/about"
       },
       "cli/args": {
         "title": "Arguments"
@@ -21,7 +21,7 @@
         "title": "Parser Configuration"
       },
       "installation": {
-        "title": "Installation"
+        "title": "Instalation"
       },
       "library/asynch_exe": {
         "title": "(A)synchronous execution"

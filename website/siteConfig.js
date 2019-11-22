@@ -35,9 +35,9 @@ const siteConfig = {
   ],
 
   /* path to images for header/footer */
-  headerIcon: 'img/mspc_logo.svg',
-  footerIcon: 'img/mspc_logo.svg',
-  favicon: 'img/favicon.png',
+  headerIcon: 'img/logo.svg',
+  footerIcon: 'img/logo.svg',
+  favicon: 'img/logo.png',
 
   /* Colors for website */
   colors: {

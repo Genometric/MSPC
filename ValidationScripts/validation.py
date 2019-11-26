@@ -428,16 +428,6 @@ elif sys.argv[1] == '--run':
 		ran.close()
 		print '# Done.'
 		
-		print '# Creating enrichment boxplot ...'
-		call(['Rscript', '--vanilla',
-		      'MSPC_FunctionalEnrichment/R/enrichment_plots.R',
-		      os.path.join(os.path.expanduser('~'), res),
-		      'boxplot'])
-		box0 = os.path.join(os.path.dirname(res), 'Rplots.pdf')
-		box1 = res.split('.')[0] + '_boxplot.pdf'
-		os.rename(box0, box1)
-		print '# Done.\n'
-		
 		if MspcFE_conf['fetchDnaSequence']:
 			print '# Fetching genomic DNA sequence ...'
 			print '# Genome release:', MspcFE_conf['genome']
@@ -448,18 +438,6 @@ elif sys.argv[1] == '--run':
 			print '#### WORK IN PROGRESS !! ####'
 			
 			print '# Done.\n'
-	
-	if DIM > 1:
-		oth.close()
-		print '# Creating summary plots ...'
-		call(['Rscript', '--vanilla',
-		      'MSPC_FunctionalEnrichment/R/enrichment_plots.R',
-		      os.path.join(os.path.expanduser('~'), otf),
-		      'boxplot'])
-		box0 = os.path.join(os.path.dirname(otf), 'Rplots.pdf')
-		box1 = otf.split('.')[0] + '_boxplot.pdf'
-		os.rename(box0, box1)
-		print '# Done.\n'
 	
 	print '## END.\n'
 

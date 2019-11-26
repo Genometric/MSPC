@@ -103,6 +103,20 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void ReportRuntime()
+        {
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
+
+            // Assert
+            Assert.Contains("Elapsed time: ", msg);
+        }
+
+        [Fact]
         public void SuccessfulAnalysis()
         {
             // Arrange

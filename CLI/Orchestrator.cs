@@ -12,6 +12,7 @@ using Genometric.MSPC.Core;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -38,6 +39,9 @@ namespace Genometric.MSPC.CLI
 
         public void Orchestrate(string[] args)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             if (!ParseArgs(args, out CommandLineOptions options))
                 return;
 
@@ -75,7 +79,8 @@ namespace Genometric.MSPC.CLI
                 cPeaksCount += chr.Value.Count;
             _logger.Log(cPeaksCount.ToString("N0"));
 
-            _logger.LogFinish();
+            stopwatch.Stop();
+            _logger.LogFinish(stopwatch.Elapsed.ToString());
         }
 
         private bool ParseArgs(string[] args, out CommandLineOptions options)

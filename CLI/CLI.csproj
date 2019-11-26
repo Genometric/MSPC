@@ -19,6 +19,7 @@
     <Company>Genometric</Company>
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/Genometric/MSPC/dev/website/static/img/logo.png</PackageIconUrl>
+    <AssemblyName>mspc</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

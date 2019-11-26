@@ -286,7 +286,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
-            string expected = "You may run CLI with either of [-? | -h | --help] tags for help.";
+            string expected = "You may run mspc with either of [-? | -h | --help] tags for help.";
 
             // Act
             using (var tmpMspc = new TmpMspc())

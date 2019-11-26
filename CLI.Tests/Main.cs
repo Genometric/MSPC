@@ -281,6 +281,21 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void HintHowToUseHelpWhenAnExceptionOccurs()
+        {
+            // Arrange
+            string msg;
+            string expected = "You may run MSPC with either of [-? | -h | --help] tags for help.";
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(template: "");
+
+            // Assert
+            Assert.Contains(expected, msg);
+        }
+
+        [Fact]
         public void GenerateOutputPathIfNotGiven()
         {
             // Arrange

@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using static Genometric.MSPC.CLI.Logging.Table;
 
@@ -23,7 +24,6 @@ namespace Genometric.MSPC.CLI.Logging
     {
         private readonly int _sectionHeaderLenght = 20;
         private readonly int _fileNameMaxLength = 20;
-        private readonly string _helpOption;
         private static readonly string _cannotContinue = "MSPC cannot continue.";
         private bool _lastStatusUpdatedItsPrevious;
         private Table _parserLogTable;
@@ -32,10 +32,22 @@ namespace Genometric.MSPC.CLI.Logging
         private string _repository;
         private string _name;
 
-        public Logger(string logFilePath, string repository, string name, string helpOption)
+        /// <summary>
+        /// Gets a message that hints users how to use MSPC CLI help
+        /// </summary>
+        private static string HintHelpMessage
+        {
+            get
+            {
+                return
+                    $"You may run {Assembly.GetCallingAssembly().GetName().Name} " +
+                    $"with either of [{CommandLineOptions.HelpOption}] tags for help.";
+            }
+        }
+
+        public Logger(string logFilePath, string repository, string name)
         {
             Setup(logFilePath, repository, name);
-            _helpOption = helpOption;
         }
 
         private void Setup(string logFilePath, string repository, string name)
@@ -82,11 +94,6 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(msg);
         }
 
-        private static string GetHelpMessage(string helpOption)
-        {
-            return $"You may run MSPC with either of [{helpOption}] tags for help.";
-        }
-
         public void LogException(Exception e)
         {
             LogException(e.Message);
@@ -94,18 +101,18 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void LogException(string message)
         {
-            LogExceptionStatic(message, _helpOption);
+            LogExceptionStatic(message);
             log.Error(message);
-            log.Info(GetHelpMessage(_helpOption));
+            log.Info(HintHelpMessage);
             log.Info(_cannotContinue);
         }
 
-        public static void LogExceptionStatic(string message, string helpOption)
+        public static void LogExceptionStatic(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(string.Format("Error: {0}", message));
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(GetHelpMessage(helpOption));
+            Console.WriteLine(HintHelpMessage);
             Console.ResetColor();
             Console.WriteLine(_cannotContinue);
         }

@@ -45,10 +45,10 @@ namespace Genometric.MSPC.CLI
             if (!ParseArgs(args, out CommandLineOptions options))
                 return;
 
-            if (!AssertOutputPath(options.OutputPath, options))
+            if (!AssertOutputPath(options.OutputPath))
                 return;
 
-            if (!SetupLogger(options))
+            if (!SetupLogger())
                 return;
 
             if (!AssertInput(options.Input))
@@ -97,14 +97,14 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 if (_logger == null)
-                    Logger.LogExceptionStatic(e.Message, options.HelpOption);
+                    Logger.LogExceptionStatic(e.Message);
                 else
                     _logger.LogException(e);
                 return false;
             }
         }
 
-        private bool AssertOutputPath(string path, CommandLineOptions options)
+        private bool AssertOutputPath(string path)
         {
             if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
                 path =
@@ -134,14 +134,14 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 if (_logger == null)
-                    Logger.LogExceptionStatic(e.Message, options.HelpOption);
+                    Logger.LogExceptionStatic(e.Message);
                 else
                     _logger.LogException(e);
                 return false;
             }
         }
 
-        private bool SetupLogger(CommandLineOptions options)
+        private bool SetupLogger()
         {
             try
             {
@@ -150,12 +150,12 @@ namespace Genometric.MSPC.CLI
 
                 var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString(loggerTimeStampFormat, CultureInfo.InvariantCulture);
                 LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
-                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), options.HelpOption);
+                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
                 return true;
             }
             catch (Exception e)
             {
-                Logger.LogExceptionStatic(e.Message, options.HelpOption);
+                Logger.LogExceptionStatic(e.Message);
                 return false;
             }
         }

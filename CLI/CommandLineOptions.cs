@@ -108,7 +108,7 @@ namespace Genometric.MSPC.CLI
         /// Gets the arguments that can be passed to 
         /// display help message.
         /// </summary>
-        public string HelpOption
+        public static string HelpOption
         {
             get { return "-? | -h | --help"; }
         }

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.Intervals.Parsers;
+using Genometric.MSPC.CLI.Logging;
 using Genometric.MSPC.CLI.Tests.MockTypes;
 using Newtonsoft.Json;
 using System;
@@ -275,6 +276,21 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             using (var tmpMspc = new TmpMspc())
                 msg = tmpMspc.Run(template: template);
+
+            // Assert
+            Assert.Contains(expected, msg);
+        }
+
+        [Fact]
+        public void HintHowToUseHelpWhenAnExceptionOccurs()
+        {
+            // Arrange
+            string msg;
+            string expected = "You may run CLI with either of [-? | -h | --help] tags for help.";
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(template: "");
 
             // Assert
             Assert.Contains(expected, msg);

@@ -45,10 +45,10 @@ namespace Genometric.MSPC.CLI
             if (!ParseArgs(args, out CommandLineOptions options))
                 return;
 
-            if (!AssertOutputPath(options.OutputPath))
+            if (!AssertOutputPath(options.OutputPath, options))
                 return;
 
-            if (!SetupLogger())
+            if (!SetupLogger(options))
                 return;
 
             if (!AssertInput(options.Input))
@@ -97,14 +97,14 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 if (_logger == null)
-                    Logger.LogExceptionStatic(e.Message);
+                    Logger.LogExceptionStatic(e.Message, options.HelpOption);
                 else
                     _logger.LogException(e);
                 return false;
             }
         }
 
-        private bool AssertOutputPath(string path)
+        private bool AssertOutputPath(string path, CommandLineOptions options)
         {
             if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
                 path =
@@ -134,14 +134,14 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 if (_logger == null)
-                    Logger.LogExceptionStatic(e.Message);
+                    Logger.LogExceptionStatic(e.Message, options.HelpOption);
                 else
                     _logger.LogException(e);
                 return false;
             }
         }
 
-        private bool SetupLogger()
+        private bool SetupLogger(CommandLineOptions options)
         {
             try
             {
@@ -150,12 +150,12 @@ namespace Genometric.MSPC.CLI
 
                 var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString(loggerTimeStampFormat, CultureInfo.InvariantCulture);
                 LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
-                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
+                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), options.HelpOption);
                 return true;
             }
             catch (Exception e)
             {
-                Logger.LogExceptionStatic(e.Message);
+                Logger.LogExceptionStatic(e.Message, options.HelpOption);
                 return false;
             }
         }
@@ -187,7 +187,7 @@ namespace Genometric.MSPC.CLI
         {
             if (dp > 0)
                 _degreeOfParallelism = dp;
-            
+
             _logger.Log(string.Format("Degree of parallelism is set to {0}.", _degreeOfParallelism));
         }
 

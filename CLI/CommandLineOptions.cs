@@ -104,6 +104,15 @@ namespace Genometric.MSPC.CLI
         /// </summary>
         public string ParserConfig { get { return _cParser.Value(); } }
 
+        /// <summary>
+        /// Gets the arguments that can be passed to 
+        /// display help message.
+        /// </summary>
+        public string HelpOption
+        {
+            get { return "-? | -h | --help"; }
+        }
+
         public CommandLineOptions()
         {
             _cla = new CommandLineApplication
@@ -116,7 +125,7 @@ namespace Genometric.MSPC.CLI
                 "\n\rPublications:\thttps://genometric.github.io/MSPC/publications\n\r"
             };
 
-            _cla.HelpOption("-? | -h | --help");
+            _cla.HelpOption(HelpOption);
             _cla.VersionOption("-v | --version", () =>
             {
                 return string.Format(

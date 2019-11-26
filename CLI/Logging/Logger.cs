@@ -23,6 +23,7 @@ namespace Genometric.MSPC.CLI.Logging
     {
         private readonly int _sectionHeaderLenght = 20;
         private readonly int _fileNameMaxLength = 20;
+        private readonly string _helpOption;
         private static readonly string _cannotContinue = "MSPC cannot continue.";
         private bool _lastStatusUpdatedItsPrevious;
         private Table _parserLogTable;
@@ -31,9 +32,10 @@ namespace Genometric.MSPC.CLI.Logging
         private string _repository;
         private string _name;
 
-        public Logger(string logFilePath, string repository, string name)
+        public Logger(string logFilePath, string repository, string name, string helpOption)
         {
             Setup(logFilePath, repository, name);
+            _helpOption = helpOption;
         }
 
         private void Setup(string logFilePath, string repository, string name)
@@ -80,6 +82,11 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(msg);
         }
 
+        private static string GetHelpMessage(string helpOption)
+        {
+            return $"You may run MSPC with either of [{helpOption}] tags for help.";
+        }
+
         public void LogException(Exception e)
         {
             LogException(e.Message);
@@ -87,15 +94,18 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void LogException(string message)
         {
-            LogExceptionStatic(message);
+            LogExceptionStatic(message, _helpOption);
             log.Error(message);
+            log.Info(GetHelpMessage(_helpOption));
             log.Info(_cannotContinue);
         }
 
-        public static void LogExceptionStatic(string message)
+        public static void LogExceptionStatic(string message, string helpOption)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(string.Format("Error: {0}", message));
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(GetHelpMessage(helpOption));
             Console.ResetColor();
             Console.WriteLine(_cannotContinue);
         }

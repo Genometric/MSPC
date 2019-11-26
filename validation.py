@@ -268,7 +268,6 @@ elif sys.argv[1] == '--run':
 		          'propAnnoPeaks\tpeaksCoverage\tpropAnnoNotPeaks\t' +\
 		          'genomeSize\testimate\tCI95\tz\tSE\tpvalue\twarnings\n')
 	for root in DATA:
-		#print root
 		print '# Processing data:', root
 		pfx = os.path.join(sys.argv[2], root)
 		cpf = os.path.join(pfx, "common.bed")
@@ -281,13 +280,6 @@ elif sys.argv[1] == '--run':
 				sbj = f
 			if f.find(sys.argv[4]) > -1:
 				alt = f
-		
-		#print pfx
-		#print cpf
-		#print spf
-		#print mpf
-		#print sbj
-		#print alt
 		
 		sortBed(sbj)
 		sortBed(alt)

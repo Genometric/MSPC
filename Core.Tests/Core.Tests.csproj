@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -31,7 +31,7 @@
 
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
 
-    <PackageIconUrl>https://raw.githubusercontent.com/Genometric/MSPC/dev/website/static/img/logo.png</PackageIconUrl>
+    <PackageIconUrl>https://github.com/Genometric/MSPC/raw/dev/website/static/img/logo.png</PackageIconUrl>
 
     <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
 

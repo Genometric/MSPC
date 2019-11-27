@@ -13,25 +13,29 @@
 
     <Authors>Vahid Jalili</Authors>
 
-    <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
 
     <PackageProjectUrl>https://github.com/Genometric/MSPC</PackageProjectUrl>
 
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
 
-    <AssemblyVersion>3.3.0.0</AssemblyVersion>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
 
     <Copyright>GNU General Public License v3.0</Copyright>
 
     <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
 
-    <Version>3.3.0</Version>
+    <Version>4.0.0</Version>
 
     <Company>Genometric</Company>
 
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
 
     <PackageIconUrl>https://raw.githubusercontent.com/Genometric/MSPC/dev/website/static/img/logo.png</PackageIconUrl>
+
+    <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
+
+    <PackageLicenseFile>license.md</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -52,6 +56,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\license.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

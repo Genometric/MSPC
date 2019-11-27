@@ -6,11 +6,11 @@
     <StartupObject>Genometric.MSPC.CLI.Program</StartupObject>
     <ApplicationIcon />
     <Win32Resource />
-    <Version>3.3.0</Version>
+    <Version>4.0.0</Version>
     <Authors>Vahid Jalili</Authors>
     <Product>Genometric.MSPC.CLI</Product>
     <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
     <PackageId>Genometric.MSPC.CLI</PackageId>
     <Copyright>GNU General Public License v3.0</Copyright>
@@ -20,6 +20,8 @@
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/Genometric/MSPC/dev/website/static/img/logo.png</PackageIconUrl>
     <AssemblyName>mspc</AssemblyName>
+    <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
+    <PackageLicenseFile>license.md</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -43,6 +45,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\license.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

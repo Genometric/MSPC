@@ -13,10 +13,10 @@ At this point, your MSPC folder should contain the following files:
 ```shell
 .
 └── mspc_v3.0
-    ├── CLI.deps.json
-    ├── CLI.dll
-    ├── CLI.pdb
-    ├── CLI.runtimeconfig.json
+    ├── mspc.deps.json
+    ├── mspc.dll
+    ├── mspc.pdb
+    ├── mspc.runtimeconfig.json
     ├── Core.dll
     ├── Core.pdb
     ├── GeUtilities.dll
@@ -37,7 +37,7 @@ Open your favorite command-line shell (e.g.,
 and browse to the MSPC folder, then run the following command: 
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1E-4 -s 1E-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1E-4 -s 1E-8
 ```
 
 ## Output

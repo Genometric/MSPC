@@ -2,7 +2,7 @@
 title: Output
 ---
 
-MSPC `CLI` outputs each classifications of peaks (e.g., `stringent`, `weak`, `confirmed`, or
+MSPC outputs each classifications of peaks (e.g., `stringent`, `weak`, `confirmed`, or
 `discarded`) in separate BED files. See the following figure for different sets and their 
 relation. 
 

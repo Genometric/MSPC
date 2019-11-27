@@ -2,13 +2,13 @@
 title: About
 ---
 
-MSPC `CLI.dll` is a command line interface to the MSPC method; 
+MSPC `mspc.dll` is a command line interface to the MSPC method; 
 it parses input datasets (e.g., BED files), invokes the method
 to analyze them, and persists the results. 
 
-The MSPC `CLI.dll` is cross-platform and can be invoked from 
-any shell, such as Windows PowerShell, Linux shell, or 
-Mac OS Terminal. A basic `CLI.dll` invocation takes four 
+The `mspc.dll` is a cross-platform command-line application, and 
+can be invoked from any shell, such as Windows PowerShell, Linux 
+shell, or Mac OS Terminal. A basic `mspc.dll` invocation takes four 
 arguments (i.e., [input](cli/args.md#input), 
 [replicate type](cli/args.md#replicate-type), and
 [stringency](cli/args.md#stringency-threshold) and
@@ -17,7 +17,7 @@ MSPC `Core`, and persists results.
 For instance, see the following sample execution: 
 
 ```shell
-PS dotnet .\CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+PS dotnet .\mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 
 .::........Parsing Samples.........::.
 
@@ -51,13 +51,13 @@ PS dotnet .\CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 All processes successfully finished
 ```
 
-In this example, the MSPC `CLI` is called using two samples 
+In this example, MSPC is called using two samples 
 (i.e., `-i rep1.bed -i rep2.bed`), which are considered as
 biological replicates (`-r bio`) with `1E-4` and `1E-8` thresholds
 on p-values defining stringent and weak peaks respectively. 
 
 
-Once executed, the MSPC `CLI` reports the following: 
+Once executed, MSPC reports the following: 
 - For each parsed sample, it reports the number of parsed peaks,
 minimum and maximum p-values parsed from the file;
 - Reports analysis steps;

@@ -5,7 +5,7 @@ title: Arguments
 ## Call Example (v3 and newer):
 ```shell
 // minimum
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 ```
 
 
@@ -42,7 +42,7 @@ Sample files are listed after the `-i` or `--input` argument.
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -i rep3.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -i rep3.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 [Wildcard characters](https://en.wikipedia.org/wiki/Wildcard_character) can be 
@@ -50,10 +50,10 @@ used to specify multiple files; for instance:
 
 ```shell
 # read all the files with .bed extension as input:
-$ dotnet CLI.dll -i *.bed -r bio -w 1e-4 -s 1e-8
+$ dotnet mspc.dll -i *.bed -r bio -w 1e-4 -s 1e-8
 
 # read multiple set of files in different directories:
-$ dotnet CLI.dll -i C:\setA\*.bed -i C:\setB\sci-ATAC*.bed -r bio -w 1e-4 -s 1e-8
+$ dotnet mspc.dll -i C:\setA\*.bed -i C:\setB\sci-ATAC*.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 The [`--input`](#input) argument can be used toghether with [`--folder`](#input-folder) argument.
@@ -61,7 +61,7 @@ The [`--input`](#input) argument can be used toghether with [`--folder`](#input-
 Example:
 
 ```shell
-dotnet CLI.dll -f C:\data\*.bed -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -f C:\data\*.bed -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 See [`--folder`](#input-folder) argument section for details.
@@ -77,7 +77,7 @@ Sample files can be read from a folder specified using wildcard characters.
 Example:
 
 ```shell
-dotnet CLI.dll -f C:\data\*.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -f C:\data\*.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 The [`--folder`](#input-folder) argument can be used together with the [`--input`](#input) argument. 
@@ -85,7 +85,7 @@ The [`--folder`](#input-folder) argument can be used together with the [`--input
 Example:
 
 ```shell
-dotnet CLI.dll -f C:\data\*.bed -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -f C:\data\*.bed -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 ### Replicate Type
@@ -101,8 +101,8 @@ specified using the following argument:
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r tec -w 1e-4 -s 1e-8
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r tec -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
 ```
 
 ### Weak Threshold
@@ -116,7 +116,7 @@ and stringency threshold, are considered [weak peaks](method/sets.md#weak).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 
@@ -131,7 +131,7 @@ this threshold, are considered [stringent](method/sets.md#stringent).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 
@@ -146,7 +146,7 @@ combined p-value below this threshold are [confirmed](method/sets.md#confirmed).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8
 ```
 
 
@@ -174,9 +174,9 @@ to `1` (i.e., `C = 1`).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 2
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 2
 
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 50%
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 50%
 ```
 
 Note, you do not need to enclose a value for `C` in `"` to represent 
@@ -194,7 +194,7 @@ It sets the threshold for [Benjamini-Hochberg multiple testing correction](https
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -a 0.05
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -a 0.05
 ```
 
 ### Multiple Intersections
@@ -209,7 +209,7 @@ the one with lowest p-value, or the one with highest p-value?
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -m lowest
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -m lowest
 ```
 
 ### Degree of Parallelism
@@ -222,7 +222,7 @@ It sets the number of parallel threads MSPC can utilize simultaneously when proc
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -d 12
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -d 12
 ```
 
 ### Input Parser Configuration 

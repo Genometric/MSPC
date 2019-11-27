@@ -2,8 +2,8 @@
 title: Parser Configuration
 ---
 
-MSPC `CLI` uses [GeUtilities](https://github.com/Genometric/GeUtilities) 
-to parse BED files. Out of box, MSPC `CLI` uses the default configuration
+MSPC uses [GeUtilities](https://github.com/Genometric/GeUtilities) 
+to parse BED files. Out of box, MSPC uses the default configuration
 of [GeUtilities](https://github.com/Genometric/GeUtilities); accordingly, 
 it expects an input BED file to be in format similar to the following 
 example:
@@ -85,7 +85,7 @@ By default, MSPC expects p-values in a BED file to
 represented in `-log10(p-value)` format. However, 
 some tools produce p-values in `-10log10(p-value)`, 
 `-100log10(p-value)`, or actual p-value (without 
-`log10` scale). To set MSPC `CLI` to correctly
+`log10` scale). To set MSPC to correctly
 parse peaks according to their p-values representation,
 use the `"PValueFormat"` attribute in 
 the parser configuration JSON object according to 

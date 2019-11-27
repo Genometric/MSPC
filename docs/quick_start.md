@@ -4,65 +4,86 @@ title: Quick Start
 
 ## Preparation
 
-1. [Download and install](https://www.microsoft.com/net/download) Microsoft .NET Core Runtime;
-2. [Download](https://github.com/Genometric/MSPC/releases) the latest release of MSPC and extract executables from the zip archive;
-3. [Download sample data](https://github.com/Genometric/MSPC/raw/dev/SampleFiles/demo.zip) and extract the archive to the same path as MSPC;
+1. Install a self-contained release of MSPC, using either of following commands
+depending on your runtime (see [installation](installation.md) page for detailed 
+installation options): 
 
-At this point, your MSPC folder should contain the following files: 
+	```bash
+	# Windows x64:
+	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
+		
+	# Linux x64:
+	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip
 
-```shell
-.
-└── mspc_v3.0
-    ├── mspc.deps.json
-    ├── mspc.dll
-    ├── mspc.pdb
-    ├── mspc.runtimeconfig.json
-    ├── Core.dll
-    ├── Core.pdb
-    ├── GeUtilities.dll
-    ├── MathNet.Numerics.dll
-    ├── Microsoft.Extensions.CommandLineUtils.dll
-    ├── Microsoft.VisualStudio.CodeCoverage.Shim.dll
-    ├── Newtonsoft.Json.dll
-    ├── System.Collections.Immutable.dll
-    ├── rep1.bed
-    └── rep2.bed
+	# macOS x64:
+	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip
+	```
 
-```
+2. Extract the downloaded archive and browse to the containing directory:
+
+	```bash
+	$ unzip mspc.zip -d mspc
+	$ cd mspc
+	```
+
+3. Download sample data:
+
+	```bash
+	$ wget -O demo.zip https://github.com/Genometric/MSPC/raw/dev/SampleFiles/demo.zip
+	$ unzip demo.zip -d .
+	```
 
 ## Run
 
-Open your favorite command-line shell (e.g., 
-[PowerShell Core]( https://docs.microsoft.com/en-us/powershell/scripting/powershell-scripting?view=powershell-6))
-and browse to the MSPC folder, then run the following command: 
+To run MSPC use the following command depending on your runtime:
 
-```shell
-dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1E-4 -s 1E-8
+```bash
+# Windows x64:
+$ .\mspc.exe -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
+
+# Linux x64 or macOS x64:
+$ ./mspc.dll -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 ## Output
 
 MSPC creates a folder in the current execution path named `session_X_Y`, where `X` and `Y` are execution date and time respectively, which contains the following files and folders:
 
-```shell
+```bash
 .
-└── session_20181015_200924342
+└── session_20191126_222131330
     ├── ConsensusPeaks.bed
+	├── ConsensusPeaks_mspc_peaks.txt
+	├── EventsLog_20191126_2221313409928.txt
     ├── rep1
     │   ├── Background.bed
+    │   ├── Background_mspc_peaks.txt
     │   ├── Confirmed.bed
+    │   ├── Confirmed_mspc_peaks.txt
     │   ├── Discarded.bed
+    │   ├── Discarded_mspc_peaks.txt
     │   ├── FalsePositive.bed
+    │   ├── FalsePositive_mspc_peaks.txt
     │   ├── Stringent.bed
+    │   ├── Stringent_mspc_peaks.txt
     │   ├── TruePositive.bed
+    │   ├── TruePositive_mspc_peaks.txt
     │   └── Weak.bed
+    │   ├── Weak_mspc_peaks.txt
     └── rep2
-        ├── Background.bed
-        ├── Confirmed.bed
-        ├── Discarded.bed
-        ├── FalsePositive.bed
-        ├── Stringent.bed
-        ├── TruePositive.bed
+        ├── Background.bed
+        ├── Background_mspc_peaks.txt
+        ├── Confirmed.bed
+        ├── Confirmed_mspc_peaks.txt
+        ├── Discarded.bed
+        ├── Discarded_mspc_peaks.txt
+        ├── FalsePositive.bed
+        ├── FalsePositive_mspc_peaks.txt
+        ├── Stringent.bed
+        ├── Stringent_mspc_peaks.txt
+        ├── TruePositive.bed
+        ├── TruePositive_mspc_peaks.txt
+        └── Weak.bed
         └── Weak.bed
 ```
 

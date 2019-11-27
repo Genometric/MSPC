@@ -2,7 +2,7 @@
 title: Arguments
 ---
 
-## Call Example (v3 and newer):
+## Call Example:
 ```shell
 // minimum
 dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4

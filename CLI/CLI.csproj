@@ -18,7 +18,7 @@
     <RootNamespace>Genometric.MSPC.CLI</RootNamespace>
     <Company>Genometric</Company>
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
-    <PackageIconUrl>https://github.com/Genometric/MSPC/raw/dev/website/static/img/logo.png</PackageIconUrl>
+    <PackageIcon>logo.png</PackageIcon>
     <AssemblyName>mspc</AssemblyName>
     <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
     <PackageLicenseFile>license.md</PackageLicenseFile>
@@ -52,6 +52,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+	<None Include="..\website\static\img\logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+	</None>
   </ItemGroup>
 
 </Project>

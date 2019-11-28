@@ -22,6 +22,11 @@ namespace Genometric.MSPC.CLI
             Description = "Input samples to be processed in Browser Extensible Data (BED) Format."
         };
 
+        private readonly CommandOption _cFolderInput = new CommandOption("-f | --folder-input <value>", CommandOptionType.MultipleValue)
+        {
+            Description = "Sets a path to a folder that all its containing files in BED format are considered as inputs."
+        };
+
         private readonly CommandOption _cParser = new CommandOption("-p | --parser <value>", CommandOptionType.MultipleValue)
         {
             Description = "Sets the path to the parser configuration file in JSON."
@@ -64,6 +69,16 @@ namespace Genometric.MSPC.CLI
                 "the one with highest p-value? Possible values are: { Lowest, Highest }"
         };
 
+        private readonly CommandOption _cDP = new CommandOption("-d | --degreeOfParallelism <value>", CommandOptionType.SingleValue)
+        {
+            Description = "Set the degree of parallelism."
+        };
+
+        private readonly CommandOption _cOutput = new CommandOption("-o | --output <value>", CommandOptionType.SingleValue)
+        {
+            Description = "Sets a path where analysis results should be persisted."
+        };
+
         private ReplicateType _vreplicate;
         private double _vtauS = 1E-8;
         private double _vtauW = 1E-4;
@@ -72,16 +87,31 @@ namespace Genometric.MSPC.CLI
         private int _vc = 1;
         private MultipleIntersections _vm = MultipleIntersections.UseLowestPValue;
 
-
         public Config Options { private set; get; }
 
         private List<string> _inputFiles;
         public IReadOnlyList<string> Input { get { return _inputFiles.AsReadOnly(); } }
 
         /// <summary>
+        /// Gets a degree of parallelism.
+        /// </summary>
+        public int DegreeOfParallelism { private set; get; }
+
+        public string OutputPath { private set; get; }
+
+        /// <summary>
         /// Gets the path of a parser configuration file in JSON.
         /// </summary>
         public string ParserConfig { get { return _cParser.Value(); } }
+
+        /// <summary>
+        /// Gets the arguments that can be passed to 
+        /// display help message.
+        /// </summary>
+        public static string HelpOption
+        {
+            get { return "-? | -h | --help"; }
+        }
 
         public CommandLineOptions()
         {
@@ -95,7 +125,7 @@ namespace Genometric.MSPC.CLI
                 "\n\rPublications:\thttps://genometric.github.io/MSPC/publications\n\r"
             };
 
-            _cla.HelpOption("-? | -h | --help");
+            _cla.HelpOption(HelpOption);
             _cla.VersionOption("-v | --version", () =>
             {
                 return string.Format(
@@ -104,6 +134,7 @@ namespace Genometric.MSPC.CLI
             });
 
             _cla.Options.Add(_cInput);
+            _cla.Options.Add(_cFolderInput);
             _cla.Options.Add(_cReplicate);
             _cla.Options.Add(_cTauW);
             _cla.Options.Add(_cTauS);
@@ -111,7 +142,9 @@ namespace Genometric.MSPC.CLI
             _cla.Options.Add(_cAlpha);
             _cla.Options.Add(_cC);
             _cla.Options.Add(_cM);
+            _cla.Options.Add(_cDP);
             _cla.Options.Add(_cParser);
+            _cla.Options.Add(_cOutput);
             Func<int> assertArguments = AssertArguments;
             _cla.OnExecute(assertArguments);
         }
@@ -127,16 +160,19 @@ namespace Genometric.MSPC.CLI
         private void AssertRequiredArgsAreGiven()
         {
             var missingArgs = new List<string>();
-            if (!_cInput.HasValue()) missingArgs.Add(_cInput.ShortName + "|" + _cInput.LongName);
-            if (!_cReplicate.HasValue()) missingArgs.Add(_cReplicate.ShortName + "|" + _cReplicate.LongName);
-            if (!_cTauS.HasValue()) missingArgs.Add(_cTauS.ShortName + "|" + _cTauS.LongName);
-            if (!_cTauW.HasValue()) missingArgs.Add(_cTauW.ShortName + "|" + _cTauW.LongName);
+            if (!_cInput.HasValue() && !_cFolderInput.HasValue())
+                missingArgs.Add(string.Format("({0} or {1})", FormatMissingArg(_cInput), FormatMissingArg(_cFolderInput)));
+            if (!_cReplicate.HasValue()) missingArgs.Add(FormatMissingArg(_cReplicate));
+            if (!_cTauS.HasValue()) missingArgs.Add(FormatMissingArg(_cTauS));
+            if (!_cTauW.HasValue()) missingArgs.Add(FormatMissingArg(_cTauW));
 
             if (missingArgs.Count > 0)
             {
-                var msgBuilder = new StringBuilder("The following required arguments are missing: ");
-                foreach (var item in missingArgs)
-                    msgBuilder.Append(item + "; ");
+                var msgBuilder = new StringBuilder("the following required arguments are missing: ");
+                for (int i = 0; i < missingArgs.Count - 1; i++)
+                    msgBuilder.Append(missingArgs[i] + "; and ");
+                msgBuilder.Append(missingArgs[missingArgs.Count - 1] + ".");
+
                 throw new ArgumentException(msgBuilder.ToString());
             }
         }
@@ -144,12 +180,31 @@ namespace Genometric.MSPC.CLI
         private void ReadInputFiles()
         {
             _inputFiles = new List<string>();
-            foreach (var input in _cInput.Values)
-                if (input.Contains("*") || input.Contains("?"))
-                    foreach (var file in Directory.GetFiles(Path.GetDirectoryName(input), Path.GetFileName(input)))
+            if (_cInput.HasValue())
+            {
+                foreach (var input in _cInput.Values)
+                    if (input.Contains("*") || input.Contains("?"))
+                        foreach (var file in Directory.GetFiles(Path.GetDirectoryName(input), Path.GetFileName(input)))
+                            _inputFiles.Add(file);
+                    else
+                        _inputFiles.Add(input);
+            }
+
+            if (_cFolderInput.HasValue())
+            {
+                try
+                {
+                    var files = Directory.GetFiles(
+                        Path.GetDirectoryName(_cFolderInput.Values[0]),
+                        Path.GetFileName(_cFolderInput.Values[0]));
+                    foreach (var file in files)
                         _inputFiles.Add(file);
-                else
-                    _inputFiles.Add(input);
+                }
+                catch (Exception e)
+                {
+                    throw new ArgumentException(e.Message);
+                }
+            }
         }
 
         private void AssertGivenValuesAreValid()
@@ -216,6 +271,17 @@ namespace Genometric.MSPC.CLI
                     default:
                         throw new ArgumentException("Invalid value given for the `" + _cM.LongName + "` argument.");
                 }
+
+            if (_cOutput.HasValue())
+                OutputPath = _cOutput.Value();
+
+            if(_cDP.HasValue())
+            {
+                if (int.TryParse(_cDP.Value(), out int dp))
+                    DegreeOfParallelism = dp;
+                else
+                    throw new ArgumentException("Invalid value given for the `" + _cDP.LongName + "` argument.");
+            }
         }
 
         private string[] ParseExpandedInput(string[] args)
@@ -250,6 +316,11 @@ namespace Genometric.MSPC.CLI
             }
 
             return rtv.ToArray();
+        }
+
+        private string FormatMissingArg(CommandOption arg)
+        {
+            return string.Format("-{0}|--{1}", arg.ShortName, arg.LongName);
         }
 
         public Config Parse(string[] args, out bool helpIsDisplayed)

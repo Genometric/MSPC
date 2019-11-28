@@ -2,7 +2,7 @@
 title: Input
 ---
 
-The MSPC `CLI` takes as input a tab-delimited file in 
+MSPC takes as input a tab-delimited file in 
 [BED format]( https://uswest.ensembl.org/info/website/upload/bed.html) for each replicate, 
 each containing enriched regions (aka peaks) called with a permissive p-value threshold. 
 

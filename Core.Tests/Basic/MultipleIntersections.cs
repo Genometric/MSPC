@@ -27,7 +27,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         private readonly static Peak r22 = new Peak(left: 16, right: 20, name: "r22", value: 1e-6);
         private readonly static Peak r23 = new Peak(left: 26, right: 32, name: "r23", value: 1e-9);
 
-        private ReadOnlyDictionary<uint, Result<Peak>> InitializeAndRun(MultipleIntersections miChoice)
+        private ReadOnlyDictionary<uint, Result<Peak>> InitializeAndRun(MultipleIntersections miChoice, bool trackSupportingPeaks = false)
         {
             // Arrange
             var sA = new Bed<Peak>();
@@ -38,7 +38,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             sB.Add(r22, _chr, _strand);
             sB.Add(r23, _chr, _strand);
 
-            var mspc = new Mspc();
+            var mspc = new Mspc(trackSupportingPeaks);
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
 
@@ -50,7 +50,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void UseMostStringentPeak()
         {
             // Arrange & Act
-            var res = InitializeAndRun(MultipleIntersections.UseLowestPValue);
+            var res = InitializeAndRun(MultipleIntersections.UseLowestPValue, true);
 
             // Assert
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].SupportingPeaks[0].Source.CompareTo(r23) == 0);
@@ -60,7 +60,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         public void UseLeastStringentPeak()
         {
             // Arrange & Act
-            var res = InitializeAndRun(MultipleIntersections.UseHighestPValue);
+            var res = InitializeAndRun(MultipleIntersections.UseHighestPValue, true);
 
             // Assert
             Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].SupportingPeaks[0].Source.CompareTo(r21) == 0);

@@ -1,95 +1,53 @@
-# Common configuration for all branches
-version: '3.3.{build}'
-image: Visual Studio 2017
-
+version: '4.0.{build}'
+image: 'Visual Studio 2019'
 init:
-  # Good practice, because Windows line endings are different from Unix/Linux ones
-  - cmd: git config --global core.autocrlf true
+    -
+        cmd: 'git config --global core.autocrlf true'
 install:
-  - dotnet restore
-
+    - 'nuget restore'
+    - 'dotnet restore'
+    - 'choco install opencover.portable'
+    - 'choco install codecov'
 before_build:
-- nuget restore
-- choco install opencover.portable
-- choco install codecov
-
+    - 'nuget restore'
+    - 'choco install opencover.portable'
+    - 'choco install codecov'
 build:
-  verbosity: minimal
+    verbosity: minimal
 clone_depth: 1
-
-build_script:
-  - choco install "msbuild-sonarqube-runner" -y
-  - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.analysis.mode=preview"
-  - MSBuild.exe /t:Rebuild
-  - SonarScanner.MSBuild.exe end 
-
 test_script:
-  # restore packages for our unit tests
-  - cmd: dotnet restore Core.Tests\Core.Tests.csproj --verbosity m
-  - cmd: dotnet test Core.Tests\Core.Tests.csproj
-  - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle
-after_test:
-  - ps: |
-      $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
-      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-on_finish :
-  # any cleanup in here
-
+    -
+        cmd: 'dotnet restore Core.Tests\Core.Tests.csproj --verbosity m'
+    -
+        cmd: 'dotnet test Core.Tests\Core.Tests.csproj'
+    -
+        cmd: 'cd Core.Tests'
+    - 'OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle'
+# on_finish: any clean up code here
 deploy: off
-
-# override common configuration for each branch
 for:
-
-# override settings for `master` branch
--
-  branches:
-    only:
-      - master
-
-  configuration: Release
-  
-  environment:
-    sonartoken:
-      secure: kR8M18MAnrL4rIJ7GRLhTrZ7D0kSDB1fYcgVlyunWscK2exbqvqLv+E7nLbPOy3x
-    codecovtoken:
-      secure: dKCzX4gNxZYO3rxHOCnB+PzxeJIZZTsQLC5rczdcp/egmD1IN9u+b8srqxrj65jy
-  
-  build_script:
-    - choco install "msbuild-sonarqube-runner" -y
-    - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%"
-    - MSBuild.exe /t:Rebuild
-    - SonarScanner.MSBuild.exe end /d:"sonar.login=%sonartoken%"
-    
-  after_test:
-    - ps: |
-        $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
-        Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-        bash codecov.sh -f "mspc_coverage.xml" -t $env:codecovtoken
-    - SonarScanner.MSBuild.exe begin /k:"mspc" /o:"genometric" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=%sonartoken%" /d:sonar.cs.opencover.reportsPaths=".\mspc_coverage.xml"
-    - MSBuild.exe /t:Rebuild
-    - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle
-    - SonarScanner.MSBuild.exe end /d:"sonar.login=%sonartoken%"
-  
-  artifacts: 
-    - path: Core/bin/Release/Genometric.MSPC.Core*.nupkg  
-      name: MSPC
-    
-  deploy:
-    provider: NuGet
-    api_key:
-      secure: 7KMBaTezXgEOFImbXFoY3qHBtEuFO3NMwLDoGV8Eozq5kuEtSJKmpEROULOueUAF
-    skip_symbols: false
-
-# override settings for `dev*` branches
--
-  branches:
-    only:
-      - /dev*/
-      
-  configuration: Debug
-  
-  after_test:
-    - ps: |
-        $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
-        Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-        bash codecov.sh -f "mspc_coverage.xml"
+    -
+        branches:
+            only: [master]
+        configuration: Release
+        environment:
+            codecovtoken: {secure: dKCzX4gNxZYO3rxHOCnB+PzxeJIZZTsQLC5rczdcp/egmD1IN9u+b8srqxrj65jy}
+        build_script:
+            - 'MSBuild.exe /t:Rebuild'
+        after_test:
+            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f \"mspc_coverage.xml\"\n"}
+            - 'MSBuild.exe /t:Rebuild'
+            - 'OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:"mspc_coverage.xml" -oldstyle'
+            - {ps: 'cd ..'}
+        artifacts:
+            - {path: 'Core/bin/Release/Genometric.MSPC.Core*.nupkg', name: MSPC}
+        deploy:
+            provider: NuGet
+            api_key: {secure: R9BDT6tjyjrRf/SNqhrjz3Bju8vUGEZ05qG6UAIF7Zmam2Wk8wjZgDMVyzRvY8Ae}
+            skip_symbols: false
+    -
+        branches:
+            only: ['/dev*/']
+        configuration: Debug
+        after_test:
+            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f \"mspc_coverage.xml\"\n"}

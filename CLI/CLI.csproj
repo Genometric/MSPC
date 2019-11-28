@@ -1,16 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <StartupObject>Genometric.MSPC.CLI.Program</StartupObject>
     <ApplicationIcon />
     <Win32Resource />
-    <Version>3.3.0</Version>
+    <Version>4.0.0</Version>
     <Authors>Vahid Jalili</Authors>
     <Product>Genometric.MSPC.CLI</Product>
     <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
     <PackageId>Genometric.MSPC.CLI</PackageId>
     <Copyright>GNU General Public License v3.0</Copyright>
@@ -18,7 +18,10 @@
     <RootNamespace>Genometric.MSPC.CLI</RootNamespace>
     <Company>Genometric</Company>
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/Genometric/MSPC/project_icon/website/static/img/mspc_logo_wireframe.svg</PackageIconUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <AssemblyName>mspc</AssemblyName>
+    <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
+    <PackageLicenseFile>license.md</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -34,13 +37,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Genometric.GeUtilities" Version="5.3.0" />
+    <PackageReference Include="Genometric.GeUtilities" Version="6.1.0" />
+    <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\license.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+	<None Include="..\website\static\img\logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+	</None>
   </ItemGroup>
 
 </Project>

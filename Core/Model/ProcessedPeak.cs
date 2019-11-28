@@ -25,7 +25,7 @@ namespace Genometric.MSPC.Core.Model
             SupportingPeaks = supportingPeaks;
         }
 
-        public ProcessedPeak(I source, double xSquared, int supportingPeaksCount):
+        public ProcessedPeak(I source, double xSquared, int supportingPeaksCount = 0) :
             base(source)
         {
             AdjPValue = double.NaN;
@@ -34,8 +34,6 @@ namespace Genometric.MSPC.Core.Model
                 RTP = double.NaN;
             else
                 RTP = ChiSqrd.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaksCount * 2));
-            Classification = new HashSet<Attributes>();
-            SupportingPeaks = new List<SupportingPeak<I>>().AsReadOnly();
         }
             
 
@@ -58,10 +56,28 @@ namespace Genometric.MSPC.Core.Model
         public string Reason { get { return Decode(reason); } }
         internal Codes reason = Codes.M000;
 
-        /// <summary>
-        /// Sets and gets classification type. 
-        /// </summary>
-        public HashSet<Attributes> Classification { internal set; get; }
+        private byte _classification;
+
+        public void AddClassification(Attributes attribute)
+        {
+            if (!HasAttribute(attribute))
+                _classification += (byte)attribute;
+        }
+
+        public bool HasAttribute(Attributes attribute)
+        {
+            return (_classification & (byte)attribute) == (byte)attribute;
+        }
+
+        public bool Different(Attributes attribute)
+        {
+            return _classification != (byte)attribute;
+        }
+
+        public bool Different(byte attribute)
+        {
+            return _classification != attribute;
+        }
 
         /// <summary>
         /// Sets and gets adjusted p-value (false discovery rate) using the 
@@ -82,15 +98,14 @@ namespace Genometric.MSPC.Core.Model
                    EqualityComparer<I>.Default.Equals(Source, peak.Source) &&
                    ((double.IsNaN(XSquared) && double.IsNaN(peak.XSquared)) || XSquared == peak.XSquared) &&
                    ((double.IsNaN(RTP) && double.IsNaN(peak.RTP)) || RTP == peak.RTP) &&
-                   !SupportingPeaks.Except(peak.SupportingPeaks).Any() &&
                    Reason == peak.Reason &&
-                   !Classification.Except(peak.Classification).Any() &&
+                   !peak.Different(_classification) &&
                    ((double.IsNaN(AdjPValue) && double.IsNaN(peak.AdjPValue)) || AdjPValue == peak.AdjPValue);
         }
 
         public override int GetHashCode()
         {
-            string key = base.GetHashCode() + "_" + XSquared + "_" + RTP + "_" + SupportingPeaks.Count;
+            string key = base.GetHashCode() + "_" + XSquared + "_" + RTP;
             int l = key.Length;
 
             int hashKey = 0;

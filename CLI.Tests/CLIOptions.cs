@@ -25,10 +25,12 @@ namespace Genometric.MSPC.CLI.Tests
         private const string _c = "2";
         private const string _m = "lowest";
         private const string _r = "bio";
+        private const string _d = "4";
 
         private string GenerateShortNameArguments(
             string rep1 = _rep1, string rep2 = _rep2, string rep3 = _rep3, double tauW = _tauW, double tauS = _tauS,
-            double gamma = _gamma, float alpha = _alpha, string c = _c, string m = _m, string r = _r, string p = _p)
+            double gamma = _gamma, float alpha = _alpha, string c = _c, string m = _m, string r = _r, string p = _p,
+            string d = _d)
         {
             var builder = new StringBuilder();
             if (rep1 != null) builder.Append("-i " + rep1 + " ");
@@ -40,8 +42,10 @@ namespace Genometric.MSPC.CLI.Tests
             if (!float.IsNaN(alpha)) builder.Append("-a " + alpha + " ");
             builder.Append("-c " + c + " ");
             builder.Append("-m " + m + " ");
-            builder.Append("-r " + r);
-            if (p != null) builder.Append(" -p " + p);
+            builder.Append("-r " + r + " ");
+            if (p != null)
+                builder.Append("-p " + p + " ");
+            builder.Append("-d " + d);
             return builder.ToString();
         }
 
@@ -61,6 +65,66 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(options.Input[1] == rep2);
             if (rep3 != null)
                 Assert.True(options.Input[2] == rep3);
+        }
+
+        [Theory]
+        [InlineData("BED", 10, 20)]
+        [InlineData("TXT", 2, 200)]
+        [InlineData("NARROWPEAK", 20, 0)]
+        public void ReadInputFolder(string inputFileType, int inputFilesCount, int otherFilesCount)
+        {
+            // Arrange
+            var options = new CommandLineOptions();
+            var tmpPath = Path.GetTempPath() + new Random().Next() + Path.DirectorySeparatorChar;
+            Directory.CreateDirectory(tmpPath);
+            for (int i = 0; i < inputFilesCount; i++)
+                File.Create(string.Format("{0}{1}.{2}", tmpPath, i, inputFileType)).Dispose();
+            for (int i = 0; i < otherFilesCount; i++)
+                File.Create(string.Format("{0}{1}.{2}", tmpPath, i, Utilities.GetRandomString(3))).Dispose();
+
+            // Act
+            options.Parse(string.Format("-f {0} -r bio -s 1e-8 -w 1e-4", tmpPath + "*." + inputFileType).Split(' '), out bool _);
+
+            // Assert
+            Assert.True(options.Input.Count == inputFilesCount);
+            for (int i = 0; i < inputFilesCount; i++)
+                Assert.Contains(options.Input, x => x == string.Format("{0}{1}.{2}", tmpPath, i, inputFileType));
+
+            // Clean up
+            Directory.Delete(tmpPath, true);
+        }
+
+        [Fact]
+        public void ReadInputFileAndFolderInCombination()
+        {
+            // Arrange
+            string inputFileType = "BED";
+            int inputFilesCount = 10;
+            var options = new CommandLineOptions();
+            var tmpPath = Path.GetTempPath() + new Random().Next() + Path.DirectorySeparatorChar;
+            Directory.CreateDirectory(tmpPath);
+            for (int i = 0; i < inputFilesCount; i++)
+                File.Create(string.Format("{0}{1}.{2}", tmpPath, i, inputFileType)).Dispose();
+            var anotherTmpPath = Path.GetTempPath() + new Random().Next() + Path.DirectorySeparatorChar;
+            var anotherTmpFile = string.Format("{0}{1}.{2}", tmpPath, 1, inputFileType);
+            Directory.CreateDirectory(anotherTmpPath);
+            File.Create(anotherTmpFile).Dispose();
+
+            // Act
+            options.Parse(string.Format(
+                "-i {0} -f {1} -r bio -s 1e-8 -w 1e-4", 
+                anotherTmpFile, 
+                tmpPath + "*." + inputFileType).Split(' '), out bool _);
+
+            // Assert
+            Assert.True(options.Input.Count == inputFilesCount + 1);
+            for (int i = 0; i < inputFilesCount; i++)
+                Assert.Contains(options.Input, x => x == string.Format("{0}{1}.{2}", tmpPath, i, inputFileType));
+            Assert.Contains(options.Input, x => x == anotherTmpFile);
+
+            // Clean up
+            Directory.Delete(tmpPath, true);
+            Directory.Delete(anotherTmpPath, true);
         }
 
         [Theory]
@@ -261,6 +325,19 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(po.ReplicateType == expectedValue);
         }
 
+        [Theory]
+        [InlineData(1)]
+        [InlineData(100)]
+        public void ReadDP(int dp)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            options.Parse(GenerateShortNameArguments(d: dp.ToString()).Split(' '), out bool _);
+
+            // Assert
+            Assert.True(options.DegreeOfParallelism == dp);
+        }
+
         [Fact]
         public void NoExceptionIfOnlyRequiredArgumentsAreGiven()
         {
@@ -301,6 +378,17 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void ThrowExceptionForInvalidInputFolder()
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            string[] arguments = "-f /none/existing/path -w 1E-4 -s 1E-8 -r bio".Split(' ');
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+        }
+
+        [Fact]
         public void ThrowExceptionForMissingTauS()
         {
             // Arrange & Act
@@ -331,7 +419,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("The following required arguments are missing: r|replicate; ", exception.Message);
+            Assert.Equal("the following required arguments are missing: -r|--replicate.", exception.Message);
         }
 
         [Fact]

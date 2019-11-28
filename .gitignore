@@ -305,3 +305,5 @@ __pycache__/
 OpenCover/
 /MSPCCLI/CLI/session_2017112623434
 /.sonarlint
+/yarn.lock
+website/yarn.lock

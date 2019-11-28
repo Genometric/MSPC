@@ -5,14 +5,13 @@
 using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.Intervals.Genome;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
-using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.IntervalTree;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Genometric.MSPC.Core.Functions
@@ -20,6 +19,9 @@ namespace Genometric.MSPC.Core.Functions
     internal class Processor<I>
         where I : IPeak
     {
+        private int _processedPeaks;
+        private int _peaksToBeProcessed;
+
         private BackgroundWorker _worker;
         private DoWorkEventArgs _workerEventArgs;
 
@@ -32,7 +34,7 @@ namespace Genometric.MSPC.Core.Functions
             get { return new ReadOnlyDictionary<uint, Result<I>>(_analysisResults); }
         }
 
-        private Dictionary<uint, Dictionary<string, Tree<I>>> _trees { set; get; }
+        private Dictionary<string, Tree<I>> _tree { set; get; }
 
         private Dictionary<string, List<ProcessedPeak<I>>> _consensusPeaks { set; get; }
         public ReadOnlyDictionary<string, List<ProcessedPeak<I>>> ConsensusPeaks
@@ -44,6 +46,8 @@ namespace Genometric.MSPC.Core.Functions
 
         private List<double> _cachedChiSqrd { set; get; }
 
+        private bool _trackSupportingRegions;
+
         private Config _config { set; get; }
 
         private Dictionary<uint, Bed<I>> _samples { set; get; }
@@ -52,10 +56,11 @@ namespace Genometric.MSPC.Core.Functions
 
         internal int SamplesCount { get { return _samples.Count; } }
 
-        internal Processor(IPeakConstructor<I> peakConstructor)
+        internal Processor(IPeakConstructor<I> peakConstructor, bool trackSupportingRegions)
         {
             _samples = new Dictionary<uint, Bed<I>>();
             _peakConstructor = peakConstructor;
+            _trackSupportingRegions = trackSupportingRegions;
             DegreeOfParallelism = Environment.ProcessorCount;
         }
 
@@ -69,24 +74,27 @@ namespace Genometric.MSPC.Core.Functions
             _config = config;
             _worker = worker;
             _workerEventArgs = e;
+            _processedPeaks = 0;
+            _peaksToBeProcessed = 0;
 
             int step = 1, stepCount = 4;
 
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Initializing"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Initializing"));
             CacheChiSqrdData();
             BuildDataStructures();
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Processing samples"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Processing samples"));
+            OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks"));
             ProcessSamples();
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step++, stepCount, "Performing Multiple testing correction"));
+            OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Performing Multiple testing correction"));
             var fdr = new FalseDiscoveryRate<I>();
             fdr.PerformMultipleTestingCorrection(_analysisResults, _config.Alpha, DegreeOfParallelism);
 
             if (CheckCancellationPending()) return;
-            OnProgressUpdate(new ProgressReport(step, stepCount, "Creating consensus peaks set"));
+            OnProgressUpdate(new ProgressReport(step, stepCount, false, false, "Creating consensus peaks set"));
             _consensusPeaks = new ConsensusPeaks<I>().Compute(_analysisResults, _peakConstructor, DegreeOfParallelism, _config.Alpha);
         }
 
@@ -99,22 +107,30 @@ namespace Genometric.MSPC.Core.Functions
 
         private void BuildDataStructures()
         {
-            _trees = new Dictionary<uint, Dictionary<string, Tree<I>>>();
+            _tree = new Dictionary<string, Tree<I>>();
             _analysisResults = new Dictionary<uint, Result<I>>();
             foreach (var sample in _samples)
             {
-                _trees.Add(sample.Key, new Dictionary<string, Tree<I>>());
                 _analysisResults.Add(sample.Key, new Result<I>(_config.ReplicateType));
                 foreach (var chr in sample.Value.Chromosomes)
                 {
-                    _trees[sample.Key].Add(chr.Key, new Tree<I>());
+                    if (!_tree.ContainsKey(chr.Key))
+                        _tree.Add(chr.Key, new Tree<I>());
                     _analysisResults[sample.Key].AddChromosome(chr.Key, chr.Value.Statistics.Count);
                     foreach (var strand in chr.Value.Strands)
                         foreach (I p in strand.Value.Intervals)
                             if (p.Value < _config.TauW)
-                                _trees[sample.Key][chr.Key].Add(p);
+                            {
+                                _tree[chr.Key].Add(p, sample.Key);
+                                _peaksToBeProcessed++;
+                            }
                 }
             }
+
+            Parallel.ForEach(
+                _tree,
+                new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
+                tree => { tree.Value.BuildAndFinalize(); });
         }
 
         private void ProcessSamples()
@@ -138,6 +154,7 @@ namespace Genometric.MSPC.Core.Functions
         {
             Attributes attribute;
             foreach (var strand in chr.Value.Strands)
+            {
                 foreach (I peak in strand.Value.Intervals)
                 {
                     if (_worker.CancellationPending)
@@ -149,8 +166,8 @@ namespace Genometric.MSPC.Core.Functions
                         attribute = Attributes.Weak;
                     else
                     {
-                        var pp = new ProcessedPeak<I>(peak, double.NaN, new List<SupportingPeak<I>>());
-                        pp.Classification.Add(Attributes.Background);
+                        var pp = new ProcessedPeak<I>(peak, double.NaN);
+                        pp.AddClassification(Attributes.Background);
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                         continue;
                     }
@@ -159,11 +176,15 @@ namespace Genometric.MSPC.Core.Functions
                     if (supportingPeaks.Count + 1 >= _config.C)
                     {
                         double xsqrd = CalculateXsqrd(peak, supportingPeaks);
-                        var pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks);
-                        pp.Classification.Add(attribute);
+                        ProcessedPeak<I> pp;
+                        if (_trackSupportingRegions)
+                            pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks);
+                        else
+                            pp = new ProcessedPeak<I>(peak, xsqrd, supportingPeaks.Count);
+                        pp.AddClassification(attribute);
                         if (xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                         {
-                            pp.Classification.Add(Attributes.Confirmed);
+                            pp.AddClassification(Attributes.Confirmed);
                             _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                             ProcessSupportingPeaks(
                                 sampleKey, chr.Key, peak, supportingPeaks,
@@ -172,7 +193,7 @@ namespace Genometric.MSPC.Core.Functions
                         else
                         {
                             pp.reason = Messages.Codes.M001;
-                            pp.Classification.Add(Attributes.Discarded);
+                            pp.AddClassification(Attributes.Discarded);
                             _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                             ProcessSupportingPeaks(
                                 sampleKey, chr.Key, peak, supportingPeaks,
@@ -181,47 +202,57 @@ namespace Genometric.MSPC.Core.Functions
                     }
                     else
                     {
-                        var pp = new ProcessedPeak<I>(peak, 0, supportingPeaks);
-                        pp.Classification.Add(attribute);
-                        pp.Classification.Add(Attributes.Discarded);
+                        var pp = new ProcessedPeak<I>(peak, 0, supportingPeaks.Count);
+                        pp.AddClassification(attribute);
+                        pp.AddClassification(Attributes.Discarded);
                         pp.reason = Messages.Codes.M002;
                         _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
                     }
+
+                    Interlocked.Increment(ref _processedPeaks);
                 }
+                OnProgressUpdate(new ProgressReport(_processedPeaks, _peaksToBeProcessed, true, true, "peaks processed"));
+            }
         }
 
-        private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I p)
+        private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I queryPeak)
         {
             var supportingPeaks = new List<SupportingPeak<I>>();
-            foreach (var tree in _trees)
+            if (!_tree.ContainsKey(chr))
+                return supportingPeaks;
+
+            var overlappingPeaks = new List<NodeData<I>>();
+            overlappingPeaks = _tree[chr].GetIntervals(queryPeak, id);
+
+            switch (overlappingPeaks.Count)
             {
-                if (tree.Key == id)
-                    continue;
+                case 0: break;
 
-                var sps = new List<I>();
-                if (_trees[tree.Key].ContainsKey(chr))
-                    sps = _trees[tree.Key][chr].GetIntervals(p);
+                case 1:
+                    if (overlappingPeaks[0].SampleID != id)
+                        supportingPeaks.Add(new SupportingPeak<I>(overlappingPeaks[0].Peak, overlappingPeaks[0].SampleID));
+                    break;
 
-                switch (sps.Count)
-                {
-                    case 0: break;
+                default:
+                    var _supPeakFilterHelper = new Dictionary<uint, SupportingPeak<I>>(overlappingPeaks.Count);
+                    foreach (var p in overlappingPeaks)
+                    {
+                        if (_supPeakFilterHelper.TryGetValue(p.SampleID, out SupportingPeak<I> chosenPeak))
+                        {
+                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue
+                            && p.Peak.Value < chosenPeak.Source.Value) ||
+                            (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue
+                            && p.Peak.Value > chosenPeak.Source.Value))
+                                chosenPeak.Source = p.Peak;
+                        }
+                        else
+                        {
+                            _supPeakFilterHelper.Add(p.SampleID, new SupportingPeak<I>(p.Peak, p.SampleID));
+                        }
+                    }
 
-                    case 1:
-                        supportingPeaks.Add(new SupportingPeak<I>(sps[0], tree.Key));
-                        break;
-
-                    default:
-                        var chosenPeak = sps[0];
-                        foreach (var sp in sps.Skip(1))
-                            if ((_config.MultipleIntersections == MultipleIntersections.UseLowestPValue 
-                                && sp.Value < chosenPeak.Value) ||
-                                (_config.MultipleIntersections == MultipleIntersections.UseHighestPValue 
-                                && sp.Value > chosenPeak.Value))
-                                chosenPeak = sp;
-
-                        supportingPeaks.Add(new SupportingPeak<I>(chosenPeak, tree.Key));
-                        break;
-                }
+                    supportingPeaks.AddRange(_supPeakFilterHelper.Values);
+                    break;
             }
 
             return supportingPeaks;
@@ -233,22 +264,27 @@ namespace Genometric.MSPC.Core.Functions
         {
             foreach (var supPeak in supportingPeaks)
             {
-                var tSupPeak = new List<SupportingPeak<I>>
+                ProcessedPeak<I> pp;
+                if (_trackSupportingRegions)
                 {
-                    new SupportingPeak<I>(p, id)
-                };
-                foreach (var sP in supportingPeaks)
-                    if (supPeak.CompareTo(sP) != 0)
-                        tSupPeak.Add(sP);
+                    var tSupPeak = new List<SupportingPeak<I>> { new SupportingPeak<I>(p, id) };
+                    foreach (var sP in supportingPeaks)
+                        if (supPeak.CompareTo(sP) != 0)
+                            tSupPeak.Add(sP);
+                    pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak);
+                }
+                else
+                {
+                    pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, supportingPeaks.Count);
+                }
 
-                var pp = new ProcessedPeak<I>(supPeak.Source, xsqrd, tSupPeak);
-                pp.Classification.Add(attribute);
+                pp.AddClassification(attribute);
                 pp.reason = message;
 
                 if (supPeak.Source.Value <= _config.TauS)
-                    pp.Classification.Add(Attributes.Stringent);
+                    pp.AddClassification(Attributes.Stringent);
                 else
-                    pp.Classification.Add(Attributes.Weak);
+                    pp.AddClassification(Attributes.Weak);
 
                 _analysisResults[supPeak.SampleID].Chromosomes[chr].AddOrUpdate(pp);
             }
@@ -278,7 +314,7 @@ namespace Genometric.MSPC.Core.Functions
             if (_worker.CancellationPending)
             {
                 _analysisResults = new Dictionary<uint, Result<I>>();
-                OnProgressUpdate(new ProgressReport(-1, -1, "Canceled current task."));
+                OnProgressUpdate(new ProgressReport(0, 0, false, false, "Canceled current task."));
                 _workerEventArgs.Cancel = true;
                 return true;
             }

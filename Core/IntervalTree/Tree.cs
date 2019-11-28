@@ -10,34 +10,37 @@ namespace Genometric.MSPC.Core.IntervalTree
     internal class Tree<I>
         where I : IPeak
     {
-        private Node<I> _head;
-        private readonly List<I> _intervalList;
+        private Node<I, NodeData<I>> _head;
+        private readonly List<NodeData<I>> _intervalList;
         private bool _inSync;
 
         public Tree()
         {
-            _head = new Node<I>();
-            _intervalList = new List<I>();
+            _head = new Node<I, NodeData<I>>();
+            _intervalList = new List<NodeData<I>>();
             _inSync = true;
         }
 
-        public void Add(I interval)
+        public void Add(I interval, uint sampleID)
         {
-            _intervalList.Add(interval);
+            _intervalList.Add(new NodeData<I>(interval, sampleID));
             _inSync = false;
         }
 
-        public List<I> GetIntervals(I peak)
+        public List<NodeData<I>> GetIntervals(I peak, uint skipID)
         {
-            Build();
-            return _head.Query(peak);
+            return _head.Query(new NodeData<I>(peak, 0), skipID);
         }
 
-        public void Build()
+        public void BuildAndFinalize()
         {
             if (!_inSync)
             {
-                _head = new Node<I>(_intervalList);
+                _head = new Node<I, NodeData<I>>(_intervalList);
+                /// If it is intended to only build this tree
+                /// without finalizing it, then remove the
+                /// following line.
+                _intervalList.Clear();
                 _inSync = true;
             }
         }

@@ -58,9 +58,9 @@ namespace Genometric.MSPC.Core.Functions
             for (int i = 0; i < m; i++)
             {
                 if (peaks[i].Source.Value <= (i + 1) / (double)m * alpha)
-                    peaks[i].Classification.Add(Attributes.TruePositive);
+                    peaks[i].AddClassification(Attributes.TruePositive);
                 else
-                    peaks[i].Classification.Add(Attributes.FalsePositive);
+                    peaks[i].AddClassification(Attributes.FalsePositive);
 
                 // False discovery rate based on Benjamini and Hochberg Multiple Testing Correction.
                 peaks[i].AdjPValue = peaks[i].Source.Value * (m / (i + 1.0));

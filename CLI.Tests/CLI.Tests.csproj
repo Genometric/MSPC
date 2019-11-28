@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
 
@@ -9,11 +9,11 @@
 
     <RootNamespace>Genometric.MSPC.CLI.Tests</RootNamespace>
 
-    <Version>3.3.0</Version>
+    <Version>4.0.0</Version>
 
     <Authors>Vahid Jalili</Authors>
 
-    <PackageLicenseUrl>https://github.com/Genometric/MSPC/blob/dev/license.md</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
 
     <PackageProjectUrl>https://github.com/Genometric/MSPC</PackageProjectUrl>
 
@@ -27,13 +27,17 @@
 
     <Company>Genometric</Company>
 
-    <AssemblyVersion>3.3.0.0</AssemblyVersion>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
 
-    <FileVersion>3.3.0.0</FileVersion>
+    <FileVersion>4.0.0.0</FileVersion>
 
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
 
-    <PackageIconUrl>https://github.com/Genometric/MSPC/blob/dev/website/static/img/mspc_logo.svg</PackageIconUrl>
+    <PackageIcon>logo.png</PackageIcon>
+
+    <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
+
+    <PackageLicenseFile>license.md</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -53,6 +57,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CLI\CLI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\license.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+	<None Include="..\website\static\img\logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+	</None>
   </ItemGroup>
 
 </Project>

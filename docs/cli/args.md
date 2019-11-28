@@ -2,10 +2,10 @@
 title: Arguments
 ---
 
-## Call Example (v3 and newer):
+## Call Example:
 ```shell
 // minimum
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 ```
 
 
@@ -13,7 +13,8 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 
 | Argument | Required | Short arg | Valid Values | Default Value |
 | -------- | -------- | -------------- | ------------ | ------------- |
-| [Input](#input)          | ✓ | `-i` | BED file | none |
+| [Input](#input)          | ✓* | `-i` | BED file | none |
+| [Input Folder](#input-folder)  | ✓* | `-f` | Folder path | none |
 | [Replicate Type](#replicate-type) | ✓ | `-r` | `bio`, `tec` | none |
 | [Stringency threshold](#stringency-threshold) | ✓ | `-s` | `double` | none |
 | [Weak threshold](#weak-threshold) | ✓ | `-w` | `double` | none |
@@ -21,8 +22,11 @@ dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 | [C](#c) |  | `-c` | `int` | `1` |
 | [Alpha](#alpha) |  | `-a` | `double` | `0.05` |
 | [Multiple Intersections](#multiple-intersections) |  | `-m` | `Lowest`, `Highest` |  `Lowest` |
-| [Input Parser Configuration](#input-parser-configuration) |   | `-p` | file path | none |
+| [Degree of Parallelism](#degree-of-parallelism) | `-d` | `int` | number of processors on the current machine |
+| [Input Parser Configuration](#input-parser-configuration) |   | `-p` | File path | none |
+| [Output path](#output-path) | | `-o` | Directory path | `session_` + `<Timestamp>`|
 
+* At least one of these arguments should be provided.
 
 
 ## Arguments
@@ -38,19 +42,50 @@ Sample files are listed after the `-i` or `--input` argument.
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -i rep3.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -i rep3.bed -r bio -w 1e-4 -s 1e-8
 ```
-
 
 [Wildcard characters](https://en.wikipedia.org/wiki/Wildcard_character) can be 
 used to specify multiple files; for instance:
 
 ```shell
 # read all the files with .bed extension as input:
-$ dotnet CLI.dll -i *.bed -r bio -w 1e-4 -s 1e-8
+$ dotnet mspc.dll -i *.bed -r bio -w 1e-4 -s 1e-8
 
 # read multiple set of files in different directories:
-$ dotnet CLI.dll -i C:\setA\*.bed -i C:\setB\sci-ATAC*.bed -r bio -w 1e-4 -s 1e-8
+$ dotnet mspc.dll -i C:\setA\*.bed -i C:\setB\sci-ATAC*.bed -r bio -w 1e-4 -s 1e-8
+```
+
+The [`--input`](#input) argument can be used toghether with [`--folder`](#input-folder) argument.
+
+Example:
+
+```shell
+dotnet mspc.dll -f C:\data\*.bed -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+```
+
+See [`--folder`](#input-folder) argument section for details.
+
+
+### Input Folder
+Sample files can be read from a folder specified using wildcard characters.
+
+| Short | Long | Required | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-f` | `--folder` |  | Folder path | none |
+
+Example:
+
+```shell
+dotnet mspc.dll -f C:\data\*.bed -r bio -w 1e-4 -s 1e-8
+```
+
+The [`--folder`](#input-folder) argument can be used together with the [`--input`](#input) argument. 
+
+Example:
+
+```shell
+dotnet mspc.dll -f C:\data\*.bed -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 ### Replicate Type
@@ -66,8 +101,8 @@ specified using the following argument:
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r tec -w 1e-4 -s 1e-8
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r tec -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r biological -w 1e-4 -s 1e-8
 ```
 
 ### Weak Threshold
@@ -81,7 +116,7 @@ and stringency threshold, are considered [weak peaks](method/sets.md#weak).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 
@@ -96,7 +131,7 @@ this threshold, are considered [stringent](method/sets.md#stringent).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
 ```
 
 
@@ -111,7 +146,7 @@ combined p-value below this threshold are [confirmed](method/sets.md#confirmed).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -g 1e-8
 ```
 
 
@@ -139,9 +174,9 @@ to `1` (i.e., `C = 1`).
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 2
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 2
 
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 50%
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -c 50%
 ```
 
 Note, you do not need to enclose a value for `C` in `"` to represent 
@@ -159,7 +194,7 @@ It sets the threshold for [Benjamini-Hochberg multiple testing correction](https
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -a 0.05
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -a 0.05
 ```
 
 ### Multiple Intersections
@@ -174,7 +209,20 @@ the one with lowest p-value, or the one with highest p-value?
 Example:
 
 ```shell
-dotnet CLI.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -m lowest
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -m lowest
+```
+
+### Degree of Parallelism
+It sets the number of parallel threads MSPC can utilize simultaneously when processing data.
+
+| Short | Long | Required | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-d`  | `--degreeOfParallelism` | Optional | `int` |  Number of logical processors on the current machine |
+
+Example:
+
+```shell
+dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8 -d 12
 ```
 
 ### Input Parser Configuration 
@@ -188,3 +236,12 @@ for the input BED file parser.
 
 Refer to [this page](cli/parser.md) on how to configure the input parser
 using a JSON object.
+
+### Output Path
+
+Sets the path in which analysis results should be persisted.
+
+| Short | Long | Required | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+| `-o`  | `--output` | Optional | Directory path | `session_` + `<Timestamp>`|
+

@@ -6,11 +6,9 @@ init:
 install:
     - 'nuget restore'
     - 'dotnet restore'
-    - 'choco install opencover.portable'
     - 'choco install codecov'
 before_build:
     - 'nuget restore'
-    - 'choco install opencover.portable'
     - 'choco install codecov'
 build:
     verbosity: minimal
@@ -19,10 +17,9 @@ test_script:
     -
         cmd: 'dotnet restore Core.Tests\Core.Tests.csproj --verbosity m'
     -
-        cmd: 'dotnet test Core.Tests\Core.Tests.csproj'
+        cmd: 'dotnet test Core.Tests\Core.Tests.csproj --collect "Code coverage" --results-directory:.'
     -
         cmd: 'cd Core.Tests'
-    - 'OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:".\mspc_coverage.xml" -oldstyle'
 # on_finish: any clean up code here
 deploy: off
 for:
@@ -30,14 +27,11 @@ for:
         branches:
             only: [master]
         configuration: Release
-        environment:
-            codecovtoken: {secure: dKCzX4gNxZYO3rxHOCnB+PzxeJIZZTsQLC5rczdcp/egmD1IN9u+b8srqxrj65jy}
         build_script:
             - 'MSBuild.exe /t:Rebuild'
         after_test:
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f \"mspc_coverage.xml\"\n"}
-            - 'MSBuild.exe /t:Rebuild'
-            - 'OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[*]* -[Core.Tests*]*" -output:"mspc_coverage.xml" -oldstyle'
+            - {ps: "$coverage_file = dir -path . -filter *.coverage -recurse | %{$_.FullName}"}
+            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f $coverage_file\n"}
             - {ps: 'cd ..'}
         artifacts:
             - {path: 'Core/bin/Release/Genometric.MSPC.Core*.nupkg', name: MSPC}
@@ -50,4 +44,5 @@ for:
             only: ['/dev*/']
         configuration: Debug
         after_test:
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f \"mspc_coverage.xml\"\n"}
+            - {ps: "$coverage_file = dir -path . -filter *.coverage -recurse | %{$_.FullName}"}
+            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\nbash codecov.sh -f $coverage_file\n"}

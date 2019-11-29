@@ -31,7 +31,7 @@ for:
             - 'MSBuild.exe /t:Rebuild'
         after_test:
             - {ps: "$coverage_file = dir -path . -filter *.coverage -recurse | %{$_.FullName}"}
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\n.\codecov.sh -f \"$coverage_file\"\n"}
+            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\n.\\codecov.sh -f \"$coverage_file\"\n"}
             - {ps: 'cd ..'}
         artifacts:
             - {path: 'Core/bin/Release/Genometric.MSPC.Core*.nupkg', name: MSPC}
@@ -45,4 +45,4 @@ for:
         configuration: Debug
         after_test:
             - {ps: "$coverage_file = dir -path . -filter *.coverage -recurse | %{$_.FullName}"}
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\n.\codecov.sh -f \"$coverage_file\"\n"}
+            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\n.\\codecov.sh -f \"$coverage_file\"\n"}

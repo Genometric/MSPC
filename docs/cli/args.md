@@ -22,7 +22,7 @@ dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 | [C](#c) |  | `-c` | `int` | `1` |
 | [Alpha](#alpha) |  | `-a` | `double` | `0.05` |
 | [Multiple Intersections](#multiple-intersections) |  | `-m` | `Lowest`, `Highest` |  `Lowest` |
-| [Degree of Parallelism](#degree-of-parallelism) | `-d` | `int` | number of processors on the current machine |
+| [Degree of Parallelism](#degree-of-parallelism) | `-d` |  | `int` | host processors count |
 | [Input Parser Configuration](#input-parser-configuration) |   | `-p` | File path | none |
 | [Output path](#output-path) | | `-o` | Directory path | `session_` + `<Timestamp>`|
 

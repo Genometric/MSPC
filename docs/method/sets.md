@@ -8,7 +8,7 @@ categories. (Refer to [method description](method/about.md)
 for details.) The following figure is a schematic view of 
 these categories and their relation.
 
-![alt text](https://media.githubusercontent.com/media/Genometric/MSPC/dev/docs/assets/sets.svg)
+![alt text](assets/sets.svg)
 
 (The number of ERs in different sets reported in this figure, are the 
 result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and 

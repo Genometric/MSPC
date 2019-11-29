@@ -6,7 +6,7 @@ MSPC outputs each classifications of peaks (e.g., `stringent`, `weak`, `confirme
 `discarded`) in separate BED files. See the following figure for different sets and their 
 relation. 
 
-![alt text](https://media.githubusercontent.com/media/Genometric/MSPC/dev/docs/assets/sets.svg)
+![alt text](assets/sets.svg)
 
 See [Sets](method/sets.md) page for description of each category.
 

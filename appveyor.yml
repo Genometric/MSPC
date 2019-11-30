@@ -31,7 +31,7 @@ for:
         build_script:
             - 'MSBuild.exe /t:Rebuild'
         after_test:
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\ncodecov.exe -f coverage.xml\n"}
+            - {ps: "codecov.exe -f coverage.xml"}
         artifacts:
             - {path: 'Core/bin/Release/Genometric.MSPC.Core*.nupkg', name: MSPC}
         deploy:

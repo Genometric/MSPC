@@ -9,7 +9,7 @@ install:
     - 'choco install codecov'
 before_build:
     - 'nuget restore'
-    - 'choco install codecov'
+    - {ps: "$env:PATH = 'C:\\Users\\appveyor\\.nuget\\packages\\microsoft.codecoverage\\16.4.0\\build\\netstandard1.0\\CodeCoverage\\;' + $env:PATH"}
 build:
     verbosity: minimal
 clone_depth: 1
@@ -18,8 +18,9 @@ test_script:
         cmd: 'dotnet restore Core.Tests\Core.Tests.csproj --verbosity m'
     -
         cmd: 'dotnet test Core.Tests\Core.Tests.csproj --collect "Code coverage" --results-directory:.'
-    -
-        cmd: 'cd Core.Tests'
+    - {ps: "$coverage_file = dir -path . -filter *.coverage -recurse | %{$_.FullName -replace \"\\\\\", \"/\"}"}
+    - {ps: "codecoverage.exe analyze /output:coverage.xml $coverage_file"}
+    
 # on_finish: any clean up code here
 deploy: off
 for:
@@ -30,9 +31,7 @@ for:
         build_script:
             - 'MSBuild.exe /t:Rebuild'
         after_test:
-            - {ps: "$coverage_file = dir -path . -filter *.coverage -recurse | %{$_.FullName}"}
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\n.\\codecov.sh -f \"$coverage_file\"\n"}
-            - {ps: 'cd ..'}
+            - {ps: "codecov.exe -f coverage.xml"}
         artifacts:
             - {path: 'Core/bin/Release/Genometric.MSPC.Core*.nupkg', name: MSPC}
         deploy:
@@ -44,5 +43,4 @@ for:
             only: ['/dev*/']
         configuration: Debug
         after_test:
-            - {ps: "$coverage_file = dir -path . -filter *.coverage -recurse | %{$_.FullName}"}
-            - {ps: "$env:PATH = 'C:\\msys64\\usr\\bin;' + $env:PATH\nInvoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh\n.\\codecov.sh -f \"$coverage_file\"\n"}
+            - {ps: "codecov.exe -f coverage.xml"}

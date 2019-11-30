@@ -55,7 +55,7 @@ regions. See the following figure as an example, and you may refer to
 or [documentation](https://genometric.github.io/MSPC/docs/method/about) 
 page for more details.
 
-![sets](https://media.githubusercontent.com/media/Genometric/MSPC/dev/docs/assets/sets.svg)
+![sets](assets/sets.svg)
 
 
 <br/>

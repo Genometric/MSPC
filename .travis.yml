@@ -13,4 +13,4 @@ matrix:
             cache: {yarn: true}
             language: node_js
             node_js: ['8']
-            script: ['git config --global user.name "${GH_NAME}"', 'git config --global user.email "${GH_EMAIL}"', 'echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc', 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd website && yarn install && GIT_USER="${GH_NAME}" yarn run publish-gh-pages; fi']
+            script: ['git config --global user.name "${GH_NAME}"', 'git config --global user.email "${GH_EMAIL}"', 'echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc', 'if [ "$TRAVIS_BRANCH" = "master" ]; then cd website && yarn install && GIT_USER="${GH_NAME}" yarn run publish-gh-pages; fi']

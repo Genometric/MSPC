@@ -29,7 +29,7 @@ installation options):
 3. Download sample data:
 
 	```bash
-	$ wget -O demo.zip https://github.com/Genometric/MSPC/raw/dev/SampleFiles/demo.zip
+	$ wget -O demo.zip https://github.com/Genometric/Annotations/raw/master/SampleFiles/demo.zip
 	$ unzip demo.zip -d .
 	```
 

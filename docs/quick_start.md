@@ -9,7 +9,7 @@ depending on your runtime (see [installation](installation.md) page for detailed
 installation options): 
 
 	```bash
-	# Windows x64:
+	# Windows x64 (using PowerShell):
 	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
 		
 	# Linux x64:
@@ -38,7 +38,7 @@ installation options):
 To run MSPC use the following command depending on your runtime:
 
 ```bash
-# Windows x64:
+# Windows x64 (using PowerShell):
 $ .\mspc.exe -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
 
 # Linux x64 or macOS x64:

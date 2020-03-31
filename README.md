@@ -5,8 +5,8 @@
 
 [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status)](https://sonarcloud.io/dashboard/index/mspc)  [![codecov](https://codecov.io/gh/Genometric/MSPC/branch/master/graph/badge.svg)](https://codecov.io/gh/Genometric/MSPC)   [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc)](https://sonarcloud.io/dashboard/index/mspc) [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating)](https://sonarcloud.io/dashboard/index/mspc)
 
-| [Download](https://github.com/Genometric/MSPC/releases) | [Documentation](https://genometric.github.io/MSPC/) | [Publication](https://genometric.github.io/MSPC/publications)
-| -- | -- |--: |
+| [Quick Start](https://genometric.github.io/MSPC/docs/quick_start) | [Documentation](https://genometric.github.io/MSPC/) | [Download](https://github.com/Genometric/MSPC/releases) | [Publication](https://genometric.github.io/MSPC/publications) |
+| -- | -- | -- | --: |
 
 
 <br/>

@@ -9,10 +9,10 @@
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Genometric/MSPC</RepositoryUrl>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <AssemblyVersion>4.0.1.0</AssemblyVersion>
     <Copyright>GNU General Public License v3.0</Copyright>
     <Description>Using combined evidence from replicates to evaluate ChIP-seq peaks</Description>
-    <Version>4.0.0</Version>
+    <Version>4.0.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>Genometric</Company>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -35,9 +35,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Genometric.GeUtilities" Version="6.1.0" />
-    <PackageReference Include="MathNet.Numerics" Version="4.9.0" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.6.0" />
+    <PackageReference Include="Genometric.GeUtilities" Version="6.2.0" />
+    <PackageReference Include="MathNet.Numerics" Version="4.9.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,7 +19,7 @@ test_script:
     -
         cmd: 'dotnet test Core.Tests\Core.Tests.csproj --collect "Code coverage" --results-directory:.'
     - {ps: "$coverage_file = dir -path . -filter *.coverage -recurse | %{$_.FullName -replace \"\\\\\", \"/\"}"}
-    - {ps: "codecoverage.exe analyze /output:coverage.xml $coverage_file"}
+    - {ps: "CodeCoverage.exe analyze /output:coverage.xml $coverage_file"}
     
 # on_finish: any clean up code here
 deploy: off

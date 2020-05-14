@@ -25,6 +25,8 @@ namespace Genometric.MSPC.CLI.Logging
         private readonly int _sectionHeaderLenght = 20;
         private readonly int _fileNameMaxLength = 20;
         private static readonly string _cannotContinue = "MSPC cannot continue.";
+        private static readonly string _linkToDocumentation = "Documentation: https://genometric.github.io/MSPC/";
+        private static readonly string _linkToIssuesPage = "Questions or bug report: https://github.com/Genometric/MSPC/issues";
         private bool _lastStatusUpdatedItsPrevious;
         private Table _parserLogTable;
 
@@ -103,6 +105,8 @@ namespace Genometric.MSPC.CLI.Logging
         {
             LogExceptionStatic(message);
             log.Error(message);
+            log.Info(_linkToDocumentation);
+            log.Info(_linkToIssuesPage);
             log.Info(HintHelpMessage);
             log.Info(_cannotContinue);
         }

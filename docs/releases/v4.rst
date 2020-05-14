@@ -1,4 +1,9 @@
 ===== 
+v4.0.1
+=====
+- Update GeUtilities version to its current latest where the issue of duplicate regions is resolved. https://github.com/Genometric/MSPC/issues/123 
+
+===== 
 v4.0 
 =====
 

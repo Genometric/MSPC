@@ -62,8 +62,8 @@ page for more details.
 
 ## Download and Run
 
-- [Quick Start](https://genometric.github.io/MSPC/docs/quick_start);
-- [Install](https://genometric.github.io/MSPC/docs/installation);
+- [__Quick Start__: download, install, and run a demo use-case](https://genometric.github.io/MSPC/docs/quick_start);
+- [__Install__: details on different installation options](https://genometric.github.io/MSPC/docs/installation).
 
 MSPC is released as a cross-platform console application and a .NET Core library. 
 See the following figure for its current cross-platform build stats.

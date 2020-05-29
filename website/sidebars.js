@@ -1,5 +1,5 @@
-{
-  "docs": {
+module.exports = {
+  someSidebar: {
     "Getting Started": [
       "welcome",
       "quick_start",
@@ -23,5 +23,5 @@
       "library/basic_invocation",
       "library/asynch_exe"
     ]
-  }
-}
+  },
+};

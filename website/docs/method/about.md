@@ -62,7 +62,7 @@ _true-positive_ or _false-positive_.
 
 The following figure is a schematic view of this procedure.
 
-![alt text](assets/sets.svg)
+![alt text](/MSPC/img/sets.svg)
 
 (The number of ERs in different sets reported in this figure, are the 
 result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and 

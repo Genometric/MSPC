@@ -29,6 +29,15 @@
   align-items: center;
   padding: 2rem 0;
   width: 100%;
+  text-align: left;
+  position: relative;
+}
+
+.featuresAlt {
+  background-color: var(--ifm-color-primary-dark);
+  align-content: stretch;
+  text-align: center;
+  position: relative;
 }
 
 .featureImage {

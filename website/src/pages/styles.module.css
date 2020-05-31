@@ -10,6 +10,7 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  background-color: var(--ifm-color-primary-lighter);
 }
 
 @media screen and (max-width: 966px) {
@@ -34,7 +35,7 @@
 }
 
 .featuresAlt {
-  background-color: var(--ifm-color-primary-dark);
+  background-color: var(--ifm-color-primary-darker);
   align-content: stretch;
   text-align: center;
   position: relative;

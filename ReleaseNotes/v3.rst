@@ -1,0 +1,190 @@
+﻿===== 	
+v3.3 	
+=====	
+
+- Update to use GeUtilities v5.3;	
+- Unions peaks on all chrs before running multiple testing correction;	
+- Delete temporary files created by unit tests, once the tests are concluded;	
+- Fix a bug formatting summary statistics;	
+- Change type of C and DF from byte to int;	
+- Sort exported peaks alphanumerically;	
+- Fix bugs computing RTP and Adj p-value.	
+
+===== 	
+v3.2 	
+=====	
+
+- Add Help and Version options for the CLI;	
+- Report summary statistics;	
+- Extend parser config, it supports p-value format, drop peaks with invalid p-value, and default p-value;	
+- Implement a `Count` function for the `Sets` type;	
+- Update README;	
+- Update documentation;	
+- Fix a bug reading input samples specifiec using wildcard chars;	
+- Fix a bug computing x-squared for consensus peaks;	
+
+===== 	
+v3.1 	
+=====	
+
+- An overhaul on consensus peaks computation: improving performance and mode;	
+- Input samples can be specified using wildcard characters;	
+- The value of `C` argument can be specified as a percentage of the number of input samples;	
+- Update documentation; 	
+- Report BH-adjusted p-value for all the sets;	
+- Report XSquared, RTP, and BH-adjusted p-value for consensus peaks;	
+- Sort all output bed files;	
+- Made `c` argument in the options constructor lowercase;	
+- Refactor `mergedReplicates` to `ConsensusPeaks`;	
+- Report `NaN` for the BH-adjusted p-value of backgroud peaks; 	
+- Report BH-adjusted p-value in the `-1xlog10` format, and mention that in the column header of the exported bed files;	
+
+===== 	
+v3.0 	
+=====	
+
+MSPC v3 is major overhaul of target platform, software engineering, and architecture.	
+
+Target Platform	
+    Change from .NET Framework_ to .NET Core_, which makes MSPC cross-platform independent from mono_. 	
+
+Software Engineering	
+    Move to NuGet_-only dependencies, integrate with appveyor_ and travis_ for continuous integration, and add unit test with %100 coverage and integrated with codecov_.	
+
+Architecture	
+    A major overhaul of models, functions, and their organization that changed as the following::	
+    	
+     From:	
+          └── mspc	
+              ├── MSPCCLI	
+              │   ├── MSPCCLI	
+              │   ├── MSPCCLI.sln	
+              │   ├── MSPCCore	
+              │   ├── MSPCExporter	
+              │   ├── MSPCWarehouse	
+         	
+     To:	
+          └── mspc	
+              ├── CLI	
+              ├── Core	
+              ├── MSPC.sln	
+
+
+Remarks	
+------------	
+
+1. Change target platform from .NET Framework to .NET Core_;	
+
+   a. Change target platform in all projects, and implement necessary changes;	
+
+   b. Replace the ``IntervalTreeLib`` with a built-in interval tree implementation, because `` IntervalTreeLib`` uses `` PowerCollections`` that is not .NET Core compatible;	
+
+   c. Replace ``GIFP`` with ``GeUtilities``, because ``GIFP`` is not .NET Core compatible [PR # 5_].	
+
+2. Software engineering:	
+
+   a. Add unit test with **%100** coverage; 	
+
+   b. Integrate with codecov_ to test code coverage on each PR (pull request); 	
+
+   c. Integrate with appveyor_ and travis_, which enable continues integration and unit test all PRs;	
+
+   d. Add/update license header for all the files. [PR # 14_]	
+
+
+3. Architecture overhaul:	
+
+   a. At organization level, ``MSPCCore`` and ``MSPCWarehouse`` are replaced by ``Core``, and ``MSPCCLI`` and ``MSPCExporter`` are replaced by ``CLI``;	
+
+   b. In addition to ``Run``, v3 implements ``RunAsync`` that runs the analysis asynchronous, which can be controlled/monitored using ``AutoResetEvent Done`` and ``AutoResetEvent Canceled`` properties. 	
+
+   c. A major overhaul of how MSPC analysis results are stored. In **v2** and earlier, the results of an mspc analysis are available via an instance of ``AnalysisResult`` class. This class defines collections (e.g., dictionaries or lists) for each **classification** of peaks (e.g., stringent, weak, confirmed, or discarded), where each collection contains peaks (e.g., confirmed _) or their count (e.g., #stringent_confirmed_) under that classification. Among other design issues, this structure results in a considerable amount of hardcoded properties that is difficult to maintain and extend, while having considerable memory footprint and being suboptimal for process and retrieval. In **v3** this model is replaced by a ``Result`` class that has a dictionary of ``Sets`` (dictionary key and value are ``chr`` and ``Sets`` respectively), where ``Sets`` contains all the ``ProcessedPeak``s on that ``chr`` (see the following point). [PR # 10_, 11_, 12_, 17_, and 18_]	
+
+   d. The ``MChIPSeqPeak`` and ``ProcessedPeak`` classes are replaced by a new ``ProcessedPeak`` class, which among other changes, it has a ``Classification`` property that stores all its attributes (e.g., stringent, confirmed, and true-positive).	
+
+   e. Peak types such as ``WeakConfirmed`` or ``WeakDiscarded`` are removed as in the new architecture, a ``ProcessedPeak`` can have multiple attributes. Therefore, a ``ProcessedPeak`` in v3 architecture can have ``Weak`` and ``Confirmed`` attributes, instead of ``WeakConfirmed``.	
+
+   f. Output files name is updated w.r.t to the new attributes. MSPC v3 creates one file for each attribute per input sample. See the following table for details. 	
+
+
+
+      +---------------------------------------+----------------------------------+	
+      | v2 output file                        | its equivalent output file in v3 |	
+      +=======================================+==================================+	
+      | AOutputSet.bed                        | TruePositive.bed                 |	
+      +---------------------------------------+----------------------------------+	
+      | AOutputSetFalsePositives.bed          | FalsePositive.bed                |	
+      +---------------------------------------+----------------------------------+	
+      | AOutputSetstringentConfirmedpeaks.bed | **none**                         |	
+      +---------------------------------------+----------------------------------+	
+      | AOutputSetweakConfirmedpeaks.bed      | **none**                         |	
+      +---------------------------------------+----------------------------------+	
+      | BStringentPeaks.bed                   | Stringent.bed                    |	
+      +---------------------------------------+----------------------------------+	
+      | CWeakPeaks.bed                        | Weak.bed                         |	
+      +---------------------------------------+----------------------------------+	
+      | DConfirmedPeaks.bed                   | Confirmed.bed                    |	
+      +---------------------------------------+----------------------------------+	
+      | DStringentConfirmedPeaks.bed          | **none**                         |	
+      +---------------------------------------+----------------------------------+	
+      | DWeakConfirmedPeaks.bed               | **none**                         |	
+      +---------------------------------------+----------------------------------+	
+      | EDiscardedPeaks.bed                   | Discarded.bed                    |	
+      +---------------------------------------+----------------------------------+	
+      | EStringentDiscardedPeaks.bed          | **none**                         |	
+      +---------------------------------------+----------------------------------+	
+      | EWeakDiscardedPeaks.bed               | **none**                         |	
+      +---------------------------------------+----------------------------------+	
+      | **none**                              | Background.bed                   |	
+      +---------------------------------------+----------------------------------+	
+
+   g. Update CLI Exporter to save peaks with all different attributes using a common function (previously we had one function for each attribute);	
+
+   h. Peaks are not stored in different sets based on the multiple testing correction (MTC) output (True-positive, or False-positive); instead, each processed peak is assigned with one attribute reflecting its MTC result. 	
+
+   i. Messages class is updated, and in the new design each peak is assigned with a ``Messages.Codes`` explaining the outcome of its analysis.	
+
+   j. Remove CLI icon. 	
+
+   k. In debug mode, create full Debug for all projects for code coverage analysis.	
+
+   l. Update CLI command line parser to use  ``Microsoft.Extensions.CommandLineUtils``;	
+   m. Remove the ExporterBase, and EventArgs class as exporter does not report its status anymore;	
+
+   n. Replace CLI interval class with a similar type from GeUtilities;	
+
+   o. Implement AsyncRun and Run functions in the MSPC Core; 	
+
+   p. Update MSPC Core status report;	
+
+   q. Cancelling an asynchronous MSPC execution is updated;	
+
+   r. Update the exporter’s timestamp format;	
+
+   s. Replace cached chi-squared data with functions from ``MathNet.Numerics`` package;	
+
+   t. A major overhaul to the ``Processor`` class: improve performance, parallel process of peaks from different chromosomes, simplify functions, 	
+
+   u. Reported status of Core is updated: it does not report the ``Percentage``;	
+
+
+
+
+
+
+.. _Framework: https://www.microsoft.com/net/download/dotnet-framework-runtime 	
+.. _Core: https://www.microsoft.com/net/download 	
+.. _mono: https://www.mono-project.com 	
+.. _NuGet: https://www.nuget.org 	
+.. _appveyor: https://www.appveyor.com	
+.. _travis: https://travis-ci.org	
+.. _codecov: https://codecov.io	
+.. _5: https://github.com/Genometric/MSPC/pull/5	
+.. _10: https://github.com/Genometric/MSPC/pull/10	
+.. _11: https://github.com/Genometric/MSPC/pull/11	
+.. _12: https://github.com/Genometric/MSPC/pull/12	
+.. _14: https://github.com/Genometric/MSPC/pull/14	
+.. _17: https://github.com/Genometric/MSPC/pull/17	
+.. _18: https://github.com/Genometric/MSPC/pull/18	
+.. _confirmed: https://github.com/Genometric/MSPC/blob/746f8d719804bed5ff62893f6d22a1428ef5f13c/MSPCCLI/MSPCWarehouse/AnalysisResult.cs#L38 	
+.. _#stringent_confirmed: https://github.com/Genometric/MSPC/blob/746f8d719804bed5ff62893f6d22a1428ef5f13c/MSPCCLI/MSPCWarehouse/AnalysisResult.cs#L132

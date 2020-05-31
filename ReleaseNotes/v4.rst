@@ -1,0 +1,89 @@
+===== 	
+v4.0.1	
+=====	
+- Update GeUtilities version to its current latest where the issue of duplicate regions is resolved. https://github.com/Genometric/MSPC/issues/123 	
+
+===== 	
+v4.0 	
+=====	
+
+MSPC v4 is a major overhaul of performance, user-experience, and change CLI assembly name to mspc.	
+This version also adds scripts to validate MSPC's output. 	
+
+ -Performance	
+  - 24x faster performance (see PR # 78_);	
+  - 59% less memory footprint (see PR # 75_ and 77_);	
+
+ -User-experience	
+  - More arguments;	
+  - Better logging; 	
+  - Export results in standard BED and txt format with more information.	
+
+Remarks	
+------------	
+
+ - Performance	
+    - Improve processing Supporting peaks [PR # 78_];	
+    - Collapse multiple interval trees into a single tree [PR # 77_];	
+    - Memory optimization by improving how attributes are stored for a processed peak [PR # 75_];	
+    - Build a tree after all intervals are added (at "Initializing" step), not at first time the tree is queried [PR # 71_];	
+    - Make tracking a list of overlapping peaks an optional feature, which is disabled by default [PR # 74_];	
+
+ - User-experience	
+    - Adds the option of specifying degree of parallelism [PR # 89_];	
+    - Add an option to specify the output path [PR # 73_];	
+    - Export data in both standard BED and MSPC format that in addition to info in BED it contains X-sqrd, right-tail probability, and adjusted p-value [PR # 69_];	
+    - Parser and export double types appreciating culture info [PR # 101_];	
+    - Fix a bug truncating column content [PR # 83_];	
+    - Raise an exception when a given parser config file does not exist [PR # 90_];	
+    - Formatting and colouring error and success messages [PR # 91_];	
+    - Log input filename differently for Logger and Console [PR # 92_];	
+    - Add `-` and `--` before missing argument names [PR # 94_];	
+    - Add the option to specify a folder where to read input files [PR # 95_];	
+    - Report CLI table headers in log file [PR # 103_];	
+    - Report elapsed time in the output [PR # 106_];	
+    - Update documentation and README [PR # 107_];	
+    - Hint how to use help when an exception occurs [PR # 108_]	
+    - Update installation documentation [PR # 110_]	
+
+ - Architecture	
+    - Update target framework to .NET Core 3.0 [PR # 100_];	
+    - Overhaul logging and orchestration [PR # 72_];	
+    - Drop SonarScanner preview mode [PR # 84_];	
+    - Drop SonarCloud integration [PR # 98_];	
+    - Format appveyor and travis yaml files [PR # 99_];	
+    - Change project logo [PR # 105_];	
+    - Change CLI assembly name from CLI to mspc [PR # 109_]	
+
+
+
+
+
+
+.. _75: https://github.com/Genometric/MSPC/pull/75	
+.. _77: https://github.com/Genometric/MSPC/pull/77	
+.. _78: https://github.com/Genometric/MSPC/pull/78	
+.. _69: https://github.com/Genometric/MSPC/pull/69	
+.. _71: https://github.com/Genometric/MSPC/pull/71	
+.. _73: https://github.com/Genometric/MSPC/pull/73	
+.. _72: https://github.com/Genometric/MSPC/pull/72	
+.. _74: https://github.com/Genometric/MSPC/pull/74	
+.. _84: https://github.com/Genometric/MSPC/pull/84	
+.. _83: https://github.com/Genometric/MSPC/pull/83	
+.. _89: https://github.com/Genometric/MSPC/pull/89	
+.. _90: https://github.com/Genometric/MSPC/pull/90	
+.. _91: https://github.com/Genometric/MSPC/pull/91	
+.. _92: https://github.com/Genometric/MSPC/pull/92	
+.. _94: https://github.com/Genometric/MSPC/pull/94	
+.. _95: https://github.com/Genometric/MSPC/pull/95	
+.. _98: https://github.com/Genometric/MSPC/pull/98	
+.. _99: https://github.com/Genometric/MSPC/pull/99	
+.. _100: https://github.com/Genometric/MSPC/pull/100	
+.. _101: https://github.com/Genometric/MSPC/pull/101	
+.. _103: https://github.com/Genometric/MSPC/pull/103	
+.. _105: https://github.com/Genometric/MSPC/pull/105	
+.. _106: https://github.com/Genometric/MSPC/pull/106	
+.. _107: https://github.com/Genometric/MSPC/pull/107	
+.. _108: https://github.com/Genometric/MSPC/pull/108	
+.. _109: https://github.com/Genometric/MSPC/pull/109	
+.. _110: https://github.com/Genometric/MSPC/pull/110

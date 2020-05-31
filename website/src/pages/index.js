@@ -18,6 +18,34 @@ const features = [
   },
 ];
 
+const features2 = [
+  {
+    title: <>Any Number of Replicates</>,
+    description: (
+      <>
+        Designed ground-up to support any number of replicates
+      </>
+      )
+  },
+  {
+    title: <>Bulk and Single-cell</>,
+    description: (
+      <>
+        MSPC can be applied to data at both bulk and single-cell resoloutions
+      </>
+    )
+  },
+  {
+    title: <>Reliable and Performant</>,
+    description: (
+      <>
+        Reliable, with 98% code-coverage, and performant that seamlessly scales 
+        to hundreds of thousands of input on a standard personal computer 
+      </>
+    )
+  },
+]
+
 function Feature({imageUrl, title, description}) {
   const imgUrl = useBaseUrl(imageUrl);
   return (
@@ -32,6 +60,7 @@ function Feature({imageUrl, title, description}) {
     </div>
   );
 }
+
 
 function Home() {
   const context = useDocusaurusContext();
@@ -62,6 +91,18 @@ function Home() {
             <div className="container">
               <div className="row">
                 {features.map((props, idx) => (
+                  <Feature key={idx} {...props} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {features2 && features2.length > 0 && (
+          <section className={styles.features, styles.featuresAlt}>
+            <div className="container">
+              <div className="row">
+                {features2.map((props, idx) => (
                   <Feature key={idx} {...props} />
                 ))}
               </div>

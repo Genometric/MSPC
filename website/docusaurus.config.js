@@ -89,7 +89,6 @@ module.exports = {
 		*/
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
-          publicationsCss: require.resolve('./src/css/publications.css'),
         },
       },
     ],

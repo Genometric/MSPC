@@ -5,6 +5,10 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
+
+// TODO: maybe better to pub this css in the src/css/ folder 
+// and import all styles globally. 
+import pubsStyles from './pubs.module.css';
 import Head from '@docusaurus/Head';
 
 const features = [
@@ -32,14 +36,14 @@ const features = [
 ];
 
 const P1 = (props) => (
-  <div className="container">
+  <div className={pubsStyles.container}>
     <header>
       <h4>{props.title}</h4>
     </header>
-    <div className="content">
-      <span className="citations __dimensions_badge_embed__" data-doi={props.doi} data-style="small_circle"></span>
+    <div className={pubsStyles.context}>
+      <span className={classnames('__dimensions_badge_embed__', pubsStyles.citations)} data-doi={props.doi} data-style="small_circle"></span>
       <div className='referenceCounter altmetric-embed' data-badge-type='donut' data-doi={props.doi}></div>
-      <a className="publicationLink" target="_pub" href={props.link}>{props.linkdescription}</a>
+      <a className={pubsStyles.publicationLink} target="_pub" href={props.link}>{props.linkdescription}</a>
     </div>
   </div>
   );
@@ -87,7 +91,7 @@ function Home() {
         </div>
       </header>
       <main>
-        <div className={styles.publications}>
+        <div className={pubsStyles.publications}>
           <P1
             title="Jalili, V., Matteucci, M., Masseroli, M., & Morelli, M. J. (2015). Using combined evidence from replicates to evaluate ChIP-seq peaks. Bioinformatics, 31(17), 2761-2769."
             doi="10.1093/bioinformatics/btv293"

@@ -9,7 +9,20 @@ install:
     - 'choco install codecov'
 before_build:
     - 'nuget restore'
-    - {ps: "$env:PATH = 'C:\\Users\\appveyor\\.nuget\\packages\\microsoft.codecoverage\\16.4.0\\build\\netstandard1.0\\CodeCoverage\\;' + $env:PATH"}
+    # We let choco to install the latest version of codecov;
+    # therefore, to correctly set the path to the folder of 
+    # the installed version, the following is what this script
+    # does:
+    # 1- Search the installation path of codecov for every version
+    #    (using the `Get-ChildItem1).
+    # 2- Append build path (i.e., `/build/netstandard1.0/CodeCoverage`)
+    #    to the codecov to every item in the list returned in (1), AND
+    #    separate every item in the list using ';' delimiter.
+    # 3- Append the generated directories to `PATH`. 
+    #
+    # An alternative to this approach would be to pin the version 
+    # codecov so its build path is always set to the pinned version.
+    - {ps: "$env:PATH = @($env:PATH) + [string]::join(\"\\build\\netstandard1.0\\CodeCoverage\\;\", (Get-ChildItem -LiteralPath \"C:\\Users\\appveyor\\.nuget\\packages\\microsoft.codecoverage\\\" -Directory -Recurse).fullname)"}
 build:
     verbosity: minimal
 clone_depth: 1

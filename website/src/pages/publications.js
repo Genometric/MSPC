@@ -23,12 +23,11 @@ const Publication = (props) => (
       <span className={pubsStyles.volume}>{props.volume}</span>
       <span className={pubsStyles.issue}>({props.issue}), </span>
       <span className={pubsStyles.pages}>{props.pages}. </span>
-      <a href={props.link}>{props.doi}</a>
+      <a href={props.link}>{props.doi} (open-access)</a>
     </header>
     <div className={pubsStyles.content}>
       <div className={classnames(pubsStyles.citations, "__dimensions_badge_embed__")} data-doi={props.doi} data-style="small_circle" />
       <div className={classnames(pubsStyles.referenceCounter, "altmetric-embed")} data-badge-popover="top" data-badge-type="donut" data-condensed="true" data-hide-no-mentions="true" data-doi={props.doi}/>
-      <a className={pubsStyles.publicationLink} target="_pub" href={props.link}>{props.linkdescription}</a>
     </div>
   </div>
 );
@@ -71,8 +70,7 @@ function Home() {
             issue="17"
             pages="2761-2769"
             doi="10.1093/bioinformatics/btv293"
-            link="https://academic.oup.com/bioinformatics/article/31/17/2761/183989"
-            linkdescription="Web" />
+            link="https://academic.oup.com/bioinformatics/article/31/17/2761/183989" />
 
           <Publication
             authors="Jalili, V., Matteucci, M., Morelli, M. J., & Masseroli, M."
@@ -83,8 +81,7 @@ function Home() {
             issue="3"
             pages="367-381"
             doi="10.1093/bib/bbw029"
-            link="https://academic.oup.com/bib/article-abstract/18/3/367/2562755"
-            linkdescription="Web" />
+            link="https://academic.oup.com/bib/article-abstract/18/3/367/2562755" />
         </div>
       </main>
     </Layout>

@@ -17,10 +17,6 @@
   padding: 10px;
 }
 
-header h4 {
-  max-width: 30vw;
-}
-
 .citations {
   margin: inherit;
   padding: inherit;
@@ -34,4 +30,43 @@ header h4 {
 .publicationLink {
   margin: inherit;
   padding: inherit;
+  font-weight: bold;
+}
+
+.biblio {
+  margin: 0;
+  padding: 0;
+  max-width: 30vw;
+}
+
+.authors {
+  margin: 0;
+  padding: 0;
+}
+
+.year {
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.journal {
+  font-style: italic;
+}
+
+.volume {
+  font-style: italic;
+}
+
+.issue {
+  margin: 0;
+  padding: 0;
+}
+
+.pages {
+  margin: 0;
+  padding: 0;
 }

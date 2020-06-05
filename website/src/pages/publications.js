@@ -12,10 +12,18 @@ import pubsStyles from './pubs.module.css';
 import Head from '@docusaurus/Head';
 
 
-const P1 = (props) => (
+
+const Publication = (props) => (
   <div className={pubsStyles.container}>
-    <header>
-      <h4>{props.title}</h4>
+    <header className={pubsStyles.biblio}>
+      <span className={pubsStyles.authors}>{props.authors} </span>
+      <span className={pubsStyles.year}>({props.year}). </span>
+      <span className={pubsStyles.title}>{props.title}. </span>
+      <span className={pubsStyles.journal}>{props.journal}, </span>
+      <span className={pubsStyles.volume}>{props.volume}</span>
+      <span className={pubsStyles.issue}>({props.issue}), </span>
+      <span className={pubsStyles.pages}>{props.pages}. </span>
+      <a href={props.link}>{props.doi}</a>
     </header>
     <div className={pubsStyles.content}>
       <div className={classnames(pubsStyles.citations, "__dimensions_badge_embed__")} data-doi={props.doi} data-style="small_circle" />
@@ -23,22 +31,7 @@ const P1 = (props) => (
       <a className={pubsStyles.publicationLink} target="_pub" href={props.link}>{props.linkdescription}</a>
     </div>
   </div>
-  );
-
-function Feature({imageUrl, title, description}) {
-  const imgUrl = useBaseUrl(imageUrl);
-  return (
-    <div className={classnames('col col--4', styles.feature)}>
-      {imgUrl && (
-        <div className="text--center">
-          <img className={styles.featureImage} src={imgUrl} alt={title} />
-        </div>
-      )}
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </div>
-  );
-}
+);
 
 function Home() {
   const context = useDocusaurusContext();
@@ -69,14 +62,26 @@ function Home() {
       </header>
       <main>
         <div className={pubsStyles.publications}>
-          <P1
-            title="Jalili, V., Matteucci, M., Masseroli, M., & Morelli, M. J. (2015). Using combined evidence from replicates to evaluate ChIP-seq peaks. Bioinformatics, 31(17), 2761-2769."
+          <Publication
+            authors="Jalili, V., Matteucci, M., Masseroli, M., & Morelli, M. J."
+            title="Using combined evidence from replicates to evaluate ChIP-seq peaks"
+            year="2015"
+            journal="Bioinformatics"
+            volume="31"
+            issue="17"
+            pages="2761-2769"
             doi="10.1093/bioinformatics/btv293"
             link="https://academic.oup.com/bioinformatics/article/31/17/2761/183989"
             linkdescription="Web" />
 
-          <P1
-            title="Jalili, V., Matteucci, M., Morelli, M. J., & Masseroli, M. (2016). MuSERA: multiple sample enriched region assessment. Briefings in bioinformatics, 18(3), 367-381."
+          <Publication
+            authors="Jalili, V., Matteucci, M., Morelli, M. J., & Masseroli, M."
+            title="MuSERA: multiple sample enriched region assessment"
+            year="2016"
+            journal="Briefings in bioinformatics"
+            volume="18"
+            issue="3"
+            pages="367-381"
             doi="10.1093/bib/bbw029"
             link="https://academic.oup.com/bib/article-abstract/18/3/367/2562755"
             linkdescription="Web" />

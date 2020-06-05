@@ -18,7 +18,7 @@
 }
 
 header h4 {
-  max-width: 40vw;
+  max-width: 30vw;
 }
 
 .citations {
@@ -26,12 +26,12 @@ header h4 {
   padding: inherit;
 }
 
-.publicationLink {
+.referenceCounter {
   margin: inherit;
   padding: inherit;
 }
 
-.referenceCounter {
+.publicationLink {
   margin: inherit;
   padding: inherit;
 }

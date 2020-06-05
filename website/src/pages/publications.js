@@ -11,38 +11,15 @@ import styles from './styles.module.css';
 import pubsStyles from './pubs.module.css';
 import Head from '@docusaurus/Head';
 
-const features = [
-  {
-    //title: <>Easy to Use</>,
-    //imageUrl: 'img/...',
-    description: (
-      <>
-        The analysis of ChIP-seq samples outputs a number 
-		of enriched regions (commonly known as "peaks"), 
-		each indicating a protein-DNA interaction or a 
-		specific chromatin modification. When replicate 
-		samples are analysed, overlapping peaks are expected. 
-		This repeated evidence can therefore be used to 
-		locally lower the minimum significance required to 
-		accept a peak. Here, we propose a method for joint 
-		analysis of weak peaks. Given a set of peaks from 
-		(biological or technical) replicates, the method 
-		combines the p-values of overlapping enriched regions, 
-		and allows the "rescue" of weak peaks occuring in 
-		more than one replicate.
-      </>
-    ),
-  },
-];
 
 const P1 = (props) => (
   <div className={pubsStyles.container}>
     <header>
       <h4>{props.title}</h4>
     </header>
-    <div className={pubsStyles.context}>
-      <span className={classnames('__dimensions_badge_embed__', pubsStyles.citations)} data-doi={props.doi} data-style="small_circle"></span>
-      <div className='referenceCounter altmetric-embed' data-badge-type='donut' data-doi={props.doi}></div>
+    <div className={pubsStyles.content}>
+      <div className={classnames(pubsStyles.citations, "__dimensions_badge_embed__")} data-doi={props.doi} data-style="small_circle" />
+      <div className={classnames(pubsStyles.referenceCounter, "altmetric-embed")} data-badge-popover="top" data-badge-type="donut" data-condensed="true" data-hide-no-mentions="true" data-doi={props.doi}/>
       <a className={pubsStyles.publicationLink} target="_pub" href={props.link}>{props.linkdescription}</a>
     </div>
   </div>

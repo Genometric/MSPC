@@ -70,6 +70,14 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Genometric`,
     },
+    algolia: {
+      // This is a public API key. This key is only usable for 
+      // search queries and sending data to the Insights API.
+      apiKey: '2983df56cb8116a39b27f1992244538a', 
+      indexName: 'mspc',
+      appId: '7KY7XPQTMJ',
+      algoliaOptions: {} // Optional
+    },
   },
   presets: [
     [
@@ -92,5 +100,5 @@ module.exports = {
         },
       },
     ],
-  ],
+  ]
 };

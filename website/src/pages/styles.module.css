@@ -35,7 +35,7 @@
 }
 
 .featuresAlt {
-  background-color: var(--ifm-color-primary-darker);
+  background-color: var(--ifm-background-color-secondary-section);
   align-content: stretch;
   text-align: center;
   position: relative;

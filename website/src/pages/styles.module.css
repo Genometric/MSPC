@@ -36,6 +36,7 @@
 
 .featuresAlt {
   background-color: var(--ifm-background-color-secondary-section);
+  color: var(--ifm-color-emphasis-100);
   align-content: stretch;
   text-align: center;
   position: relative;
@@ -45,4 +46,7 @@
 .featureImage {
   height: 200px;
   width: 200px;
+}
+
+html[data-theme='dark'] {
 }

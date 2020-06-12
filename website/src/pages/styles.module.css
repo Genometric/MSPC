@@ -39,6 +39,7 @@
   align-content: stretch;
   text-align: center;
   position: relative;
+  padding: 2rem 0;
 }
 
 .featureImage {

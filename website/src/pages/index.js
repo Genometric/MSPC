@@ -77,6 +77,7 @@ function Home() {
             <Link
               className={classnames(
                 'button button--outline button--secondary button--lg',
+                /*styles.neonButton,*/
                 styles.getStarted,
               )}
               to={useBaseUrl('docs/quick_start')}>

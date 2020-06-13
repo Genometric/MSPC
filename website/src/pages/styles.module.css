@@ -10,7 +10,9 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  background-color: var(--ifm-color-primary-lighter);
+  /*background-color: var(--ifm-color-primary-lighter); */
+  /*background: linear-gradient(75deg, #4e4ae7 30%, #342ca8 30%, #3734c1)*/
+  background: linear-gradient(-70deg, var(--ifm-color-primary-darker), var(--ifm-color-primary-lightest));
 }
 
 @media screen and (max-width: 966px) {
@@ -35,7 +37,7 @@
 }
 
 .featuresAlt {
-  background-color: var(--ifm-background-color-secondary-section);
+  background: linear-gradient(-70deg, var(--ifm-color-primary-darker), var(--ifm-color-primary-lightest));
   color: var(--ifm-color-emphasis-100);
   align-content: stretch;
   text-align: center;
@@ -47,6 +49,14 @@
   height: 200px;
   width: 200px;
 }
+
+/*
+.neonButton:hover {
+  color: #255784;
+  background: #2196f3;
+  box-shadow: 0 0 10px #2196f3, 0 0 40px #2196f3, 0 0 80px #2196f3;
+}
+*/
 
 html[data-theme='dark'] {
 }

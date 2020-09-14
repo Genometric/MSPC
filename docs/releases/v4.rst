@@ -1,4 +1,9 @@
 ===== 
+v4.0.2
+=====
+- Report `inf` as a result of converting 0 to -Log10 format (https://github.com/Genometric/MSPC/pull/132). Thanks @AlexBlais74 for reporting it: https://github.com/Genometric/MSPC/issues/131
+
+===== 
 v4.0.1
 =====
 - Update GeUtilities version to its current latest where the issue of duplicate regions is resolved. https://github.com/Genometric/MSPC/issues/123 

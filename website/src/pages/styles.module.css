@@ -10,9 +10,13 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  /*background-color: var(--ifm-color-primary-lighter); */
+  /*background-color: var(--ifm-color-primary-lighter);*/
   /*background: linear-gradient(75deg, #4e4ae7 30%, #342ca8 30%, #3734c1)*/
-  background: linear-gradient(-70deg, var(--ifm-color-primary-darker), var(--ifm-color-primary-lightest));
+  /***background: linear-gradient(75deg, #0c1400 30%, #0c1400 30%, #0c1400) */
+  /**background: linear-gradient(75deg, #222629 30%, #222629 30%, #222629) */
+  background-color: var(--ifm-background-color-banner);
+  /*background: linear-gradient(75deg, #14191c 30%, #14191c 30%, #14191c)*/
+  /*background: linear-gradient(-70deg, var(--ifm-color-primary-darker), var(--ifm-color-primary-lightest));*/
 }
 
 @media screen and (max-width: 966px) {
@@ -27,6 +31,10 @@
   justify-content: center;
 }
 
+.quickstartButton {
+  padding: 2rem 0;
+}
+
 .features {
   display: flex;
   align-items: center;
@@ -37,8 +45,8 @@
 }
 
 .featuresAlt {
-  background: linear-gradient(-70deg, var(--ifm-color-primary-darker), var(--ifm-color-primary-lightest));
-  color: var(--ifm-color-emphasis-100);
+  background: var(--ifm-background-color-banner);
+  color: var(--ifm-color-alt);
   align-content: stretch;
   text-align: center;
   position: relative;

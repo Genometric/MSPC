@@ -3,15 +3,15 @@ module.exports = {
   tagline: 'Using combined evidence from replicates to evaluate ChIP-seq peaks',
   url: 'https://genometric.github.io',
   baseUrl: '/MSPC/',
-  favicon: 'img/logo.png',
+  favicon: 'logo/logo.svg',
   organizationName: 'Genometric',
   projectName: 'MSPC',
   themeConfig: {
     navbar: {
       title: 'MSPC',
       logo: {
-        alt: 'MSPC Logo',
-        src: 'img/logo.svg',
+        alt: 'logo',
+        src: 'logo/logo.svg',
       },
       links: [
         {

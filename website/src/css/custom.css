@@ -7,20 +7,27 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #019aea; /*#04a6d3;*/
-  --ifm-color-primary-dark: #038db3;
-  --ifm-color-primary-darker: #037494;
-  --ifm-color-primary-darkest: #025b74;
-  --ifm-color-primary-light: #05bff3;
-  --ifm-color-primary-lighter: #00c8ff;
-  --ifm-color-primary-lightest: #3cd2fb;
+  /*--ifm-color-primary: #86C232; /*#019aea;*/ /*#04a6d3;*/
+  --ifm-color-primary: #86c232;
+  --ifm-color-primary-dark: #72a52a;
+  --ifm-color-primary-darker: #5e8823;
+  --ifm-color-primary-darkest: #364e14;
+  --ifm-color-primary-light: #98d049;
+  --ifm-color-primary-lighter: #a8d766;
+  --ifm-color-primary-lightest: #c9e6a0;
   /*This is the background color, used:
     - as background color of the docs page when light theme used;
     - _main_ background.
   */
   --ifm-background-color: #efefef;
   --ifm-code-font-size: 95%;
-  --ifm-background-color-secondary-section: #019aea;
+
+  /*Background color of the banner and alternative rows */
+  --ifm-background-color-banner: #222629;
+  --ifm-background-color-alt: #474B4F;
+
+  /*Text color for alternative rows*/
+  --ifm-color-alt: #8f9f96
 }
 
 .docusaurus-highlight-code-line {

@@ -12,20 +12,62 @@ const features = [
     //imageUrl: 'img/...',
     description: (
       <>
-        Rescue weak ChIP-seq peaks without introducing false-positives.
+        Using combined evidence from replicated experiments to evaluate 
+        peak calling output, rescuing peaks, and reduce false positives.
       </>
     ),
   },
 ];
 
-const features2 = [
+
+const repTypes = [
   {
-    title: <>Any Number of Replicates</>,
+    //title: <>Easy to Use</>,
+    //imageUrl: 'img/...',
     description: (
       <>
-        Designed ground-up to support any number of replicates
+        account for differences between biological and technical replicates
       </>
-      )
+    ),
+  },
+];
+
+
+const candidateRegions = [
+  {
+    //title: <>Easy to Use</>,
+    //imageUrl: 'img/...',
+    description: (
+      <>
+        alleviate dependence on the candidate regions
+      </>
+    ),
+  },
+];
+
+
+
+
+// Replicated experiments can improve the sensitivity and 
+// specificity of peak callers by providing more evidence 
+// to differentiate between artifactual bindings and weak,
+// but true binding sites.Therefore, a common practice is
+// to replicate(biologically or technically) experiments.
+// Due to the sequencing costs, the number of replicates 
+// were limited to two; however, with the drop in sequencing 
+// costs, a growing number of experiments are producing 
+// more than two replicates.
+
+
+const features2 = [
+  {
+    title: <>Supports Any Number of Replicates</>,
+    description: (
+      <>
+        Designed ground-up to efficiently process any number of replicated experiments.
+      </>
+    ),
+    //link: 'docs/quick_start'
   },
   {
     title: <>Bulk and Single-cell</>,
@@ -71,9 +113,8 @@ function Home() {
       description="Using combined evidence from replicates to evaluate ChIP-seq peaks">
       <header className={classnames('hero hero--primary', styles.heroBanner)}>
         <div className="container">
-          <h1 className="hero__title">{siteConfig.title}</h1>
-          <p className="hero__subtitle">{siteConfig.tagline}</p>
-          <div className={styles.buttons}>
+          <img src="logo/logo_w_txt_banner.svg" alt="logo" height="40%" width="40%"/>
+          <div className={styles.buttons, styles.quickstartButton}>
             <Link
               className={classnames(
                 'button button--outline button--secondary button--lg',
@@ -92,6 +133,30 @@ function Home() {
             <div className="container">
               <div className="row">
                 {features.map((props, idx) => (
+                  <Feature key={idx} {...props} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {repTypes && repTypes.length > 0 && (
+          <section className={styles.features, styles.featuresAlt}>
+            <div className="container">
+              <div className="row">
+                {repTypes.map((props, idx) => (
+                  <Feature key={idx} {...props} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {candidateRegions && candidateRegions.length > 0 && (
+          <section className={styles.features}>
+            <div className="container">
+              <div className="row">
+                {candidateRegions.map((props, idx) => (
                   <Feature key={idx} {...props} />
                 ))}
               </div>

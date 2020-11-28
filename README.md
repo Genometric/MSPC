@@ -1,15 +1,37 @@
-
-# MSPC
-
-[![NuGet Badge](https://buildstats.info/nuget/Genometric.MSPC.Core?vWidth=50&dWidth=50)](https://www.nuget.org/packages/Genometric.MSPC.Core)
-
-[![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status)](https://sonarcloud.io/dashboard/index/mspc)  [![codecov](https://codecov.io/gh/Genometric/MSPC/branch/master/graph/badge.svg)](https://codecov.io/gh/Genometric/MSPC)   [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc)](https://sonarcloud.io/dashboard/index/mspc) [![measure](https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating)](https://sonarcloud.io/dashboard/index/mspc)
-
-| [Quick Start](https://genometric.github.io/MSPC/docs/quick_start) | [Documentation](https://genometric.github.io/MSPC/) | [Download](https://github.com/Genometric/MSPC/releases) | [Publication](https://genometric.github.io/MSPC/publications) |
-| -- | -- | -- | --: |
+<p align="center">
+  <a href="https://genometric.github.io/MSPC/">
+    <img src="https://raw.githubusercontent.com/Genometric/MSPC/website/static/logo/logo_w_txt.svg?raw=true" alt="MSPC" width="300" />
+  </a>
+</p>
 
 
-<br/>
+<p align="center">
+    <a href="https://www.nuget.org/packages/Genometric.MSPC.Core">
+        <img src="https://buildstats.info/nuget/Genometric.MSPC.Core?vWidth=50&dWidth=50">
+    </a>
+    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status">
+        <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status">
+    </a>
+    <a href="https://codecov.io/gh/Genometric/MSPC">
+    <img src="https://codecov.io/gh/Genometric/MSPC/branch/master/graph/badge.svg?token=TRSk39hCh3"/>
+    </a>
+    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc">
+        <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc">
+    </a>
+    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating">
+        <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating">
+    </a>
+    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=reliability_rating">
+        <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=reliability_rating">
+    </a>
+</p>
+
+<p align="center">
+  <a href="https://genometric.github.io/MSPC/docs/quick_start">Quick Start</a> |
+  <a href="https://genometric.github.io/MSPC/">Documentation</a> |
+  <a href="https://github.com/Genometric/MSPC/releases">Download</a>
+  <a href="https://genometric.github.io/MSPC/publications">Publication</a>
+</p>
 
 ## About
 
@@ -55,7 +77,11 @@ regions. See the following figure as an example, and you may refer to
 or [documentation](https://genometric.github.io/MSPC/docs/method/about) 
 page for more details.
 
-![sets](docs/assets/sets.svg)
+<p align="center">
+    <a href="https://genometric.github.io/MSPC/docs/method/sets">
+        <img src="docs/assets/sets.svg">
+    </a>
+</p>
 
 
 <br/>

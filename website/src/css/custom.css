@@ -48,3 +48,22 @@
 html[data-theme='dark'] {
   --ifm-color-emphasis-0: #011f2e;
 }
+
+.button.button--secondary.button--outline:not(.button--active):not(:hover) {
+      color: var(--ifm-color-primary-darker); /*var(--ifm-font-color-base);*/
+}
+
+.button {
+  background-color: var(--ifm-button-background-color);
+  border-color: var(--ifm-color-primary-darkest);/*var(--ifm-button-border-color);*/
+  border-style: solid;
+  color: var(--ifm-button-color);
+  cursor: pointer;
+}
+
+.navbar__brand {
+  color: var(--ifm-color-primary);
+}
+.navbar__brand:hover {
+  color: inherit;
+}

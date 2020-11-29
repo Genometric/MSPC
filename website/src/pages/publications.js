@@ -45,9 +45,8 @@ function Home() {
       </Head>
       <header className={classnames('hero hero--primary', styles.heroBanner)}>
         <div className="container">
-          <h1 className="hero__title">{siteConfig.title}</h1>
-          <p className="hero__subtitle">{siteConfig.tagline}</p>
-          <div className={styles.buttons}>
+          <img src="logo/logo_w_txt_banner.svg" alt="logo" height="40%" width="40%"/>
+          <div className={styles.buttons, styles.quickstartButton}>
             <Link
               className={classnames(
                 'button button--outline button--secondary button--lg',

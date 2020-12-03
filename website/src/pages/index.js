@@ -6,47 +6,45 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
-const features = [
+const largeImgFeature = [
   {
-    //title: <>Easy to Use</>,
-    //imageUrl: 'img/...',
+    imageUrl: 'img/abstract_overview.svg',
+  },
+  {
+    title: <>Improve Sensitivity and Specificity of Peak Calling, and Identify Consensus Regions</>,
     description: (
       <>
-        Using combined evidence from replicated experiments to evaluate 
+        MSPC uses combined evidence from replicated experiments to evaluate
         peak calling output, rescuing peaks, and reduce false positives.
+        It takes any number of replicates as input and improves sensitivity
+        and specificity of peak calling on each, and identifies consensus
+        regions between the input samples.
       </>
     ),
+    //link: 'docs/quick_start'
   },
 ];
 
 
 const repTypes = [
   {
-    //title: <>Easy to Use</>,
+    title: <>Accounts for the Differences Between Biological and Technical Replicates</>,
     //imageUrl: 'img/...',
     description: (
       <>
-        account for differences between biological and technical replicates
+        A higher degree of similarity is expected between technical replicates
+        compared to biological replicates, where the differences between biological
+        replicates represent true biological variability while the differences
+        between technical replicates are predominantly artifactual bindings or
+        signal noise.
+        MSPC accounts for such characteristics when evaluating binding sites.
       </>
     ),
   },
-];
-
-
-const candidateRegions = [
   {
-    //title: <>Easy to Use</>,
-    //imageUrl: 'img/...',
-    description: (
-      <>
-        alleviate dependence on the candidate regions
-      </>
-    ),
+    imageUrl: 'img/tech_bio_ref_diff_process.svg',
   },
 ];
-
-
-
 
 // Replicated experiments can improve the sensitivity and 
 // specificity of peak callers by providing more evidence 
@@ -59,7 +57,7 @@ const candidateRegions = [
 // more than two replicates.
 
 
-const features2 = [
+const features = [
   {
     title: <>Supports Any Number of Replicates</>,
     description: (
@@ -86,7 +84,22 @@ const features2 = [
       </>
     )
   },
-]
+];
+
+function WholeRowFeature({imageUrl, title, description}) {
+  const imgUrl = useBaseUrl(imageUrl);
+  return (
+    <div className={classnames('col col--6', styles.feature)}>
+      {imgUrl && (
+        <div className="text--center">
+          <img className={styles.largeFeatureImage} src={imgUrl} alt={title}/>
+        </div>
+      )}
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
 
 function Feature({imageUrl, title, description}) {
   const imgUrl = useBaseUrl(imageUrl);
@@ -132,8 +145,8 @@ function Home() {
           <section className={styles.features}>
             <div className="container">
               <div className="row">
-                {features.map((props, idx) => (
-                  <Feature key={idx} {...props} />
+                {largeImgFeature.map((props, idx) => (
+                  <WholeRowFeature key={idx} {...props} />
                 ))}
               </div>
             </div>
@@ -145,30 +158,18 @@ function Home() {
             <div className="container">
               <div className="row">
                 {repTypes.map((props, idx) => (
-                  <Feature key={idx} {...props} />
+                  <WholeRowFeature key={idx} {...props} />
                 ))}
               </div>
             </div>
           </section>
         )}
 
-        {candidateRegions && candidateRegions.length > 0 && (
+        {features && features.length > 0 && (
           <section className={styles.features}>
             <div className="container">
               <div className="row">
-                {candidateRegions.map((props, idx) => (
-                  <Feature key={idx} {...props} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {features2 && features2.length > 0 && (
-          <section className={styles.features, styles.featuresAlt}>
-            <div className="container">
-              <div className="row">
-                {features2.map((props, idx) => (
+                {features.map((props, idx) => (
                   <Feature key={idx} {...props} />
                 ))}
               </div>

@@ -38,7 +38,7 @@
 }
 
 .footer {
-  background-color: #090c11;
+  background-color: var(--ifm-background-color-banner);
 }
 
 .navbar {

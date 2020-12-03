@@ -9,7 +9,7 @@
 
     <RootNamespace>Genometric.MSPC.CLI.Tests</RootNamespace>
 
-    <Version>4.0.1</Version>
+    <Version>4.0.2</Version>
 
     <Authors>Vahid Jalili</Authors>
 
@@ -27,9 +27,9 @@
 
     <Company>Genometric</Company>
 
-    <AssemblyVersion>4.0.1.0</AssemblyVersion>
+    <AssemblyVersion>4.0.2.0</AssemblyVersion>
 
-    <FileVersion>4.0.1.0</FileVersion>
+    <FileVersion>4.0.2.0</FileVersion>
 
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
 

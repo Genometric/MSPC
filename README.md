@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://genometric.github.io/MSPC/">
-    <img src="https://raw.githubusercontent.com/Genometric/MSPC/website/static/logo/logo_w_txt.svg?raw=true" alt="MSPC" width="300" />
+    <img src="https://raw.githubusercontent.com/Genometric/MSPC/dev/website/static/logo/logo_w_txt.svg?raw=true" alt="MSPC" width="300" />
   </a>
 </p>
 
@@ -79,7 +79,7 @@ page for more details.
 
 <p align="center">
     <a href="https://genometric.github.io/MSPC/docs/method/sets">
-        <img src="docs/assets/sets.svg">
+        <img src="https://raw.githubusercontent.com/Genometric/MSPC/dev/website/static/img/sets.svg">
     </a>
 </p>
 

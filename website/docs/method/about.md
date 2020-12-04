@@ -67,6 +67,6 @@ The following figure is a schematic view of this procedure.
 (The number of ERs in different sets reported in this figure, are the 
 result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and 
 `wgEncodeSydhTfbsK562CmycStdAlnRep2` (available for download from 
-[Sample Data page](sample_data)) comparative analysis using 
+[Sample Data page](../sample_data)) comparative analysis using 
 `-r bio -w 1e-4 -s 1e-8` parameters.)
 

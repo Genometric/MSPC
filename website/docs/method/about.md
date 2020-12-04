@@ -44,7 +44,7 @@ and outputs ERs with false-discovery rate smaller than an adjustable threshold.
 
 This flow is captured in the following flowchart for each ER of each replicate: 
 
-![alt text](assets/simplified_flow_chart.svg)
+![Simplified Flow Chart](/img/simplified_flow_chart.svg)
 
 (This flowchart is a simplified version of the flowchart available in
 [MSPC's manuscript](https://doi.org/10.1093/bioinformatics/btv293).)
@@ -62,7 +62,7 @@ _true-positive_ or _false-positive_.
 
 The following figure is a schematic view of this procedure.
 
-![alt text](/MSPC/img/sets.svg)
+![Sets](/img/sets.svg)
 
 (The number of ERs in different sets reported in this figure, are the 
 result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and 

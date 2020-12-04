@@ -8,7 +8,7 @@ categories. (Refer to [method description](method/about.md)
 for details.) The following figure is a schematic view of 
 these categories and their relation.
 
-![alt text](/MSPC/img/sets.svg)
+![Sets](/img/sets.svg)
 
 (The number of ERs in different sets reported in this figure, are the 
 result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and 

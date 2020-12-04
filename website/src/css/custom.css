@@ -67,3 +67,7 @@ html[data-theme='dark'] {
 .navbar__brand:hover {
   color: inherit;
 }
+
+.single-feature-row {
+  align-items: center;
+}

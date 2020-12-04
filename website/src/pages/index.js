@@ -92,7 +92,7 @@ function WholeRowFeature({imageUrl, title, description}) {
     <div className={classnames('col col--6', styles.feature)}>
       {imgUrl && (
         <div className="text--center">
-          <img className={styles.largeFeatureImage} src={imgUrl} alt={title}/>
+          <img className={styles.largeFeatureImage} src={imgUrl} alt={title} />
         </div>
       )}
       <h3>{title}</h3>
@@ -144,7 +144,7 @@ function Home() {
         {features && features.length > 0 && (
           <section className={styles.features}>
             <div className="container">
-              <div className="row">
+              <div className={classnames("row", "single-feature-row")}>
                 {largeImgFeature.map((props, idx) => (
                   <WholeRowFeature key={idx} {...props} />
                 ))}
@@ -156,7 +156,7 @@ function Home() {
         {repTypes && repTypes.length > 0 && (
           <section className={styles.features, styles.featuresAlt}>
             <div className="container">
-              <div className="row">
+              <div className={classnames("row", "single-feature-row")}>
                 {repTypes.map((props, idx) => (
                   <WholeRowFeature key={idx} {...props} />
                 ))}

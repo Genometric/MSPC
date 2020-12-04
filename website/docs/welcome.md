@@ -1,5 +1,6 @@
 ---
 title: Welcome
+slug: /
 ---
 
 The analysis of ChIP-seq samples outputs a number 

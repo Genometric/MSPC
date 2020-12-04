@@ -84,7 +84,6 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
-          homePageId: 'welcome',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/Genometric/MSPC/tree/dev/website',

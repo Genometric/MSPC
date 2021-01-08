@@ -76,6 +76,7 @@ module.exports = {
       apiKey: '2983df56cb8116a39b27f1992244538a', 
       indexName: 'mspc',
       appId: '7KY7XPQTMJ',
+      contextualSearch: true,
       // searchParameter: {} // Optional
     },
   },

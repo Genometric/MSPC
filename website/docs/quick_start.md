@@ -5,19 +5,19 @@ title: Quick Start
 ## Preparation
 
 1. Install a self-contained release of MSPC, using either of following commands
-depending on your runtime (see [installation](installation.md) page for detailed 
-installation options): 
+depending on your runtime (see [installation](installation.md) page for detailed
+installation options):
 
-	```bash
+
 	# Windows x64 (using PowerShell):
 	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
-		
+
 	# Linux x64:
 	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip
 
 	# macOS x64:
 	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip
-	```
+
 
 2. Extract the downloaded archive and browse to the containing directory:
 

@@ -25,6 +25,7 @@ installation options):
 	$ unzip mspc.zip -d mspc
 	$ cd mspc
 	```
+Notice that if you are working on Windows x64, you will need to download the program unzip.
 
 3. Download sample data:
 

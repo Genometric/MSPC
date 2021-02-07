@@ -2,36 +2,36 @@
 title: Installation
 ---
 
-A prerequisite for MSPC installation is [.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0)
+A prerequisite for MSPC installation is [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
 or newer. We provide two methods for MSPC installation depending on whether
-.NET Core 3.0 is installed on your machine or you can install it,
-or .NET Core 3.0 is not installed and you cannot install it, respectively
+.NET 5.0 is installed on your machine or you can install it,
+or .NET 5.0 is not installed and you cannot install it, respectively
 [Method A](#method-a) or [Method B](#method-b).
 
 
 ## Method A: Framework Dependent
 
-First we check if .NET Core 3.0 is installed (not to be confused with .NET Framework), and install it if it is not, then we install MSPC.
+First we check if .NET 5.0 is installed (not to be confused with .NET Framework), and install it if it is not, then we install MSPC.
 
-### Install .NET Core 3.0
+### Install .NET 5.0
 Open a command line shell (e.g., PowerShell) and run the following command:
 
 ```shell
 $ dotnet --info
-.NET Core SDK (reflecting any global.json):
- Version:   3.0.100
- Commit:    04339c3a26
+.NET SDK (reflecting any global.json):
+ Version:   5.0.102
+ Commit:    71365b4d42
 
 Runtime Environment:
  OS Name:     Windows
- OS Version:  10.0.18362
+ OS Version:  10.0.19042
  OS Platform: Windows
  RID:         win10-x64
- Base Path:   C:\Program Files\dotnet\sdk\3.0.100\
+ Base Path:   C:\Program Files\dotnet\sdk\5.0.102\
 ```
 
 If the output is not as shown above, you would need to install
-.NET Core 3.0 (or newer) [following these instructions](https://dotnet.microsoft.com/download/dotnet-core/3.0).
+.NET 5.0 (or newer) [following these instructions](https://dotnet.microsoft.com/download/dotnet/5.0).
 
 
 ### Install MSPC

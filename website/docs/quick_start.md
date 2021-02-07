@@ -8,24 +8,25 @@ title: Quick Start
 depending on your runtime (see [installation](installation.md) page for detailed
 installation options):
 
-
-	# Windows x64 (using PowerShell):
-	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
-
-	# Linux x64:
-	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip
-
-	# macOS x64:
-	$ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip
-
+   ```bash
+   # Windows x64 (using PowerShell):
+   $ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
+   
+   # Linux x64:
+   $ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip
+   
+   # macOS x64:
+   $ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip
+   ```
 
 2. Extract the downloaded archive and browse to the containing directory:
 
-	```bash
-	$ unzip mspc.zip -d mspc
-	$ cd mspc
-	```
-Notice that if you are working on Windows x64, you will need to download the program unzip.
+   ```bash
+   $ unzip mspc.zip -d mspc
+   $ cd mspc
+   ```
+
+   Notice that if you are working on Windows x64, you will need to download the program unzip.
 
 3. Download sample data:
 

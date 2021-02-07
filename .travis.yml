@@ -3,7 +3,7 @@ os:
 matrix:
     include:
         -
-            dotnet: 3.0
+            dotnet: 5.0
             install: ['dotnet restore']
             language: csharp
             mono: none

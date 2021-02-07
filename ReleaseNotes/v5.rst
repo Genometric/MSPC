@@ -1,0 +1,7 @@
+===== 	
+v5.0 	
+=====	
+
+- Change target framework from .NET Core 3.x to .NET 5.x (see PR # 138_)
+
+.. _138: https://github.com/Genometric/MSPC/pull/138

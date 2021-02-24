@@ -100,6 +100,7 @@ namespace Genometric.MSPC.CLI
                     Logger.LogExceptionStatic(e.Message);
                 else
                     _logger.LogException(e);
+                Environment.ExitCode = 1;
                 return false;
             }
         }
@@ -137,6 +138,7 @@ namespace Genometric.MSPC.CLI
                     Logger.LogExceptionStatic(e.Message);
                 else
                     _logger.LogException(e);
+                Environment.ExitCode = 1;
                 return false;
             }
         }
@@ -156,6 +158,7 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 Logger.LogExceptionStatic(e.Message);
+                Environment.ExitCode = 1;
                 return false;
             }
         }
@@ -166,6 +169,7 @@ namespace Genometric.MSPC.CLI
             {
                 _logger.LogException(
                     string.Format("at least two samples are required; {0} is given.", input.Count));
+                Environment.ExitCode = 1;
                 return false;
             }
 
@@ -177,6 +181,7 @@ namespace Genometric.MSPC.CLI
             {
                 _logger.LogException(
                     string.Format("the following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
+                Environment.ExitCode = 1;
                 return false;
             }
 
@@ -211,6 +216,7 @@ namespace Genometric.MSPC.CLI
                 catch (Exception e)
                 {
                     _logger.LogException("error reading parser configuration JSON object: " + e.Message);
+                    Environment.ExitCode = 1;
                     return false;
                 }
             }
@@ -254,6 +260,7 @@ namespace Genometric.MSPC.CLI
             {
                 samples = null;
                 _logger.LogException("error parsing data: " + e.Message);
+                Environment.ExitCode = 1;
                 return false;
             }
         }
@@ -278,6 +285,7 @@ namespace Genometric.MSPC.CLI
             {
                 mspc = null;
                 _logger.LogException(e);
+                Environment.ExitCode = 1;
                 return false;
             }
         }
@@ -300,6 +308,7 @@ namespace Genometric.MSPC.CLI
             catch (Exception e)
             {
                 _logger.LogException(e);
+                Environment.ExitCode = 1;
                 return false;
             }
         }

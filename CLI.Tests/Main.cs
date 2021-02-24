@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.Intervals.Parsers;
-using Genometric.MSPC.CLI.Logging;
 using Genometric.MSPC.CLI.Tests.MockTypes;
 using Newtonsoft.Json;
 using System;
@@ -28,6 +27,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("at least two samples are required; 1 is given.", msg);
+            Assert.False(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -42,6 +42,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("the following required arguments are missing: -r|--replicate.", msg);
+            Assert.False(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -56,6 +57,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("the following files are missing: rep1.bed; rep2.bed", msg);
+            Assert.False(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -129,6 +131,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("All processes successfully finished", msg);
+            Assert.True(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -209,6 +212,7 @@ namespace Genometric.MSPC.CLI.Tests
                 Assert.Null(reader.ReadLine());
             }
 
+            Assert.True(Environment.ExitCode == 0);
             Assert.True(Directory.GetFiles(dirs[1]).Length == 14);
             using (var reader = new StreamReader(Directory.GetFiles(dirs[1], "*TruePositive.bed")[0]))
             {
@@ -262,6 +266,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(expected, msg);
+            Assert.True(Environment.ExitCode == 0);
         }
 
         [Theory]
@@ -279,6 +284,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(expected, msg);
+            Assert.True(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -294,6 +300,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(expected, msg);
+            Assert.False(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -354,6 +361,7 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(
                 msg.Contains("Illegal characters in path.") ||
                 msg.Contains("The filename, directory name, or volume label syntax is incorrect"));
+            Assert.False(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -401,6 +409,7 @@ namespace Genometric.MSPC.CLI.Tests
                 messages,
                 x => x.Contains("Illegal characters in path.") ||
                 x.Contains("The filename, directory name, or volume label syntax is incorrect"));
+            Assert.False(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -416,6 +425,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.Contains("The method or operation is not implemented.", message);
             Assert.DoesNotContain("All processes successfully finished", message);
+            Assert.False(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -446,6 +456,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("Input string was not in a correct format.", output);
+            Assert.False(Environment.ExitCode == 0);
         }
 
         [Fact]
@@ -524,6 +535,7 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains(messages, x =>
             x.Contains("The process cannot access the file") &&
             x.Contains("because it is being used by another process."));
+            Assert.False(Environment.ExitCode == 0);
 
             // Clean up
             File.Delete(rep1Path);

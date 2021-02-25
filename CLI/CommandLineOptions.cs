@@ -255,6 +255,8 @@ namespace Genometric.MSPC.CLI
 
                 if (_vc < 1)
                     _vc = 1;
+                else if (_vc > _inputFiles.Count)
+                    _vc = _inputFiles.Count;
             }
 
             if (_cM.HasValue())

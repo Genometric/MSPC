@@ -92,6 +92,14 @@ namespace Genometric.MSPC.CLI
                 options.Parse(args, out bool helpIsDisplayed);
                 if (helpIsDisplayed)
                     return false;
+                if (options.Warnings.Count > 0)
+                    if (_logger == null)
+                        foreach (var msg in options.Warnings)
+                            Logger.LogWarningStatic(msg);
+                    else
+                        foreach (var msg in options.Warnings)
+                            _logger.LogWarning(msg);
+
                 return true;
             }
             catch (Exception e)

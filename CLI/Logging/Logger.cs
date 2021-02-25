@@ -121,6 +121,19 @@ namespace Genometric.MSPC.CLI.Logging
             Console.WriteLine(_cannotContinue);
         }
 
+        public void LogWarning(string message)
+        {
+            log.Warn(message);
+            LogWarningStatic(message);
+        }
+
+        public static void LogWarningStatic(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine($"Warning: {message}");
+            Console.ResetColor();
+        }
+
         public void LogMSPCStatus(object sender, ValueEventArgs e)
         {
             var msg = new StringBuilder();

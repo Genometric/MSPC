@@ -260,7 +260,7 @@ namespace Genometric.MSPC.CLI.Tests
         [Theory]
         [InlineData(_c)]
         [InlineData("1")]
-        [InlineData("5")]
+        [InlineData("3")]
         public void ReadC(string c)
         {
             // Arrange & Act
@@ -287,6 +287,23 @@ namespace Genometric.MSPC.CLI.Tests
             var args = new StringBuilder(GenerateShortNameArguments(null, null, null, c: c));
             for (int i = 0; i < inputCount; i++)
                 args.Append(" -i sample_" + i);
+
+            // Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(args.ToString().Split(' '), out bool _);
+
+            // Assert
+            Assert.Equal(expectedC, po.C);
+        }
+
+        [Theory]
+        [InlineData("120%", 2)]
+        [InlineData("300%", 2)]
+        public void MaxCAndShowWarrning(string inputC, int expectedC)
+        {
+            // Arrange
+            var args = new StringBuilder(GenerateShortNameArguments(null, null, null, c: inputC));
+            args.Append(" -i sample_1 -i sample_2");
 
             // Act
             var options = new CommandLineOptions();

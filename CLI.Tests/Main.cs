@@ -623,5 +623,21 @@ namespace Genometric.MSPC.CLI.Tests
             File.Delete(rep2Path);
             Directory.Delete(path, true);
         }
+
+        [Theory]
+        [InlineData("300%",  "2")]
+        [InlineData("-300%", "1")]
+        public void WarningDisplayedForInvalidC(string c, string expected)
+        {
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run(template: $"-i sample_1 -i sample_2 -r bio -w 1E-2 -s 1E-8 -c {c}");
+
+            // Assert
+            Assert.Contains($"Invalid `C={c}`, it is set to `C={expected}`.", msg);
+        }
     }
 }

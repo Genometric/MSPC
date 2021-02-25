@@ -79,6 +79,8 @@ namespace Genometric.MSPC.CLI
             Description = "Sets a path where analysis results should be persisted."
         };
 
+        public List<string> Warnings { set; get; }
+
         private ReplicateType _vreplicate;
         private double _vtauS = 1E-8;
         private double _vtauW = 1E-4;
@@ -147,6 +149,8 @@ namespace Genometric.MSPC.CLI
             _cla.Options.Add(_cOutput);
             Func<int> assertArguments = AssertArguments;
             _cla.OnExecute(assertArguments);
+
+            Warnings = new List<string>();
         }
 
         private int AssertArguments()
@@ -254,9 +258,15 @@ namespace Genometric.MSPC.CLI
                     throw new ArgumentException("Invalid value given for the `" + _cC.ShortName + "` argument.");
 
                 if (_vc < 1)
+                {
+                    Warnings.Add($"Invalid `C={_cC.Value()}`, it is set to `C=1`.");
                     _vc = 1;
+                }
                 else if (_vc > _inputFiles.Count)
+                {
+                    Warnings.Add($"Invalid `C={_cC.Value()}`, it is set to `C={_inputFiles.Count}`.");
                     _vc = _inputFiles.Count;
+                }
             }
 
             if (_cM.HasValue())

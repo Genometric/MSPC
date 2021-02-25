@@ -260,7 +260,7 @@ namespace Genometric.MSPC.CLI.Tests
         [Theory]
         [InlineData(_c)]
         [InlineData("1")]
-        [InlineData("5")]
+        [InlineData("3")]
         public void ReadC(string c)
         {
             // Arrange & Act

@@ -297,6 +297,23 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
+        [InlineData("120%", 2)]
+        [InlineData("300%", 2)]
+        public void MaxCAndShowWarrning(string inputC, int expectedC)
+        {
+            // Arrange
+            var args = new StringBuilder(GenerateShortNameArguments(null, null, null, c: inputC));
+            args.Append(" -i sample_1 -i sample_2");
+
+            // Act
+            var options = new CommandLineOptions();
+            var po = options.Parse(args.ToString().Split(' '), out bool _);
+
+            // Assert
+            Assert.Equal(expectedC, po.C);
+        }
+
+        [Theory]
         [InlineData("lowest", MultipleIntersections.UseLowestPValue)]
         [InlineData("LowEST", MultipleIntersections.UseLowestPValue)]
         [InlineData("highest", MultipleIntersections.UseHighestPValue)]

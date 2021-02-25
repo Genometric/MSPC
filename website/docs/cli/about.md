@@ -17,11 +17,15 @@ MSPC `Core`, and persists results.
 For instance, see the following sample execution: 
 
 ```shell
-PS dotnet .\mspc.dll -i rep1.bed -i rep2.bed -r bio -w 1e-4 -s 1e-8
+$ dotnet .\mspc.dll -i rep1.bed -i rep2.bed \
+                    -r bio -w 1e-4 -s 1e-8
 
+```
+
+Output:
+```shell
 .::........Parsing Samples.........::.
-
-   #                Filename    Read peaks#     Min p-value     Mean p-value    Max p-value
+     #                Filename    Read peaks#     Min p-value     Mean p-value    Max p-value
 ----    --------------------    -----------     -----------     ------------    -----------
  1/2                    rep1         53,697      2.239E-074       1.085E-003     1.000E-002
  2/2                    rep2         37,717      5.370E-301       1.520E-004     9.550E-003
@@ -67,7 +71,15 @@ minimum and maximum p-values parsed from the file;
     are identified as *Stringent*, *Weak*, *Confirmed*,
     and etc. (see [sets description](method/sets.md)).
 
-    > **Note** that the percentages reported for *Stringent*, *Weak*, and *Background* sets, should add-up to `100%`; however, the percentage reported for *Confirmed* and *Discarded* is not expected to add-up to `100%` if the percentage of *Background* set is not `0%`. Similarly, the percentages reported for `TruePositive` and `FalsePositive` sets will not add-up to `100%` if the percentage of *Background* and *Discarded* is not `0%` (see [sets description](method/sets.md)).
+    :::info
+    The percentages reported for *Stringent*, *Weak*, and *Background* 
+    sets, should add-up to _100%_; however, the percentage reported for 
+    *Confirmed* and *Discarded* is not expected to add-up to _100%_ if 
+    the percentage of *Background* set is not _0%_. Similarly, the 
+    percentages reported for **TruePositive** and **FalsePositive** 
+    sets will not add-up to _100%_ if the percentage of *Background* 
+    and *Discarded* is not _0%_ (see [sets description](method/sets.md)).
+    :::
 
  - Number of consensus peaks.
 

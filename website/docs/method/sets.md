@@ -2,13 +2,22 @@
 title: Sets
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
 MSPC classifies peaks under `Background`, `Weak`, `Stringent`,
 `Confirmed`, `Discarded`, `True-Positive`, and `False-Positive`
 categories. (Refer to [method description](method/about.md)
 for details.) The following figure is a schematic view of 
 these categories and their relation.
 
-![Sets](/img/sets.svg)
+<ThemedImage
+  alt="Sets"
+  sources={{
+    light: useBaseUrl('/img/sets.svg'),
+    dark: useBaseUrl('/img/sets_dark.svg'),
+  }}
+/>
 
 (The number of ERs in different sets reported in this figure, are the 
 result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and 

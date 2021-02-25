@@ -2,11 +2,20 @@
 title: Output
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
 MSPC outputs each classifications of peaks (e.g., `stringent`, `weak`, `confirmed`, or
 `discarded`) in separate BED files. See the following figure for different sets and their 
 relation. 
 
-![Set](/img/sets.svg)
+<ThemedImage
+  alt="Sets"
+  sources={{
+    light: useBaseUrl('/img/sets.svg'),
+    dark: useBaseUrl('/img/sets_dark.svg'),
+  }}
+/>
 
 See [Sets](method/sets.md) page for description of each category.
 

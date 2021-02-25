@@ -1,6 +1,9 @@
----
+﻿---
 title: Installation
 ---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 A prerequisite for MSPC installation is [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
 or newer. We provide two methods for MSPC installation depending on whether
@@ -37,9 +40,9 @@ If the output is not as shown above, you would need to install
 ### Install MSPC
 
 You may install MSPC using either of the following methods:
-- goto [this page](https://github.com/Genometric/MSPC/releases/latest) and download `mspc.zip`
+- Goto [this page](https://github.com/Genometric/MSPC/releases/latest) and download `mspc.zip`
 and extract it to a path on your computer;
-- type the following command in your command line shell:
+- Type the following command in your command line shell:
 
 	```shell
 	$ wget -O mspc.zip "https://github.com/Genometric/MSPC/releases/latest/download/mspc.zip"
@@ -51,23 +54,30 @@ and extract it to a path on your computer;
 
 Install MSPC using either of the following commands depending on your runtime:
 
-- Windows x64:
 
-	```shell
+<Tabs
+  defaultValue="win"
+  values={[
+    {label: 'Windows x64', value: 'win'},
+    {label: 'Linux x64', value: 'linux'},
+    {label: 'macOS x64', value: 'mac'},
+  ]}>
+  <TabItem value="win">
+
 	$ wget -O mspc.zip "https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip"
 	$ unzip mspc.zip -d mspc
-	```
+  
+  </TabItem>
+  <TabItem value="linux">
 
-- Linux x64:
-
-	```shell
 	$ wget -O mspc.zip "https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip"
 	$ unzip mspc.zip -d mspc
-	```
 
-- macOS x64:
+  </TabItem>
+  <TabItem value="mac">
 
-	```shell
 	$ wget -O mspc.zip "https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip"
 	$ unzip mspc.zip -d mspc
-	```
+
+  </TabItem>
+</Tabs>

@@ -2,6 +2,9 @@
 title: About
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
 The analysis of ChIP-seq samples outputs a number of enriched regions 
 (commonly known as "peaks"), each indicating a protein-DNA interaction 
 or a specific chromatin modification.
@@ -44,7 +47,14 @@ and outputs ERs with false-discovery rate smaller than an adjustable threshold.
 
 This flow is captured in the following flowchart for each ER of each replicate: 
 
-![Simplified Flow Chart](/img/simplified_flow_chart.svg)
+
+<ThemedImage
+  alt="Simplified Flow Chart"
+  sources={{
+    light: useBaseUrl('/img/simplified_flow_chart.svg'),
+    dark: useBaseUrl('/img/simplified_flow_chart_dark.svg'),
+  }}
+/>
 
 (This flowchart is a simplified version of the flowchart available in
 [MSPC's manuscript](https://doi.org/10.1093/bioinformatics/btv293).)

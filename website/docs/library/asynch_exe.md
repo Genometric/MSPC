@@ -11,9 +11,11 @@ analysis has concluded;
 - If executed asynchronously, the caller is not blocked and can continue executing other logics, meanwhile, MSPC `Core` reports
 the execution status and signals when the analysis has concluded. 
 
-> Note that regardless of analysis invocation method, MSPC `Core`
+:::info
+Regardless of analysis invocation method, MSPC _Core_
 parallelizes the analysis of datasets (multi-threaded) whose 
 degree-of-parallelism can be adjusted.
+:::
 
 Both methods are discussed in details in the following sections. 
 

@@ -8,7 +8,6 @@ In general, a basic invocation on MSPC `Core` consists of three steps:
 3. Initialize an instance of `Mspc` class, add all input samples, and call `Run` function.
 
 ```csharp
-//
 // First;
 // parse input samples using Genometric.GeUtilities
 // available on NuGet:  https://www.nuget.org/packages/Genometric.GeUtilities/
@@ -16,7 +15,6 @@ In general, a basic invocation on MSPC `Core` consists of three steps:
 var bedParser = new BedParser();
 var sample = bedParser.Parse(fileName);
 
-//
 // Second;
 // Configure options
 var config = new Config(

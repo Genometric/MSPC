@@ -2,50 +2,152 @@
 title: Quick Start
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ## Preparation
 
 1. Install a self-contained release of MSPC, using either of following commands
 depending on your runtime (see [installation](installation.md) page for detailed
 installation options):
 
-   ```bash
-   # Windows x64 (using PowerShell):
-   $ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
-   
-   # Linux x64:
-   $ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip
-   
-   # macOS x64:
-   $ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip
-   ```
+<Tabs
+ groupId="operating-systems"
+ defaultValue="win"
+ values={[
+  { label: 'Windows', value: 'win', },
+  { label: 'Linux', value: 'linux', },
+  { label: 'macOS', value: 'mac', },
+ ]
+}>
+ <TabItem value="win">
+
+ ```shell
+ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
+ ```
+
+ </TabItem>
+ <TabItem value="linux">
+
+ ```shell
+ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip
+ ```
+
+ </TabItem>
+ <TabItem value="mac">
+
+ ```shell
+ wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip
+ ```
+
+ </TabItem>
+</Tabs>
 
 2. Extract the downloaded archive and browse to the containing directory:
 
-   ```bash
-   $ unzip mspc.zip -d mspc
-   $ cd mspc
-   ```
+<Tabs
+ groupId="operating-systems"
+ defaultValue="win"
+ values={[
+  { label: 'Windows', value: 'win', },
+  { label: 'Linux', value: 'linux', },
+  { label: 'macOS', value: 'mac', },
+ ]
+}>
+ <TabItem value="win">
+
+ ```shell
+ unzip mspc.zip -d mspc; cd mspc
+ ```
+
+ </TabItem>
+ <TabItem value="linux">
+
+ ```shell
+ unzip mspc.zip -d mspc && cd mspc
+ ```
+
+ </TabItem>
+ <TabItem value="mac">
+
+ ```shell
+ unzip mspc.zip -d mspc && cd mspc
+ ```
+
+ </TabItem>
+</Tabs>
 
    Notice that if you are working on Windows x64, you will need to download the program unzip.
 
 3. Download sample data:
 
-	```bash
-	$ wget -O demo.zip https://github.com/Genometric/Annotations/raw/master/SampleFiles/demo.zip
-	$ unzip demo.zip -d .
-	```
+<Tabs
+ groupId="operating-systems"
+ defaultValue="win"
+ values={[
+  { label: 'Windows', value: 'win', },
+  { label: 'Linux', value: 'linux', },
+  { label: 'macOS', value: 'mac', },
+ ]
+}>
+ <TabItem value="win">
+
+ ```shell
+ wget -O demo.zip https://github.com/Genometric/Annotations/raw/master/SampleFiles/demo.zip; unzip demo.zip -d .
+ ```
+
+ </TabItem>
+ <TabItem value="linux">
+
+ ```shell
+ wget -O demo.zip https://github.com/Genometric/Annotations/raw/master/SampleFiles/demo.zip && unzip demo.zip -d .
+ ```
+
+ </TabItem>
+ <TabItem value="mac">
+
+ ```shell
+ wget -O demo.zip https://github.com/Genometric/Annotations/raw/master/SampleFiles/demo.zip && unzip demo.zip -d .
+ ```
+
+ </TabItem>
+</Tabs>
 
 ## Run
 
 To run MSPC use the following command depending on your runtime:
 
-```bash
-# Windows x64 (using PowerShell):
-$ .\mspc.exe -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
+<Tabs
+ groupId="operating-systems"
+ defaultValue="win"
+ values={[
+  { label: 'Windows', value: 'win', },
+  { label: 'Linux', value: 'linux', },
+  { label: 'macOS', value: 'mac', },
+ ]
+}>
+ <TabItem value="win">
 
-# Linux x64 or macOS x64:
-$ ./mspc.dll -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
-```
+ ```shell
+ .\mspc.exe -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
+ ```
+
+ </TabItem>
+ <TabItem value="linux">
+
+ ```shell
+ ./mspc.dll -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
+ ```
+
+ </TabItem>
+ <TabItem value="mac">
+
+ ```shell
+ ./mspc.dll -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
+ ```
+
+ </TabItem>
+</Tabs>
 
 ## Output
 

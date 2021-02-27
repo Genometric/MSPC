@@ -32,6 +32,6 @@ Compress ./packages/mspc mspc.zip
 # https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 for RID in "win-x64" "osx-x64" "linux-x64"
 do
-  dotnet publish CLI/CLI.csproj --output ./packages/$RID --self-contained true --runtime $RID -p:UseAppHost=True
+  dotnet publish CLI/CLI.csproj --output ./packages/$RID --runtime $RID --self-contained true -p:UseAppHost=True -p:PublishSingleFile=true
   Compress ./packages/$RID $RID.zip
 done

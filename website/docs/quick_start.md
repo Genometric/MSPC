@@ -57,21 +57,21 @@ installation options):
  <TabItem value="win">
 
  ```shell
- unzip mspc.zip -d mspc; cd mspc
+ unzip win-x64.zip -d mspc; cd mspc
  ```
 
  </TabItem>
  <TabItem value="linux">
 
  ```shell
- unzip mspc.zip -d mspc && cd mspc
+ unzip -q linux-x64.zip -d mspc && cd mspc && chmod +x mspc
  ```
 
  </TabItem>
  <TabItem value="mac">
 
  ```shell
- unzip mspc.zip -d mspc && cd mspc
+ unzip -q osx-x64.zip -d mspc && cd mspc && chmod +x mspc
  ```
 
  </TabItem>
@@ -129,21 +129,21 @@ To run MSPC use the following command depending on your runtime:
  <TabItem value="win">
 
  ```shell
- .\mspc.exe -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
+ .\mspc.exe -i .\rep*.bed -r bio -w 1e-4 -s 1e-8
  ```
 
  </TabItem>
  <TabItem value="linux">
 
  ```shell
- ./mspc.dll -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
+ ./mspc -i rep*.bed -r bio -w 1e-4 -s 1e-8
  ```
 
  </TabItem>
  <TabItem value="mac">
 
  ```shell
- ./mspc.dll -i .\rep1.bed -i .\rep2.bed -r bio -w 1e-4 -s 1e-8
+ ./mspc -i rep*.bed -r bio -w 1e-4 -s 1e-8
  ```
 
  </TabItem>
@@ -188,11 +188,21 @@ MSPC creates a folder in the current execution path named `session_X_Y`, where `
         ├── TruePositive.bed
         ├── TruePositive_mspc_peaks.txt
         └── Weak.bed
-        └── Weak.bed
+        └── Weak_mspc_peaks.txt
 ```
+
+:::info
+Note that in these instructions you download a 
+[self-contained deployment](https://docs.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained)
+of MSPC, hence you do __not__ need to install .NET (or 
+any other dependencies) for the program to execute. 
+
+For other installation options see the [installation page](installation).   
+:::
 
 ## See Also
 
 - [Welcome page](welcome.md)
 - [Input file format](cli/input.md)
 - [Output files](cli/output.md)
+- [Sets](method/sets.md)

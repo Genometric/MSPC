@@ -72,7 +72,13 @@ _true-positive_ or _false-positive_.
 
 The following figure is a schematic view of this procedure.
 
-![Sets](/img/sets.svg)
+<ThemedImage
+  alt="Sets"
+  sources={{
+    light: useBaseUrl('/img/sets.svg'),
+    dark: useBaseUrl('/img/sets_dark.svg'),
+  }}
+/>
 
 (The number of ERs in different sets reported in this figure, are the 
 result of `wgEncodeSydhTfbsK562CmycStdAlnRep1` and 

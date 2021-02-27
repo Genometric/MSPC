@@ -1,7 +1,17 @@
 ===== 	
+v5.1 	
+=====	
+
+- Add `Directory.Build.props` hence common assembly configurations can be set for a single entry point;
+- Adjust maximum value of C according to the number of given input samples (see PR # 144_);
+- Set ExitCode according to the termination status (see PR # 143_).
+
+===== 	
 v5.0 	
 =====	
 
-- Change target framework from .NET Core 3.x to .NET 5.x (see PR # 138_)
+- Change target framework from .NET Core 3.x to .NET 5.x (see PR # 138_).
 
+.. _144: https://github.com/Genometric/MSPC/pull/144
+.. _143: https://github.com/Genometric/MSPC/pull/143
 .. _138: https://github.com/Genometric/MSPC/pull/138

@@ -6,7 +6,6 @@
     <StartupObject>Genometric.MSPC.CLI.Program</StartupObject>
     <ApplicationIcon />
     <Win32Resource />
-    <Version>5.0.0</Version>
     <Authors>Vahid Jalili</Authors>
     <Product>Genometric.MSPC.CLI</Product>
     <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>

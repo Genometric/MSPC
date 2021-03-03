@@ -7,14 +7,14 @@ function Compress($rid)
 		Remove-Item $archive
 	}
 
-	Compress-Archive -Path .\packages\$rid\*.* $archive
+	Compress-Archive -Path .\packages\$rid\* $archive -CompressionLevel Optimal
 	Remove-Item -LiteralPath ".\packages\$rid\" -Force -Recurse
 }
 
 # ----------------------------
 # Make Self-contained packages
 # ----------------------------
-dotnet publish .\CLI\CLI.csproj --output ./packages/mspc/ --no-self-contained
+dotnet publish .\CLI\CLI.csproj --output ./packages/mspc -p:UseAppHost=True
 Compress("mspc")
 
 # ----------------------------
@@ -26,6 +26,6 @@ Compress("mspc")
 $rids = @("win-x64","osx-x64","linux-x64")
 foreach ($rid in $rids) 
 {
-	dotnet publish .\CLI\CLI.csproj --output ./packages/$rid/ --self-contained true --runtime $rid
+	dotnet publish .\CLI\CLI.csproj --output ./packages/$RID --runtime $RID --self-contained true -p:UseAppHost=True -p:PublishSingleFile=true
 	Compress($rid)
 }

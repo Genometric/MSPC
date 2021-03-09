@@ -344,9 +344,10 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             Program.Main($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path + Path.DirectorySeparatorChar}".Split(' '));
+            output_path = output_path + "_0";
 
             // Assert
-            Assert.True(Directory.Exists(output_path + "_0"));
+            Assert.True(Directory.Exists(output_path));
             // There should be three files in the output directory:
             // Log file; Consensus peaks in BED and MSPC format.
             Assert.Equal(3, Directory.GetFiles(output_path).Length);

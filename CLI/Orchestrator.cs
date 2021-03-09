@@ -119,6 +119,8 @@ namespace Genometric.MSPC.CLI
                 path =
                     Environment.CurrentDirectory + Path.DirectorySeparatorChar +
                     "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+            else
+                path = path.TrimEnd(Path.DirectorySeparatorChar);
 
             OutputPath = path;
             try

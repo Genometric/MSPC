@@ -354,7 +354,7 @@ namespace Genometric.MSPC.CLI.Tests
             string baseName = @"TT" + new Random().Next().ToString();
             var dirs = new List<string>
             {
-                baseName, baseName + "0", baseName + "1"
+                baseName, baseName + "_0", baseName + "_1"
             };
 
             foreach (var dir in dirs)
@@ -364,10 +364,10 @@ namespace Genometric.MSPC.CLI.Tests
             }
 
             // Act
-            o.Orchestrate(string.Format("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8 -o {0}", dirs[0]).Split(' '));
+            o.Orchestrate($"-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8 -o {dirs[0]}".Split(' '));
 
             // Assert
-            Assert.Equal(o.OutputPath, dirs[0] + "2");
+            Assert.Equal(o.OutputPath, dirs[0] + "_2");
 
             // Clean up
             o.Dispose();

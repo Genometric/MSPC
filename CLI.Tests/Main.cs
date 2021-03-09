@@ -15,6 +15,29 @@ namespace Genometric.MSPC.CLI.Tests
 {
     public class Main
     {
+        private static void WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture)
+        {
+            culture = "fa-IR";
+            double pValue;
+            rep1Filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            using (StreamWriter writter = new StreamWriter(rep1Filename))
+            {
+                pValue = 7.12;
+                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+                pValue = 5.5067;
+                writter.WriteLine("chr1\t25\t35\tmspc_peak_2\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+            }
+
+            rep2Filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            using (StreamWriter writter = new StreamWriter(rep2Filename))
+            {
+                pValue = 19.9;
+                writter.WriteLine("chr1\t4\t12\tmspc_peak_3\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+                pValue = 8.999999;
+                writter.WriteLine("chr1\t30\t45\tmspc_peak_4\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+            }
+        }
+
         [Fact]
         public void ErrorIfLessThanTwoSamplesAreGiven()
         {
@@ -144,26 +167,8 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Arrange
             string outputPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) + new Random().Next(100000, 999999).ToString();
-            string culture = "fa-IR";
-            double pValue;
-            string rep1Filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            using (StreamWriter writter = new StreamWriter(rep1Filename))
-            {
-                pValue = 7.12;
-                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
-                pValue = 5.5067;
-                writter.WriteLine("chr1\t25\t35\tmspc_peak_2\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
-            }
-
-            string rep2Filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            using (StreamWriter writter = new StreamWriter(rep2Filename))
-            {
-                pValue = 19.9;
-                writter.WriteLine("chr1\t4\t12\tmspc_peak_3\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
-                pValue = 8.999999;
-                writter.WriteLine("chr1\t30\t45\tmspc_peak_4\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
-            }
-
+            WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture);
+            
             ParserConfig cols = new ParserConfig() { Culture = culture };
             var configFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
             using (StreamWriter w = new StreamWriter(configFilename))
@@ -301,6 +306,31 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.Contains(expected, msg);
             Assert.False(Environment.ExitCode == 0);
+        }
+
+        [Fact]
+        public void ExportToGivenOutputPath()
+        {
+            // Arrange
+            var output_path = "mspc_test_output_" + new Random().Next(10000, 99999);
+            WriteSampleFiles(out string rep1Filename, out string rep2Filename, out _);
+
+            // Act
+            Program.Main($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path}".Split(' '));
+
+            // Assert
+            Assert.True(Directory.Exists(output_path));
+            // There should be three files in the output directory:
+            // Log file; Consensus peaks in BED and MSPC format.
+            Assert.Equal(3, Directory.GetFiles(output_path).Length);
+            // There should be two folders in the output directory 
+            // one per each input replicate.
+            Assert.Equal(2, Directory.GetDirectories(output_path).Length);
+
+            rep1Filename = Path.Combine(output_path, Path.GetFileNameWithoutExtension(rep1Filename));
+            rep2Filename = Path.Combine(output_path, Path.GetFileNameWithoutExtension(rep2Filename));
+            Assert.Contains(rep1Filename, Directory.GetDirectories(output_path));
+            Assert.Contains(rep2Filename, Directory.GetDirectories(output_path));
         }
 
         [Fact]

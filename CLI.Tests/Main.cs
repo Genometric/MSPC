@@ -334,6 +334,28 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void TrailingSlashIsRemovedFromOutputFolder()
+        {
+            // Arrange
+            var output_path = "mspc_test_output_" + new Random().Next(10000, 99999);
+            Directory.CreateDirectory(output_path);
+            File.Create(output_path + Path.DirectorySeparatorChar + "test").Dispose();
+            WriteSampleFiles(out string rep1Filename, out string rep2Filename, out _);
+
+            // Act
+            Program.Main($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path + Path.DirectorySeparatorChar}".Split(' '));
+
+            // Assert
+            Assert.True(Directory.Exists(output_path + "_0"));
+            // There should be three files in the output directory:
+            // Log file; Consensus peaks in BED and MSPC format.
+            Assert.Equal(3, Directory.GetFiles(output_path).Length);
+            // There should be two folders in the output directory 
+            // one per each input replicate.
+            Assert.Equal(2, Directory.GetDirectories(output_path).Length);
+        }
+
+        [Fact]
         public void GenerateOutputPathIfNotGiven()
         {
             // Arrange

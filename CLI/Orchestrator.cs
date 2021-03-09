@@ -128,7 +128,7 @@ namespace Genometric.MSPC.CLI
                     if (Directory.GetFiles(OutputPath).Any())
                     {
                         int c = 0;
-                        do OutputPath = path + c++;
+                        do OutputPath = $"{path}_{c++}";
                         while (Directory.Exists(OutputPath));
                         Directory.CreateDirectory(OutputPath);
                     }

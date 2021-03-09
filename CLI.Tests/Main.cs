@@ -373,7 +373,7 @@ namespace Genometric.MSPC.CLI.Tests
             o.Dispose();
             foreach (var dir in dirs)
                 Directory.Delete(dir, true);
-            Directory.Delete(dirs[0] + "2", true);
+            Directory.Delete(dirs[0] + "_2", true);
         }
 
         [Fact]

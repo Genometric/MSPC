@@ -287,7 +287,7 @@ namespace Genometric.MSPC.CLI
             if (_cOutput.HasValue())
                 OutputPath = _cOutput.Value();
 
-            if(_cDP.HasValue())
+            if (_cDP.HasValue())
             {
                 if (int.TryParse(_cDP.Value(), out int dp))
                     DegreeOfParallelism = dp;

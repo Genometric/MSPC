@@ -122,7 +122,7 @@ namespace Genometric.MSPC.CLI
             else
                 path = path.TrimEnd(Path.DirectorySeparatorChar);
 
-            OutputPath = path;
+            OutputPath = Path.GetFullPath(path);
             try
             {
                 if (Directory.Exists(OutputPath))

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
@@ -697,14 +698,14 @@ namespace Genometric.MSPC.CLI.Tests
         public void ExportPathIsReportedInLogs()
         {
             // Arrange
-            var output_path = "mspc_test_output_" + new Random().Next(10000, 99999);
+            var outputPath = "mspc_test_output_" + new Random().Next(10000, 99999);
             WriteSampleFiles(out string rep1Filename, out string rep2Filename, out _);
 
             // Act
             string logFile;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -o {output_path}".Split(' '));
+                o.Orchestrate($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -o {outputPath}".Split(' '));
                 logFile = o.LogFile;
             }
 
@@ -715,7 +716,12 @@ namespace Genometric.MSPC.CLI.Tests
                     messages.Add(line);
 
             // Assert
-            Assert.True(messages.FindAll(x => x.Contains("INFO \tExport Directory: ")).Count == 1);
+            var outputPathLogMessage = messages.FindAll(x => x.Contains("INFO \tExport Directory: "));
+            Assert.True(outputPathLogMessage.Count == 1);
+
+            var rx = new Regex(".*Export Directory: (.*)");
+            var loggedOutputPath = rx.Match(outputPathLogMessage[0]).Groups[1].Value;
+            Assert.True(Path.IsPathRooted(loggedOutputPath));
         }
     }
 }

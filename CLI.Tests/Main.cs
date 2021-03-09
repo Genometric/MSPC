@@ -344,7 +344,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             Program.Main($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path + Path.DirectorySeparatorChar}".Split(' '));
-            output_path = output_path + "_0";
+            output_path += "_0";
 
             // Assert
             Assert.True(Directory.Exists(output_path));
@@ -691,6 +691,31 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains($"Invalid `C={c}`, it is set to `C={expected}`.", msg);
+        }
+
+        [Fact]
+        public void ExportPathIsReportedInLogs()
+        {
+            // Arrange
+            var output_path = "mspc_test_output_" + new Random().Next(10000, 99999);
+            WriteSampleFiles(out string rep1Filename, out string rep2Filename, out _);
+
+            // Act
+            string logFile;
+            using (var o = new Orchestrator())
+            {
+                o.Orchestrate($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -o {output_path}".Split(' '));
+                logFile = o.LogFile;
+            }
+
+            string line;
+            var messages = new List<string>();
+            using (var reader = new StreamReader(logFile))
+                while ((line = reader.ReadLine()) != null)
+                    messages.Add(line);
+
+            // Assert
+            Assert.True(messages.FindAll(x => x.Contains("INFO\tExport Directory: ")).Count == 1);
         }
     }
 }

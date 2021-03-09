@@ -715,7 +715,7 @@ namespace Genometric.MSPC.CLI.Tests
                     messages.Add(line);
 
             // Assert
-            Assert.True(messages.FindAll(x => x.Contains("INFO\tExport Directory: ")).Count == 1);
+            Assert.True(messages.FindAll(x => x.Contains("INFO \tExport Directory: ")).Count == 1);
         }
     }
 }

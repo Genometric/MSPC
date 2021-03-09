@@ -162,7 +162,7 @@ namespace Genometric.MSPC.CLI
 
                 var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString(loggerTimeStampFormat, CultureInfo.InvariantCulture);
                 LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
-                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
+                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), OutputPath);
                 return true;
             }
             catch (Exception e)

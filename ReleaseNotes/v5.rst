@@ -1,3 +1,9 @@
+=====
+v5.2
+=====
+
+- Improvements to creating output directory (see PR # 148_).
+
 ===== 	
 v5.1 	
 =====	
@@ -12,6 +18,7 @@ v5.0
 
 - Change target framework from .NET Core 3.x to .NET 5.x (see PR # 138_).
 
+.. _148: https://github.com/Genometric/MSPC/pull/148
 .. _144: https://github.com/Genometric/MSPC/pull/144
 .. _143: https://github.com/Genometric/MSPC/pull/143
 .. _138: https://github.com/Genometric/MSPC/pull/138

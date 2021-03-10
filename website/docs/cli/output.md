@@ -6,7 +6,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 MSPC persists the results of each execution to a separate folder. Users can specify 
-the output directory via the optional argument [`-o | --output`](cli/args#output-path); 
+the output directory via the optional argument [`-o | --output`](../cli/args#output-path); 
 if not specified, MSPC creates an output directory with the following naming scheme. 
 
 ```

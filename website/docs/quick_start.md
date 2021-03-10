@@ -151,7 +151,9 @@ To run MSPC use the following command depending on your runtime:
 
 ## Output
 
-MSPC creates a folder in the current execution path named `session_X_Y`, where `X` and `Y` are execution date and time respectively, which contains the following files and folders:
+MSPC creates a folder in the current execution path named `session_X_Y`, 
+where `X` and `Y` are execution date and time respectively, which contains 
+the following files and folders:
 
 ```bash
 .

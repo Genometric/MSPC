@@ -23,21 +23,21 @@ installation options):
  <TabItem value="win">
 
  ```shell
- wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
+ wget -O win-x64.zip https://github.com/Genometric/MSPC/releases/latest/download/win-x64.zip
  ```
 
  </TabItem>
  <TabItem value="linux">
 
  ```shell
- wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip
+ wget -O linux-x64.zip https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip
  ```
 
  </TabItem>
  <TabItem value="mac">
 
  ```shell
- wget -O mspc.zip https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip
+ wget -O osx-x64.zip https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip
  ```
 
  </TabItem>

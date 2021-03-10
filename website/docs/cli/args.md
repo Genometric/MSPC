@@ -240,6 +240,11 @@ using a JSON object.
 ### Output Path
 
 Sets the path in which analysis results should be persisted.
+If it is not given, the default folder is name `session_` + `<Timestamp>`.
+If a given folder name already exists, and is not empty, MSPC 
+will append `_n` where `n` is an integer until no duplicate is 
+found. See the [Output](output) page on the contents of 
+this folder.
 
 | Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |

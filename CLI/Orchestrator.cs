@@ -119,8 +119,10 @@ namespace Genometric.MSPC.CLI
                 path =
                     Environment.CurrentDirectory + Path.DirectorySeparatorChar +
                     "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
+            else
+                path = path.TrimEnd(Path.DirectorySeparatorChar);
 
-            OutputPath = path;
+            OutputPath = Path.GetFullPath(path);
             try
             {
                 if (Directory.Exists(OutputPath))
@@ -128,7 +130,7 @@ namespace Genometric.MSPC.CLI
                     if (Directory.GetFiles(OutputPath).Any())
                     {
                         int c = 0;
-                        do OutputPath = path + c++;
+                        do OutputPath = $"{path}_{c++}";
                         while (Directory.Exists(OutputPath));
                         Directory.CreateDirectory(OutputPath);
                     }
@@ -160,7 +162,7 @@ namespace Genometric.MSPC.CLI
 
                 var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString(loggerTimeStampFormat, CultureInfo.InvariantCulture);
                 LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
-                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString());
+                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), OutputPath);
                 return true;
             }
             catch (Exception e)

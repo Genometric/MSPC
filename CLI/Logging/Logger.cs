@@ -47,12 +47,12 @@ namespace Genometric.MSPC.CLI.Logging
             }
         }
 
-        public Logger(string logFilePath, string repository, string name)
+        public Logger(string logFilePath, string repository, string name, string exportPath)
         {
-            Setup(logFilePath, repository, name);
+            Setup(logFilePath, repository, name, exportPath);
         }
 
-        private void Setup(string logFilePath, string repository, string name)
+        private void Setup(string logFilePath, string repository, string name, string exportPath)
         {
             _repository = repository;
             _name = name;
@@ -85,6 +85,7 @@ namespace Genometric.MSPC.CLI.Logging
             log = LogManager.GetLogger(_repository, _name);
 
             log.Info("NOTE THAT THE LOG PATTERN IS: <Date> <#Thread> <Level> <Message>");
+            log.Info($"Export Directory: {exportPath}");
         }
 
         public void LogStartOfASection(string header)

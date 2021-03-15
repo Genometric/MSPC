@@ -203,7 +203,7 @@ namespace Genometric.MSPC.CLI
             if (dp > 0)
                 _degreeOfParallelism = dp;
 
-            _logger.Log(string.Format("Degree of parallelism is set to {0}.", _degreeOfParallelism));
+            _logger.Log(string.Format("Degree of parallelism is set to {0}.", _degreeOfParallelism), ConsoleColor.DarkGray);
         }
 
         private bool LoadParserConfig(CommandLineOptions options, out ParserConfig config)

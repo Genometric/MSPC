@@ -85,7 +85,16 @@ namespace Genometric.MSPC.CLI.Logging
             log = LogManager.GetLogger(_repository, _name);
 
             log.Info("NOTE THAT THE LOG PATTERN IS: <Date> <#Thread> <Level> <Message>");
-            log.Info($"Export Directory: {exportPath}");
+            LogExportPath(exportPath);
+        }
+
+        private void LogExportPath(string exportPath)
+        {
+            string msg = $"Export Directory: {exportPath}";
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(Environment.NewLine + msg);
+            Console.ResetColor();
+            log.Info(msg);
         }
 
         public void LogStartOfASection(string header)

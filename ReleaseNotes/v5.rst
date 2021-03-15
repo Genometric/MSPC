@@ -1,4 +1,10 @@
 =====
+v5.3
+=====
+
+- Report export path on the console (see PR # 149_).
+
+=====
 v5.2
 =====
 
@@ -18,6 +24,7 @@ v5.0
 
 - Change target framework from .NET Core 3.x to .NET 5.x (see PR # 138_).
 
+.. _149: https://github.com/Genometric/MSPC/pull/149
 .. _148: https://github.com/Genometric/MSPC/pull/148
 .. _144: https://github.com/Genometric/MSPC/pull/144
 .. _143: https://github.com/Genometric/MSPC/pull/143

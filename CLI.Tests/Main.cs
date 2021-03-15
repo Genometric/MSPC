@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Security;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -169,7 +170,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange
             string outputPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) + new Random().Next(100000, 999999).ToString();
             WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture);
-            
+
             ParserConfig cols = new ParserConfig() { Culture = culture };
             var configFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
             using (StreamWriter w = new StreamWriter(configFilename))
@@ -679,7 +680,7 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
-        [InlineData("300%",  "2")]
+        [InlineData("300%", "2")]
         [InlineData("-300%", "1")]
         public void WarningDisplayedForInvalidC(string c, string expected)
         {
@@ -722,6 +723,44 @@ namespace Genometric.MSPC.CLI.Tests
             var rx = new Regex(".*Export Directory: (.*)");
             var loggedOutputPath = rx.Match(outputPathLogMessage[0]).Groups[1].Value;
             Assert.True(Path.IsPathRooted(loggedOutputPath));
+        }
+
+        [Fact]
+        public void ExportPathIsReportedInConsole()
+        {
+            // Arrange
+            string msg;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                msg = tmpMspc.Run();
+
+            // Assert
+            var rx = new Regex(".*Export Directory: (.*)\r\n.*");
+            var loggedOutputPath = rx.Match(msg).Groups[1].Value.Trim();
+
+            var isAValidPath = TryGetFullPath(loggedOutputPath, out _);
+            Assert.True(isAValidPath);
+        }
+
+        private static bool TryGetFullPath(string path, out string result)
+        {
+            result = string.Empty;
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            try
+            {
+                result = Path.GetFullPath(path);
+                return true;
+            }
+            catch (Exception e) when (e is ArgumentException or
+                                           SecurityException or 
+                                           NotSupportedException or 
+                                           PathTooLongException)
+            {
+                return false;
+            }
         }
     }
 }

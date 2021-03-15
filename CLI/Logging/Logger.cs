@@ -85,16 +85,13 @@ namespace Genometric.MSPC.CLI.Logging
             log = LogManager.GetLogger(_repository, _name);
 
             log.Info("NOTE THAT THE LOG PATTERN IS: <Date> <#Thread> <Level> <Message>");
-            log.Info($"Export Directory: {exportPath}");
+            Log($"Export Directory: {exportPath}", ConsoleColor.DarkGray);
         }
 
         public void LogStartOfASection(string header)
         {
             string msg = ".::." + header.PadLeft(((_sectionHeaderLenght - header.Length) / 2) + header.Length, '.').PadRight(_sectionHeaderLenght, '.') + ".::.";
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(Environment.NewLine + msg);
-            Console.ResetColor();
-            log.Info(msg);
+            Log(Environment.NewLine + msg, ConsoleColor.Yellow);
         }
 
         public void LogException(Exception e)
@@ -170,9 +167,12 @@ namespace Genometric.MSPC.CLI.Logging
             }
         }
 
-        public void Log(string message)
+        public void Log(string message, ConsoleColor color = ConsoleColor.Black)
         {
+            if (color != ConsoleColor.Black)
+                Console.ForegroundColor = color;
             Console.WriteLine(message);
+            Console.ResetColor();
             log.Info(message);
         }
 

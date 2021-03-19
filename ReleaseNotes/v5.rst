@@ -1,4 +1,10 @@
 =====
+v5.4
+=====
+
+- Add an option to exclude header from generated files.
+
+=====
 v5.3
 =====
 

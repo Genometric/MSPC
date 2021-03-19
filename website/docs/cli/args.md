@@ -25,6 +25,7 @@ dotnet mspc.dll -i rep1.bed -i rep2.bed -r bio -s 1E-8 -w 1E-4
 | [Degree of Parallelism](#degree-of-parallelism) |  | `-d`  | `int` | host processors count |
 | [Input Parser Configuration](#input-parser-configuration) |   | `-p` | File path | none |
 | [Output path](#output-path) | | `-o` | Directory path | `session_` + `<Timestamp>`|
+| [Exclude Header](#exclude-header) | | | | `False` (not provided) |
 
 * At least one of these arguments should be provided.
 
@@ -250,3 +251,13 @@ this folder.
 | ----- | ---- | ---- | ------------ | ------------- |
 | `-o`  | `--output` | Optional | Directory path | `session_` + `<Timestamp>`|
 
+### Exclude Header
+
+This is a flag (i.e., it does not require any value), 
+if provided, MSPC does not add a header to the files 
+it generates. If not provided (default), MSPC will add
+a header to all the files it generates.
+
+| Short | Long | Required | Valid values | Default value |
+| ----- | ---- | ---- | ------------ | ------------- |
+|       | `--excludeHeader` | Optional |  | `False` (not provided) |

@@ -67,7 +67,7 @@ namespace Genometric.MSPC.CLI
 
             var attributes = Enum.GetValues(typeof(Attributes)).Cast<Attributes>().ToList();
             var dict = samples.ToDictionary(x => x.FileHashKey, x => Path.GetFileNameWithoutExtension(x.FileName));
-            if (!Export(mspc, dict, attributes))
+            if (!Export(mspc, dict, attributes, options.ExcludeHeader))
                 return;
 
             _logger.LogStartOfASection("Summary Statistics");
@@ -300,14 +300,14 @@ namespace Genometric.MSPC.CLI
             }
         }
 
-        private bool Export(Mspc mspc, Dictionary<uint, string> samplesDictionary, List<Attributes> attributesToExport)
+        private bool Export(Mspc mspc, Dictionary<uint, string> samplesDictionary, List<Attributes> attributesToExport, bool excludeHeader)
         {
             try
             {
                 _logger.LogStartOfASection("Saving Results");
                 var options = new Options(
                     path: OutputPath,
-                    includeHeader: true,
+                    includeHeader: !excludeHeader,
                     attributesToExport: attributesToExport);
 
                 _exporter.Export(

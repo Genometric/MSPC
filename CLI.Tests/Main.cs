@@ -261,6 +261,7 @@ namespace Genometric.MSPC.CLI.Tests
                 "\r\n  -d | --degreeOfParallelism <value>    Set the degree of parallelism." +
                 "\r\n  -p | --parser <value>                 Sets the path to the parser configuration file in JSON." +
                 "\r\n  -o | --output <value>                 Sets a path where analysis results should be persisted." +
+                "\r\n  --excludeHeader                       If provided, MSPC will not add a header line to its output." +
                 "\r\n" +
                 "\n\rDocumentation:\thttps://genometric.github.io/MSPC/" +
                 "\n\rSource Code:\thttps://github.com/Genometric/MSPC" +

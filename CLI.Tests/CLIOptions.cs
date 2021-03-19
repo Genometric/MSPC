@@ -30,7 +30,7 @@ namespace Genometric.MSPC.CLI.Tests
         private string GenerateShortNameArguments(
             string rep1 = _rep1, string rep2 = _rep2, string rep3 = _rep3, double tauW = _tauW, double tauS = _tauS,
             double gamma = _gamma, float alpha = _alpha, string c = _c, string m = _m, string r = _r, string p = _p,
-            string d = _d)
+            string d = _d, bool excludeHeader = false)
         {
             var builder = new StringBuilder();
             if (rep1 != null) builder.Append("-i " + rep1 + " ");
@@ -46,6 +46,8 @@ namespace Genometric.MSPC.CLI.Tests
             if (p != null)
                 builder.Append("-p " + p + " ");
             builder.Append("-d " + d);
+            if (excludeHeader)
+                builder.Append(" --excludeHeader");
             return builder.ToString();
         }
 
@@ -353,6 +355,19 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.True(options.DegreeOfParallelism == dp);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ReadExcludeHeader(bool exclude)
+        {
+            // Arrange & Act
+            var options = new CommandLineOptions();
+            options.Parse(GenerateShortNameArguments(excludeHeader: exclude).Split(' '), out bool _);
+
+            // Assert
+            Assert.True(options.ExcludeHeader == exclude);
         }
 
         [Fact]

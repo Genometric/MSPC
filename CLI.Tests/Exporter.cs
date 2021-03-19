@@ -274,6 +274,44 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void AddHeaderBasedOnGivenArg(bool include)
+        {
+            // Arrange
+            static string GetFirstLine(string filename)
+            {
+                var reader = new StreamReader(filename);
+                var line = reader.ReadLine();
+                reader.Close();
+                return line;
+            }
+
+            // Act
+            string path = RunMSPCAndExportResults(include);
+
+            foreach (var dir in Directory.GetDirectories(path))
+            {
+                foreach (var file in Directory.GetFiles(dir))
+                {
+                    string potentialHeader;
+                    if (Path.GetFileNameWithoutExtension(file).EndsWith("_mspc_peaks"))
+                        potentialHeader = Header(true);
+                    else if (Path.GetExtension(file) == ".bed")
+                        potentialHeader = Header(false);
+                    else
+                        continue;
+
+                    // Assert
+                    Assert.True(include == (potentialHeader == GetFirstLine(file)));
+                }
+            }
+
+            // Clean up
+            Directory.Delete(path, true);
+        }
+
+        [Theory]
         [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, double.NaN, double.NaN, double.NaN)]
         public void CorrectValuesForEachPropertyOfExportedPeakInMSPCPeakFile(
             uint sampleID, Attributes attribute,

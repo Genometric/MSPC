@@ -79,6 +79,11 @@ namespace Genometric.MSPC.CLI
             Description = "Sets a path where analysis results should be persisted."
         };
 
+        private readonly CommandOption _cExcludeHeader = new CommandOption("--excludeHeader", CommandOptionType.NoValue)
+        {
+            Description = "If provided, MSPC will not add a header line to its output."
+        };
+
         public List<string> Warnings { set; get; }
 
         private ReplicateType _vreplicate;
@@ -98,6 +103,8 @@ namespace Genometric.MSPC.CLI
         /// Gets a degree of parallelism.
         /// </summary>
         public int DegreeOfParallelism { private set; get; }
+
+        public bool ExcludeHeader { private set; get; } = false;
 
         public string OutputPath { private set; get; }
 
@@ -147,6 +154,7 @@ namespace Genometric.MSPC.CLI
             _cla.Options.Add(_cDP);
             _cla.Options.Add(_cParser);
             _cla.Options.Add(_cOutput);
+            _cla.Options.Add(_cExcludeHeader);
             Func<int> assertArguments = AssertArguments;
             _cla.OnExecute(assertArguments);
 
@@ -294,6 +302,9 @@ namespace Genometric.MSPC.CLI
                 else
                     throw new ArgumentException("Invalid value given for the `" + _cDP.LongName + "` argument.");
             }
+
+            if (_cExcludeHeader.HasValue())
+                ExcludeHeader = true;
         }
 
         private string[] ParseExpandedInput(string[] args)

@@ -1,0 +1,49 @@
+Package: rmspc
+Type: Package
+Title: MSPC program
+Version: 0.99.0
+Authors@R: c(person("Vahid", "Jalili", role = c("aut"),  
+                     email = "jalili.vahid@gmail.com"),  
+              person("Marzia", "Angela Cremona", role = "ctb",  
+              email = "marzia.cremona@gmail.com"),  
+              person("Meriem", "Bahda", role = "cre",  
+                     email = "meriembahda@gmail.com"))
+Imports:
+    processx, 
+    BiocManager, 
+    rtracklayer, 
+    stats, 
+    tools, 
+    methods,
+    GenomicRanges,
+    stringr
+Suggests: 
+    knitr,
+    rmarkdown,
+    BiocStyle,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Description: The rmspc package runs the MSPC software using R. 
+    The analysis of ChIP-seq samples outputs a number of 
+    enriched regions (commonly known as "peaks"), each
+    indicating a protein-DNA interaction or a specific
+    chromatin modification. When replicate samples are
+    analyzed, overlapping peaks are expected. This repeated
+    evidence can therefore be used to locally lower the minimum
+    significance required to accept a peak. Here, we propose a
+    method for joint analysis of weak peaks. Given a set of 
+    peaks from (biological or technical) replicates, the method
+    combines the p-values of overlapping enriched regions, and
+    allows the "rescue" of weak peaks occurring in more than 
+    one replicate.
+    MSPC comparatively evaluates ChIP-seq peaks and combines
+    the statistical significance of repeated evidences, 
+    with the aim of lowering the minimum significance required
+    to rescue weak peaks; hence reducing false-negatives.
+biocViews: ChIPSeq, Sequencing, ChipOnChip, DataImport
+License: GPL-3
+Encoding: UTF-8
+URL: https://genometric.github.io/MSPC/
+BugReports: https://github.com/Genometric/MSPC/issues
+RoxygenNote: 7.1.1
+Config/testthat/edition: 3

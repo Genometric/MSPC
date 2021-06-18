@@ -1,0 +1,17 @@
+citEntry(entry="article",
+        title = "Using combined evidence from replicates to evaluate ChIP-seq peaks.",
+        author = personList( as.person("Vahid Jalili" ),
+            as.person(" Matteo Matteucci" ),
+            as.person("Marco Masseroli" ),
+            as.person("Marco J Morelli" )),
+        year = 2015,
+        journal = "Bioinformatics",
+        volume = "31",
+        issue = "17",
+        doi = "10.1093/bioinformatics/btv293",
+        url = "https://academic.oup.com/bioinformatics/article/31/17/2761/183989",
+        textVersion = "Jalili, V., Matteucci, M., Masseroli, M., & Morelli,
+        M. J. (2015). Using combined evidence from replicates to
+        evaluate ChIP-seq peaks.Bioinformatics 31(17), 2761-2769.
+        doi: 10.1093/bioinformatics/btv293"
+)

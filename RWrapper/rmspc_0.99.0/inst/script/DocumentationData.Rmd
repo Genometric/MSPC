@@ -1,0 +1,95 @@
+---
+title: "Documentation of the external data"
+author: "Vahid Jalili, Marzia Angela Cremona and Meriem Bahda"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+    BiocStyle::html_document:
+        number_sections: yes
+        toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Data dowload
+
+This file is a documentation of the external data included in the package, in the directory inst/extdata.
+
+This directory contains the two following files : 
+
+* rep1.
+* rep2. 
+
+These replicates sample files are from the Myc transcription factor ChIP-Seq datasets in K562 human cells, available in the [Encode project](https://www.encodeproject.org/)
+
+[Here's a link to dowload a dataset of peaks](http://www.bioinformatics.deib.polimi.it/genomic_computing/MSPC/packages/ENCODE_Samples.zip)
+
+The two sample files included in this package, from this dataset, are the files : 
+
+* wgEncodeSydhTfbsK562CmycStdAlnRep1.bed ( that we named rep1.bed)
+* wgEncodeSydhTfbsK562CmycStdAlnRep2.bed ( that we names rep2.bed)
+
+In order to respect Bioconductor's guidelines regarding the size of R packages, we will reduce the size of the sample files, by selecting 
+only the chromosome , **CHR 1**, from each sample file. 
+
+The following steps show how the size reduction was conducted. 
+
+# Data importation
+
+The sample files we dowloaded are in a BED file format.  
+In order to reduce their size, we need to import them into
+our R environment. We can import BED files,
+as GRanges objects, into our R environment, using the function `import` from the package `rtracklayer`. 
+
+We install the `rtracklyer` package as follows : 
+
+```{r eval= FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("rtracklayer")
+
+```
+
+We load the package rtracklyer as such :
+
+```{r eval=FALSE}
+library(rtracklayer)
+```
+
+We can now import the BED files using the function `import`. 
+
+The sample files, rep1.bed and rep2.bed are in our current working directory, and we can 
+import them as such : 
+
+
+```{r eval=FALSE}
+rep1 <- rtracklayer::import(con = "rep1.bed",format = "bed")
+rep2 <- rtracklayer::import(con = "rep2.bed",format = "bed")
+```
+
+
+# Data size reduction 
+
+The original sample files were too large to include in the package. 
+Therefore, we chose to reduce the size of these files by selecting only 1
+chromosome, the **CHR 1**, by doing the following : 
+
+```{r eval=FALSE}
+rep1 <- rep1[seqnames(rep1) =="chr1"]
+rep2 <- rep2[seqnames(rep2) =="chr1"]
+```
+
+
+# Data exportation
+
+We now export, to the current working directory, these Granges objects in a BED file format, using the function `export` from the package `rtracklayer`. 
+
+```{r eval=FALSE}
+export(object = rep1,con = "rep1Reduced.bed" )
+export(object = rep2,con = "rep2Reduced.bed" )
+
+```
+

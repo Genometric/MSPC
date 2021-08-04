@@ -7,6 +7,7 @@ module.exports = {
   organizationName: 'Genometric',
   projectName: 'MSPC',
   themeConfig: {
+    hideableSidebar: true,
     navbar: {
       title: 'MSPC',
       logo: {

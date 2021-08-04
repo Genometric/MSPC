@@ -29,7 +29,7 @@
 <p align="center">
   <a href="https://genometric.github.io/MSPC/docs/quick_start">Quick Start</a> |
   <a href="https://genometric.github.io/MSPC/">Documentation</a> |
-  <a href="https://github.com/Genometric/MSPC/releases">Download</a>
+  <a href="https://github.com/Genometric/MSPC/releases">Download</a> |
   <a href="https://genometric.github.io/MSPC/publications">Publication</a>
 </p>
 
@@ -88,8 +88,8 @@ page for more details.
 
 ## Download and Run
 
-- [__Quick Start__: download, install, and run a demo use-case](https://genometric.github.io/MSPC/docs/quick_start);
-- [__Install__: details on different installation options](https://genometric.github.io/MSPC/docs/installation).
+- #### [__Quick Start__: _download, install, and run a demo use-case_](https://genometric.github.io/MSPC/docs/quick_start);
+- #### [__Install__: _details on different installation options_](https://genometric.github.io/MSPC/docs/installation).
 
 MSPC is released as a cross-platform console application and a .NET Core library. 
 See the following figure for its current cross-platform build stats.
@@ -98,14 +98,3 @@ See the following figure for its current cross-platform build stats.
 | :--------------: | :-----------: | :-----------: |
 | Microsoft Windows  | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) | [![Build history](https://buildstats.info/appveyor/chart/VJalili/mspc)](https://ci.appveyor.com/project/VJalili/mspc/history) |
 | Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) | [![Build history](https://buildstats.info/travisci/chart/Genometric/MSPC)](https://travis-ci.org/Genometric/MSPC/builds) |
-
-
-<br/>
-
-## Graphical version
-[MuSERA](https://github.com/Genometric/MuSERA) is a graphical tool that efficiently 
-implements MSPC (v2) for comparative evaluation of ChIP-seq and DNase-seq 
-samples. Additionally, it facilitates the assessment of replicates by 
-integrating common pipelines such as _functional analysis_,
- _nearest feature distance distribution_, _chromosome-wide statistics_, 
-_plotting features_, and an _integrated genome browser_.

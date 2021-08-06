@@ -4,8 +4,8 @@
   <ShortName>MSPC</ShortName>
   <Description>Search MSPC</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://genometric.github.io/logo/logo.svg</Image>
-  <Url type="text/html" method="get" template="https://genometric.github.io/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://genometric.github.io/opensearch.xml" />
-  <moz:SearchForm>https://genometric.github.io</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://genometric.github.io/MSPC/logo/logo.svg</Image>
+  <Url type="text/html" method="get" template="https://genometric.github.io/MSPC/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://genometric.github.io/MSPC/opensearch.xml" />
+  <moz:SearchForm>https://genometric.github.io/MSPC/</moz:SearchForm>
 </OpenSearchDescription>

@@ -3,8 +3,8 @@ name: Build and Test
 on: [push, pull_request]
 
 jobs:
-  linux:
-    name: Ubuntu-latest
+  build:
+    name: env-specific
     runs-on: ${{ matrix.os }} 
     strategy:
       matrix:

@@ -9,19 +9,19 @@
     <a href="https://www.nuget.org/packages/Genometric.MSPC.Core">
         <img src="https://buildstats.info/nuget/Genometric.MSPC.Core?vWidth=50&dWidth=50">
     </a>
-    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status">
+    <a href="https://sonarcloud.io/dashboard?id=mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status">
     </a>
     <a href="https://codecov.io/gh/Genometric/MSPC">
     <img src="https://codecov.io/gh/Genometric/MSPC/branch/master/graph/badge.svg?token=TRSk39hCh3"/>
     </a>
-    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc">
+    <a href="https://sonarcloud.io/dashboard?id=mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc">
     </a>
-    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating">
+    <a href="https://sonarcloud.io/dashboard?id=mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating">
     </a>
-    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=reliability_rating">
+    <a href="https://sonarcloud.io/dashboard?id=mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=reliability_rating">
     </a>
 </p>

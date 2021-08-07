@@ -428,7 +428,8 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(
                 msg.Contains("Illegal characters in path.") ||
                 msg.Contains("The filename, directory name, or volume label syntax is incorrect") ||
-                msg.Contains($"Cannot ensure the given output path `{_illegalPath}`: Read-only file system"));
+                msg.Contains($"Cannot ensure the given output path `{_illegalPath}`: Read-only file system") ||
+                msg.Contains($"Cannot ensure the given output path `{_illegalPath}`: Access to the path '/_' is denied"));
             Assert.False(Environment.ExitCode == 0);
         }
 
@@ -477,7 +478,8 @@ namespace Genometric.MSPC.CLI.Tests
                 messages,
                 x => x.Contains("Illegal characters in path.") ||
                 x.Contains("The filename, directory name, or volume label syntax is incorrect") ||
-                x.Contains($"Cannot ensure the given output path `{_illegalPath}`: Read-only file system"));
+                x.Contains($"Cannot ensure the given output path `{_illegalPath}`: Read-only file system") ||
+                x.Contains($"Cannot ensure the given output path `{_illegalPath}`: Access to the path '/_' is denied"));
             Assert.False(Environment.ExitCode == 0);
         }
 

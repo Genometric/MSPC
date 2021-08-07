@@ -415,7 +415,7 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
-        public void ExeExceptionWritingToIllegalPath()
+        public void RaiseExceptionWritingToIllegalPath()
         {
             // Arrange
             string msg;

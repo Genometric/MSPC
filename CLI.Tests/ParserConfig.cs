@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
 {
+    [Collection("Sequential")]
     public class TParserConfig
     {
         [Theory]

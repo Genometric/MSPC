@@ -15,6 +15,7 @@ using Xunit;
 
 namespace Genometric.MSPC.CLI.Tests
 {
+    [Collection("Sequential")]
     public class Main
     {
         /// <summary>
@@ -25,7 +26,7 @@ namespace Genometric.MSPC.CLI.Tests
         /// path, hence the underscore (_) char is added
         /// to keep forward slash (/) in the path.
         /// </summary>
-        private string _illegalPath = "/_";
+        private readonly string _illegalPath = "/_";
 
         private static void WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture)
         {

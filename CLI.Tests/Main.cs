@@ -17,6 +17,16 @@ namespace Genometric.MSPC.CLI.Tests
 {
     public class Main
     {
+        /// <summary>
+        /// This path should be illegal cross-platform
+        /// for the tests to be reproducible on different
+        /// platforms. Since the trailing path separator
+        /// is trimmed in Orchestrator from every given
+        /// path, hence the underscore (_) char is added
+        /// to keep forward slash (/) in the path.
+        /// </summary>
+        private string _illegalPath = "/_";
+
         private static void WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture)
         {
             culture = "fa-IR";
@@ -245,28 +255,29 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
+            string n = Environment.NewLine;
             string expected =
-                "\r\n\r\nUsage: MSPC CLI [options]\r\n\r\nOptions:" +
-                "\r\n  -? | -h | --help                      Show help information" +
-                "\r\n  -v | --version                        Show version information" +
-                "\r\n  -i | --input <value>                  Input samples to be processed in Browser Extensible Data (BED) Format." +
-                "\r\n  -f | --folder-input <value>           Sets a path to a folder that all its containing files in BED format are considered as inputs." +
-                "\r\n  -r | --replicate <value>              Sets the replicate type of samples. Possible values are: { Bio, Biological, Tec, Technical }" +
-                "\r\n  -w | --tauW <value>                   Sets weak threshold. All peaks with p-values higher than this value are considered as weak peaks." +
-                "\r\n  -s | --tauS <value>                   Sets stringency threshold. All peaks with p-values lower than this value are considered as stringent peaks." +
-                "\r\n  -g | --gamma <value>                  Sets combined stringency threshold. The peaks with their combined p-values satisfying this threshold will be confirmed." +
-                "\r\n  -a | --alpha <value>                  Sets false discovery rate of Benjamini–Hochberg step-up procedure." +
-                "\r\n  -c <value>                            Sets minimum number of overlapping peaks before combining p-values." +
-                "\r\n  -m | --multipleIntersections <value>  When multiple peaks from a sample overlap with a given peak, this argument defines which of the peaks to be considered: the one with lowest p-value, or the one with highest p-value? Possible values are: { Lowest, Highest }" +
-                "\r\n  -d | --degreeOfParallelism <value>    Set the degree of parallelism." +
-                "\r\n  -p | --parser <value>                 Sets the path to the parser configuration file in JSON." +
-                "\r\n  -o | --output <value>                 Sets a path where analysis results should be persisted." +
-                "\r\n  --excludeHeader                       If provided, MSPC will not add a header line to its output." +
-                "\r\n" +
-                "\n\rDocumentation:\thttps://genometric.github.io/MSPC/" +
-                "\n\rSource Code:\thttps://github.com/Genometric/MSPC" +
-                "\n\rPublications:\thttps://genometric.github.io/MSPC/publications" +
-                "\n\r\r\n";
+                $"{n}{n}Usage: MSPC CLI [options]{n}{n}Options:" +
+                $"{n}  -? | -h | --help                      Show help information" +
+                $"{n}  -v | --version                        Show version information" +
+                $"{n}  -i | --input <value>                  Input samples to be processed in Browser Extensible Data (BED) Format." +
+                $"{n}  -f | --folder-input <value>           Sets a path to a folder that all its containing files in BED format are considered as inputs." +
+                $"{n}  -r | --replicate <value>              Sets the replicate type of samples. Possible values are: {{ Bio, Biological, Tec, Technical }}" +
+                $"{n}  -w | --tauW <value>                   Sets weak threshold. All peaks with p-values higher than this value are considered as weak peaks." +
+                $"{n}  -s | --tauS <value>                   Sets stringency threshold. All peaks with p-values lower than this value are considered as stringent peaks." +
+                $"{n}  -g | --gamma <value>                  Sets combined stringency threshold. The peaks with their combined p-values satisfying this threshold will be confirmed." +
+                $"{n}  -a | --alpha <value>                  Sets false discovery rate of Benjamini–Hochberg step-up procedure." +
+                $"{n}  -c <value>                            Sets minimum number of overlapping peaks before combining p-values." +
+                $"{n}  -m | --multipleIntersections <value>  When multiple peaks from a sample overlap with a given peak, this argument defines which of the peaks to be considered: the one with lowest p-value, or the one with highest p-value? Possible values are: {{ Lowest, Highest }}" +
+                $"{n}  -d | --degreeOfParallelism <value>    Set the degree of parallelism." +
+                $"{n}  -p | --parser <value>                 Sets the path to the parser configuration file in JSON." +
+                $"{n}  -o | --output <value>                 Sets a path where analysis results should be persisted." +
+                $"{n}  --excludeHeader                       If provided, MSPC will not add a header line to its output." +
+                $"{n}" +
+                $"{n}Documentation:\thttps://genometric.github.io/MSPC/" +
+                $"{n}Source Code:\thttps://github.com/Genometric/MSPC" +
+                $"{n}Publications:\thttps://genometric.github.io/MSPC/publications" +
+                $"{n}";
 
             // Act
             using (var tmpMspc = new TmpMspc())
@@ -284,7 +295,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
-            string expected = "\r\nVersion ";
+            string expected = $"{Environment.NewLine}Version ";
 
             // Act
             using (var tmpMspc = new TmpMspc())
@@ -403,20 +414,20 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
-        public void RaiseExceptionWritingToIllegalPath()
+        public void ExeExceptionWritingToIllegalPath()
         {
             // Arrange
             string msg;
-            var illegalPath = "C:\\*<>*\\//";
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(sessionPath: illegalPath);
+                msg = tmpMspc.Run(sessionPath: _illegalPath);
 
             // Assert
             Assert.True(
                 msg.Contains("Illegal characters in path.") ||
-                msg.Contains("The filename, directory name, or volume label syntax is incorrect"));
+                msg.Contains("The filename, directory name, or volume label syntax is incorrect") ||
+                msg.Contains($"Cannot ensure the given output path `{_illegalPath}`: Read-only file system"));
             Assert.False(Environment.ExitCode == 0);
         }
 
@@ -457,14 +468,15 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                messages = tmpMspc.FailRun(template2: "-i rep1 -i rep2 -o C:\\*<>*\\// -r bio -s 1e-8 -w 1e-4");
+                messages = tmpMspc.FailRun(template2: $"-i rep1 -i rep2 -o {_illegalPath} -r bio -s 1e-8 -w 1e-4");
 
             // Assert
             Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
             Assert.Contains(
                 messages,
                 x => x.Contains("Illegal characters in path.") ||
-                x.Contains("The filename, directory name, or volume label syntax is incorrect"));
+                x.Contains("The filename, directory name, or volume label syntax is incorrect") ||
+                x.Contains($"Cannot ensure the given output path `{_illegalPath}`: Read-only file system"));
             Assert.False(Environment.ExitCode == 0);
         }
 
@@ -737,7 +749,7 @@ namespace Genometric.MSPC.CLI.Tests
                 msg = tmpMspc.Run();
 
             // Assert
-            var rx = new Regex(".*Export Directory: (.*)\r\n.*");
+            var rx = new Regex($".*Export Directory: (.*){Environment.NewLine}.*");
             var loggedOutputPath = rx.Match(msg).Groups[1].Value.Trim();
 
             var isAValidPath = TryGetFullPath(loggedOutputPath, out _);

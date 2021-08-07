@@ -3,8 +3,8 @@ name: Build and Test
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  linux:
+    name: Ubuntu-latest
     runs-on: ubuntu-latest
     strategy:
       matrix:

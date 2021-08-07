@@ -5,9 +5,10 @@ on: [push, pull_request]
 jobs:
   linux:
     name: Ubuntu-latest
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }} 
     strategy:
       matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
         dotnet-version: ['5.0.x']
 
     steps:

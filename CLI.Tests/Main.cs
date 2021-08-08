@@ -21,12 +21,21 @@ namespace Genometric.MSPC.CLI.Tests
         /// <summary>
         /// This path should be illegal cross-platform
         /// for the tests to be reproducible on different
-        /// platforms. Since the trailing path separator
-        /// is trimmed in Orchestrator from every given
-        /// path, hence the underscore (_) char is added
-        /// to keep forward slash (/) in the path.
+        /// operating systems. 
+        /// 
+        /// Reg. the value for non-Windows env: 
+        /// Since the trailing path separator is trimmed 
+        /// in Orchestrator from every given path, hence 
+        /// the underscore (_) char is added to keep 
+        /// forward slash (/) in the path.
         /// </summary>
-        private readonly string _illegalPath = "/_";
+        private string IllegalPath
+        {
+            get
+            {
+                return OperatingSystem.IsWindows() ? "C:\\*<>*\\//" : "/_";
+            }
+        }
 
         private static void WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture)
         {
@@ -422,14 +431,14 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(sessionPath: _illegalPath);
+                msg = tmpMspc.Run(sessionPath: IllegalPath);
 
             // Assert
             Assert.True(
                 msg.Contains("Illegal characters in path.") ||
                 msg.Contains("The filename, directory name, or volume label syntax is incorrect") ||
-                msg.Contains($"Cannot ensure the given output path `{_illegalPath}`: Read-only file system") ||
-                msg.Contains($"Cannot ensure the given output path `{_illegalPath}`: Access to the path '/_' is denied"));
+                msg.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
+                msg.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
             Assert.False(Environment.ExitCode == 0);
         }
 
@@ -470,7 +479,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                messages = tmpMspc.FailRun(template2: $"-i rep1 -i rep2 -o {_illegalPath} -r bio -s 1e-8 -w 1e-4");
+                messages = tmpMspc.FailRun(template2: $"-i rep1 -i rep2 -o {IllegalPath} -r bio -s 1e-8 -w 1e-4");
 
             // Assert
             Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
@@ -478,8 +487,8 @@ namespace Genometric.MSPC.CLI.Tests
                 messages,
                 x => x.Contains("Illegal characters in path.") ||
                 x.Contains("The filename, directory name, or volume label syntax is incorrect") ||
-                x.Contains($"Cannot ensure the given output path `{_illegalPath}`: Read-only file system") ||
-                x.Contains($"Cannot ensure the given output path `{_illegalPath}`: Access to the path '/_' is denied"));
+                x.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
+                x.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
             Assert.False(Environment.ExitCode == 0);
         }
 

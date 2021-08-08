@@ -78,8 +78,8 @@ namespace Genometric.MSPC.CLI.Tests
         public void HandleExceptionReadingInvalidJSON()
         {
             // Arrange
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            using (StreamWriter w = new StreamWriter(path))
+            var parserFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
+            using (StreamWriter w = new StreamWriter(parserFilename))
                 w.WriteLine("abc");
 
             string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
@@ -91,7 +91,7 @@ namespace Genometric.MSPC.CLI.Tests
             string logFile;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", rep1Path, rep2Path, path).Split(' '));
+                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", rep1Path, rep2Path, parserFilename).Split(' '));
                 logFile = o.LogFile;
             }
 
@@ -178,9 +178,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void ThrowExceptionForInvalidCultureValue()
         {
             // Arrange
-            var parserFilename = 
-                Environment.CurrentDirectory + Path.DirectorySeparatorChar +
-                Guid.NewGuid().ToString() + ".json";
+            var parserFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
 
             // Create an json file with a `culture` field containing 
             // invalid culture name. 

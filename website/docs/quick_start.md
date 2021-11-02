@@ -5,7 +5,15 @@ title: Quick Start
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-## Preparation
+You may run MSPC as a command-line application, a 
+[C# library](library/install), or an R package available from Bioconductor. 
+In the following, we provide quick start for using MSPC as a
+[command-line application](#quick-start-command-line) and an 
+[R package](#quick-start-r-package), and provide details in their 
+respective pages. 
+
+## Quick Start: Command-line
+### Preparation
 
 1. Install a self-contained release of MSPC, using either of following commands
 depending on your runtime (see [installation](installation.md) page for detailed
@@ -113,7 +121,7 @@ installation options):
  </TabItem>
 </Tabs>
 
-## Run
+### Run
 
 To run MSPC use the following command depending on your runtime:
 
@@ -149,7 +157,7 @@ To run MSPC use the following command depending on your runtime:
  </TabItem>
 </Tabs>
 
-## Output
+### Output
 
 MSPC creates a folder in the current execution path named `session_X_Y`, 
 where `X` and `Y` are execution date and time respectively, which contains 
@@ -200,6 +208,48 @@ of MSPC, hence you do __not__ need to install .NET (or
 any other dependencies) for the program to execute. 
 
 For other installation options see the [installation page](installation).   
+:::
+
+## Quick Start: R package
+
+MSPC is also distributed as a 
+[Bioconductor package](https://bioconductor.org/packages/release/bioc/html/rmspc.html).
+To use in R programming language, you may take the following steps.
+
+### Install and Load
+
+```r
+if (!require("BiocManager"))
+    install.packages("BiocManager")
+BiocManager::install("rmspc")
+
+library(rmspc)
+```
+
+### Run
+
+```r
+# Load example data available in the package.
+path <- system.file("extdata", package = "rmspc")
+
+# Run MSPC
+results <- mspc(
+        input = input, 
+        replicateType = "Technical",
+        stringencyThreshold = 1e-8,
+        weakThreshold = 1e-4, 
+        gamma = 1e-8,
+        keep = FALSE,
+        GRanges = TRUE,
+        multipleIntersections = "Lowest",
+        c = 2,
+        alpha = 0.05)
+```
+
+:::info
+The MSPC R package can load data from files and Granges objects. 
+For a complete documentation on the package, please refer to the
+[bioconductor documentation](https://bioconductor.org/packages/release/bioc/vignettes/rmspc/inst/doc/rmpsc.html). 
 :::
 
 ## See Also

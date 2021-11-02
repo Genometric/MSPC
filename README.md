@@ -92,8 +92,9 @@ page for more details.
 - #### [__Install__: _details on different installation options_](https://genometric.github.io/MSPC/docs/installation);
 - #### [__Bioconductor R package__:](https://bioconductor.org/packages/release/bioc/html/rmspc.html) [Bioconductor user guide with examples on installing and using it in R](https://bioconductor.org/packages/release/bioc/vignettes/rmspc/inst/doc/rmpsc.html). 
 
-MSPC is released as a cross-platform console application and a .NET Core library. 
-See the following figure for its current cross-platform build stats.
+MSPC is distributed as a cross-platform console application, a .NET library, 
+and a Bioconductor R package. See the following figure for its current 
+cross-platform build stats.
 
 | Operating System |  Build Status | Build History |
 | :--------------: | :-----------: | :-----------: |

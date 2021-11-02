@@ -89,7 +89,8 @@ page for more details.
 ## Download and Run
 
 - #### [__Quick Start__: _download, install, and run a demo use-case_](https://genometric.github.io/MSPC/docs/quick_start);
-- #### [__Install__: _details on different installation options_](https://genometric.github.io/MSPC/docs/installation).
+- #### [__Install__: _details on different installation options_](https://genometric.github.io/MSPC/docs/installation);
+- #### [__Bioconductor R package__:](https://bioconductor.org/packages/release/bioc/html/rmspc.html) [Bioconductor user guide with examples on installing and using it in R](https://bioconductor.org/packages/release/bioc/vignettes/rmspc/inst/doc/rmpsc.html). 
 
 MSPC is released as a cross-platform console application and a .NET Core library. 
 See the following figure for its current cross-platform build stats.

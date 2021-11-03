@@ -6,7 +6,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 You may run MSPC as a command-line application, a 
-[C# library](library/install), or an R package available from Bioconductor. 
+[C# library](/library/install), or an R package available from Bioconductor. 
 In the following, we provide quick start for using MSPC as a
 [command-line application](#quick-start-command-line) and an 
 [R package](#quick-start-r-package), and provide details in their 

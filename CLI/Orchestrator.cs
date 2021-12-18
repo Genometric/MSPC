@@ -144,10 +144,13 @@ namespace Genometric.MSPC.CLI
             }
             catch (Exception e)
             {
+                string msg =
+                    $"Cannot ensure the given output path " +
+                    $"`{OutputPath}`: {e.Message}";
                 if (_logger == null)
-                    Logger.LogExceptionStatic(e.Message);
+                    Logger.LogExceptionStatic(msg);
                 else
-                    _logger.LogException(e);
+                    _logger.LogException(msg);
                 Environment.ExitCode = 1;
                 return false;
             }

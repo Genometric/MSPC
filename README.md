@@ -9,19 +9,19 @@
     <a href="https://www.nuget.org/packages/Genometric.MSPC.Core">
         <img src="https://buildstats.info/nuget/Genometric.MSPC.Core?vWidth=50&dWidth=50">
     </a>
-    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status">
+    <a href="https://sonarcloud.io/dashboard?id=mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=alert_status">
     </a>
     <a href="https://codecov.io/gh/Genometric/MSPC">
     <img src="https://codecov.io/gh/Genometric/MSPC/branch/master/graph/badge.svg?token=TRSk39hCh3"/>
     </a>
-    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc">
+    <a href="https://sonarcloud.io/dashboard?id=mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=ncloc">
     </a>
-    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating">
+    <a href="https://sonarcloud.io/dashboard?id=mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=sqale_rating">
     </a>
-    <a href="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=reliability_rating">
+    <a href="https://sonarcloud.io/dashboard?id=mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=mspc&metric=reliability_rating">
     </a>
 </p>
@@ -29,7 +29,7 @@
 <p align="center">
   <a href="https://genometric.github.io/MSPC/docs/quick_start">Quick Start</a> |
   <a href="https://genometric.github.io/MSPC/">Documentation</a> |
-  <a href="https://github.com/Genometric/MSPC/releases">Download</a>
+  <a href="https://github.com/Genometric/MSPC/releases">Download</a> |
   <a href="https://genometric.github.io/MSPC/publications">Publication</a>
 </p>
 
@@ -88,24 +88,15 @@ page for more details.
 
 ## Download and Run
 
-- [__Quick Start__: download, install, and run a demo use-case](https://genometric.github.io/MSPC/docs/quick_start);
-- [__Install__: details on different installation options](https://genometric.github.io/MSPC/docs/installation).
+- #### [__Quick Start__: _download, install, and run a demo use-case_](https://genometric.github.io/MSPC/docs/quick_start);
+- #### [__Install__: _details on different installation options_](https://genometric.github.io/MSPC/docs/installation);
+- #### [__Bioconductor R package__:](https://bioconductor.org/packages/release/bioc/html/rmspc.html) [Bioconductor user guide with examples on installing and using it in R](https://bioconductor.org/packages/release/bioc/vignettes/rmspc/inst/doc/rmpsc.html). 
 
-MSPC is released as a cross-platform console application and a .NET Core library. 
-See the following figure for its current cross-platform build stats.
+MSPC is distributed as a cross-platform console application, a .NET library, 
+and a Bioconductor R package. See the following figure for its current 
+cross-platform build stats.
 
 | Operating System |  Build Status | Build History |
 | :--------------: | :-----------: | :-----------: |
 | Microsoft Windows  | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) | [![Build history](https://buildstats.info/appveyor/chart/VJalili/mspc)](https://ci.appveyor.com/project/VJalili/mspc/history) |
 | Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) | [![Build history](https://buildstats.info/travisci/chart/Genometric/MSPC)](https://travis-ci.org/Genometric/MSPC/builds) |
-
-
-<br/>
-
-## Graphical version
-[MuSERA](https://github.com/Genometric/MuSERA) is a graphical tool that efficiently 
-implements MSPC (v2) for comparative evaluation of ChIP-seq and DNase-seq 
-samples. Additionally, it facilitates the assessment of replicates by 
-integrating common pipelines such as _functional analysis_,
- _nearest feature distance distribution_, _chromosome-wide statistics_, 
-_plotting features_, and an _integrated genome browser_.

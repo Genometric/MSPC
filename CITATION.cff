@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Jalili"
+  given-names: "Vahid"
+  orcid: "https://orcid.org/0000-0003-4986-2157"
+title: "MSPC"
+version: 5.4.0
+doi: 10.1093/bioinformatics/btv293
+date-released: 2021-03-18
+url: "https://github.com/Genometric/MSPC"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Jalili"
+    given-names: "Vahid"
+    orcid: "https://orcid.org/0000-0003-4986-2157"
+  - family-names: "Matteucci"
+    given-names: "Matteo"
+    orcid: "https://orcid.org/0000-0002-8306-6739"
+  - family-names: "Masseroli"
+    given-names: "Marco"
+    orcid: "https://orcid.org/0000-0003-2574-1174"
+  - family-names: "Morelli"
+    given-names: "Marco"
+    orcid: "https://orcid.org/0000-0003-1862-667X"
+  doi: "10.1093/bioinformatics/btv293"
+  journal: "Bioinformatics"
+  month: 9
+  start: 2761
+  end: 2769
+  title: "Using combined evidence from replicates to evaluate ChIP-seq peaks"
+  issue: 17
+  volume: 31
+  year: 2015

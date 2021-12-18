@@ -32,6 +32,14 @@ arguments, and it writes the analysis results to BED files.
 - [**As a library in your project**](library/install.md): call it from your program, and it returns analysis 
 results to your program.
 
+- [**As an R package from Bioconductor**](https://bioconductor.org/packages/release/bioc/html/rmspc.html):
+The Bioconductor package is a wrapper around the CLI application, hence 
+offering the same functionality as the CLI application. The package can be 
+invoked from R to process files or 
+[GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html)
+(Granges) objects, and the results are stored as Granges objects. 
+Please refer to [Bioconductor user guide](https://bioconductor.org/packages/release/bioc/vignettes/rmspc/inst/doc/rmpsc.html).
+
 
 # About
 With most peak callers (e.g, MACS), the false-positive 

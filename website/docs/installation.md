@@ -5,6 +5,16 @@ title: Installation
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
+MSPC can be used as command-line application, a C# library 
+([distributed via nuget](https://www.nuget.org/packages/Genometric.MSPC.Core)), 
+or an R package 
+([distributed via Bioconductor](https://bioconductor.org/packages/release/bioc/html/rmspc.html)). 
+This page documents installing MSPC as a command-line application, for 
+installing it as a C# library, please refer to [this page](library/install), 
+or [Bioconductor user guide](https://bioconductor.org/packages/release/bioc/vignettes/rmspc/inst/doc/rmpsc.html)
+for installing/using it in R programming language.
+
+
 A prerequisite for MSPC installation is [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
 or newer. We provide two methods for MSPC installation depending on whether
 .NET 5.0 is installed on your machine or you can install it,

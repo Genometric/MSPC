@@ -7,6 +7,7 @@ module.exports = {
   organizationName: 'Genometric',
   projectName: 'MSPC',
   themeConfig: {
+    hideableSidebar: true,
     navbar: {
       title: 'MSPC',
       logo: {
@@ -73,9 +74,8 @@ module.exports = {
     algolia: {
       // This is a public API key. This key is only usable for 
       // search queries and sending data to the Insights API.
-      apiKey: '2983df56cb8116a39b27f1992244538a', 
+      apiKey: 'aab79977ea094db4ed98dba66a22dd42', 
       indexName: 'mspc',
-      appId: '7KY7XPQTMJ',
       contextualSearch: true,
       // searchParameter: {} // Optional
     },

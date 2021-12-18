@@ -76,7 +76,6 @@ module.exports = {
       // search queries and sending data to the Insights API.
       apiKey: 'aab79977ea094db4ed98dba66a22dd42', 
       indexName: 'mspc',
-      // appId: '7KY7XPQTMJ',
       contextualSearch: true,
       // searchParameter: {} // Optional
     },

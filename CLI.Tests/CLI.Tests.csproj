@@ -32,6 +32,8 @@
     <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
 
     <PackageLicenseFile>license.md</PackageLicenseFile>
+
+    <Version>5.5.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

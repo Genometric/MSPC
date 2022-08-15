@@ -21,6 +21,8 @@
     <AssemblyName>mspc</AssemblyName>
     <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
     <PackageLicenseFile>license.md</PackageLicenseFile>
+    <Version>5.5.0</Version>
+    <AssemblyVersion>5.5.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -39,7 +41,7 @@
     <PackageReference Include="Genometric.GeUtilities" Version="6.2.0" />
     <PackageReference Include="log4net" Version="2.0.10" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>

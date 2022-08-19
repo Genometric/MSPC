@@ -9,7 +9,7 @@ namespace Genometric.MSPC.Benchmark
             {
                 Version.V5, (inputs) =>
                 {
-                    return "mspc -r bio -w 1e-4 -s 1e-8" + string.Join(" -i", inputs);
+                    return "mspc.exe -r bio -w 1e-4 -s 1e-8 -i " + string.Join(" -i ", inputs);
                 }
             }
         };
@@ -19,14 +19,24 @@ namespace Genometric.MSPC.Benchmark
             new() { "file1", "file2" },
         };
 
-        public List<Result> Test(string mspcExePath, Version version)
+        public List<Result> Test(string mspcExePath, string dataDir, Version version)
         {
             var results = new List<Result>();
 
-            foreach (var c in Cases)
+            var cases = new List<List<string>>();
+            foreach (var dir in Directory.GetDirectories(dataDir))
+            {
+                var c = new List<string>();
+                foreach(var file in Directory.GetFiles(dir))
+                    c.Add(file);
+                
+                cases.Add(c);
+            }
+
+            foreach (var c in cases)
                 results.Add(MeasurePerformance(
                     Path.Join(
-                        mspcExePath,
+                        mspcExePath, 
                         Invocations[version](c))));
 
             return results;

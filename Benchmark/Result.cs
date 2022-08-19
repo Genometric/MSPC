@@ -2,7 +2,7 @@
 
 namespace Genometric.MSPC.Benchmark
 {
-    internal class Result
+    public class Result
     {
         public int ReplicateCount { set; get; }
 

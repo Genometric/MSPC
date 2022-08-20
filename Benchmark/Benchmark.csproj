@@ -8,4 +8,12 @@
     <RootNamespace>Genometric.MSPC.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Genometric.GeUtilities" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CLI\CLI.csproj" />
+  </ItemGroup>
+
 </Project>

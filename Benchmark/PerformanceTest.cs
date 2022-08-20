@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Genometric.GeUtilities.Intervals.Parsers;
+using Genometric.MSPC.CLI;
+using System.Diagnostics;
 
 namespace Genometric.MSPC.Benchmark
 {
@@ -34,7 +36,13 @@ namespace Genometric.MSPC.Benchmark
             }
 
             foreach (var c in cases)
-                results.Add(MeasurePerformance(Invocations[version](mspcExePath, c)));
+            {
+                var result = MeasurePerformance(Invocations[version](mspcExePath, c));
+                result.ReplicateCount = c.Count;
+                foreach (var filename in c)
+                    result.IntervalCount += GetPeaksCount(filename);
+                results.Add(result);
+            }
 
             return results;
         }
@@ -74,6 +82,20 @@ namespace Genometric.MSPC.Benchmark
             }
 
             return result;
+        }
+
+        private static int GetPeaksCount(string filename)
+        {
+            var parserConfig = new ParserConfig();
+            var bedParser = new BedParser(parserConfig)
+            {
+                PValueFormat = parserConfig.PValueFormat,
+                DefaultValue = parserConfig.DefaultValue,
+                DropPeakIfInvalidValue = parserConfig.DropPeakIfInvalidValue,
+                Culture = parserConfig.Culture
+            };
+            var parsedData = bedParser.Parse(filename);
+            return parsedData.IntervalsCount;
         }
     }
 }

@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Genometric.MSPC.CLI
 {
-    internal class ParserConfig : BedColumns, IEquatable<ParserConfig>
+    public class ParserConfig : BedColumns, IEquatable<ParserConfig>
     {
         public bool DropPeakIfInvalidValue { set; get; }
         public double DefaultValue { set; get; }

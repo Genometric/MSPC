@@ -19,11 +19,6 @@ namespace Genometric.MSPC.Benchmark
             return "-r bio -w 1e-4 -s 1e-8 -i " + string.Join(" -i ", inputs);
         }
 
-        public List<List<string>> Cases = new()
-        {
-            new() { "file1", "file2" },
-        };
-
         public List<Result> Test(string mspcExePath, string dataDir, Version version)
         {
             var results = new List<Result>();
@@ -44,7 +39,7 @@ namespace Genometric.MSPC.Benchmark
             return results;
         }
 
-        private static Result MeasurePerformance(ProcessStartInfo info)
+        private static Result MeasurePerformance(ProcessStartInfo info, int waitMilliseconds = 100)
         {
             var result = new Result();
 
@@ -66,7 +61,7 @@ namespace Genometric.MSPC.Benchmark
                             result.PeakPagedMemoryUsage = process.PeakPagedMemorySize64;
                             result.PeakVirtualMemoryUsage = process.PeakVirtualMemorySize64;
                         }
-                        catch (System.InvalidOperationException)
+                        catch (InvalidOperationException)
                         {
                             // There is a rare chance of the process exiting after the
                             // `HasExited` was checked. In that case, getting memory
@@ -74,7 +69,7 @@ namespace Genometric.MSPC.Benchmark
                         }
                     }
                 }
-                while (!process.WaitForExit(1000));
+                while (!process.WaitForExit(waitMilliseconds));
                 result.Runtime.Stop();
             }
 

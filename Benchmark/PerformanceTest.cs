@@ -6,7 +6,7 @@ namespace Genometric.MSPC.Benchmark
 {
     public class PerformanceTest
     {
-        public Dictionary<Version, Func<string, List<string>, ProcessStartInfo>> Invocations = new()
+        private readonly Dictionary<Version, Func<string, List<string>, ProcessStartInfo>> _invocations = new()
         {
             {
                 Version.V5, (root, inputs) =>
@@ -37,7 +37,7 @@ namespace Genometric.MSPC.Benchmark
 
             foreach (var c in cases)
             {
-                var result = MeasurePerformance(Invocations[version](mspcExePath, c));
+                var result = MeasurePerformance(_invocations[version](mspcExePath, c));
                 result.ReplicateCount = c.Count;
                 foreach (var filename in c)
                     result.IntervalCount += GetPeaksCount(filename);

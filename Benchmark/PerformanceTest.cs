@@ -109,6 +109,8 @@ namespace Genometric.MSPC.Benchmark
             };
 
             var dir = Path.Join(Path.GetTempPath(), "mspc", version.ToString().ToLower().Replace(".", "_"));
+            if (Directory.Exists(dir))
+                Directory.Delete(dir, true);
             Directory.CreateDirectory(dir);
             var filename = Path.Join(dir, "mspc.zip");
 

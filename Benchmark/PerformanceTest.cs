@@ -6,7 +6,7 @@ namespace Genometric.MSPC.Benchmark
 {
     public static class PerformanceTest
     {
-        public static List<Result> Test(string dataDir, string version)
+        public static List<Result> Test(string dataDir, string version, int maxRepCount)
         {
             var cases = new List<List<string>>();
             foreach (var dir in Directory.GetDirectories(dataDir))
@@ -15,19 +15,27 @@ namespace Genometric.MSPC.Benchmark
                 foreach (var file in Directory.GetFiles(dir))
                     c.Add(file);
 
-                cases.Add(c);
+                if (c.Count > 0)
+                    cases.Add(c);
             }
 
             var results = new List<Result>();
             var verInfo = new VersionInfo(version);
             foreach (var c in cases)
             {
-                verInfo.InputFiles = c;
-                var result = MeasurePerformance(verInfo.StartInfo);
-                result.ReplicateCount = c.Count;
-                foreach (var filename in c)
-                    result.IntervalCount += GetPeaksCount(filename);
-                results.Add(result);
+                var reps = SyntheticReps.Generate(c, maxRepCount);
+
+                for (int i = 2; i <= maxRepCount; i++)
+                {
+                    var testReps = reps.Take(i).ToList();
+
+                    verInfo.InputFiles = testReps;
+                    var result = MeasurePerformance(verInfo.StartInfo);
+                    result.ReplicateCount = testReps.Count;
+                    foreach (var filename in testReps)
+                        result.IntervalCount += GetPeaksCount(filename);
+                    results.Add(result);
+                }
             }
 
             return results;
@@ -83,7 +91,5 @@ namespace Genometric.MSPC.Benchmark
             var parsedData = bedParser.Parse(filename);
             return parsedData.IntervalsCount;
         }
-
-
     }
 }

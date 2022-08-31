@@ -49,7 +49,7 @@ namespace Genometric.MSPC.Benchmark
                 timer.Stop();
                 Console.WriteLine($"\r{msg}Done!\t(ET: {timer.Elapsed}");
 
-                var writer = new StreamWriter(resultsFilename);
+                var writer = new StreamWriter(resultsFilename, append: true);
                 foreach (var result in results)
                     writer.WriteLine(result.ToString());
                 writer.Close();

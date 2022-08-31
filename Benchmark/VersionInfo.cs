@@ -18,10 +18,7 @@ namespace Genometric.MSPC.Benchmark
             {
                 return new ProcessStartInfo(
                     _invocation,
-                    Args + " -i " + string.Join(" -i ", InputFiles))
-                {
-                    RedirectStandardOutput = true
-                };
+                    Args + " -i " + string.Join(" -i ", InputFiles));
             }
         }
 

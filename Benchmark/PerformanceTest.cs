@@ -8,7 +8,7 @@ namespace Genometric.MSPC.Benchmark
     {
         public static List<Result> Test(string dataDir, string version, int maxRepCount)
         {
-            var cases = new List<List<string>>();
+            var cases = new Dictionary<string, List<string>>();
             foreach (var dir in Directory.GetDirectories(dataDir))
             {
                 var c = new List<string>();
@@ -16,16 +16,22 @@ namespace Genometric.MSPC.Benchmark
                     c.Add(file);
 
                 if (c.Count > 0)
-                    cases.Add(c);
+                    cases.Add(new DirectoryInfo(dir).Name, c);
             }
 
+            var counter = 0;
+            var timer = new Stopwatch();
             var results = new List<Result>();
             var verInfo = new VersionInfo(version);
             foreach (var c in cases)
             {
-                var reps = SyntheticReps.Generate(c, maxRepCount);
+                timer.Restart();
+                var msg = $"Processing {c.Key}\t{++counter}/{cases.Count}: ... ";
+                Console.Write(msg);
+                var reps = SyntheticReps.Generate(c.Value, maxRepCount);
 
-                for (int i = 2; i <= maxRepCount; i++)
+                var minRepCount = 2;
+                for (int i = minRepCount; i <= maxRepCount; i++)
                 {
                     var testReps = reps.Take(i).ToList();
 
@@ -35,7 +41,12 @@ namespace Genometric.MSPC.Benchmark
                     foreach (var filename in testReps)
                         result.IntervalCount += GetPeaksCount(filename);
                     results.Add(result);
+
+                    Console.Write($"\r{msg}{Math.Floor((i - minRepCount) / (double)(maxRepCount - minRepCount) * 100)}%");
                 }
+
+                timer.Stop();
+                Console.WriteLine($"\r{msg}Done!\t(ET: {timer.Elapsed}");
             }
 
             return results;
@@ -44,6 +55,9 @@ namespace Genometric.MSPC.Benchmark
         private static Result MeasurePerformance(ProcessStartInfo info, int waitMilliseconds = 100)
         {
             var result = new Result();
+
+            info.UseShellExecute = false;
+            info.RedirectStandardOutput = true;
 
             using (var process = Process.Start(info))
             {
@@ -69,6 +83,8 @@ namespace Genometric.MSPC.Benchmark
                             // `HasExited` was checked. In that case, getting memory
                             // usage information will throw this error. 
                         }
+
+                        process.StandardOutput.ReadToEnd();
                     }
                 }
                 while (!process.WaitForExit(waitMilliseconds));

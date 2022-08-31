@@ -44,18 +44,23 @@ namespace Genometric.MSPC.Benchmark
 
         private bool TryRunVerSpecificConfig(string version)
         {
-            var pattern = new Regex(@"^v[4,5]\.\d+\.\d+$");
+            var pattern = new Regex(@"^v[4,5]\.\d+(\.\d+)?$");
             if (pattern.IsMatch(version))
             {
                 _invocation = "mspc.exe";
                 ReleaseUri = new Uri(ReleaseUri, $"download/{version}/mspc.zip");
-            }
-            else
-            {
-                return false;
+                return true;
             }
 
-            return true;
+            pattern = new Regex(@"^v2\.\d+(\.\d+)?$");
+            if(pattern.IsMatch(version))
+            {
+                _invocation = "mspc.exe";
+                ReleaseUri = new Uri(ReleaseUri, $"download/{version}/v2.1.zip");
+                return true;
+            }
+
+            return false;
         }
 
         private async Task<(bool, string)> TryLocalize()

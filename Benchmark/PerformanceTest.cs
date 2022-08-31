@@ -6,7 +6,7 @@ namespace Genometric.MSPC.Benchmark
 {
     public static class PerformanceTest
     {
-        public static List<Result> Test(string dataDir, string version, int maxRepCount)
+        public static void Test(string dataDir, string resultsFilename, string version, int maxRepCount)
         {
             var cases = new Dictionary<string, List<string>>();
             foreach (var dir in Directory.GetDirectories(dataDir))
@@ -40,6 +40,7 @@ namespace Genometric.MSPC.Benchmark
                     result.ReplicateCount = testReps.Count;
                     foreach (var filename in testReps)
                         result.IntervalCount += GetPeaksCount(filename);
+
                     results.Add(result);
 
                     Console.Write($"\r{msg}{Math.Floor((i - minRepCount) / (double)(maxRepCount - minRepCount) * 100)}%");
@@ -47,9 +48,12 @@ namespace Genometric.MSPC.Benchmark
 
                 timer.Stop();
                 Console.WriteLine($"\r{msg}Done!\t(ET: {timer.Elapsed}");
-            }
 
-            return results;
+                var writer = new StreamWriter(resultsFilename);
+                foreach (var result in results)
+                    writer.WriteLine(result.ToString());
+                writer.Close();
+            }
         }
 
         private static Result MeasurePerformance(ProcessStartInfo info, int waitMilliseconds = 100)

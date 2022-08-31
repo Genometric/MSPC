@@ -1,15 +1,19 @@
-﻿namespace Genometric.MSPC.Benchmark
+﻿using Genometric.MSPC.Benchmark.CLI;
+
+namespace Genometric.MSPC.Benchmark
 {
     static class Program
     {
-        public static void Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
-            var versions = args[0].Split(";");
-            var dataDir = args[1];
-            var maxRepCount = int.Parse(args[2]);
+            var cli = new CommandLineInterface(Handler);
+            return await cli.InvokeAsync(args);
+        }
 
+        public static async Task Handler(string[] releases, DirectoryInfo dataDir, int maxRepCount)
+        {
             var resultsFilename = Path.Join(
-                dataDir, 
+                dataDir.FullName,
                 $"mspc_versions_benchmarking_results_" +
                 $"{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()}.tsv");
 
@@ -17,11 +21,11 @@
                 writer.WriteLine(Result.GetHeader());
             Console.WriteLine($"Results are writen in file `{resultsFilename}`.");
 
-            foreach (var version in versions)
+            foreach (var release in releases)
             {
                 try
                 {
-                    PerformanceTest.Test(dataDir, resultsFilename, version, maxRepCount);
+                    PerformanceTest.Test(dataDir.FullName, resultsFilename, release, maxRepCount);
                 }
                 catch (Exception e)
                 {

@@ -8,7 +8,11 @@
             var dataDir = args[1];
             var maxRepCount = int.Parse(args[2]);
 
-            var resultsFilename = Path.Join(dataDir, "mspc_versions_benchmarking_results.tsv");
+            var resultsFilename = Path.Join(
+                dataDir, 
+                $"mspc_versions_benchmarking_results_" +
+                $"{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()}.tsv");
+
             using (var writer = new StreamWriter(resultsFilename))
                 writer.WriteLine(Result.GetHeader());
             Console.WriteLine($"Results are writen in file `{resultsFilename}`.");

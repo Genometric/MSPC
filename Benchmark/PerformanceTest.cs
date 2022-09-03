@@ -21,11 +21,11 @@ namespace Genometric.MSPC.Benchmark
 
             var counter = 0;
             var timer = new Stopwatch();
-            var results = new List<Result>();
             var verInfo = new VersionInfo(version);
             foreach (var c in cases)
             {
                 timer.Restart();
+                var results = new List<Result>();
                 var msg = $"Processing {c.Key}\t{++counter}/{cases.Count}: ... ";
                 Console.Write(msg);
                 var reps = SyntheticReps.Generate(c.Value, maxRepCount);

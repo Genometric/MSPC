@@ -6,6 +6,8 @@ namespace Genometric.MSPC.Benchmark
     {
         private const string _delimiter = "\t";
 
+        public string Version { set; get; } = "not_specified";
+
         public int ReplicateCount { set; get; }
 
         public int IntervalCount { set; get; }
@@ -42,11 +44,11 @@ namespace Genometric.MSPC.Benchmark
             });
         }
 
-        public string ToString(string version = "not_specified", string delimiter = _delimiter)
+        public string ToString(string delimiter = _delimiter)
         {
             return string.Join(delimiter, new string[]
             {
-                version,
+                Version,
                 ReplicateCount.ToString(),
                 IntervalCount.ToString(),
                 Runtime.Elapsed.TotalSeconds.ToString(),

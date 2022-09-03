@@ -21,9 +21,8 @@ namespace Genometric.MSPC.Benchmark.CLI
 
             var dataDirOption = new Option<DirectoryInfo>(
                 name: "--data-dir",
-                description: "The directory where data to be used for benchmarking " +
-                "are located. You can get sample data from " +
-                "https://github.com/Genometric/MSPCData.")
+                description: "The directory containing data to be used for benchmarking. " +
+                "Sample data for benchmarking are available from https://osf.io/jqrwu/.")
             {
                 IsRequired = true
             };

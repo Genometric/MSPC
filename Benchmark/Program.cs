@@ -25,6 +25,7 @@ namespace Genometric.MSPC.Benchmark
             {
                 try
                 {
+                    Console.WriteLine($"Benchmarking version {release}:");
                     PerformanceTest.Test(dataDir.FullName, resultsFilename, release, maxRepCount);
                 }
                 catch (Exception e)

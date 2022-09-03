@@ -26,7 +26,7 @@ namespace Genometric.MSPC.Benchmark
             {
                 timer.Restart();
                 var results = new List<Result>();
-                var msg = $"Processing {c.Key}\t{++counter}/{cases.Count}: ... ";
+                var msg = $"\t[{++counter}/{cases.Count}]\tBenchmarking using {c.Key}: ... ";
                 Console.Write(msg);
                 var reps = SyntheticReps.Generate(c.Value, maxRepCount);
 

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Genometric.MSPC.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <PackageId>Genometric.MSPC.Benchmark</PackageId>
+    <Version>5.5.0</Version>
+    <Authors>https://github.com/Genometric/MSPC/graphs/contributors</Authors>
+    <Company>Genometric</Company>
+    <Product>Genometric.MSPC.Benchmark</Product>
+    <Copyright>GNU General Public License v3.0</Copyright>
+    <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
+    <RepositoryUrl>https://genometric.github.io/MSPC/</RepositoryUrl>
+    <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
+    <AssemblyName>benchmark</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Genometric.GeUtilities" Version="6.2.0" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CLI\CLI.csproj" />
+  </ItemGroup>
+
+</Project>

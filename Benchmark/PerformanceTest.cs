@@ -38,6 +38,7 @@ namespace Genometric.MSPC.Benchmark
                     verInfo.InputFiles = testReps;
                     var result = MeasurePerformance(verInfo.StartInfo);
                     result.Version = verInfo.Version;
+                    result.ExperimentId = c.Key;
                     result.ReplicateCount = testReps.Count;
                     foreach (var filename in testReps)
                         result.IntervalCount += GetPeaksCount(filename);

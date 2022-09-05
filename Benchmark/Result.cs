@@ -8,6 +8,8 @@ namespace Genometric.MSPC.Benchmark
 
         public string Version { set; get; } = "not_specified";
 
+        public string ExperimentId { set; get; } = "not_specified";
+
         public int ReplicateCount { set; get; }
 
         public int IntervalCount { set; get; }
@@ -35,6 +37,7 @@ namespace Genometric.MSPC.Benchmark
             return string.Join(delimiter, new string[]
             {
                 "mspc_version",
+                "experiment_id",
                 "replicate_count",
                 "interval_count",
                 "runtime_seconds",
@@ -49,6 +52,7 @@ namespace Genometric.MSPC.Benchmark
             return string.Join(delimiter, new string[]
             {
                 Version,
+                ExperimentId,
                 ReplicateCount.ToString(),
                 IntervalCount.ToString(),
                 Runtime.Elapsed.TotalSeconds.ToString(),

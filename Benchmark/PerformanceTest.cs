@@ -29,15 +29,16 @@ namespace Genometric.MSPC.Benchmark
                 var msg = $"\t[{++counter}/{cases.Count}]\tBenchmarking using {c.Key}: ... ";
                 Console.Write(msg);
                 var reps = SyntheticReps.Generate(c.Value, maxRepCount);
+                var syntheticReps = reps.Except(c.Value).ToList();
 
                 var minRepCount = 2;
                 for (int i = minRepCount; i <= maxRepCount; i++)
                 {
                     var testReps = reps.Take(i).ToList();
-
                     verInfo.InputFiles = testReps;
                     var result = MeasurePerformance(verInfo.StartInfo);
                     result.Version = verInfo.Version;
+                    result.ExperimentId = c.Key;
                     result.ReplicateCount = testReps.Count;
                     foreach (var filename in testReps)
                         result.IntervalCount += GetPeaksCount(filename);
@@ -47,6 +48,10 @@ namespace Genometric.MSPC.Benchmark
                     Console.Write($"\r{msg}{Math.Floor((i - minRepCount) / (double)(maxRepCount - minRepCount) * 100)}%");
                 }
 
+                foreach (var syntheticRep in syntheticReps)
+                    File.Delete(syntheticRep);
+                if (verInfo.OutputDir != null)
+                    Directory.Delete(verInfo.OutputDir, true);
                 timer.Stop();
                 Console.WriteLine($"\r{msg}Done!\t(ET: {timer.Elapsed}");
 
@@ -57,7 +62,7 @@ namespace Genometric.MSPC.Benchmark
             }
         }
 
-        private static Result MeasurePerformance(ProcessStartInfo info, int waitMilliseconds = 100)
+        private static Result MeasurePerformance(ProcessStartInfo info, int waitToExitInMilliseconds = 100)
         {
             var result = new Result();
 
@@ -92,7 +97,7 @@ namespace Genometric.MSPC.Benchmark
                         process.StandardOutput.ReadToEnd();
                     }
                 }
-                while (!process.WaitForExit(waitMilliseconds));
+                while (!process.WaitForExit(waitToExitInMilliseconds));
                 result.Runtime.Stop();
             }
 

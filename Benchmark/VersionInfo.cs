@@ -26,6 +26,8 @@ namespace Genometric.MSPC.Benchmark
 
         public Uri ReleaseUri { private set; get; }
 
+        public string? OutputDir { private set; get; } = null;
+
 
         public VersionInfo(
             string version,
@@ -49,11 +51,12 @@ namespace Genometric.MSPC.Benchmark
             {
                 _invocation = "mspc.exe";
                 ReleaseUri = new Uri(ReleaseUri, $"download/{version}/mspc.zip");
+                SetOutputDir();
                 return true;
             }
 
             pattern = new Regex(@"^v2\.\d+(\.\d+)?$");
-            if(pattern.IsMatch(version))
+            if (pattern.IsMatch(version))
             {
                 _invocation = "mspc.exe";
                 ReleaseUri = new Uri(ReleaseUri, $"download/{version}/v2.1.zip");
@@ -82,6 +85,13 @@ namespace Genometric.MSPC.Benchmark
             ZipFile.ExtractToDirectory(filename, dir);
 
             return (true, dir);
+        }
+
+        private void SetOutputDir()
+        {
+            OutputDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(OutputDir);
+            Args += $" -o {Path.Combine(OutputDir, "tmp")}";
         }
     }
 }

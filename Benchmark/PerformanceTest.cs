@@ -50,6 +50,8 @@ namespace Genometric.MSPC.Benchmark
 
                 foreach (var syntheticRep in syntheticReps)
                     File.Delete(syntheticRep);
+                if (verInfo.OutputDir != null)
+                    Directory.Delete(verInfo.OutputDir, true);
                 timer.Stop();
                 Console.WriteLine($"\r{msg}Done!\t(ET: {timer.Elapsed}");
 

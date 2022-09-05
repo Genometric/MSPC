@@ -13,7 +13,7 @@
             {
                 extReps.Add(RandomAlter(
                     filename: replicates[i],
-                    filenamePostfix: "_rnd_" + (extReps.Count + 1).ToString(),
+                    filenamePostfix: "_synthetic_" + (extReps.Count + 1).ToString(),
                     rndSeed: (extReps.Count * 10) + replicates[i].Length));
 
                 if (++i >= replicates.Count)

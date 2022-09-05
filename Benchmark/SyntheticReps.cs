@@ -20,7 +20,7 @@
                     i = 0;
             }
 
-            return replicates;
+            return extReps;
         }
 
         public static string RandomAlter(string filename, string filenamePostfix, int rndSeed = 0)

@@ -50,7 +50,7 @@ namespace Genometric.MSPC.Benchmark
             if (pattern.IsMatch(version))
             {
                 _invocation = "mspc.exe";
-                ReleaseUri = new Uri(ReleaseUri, $"download/{version}/mspc.zip");
+                ReleaseUri = new Uri(ReleaseUri, $"download/{version}/win-x64.zip");
                 SetOutputDir();
                 return true;
             }
@@ -63,6 +63,15 @@ namespace Genometric.MSPC.Benchmark
                 return true;
             }
 
+            if (version == "v1.1")
+            {
+                _invocation = "mspc.exe";
+#pragma warning disable S1075 // URIs should not be hardcoded
+                ReleaseUri = new Uri("https://github.com/Genometric/MSPC/raw/cfb7ec899cf3982805277384b0a6a27d8f3aceac/Downloads/v1.1.zip");
+#pragma warning restore S1075 // URIs should not be hardcoded
+                return true;
+            }
+
             return false;
         }
 
@@ -70,7 +79,8 @@ namespace Genometric.MSPC.Benchmark
         {
             var dir = Path.Join(Path.GetTempPath(), "mspc", Version.ToLower().Replace(".", "_"));
             if (Directory.Exists(dir))
-                Directory.Delete(dir, true);
+                return (true, dir);
+                
             Directory.CreateDirectory(dir);
             var filename = Path.Join(dir, "mspc.zip");
 

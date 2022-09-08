@@ -27,7 +27,9 @@ namespace Genometric.MSPC.Benchmark
                 timer.Restart();
                 var results = new List<Result>();
                 var msg = $"\t[{++counter}/{cases.Count}]\tBenchmarking using {c.Key}: ... ";
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(msg);
+                Console.ResetColor();
                 var reps = SyntheticReps.Generate(c.Value, maxRepCount);
                 var syntheticReps = reps.Except(c.Value).ToList();
 
@@ -45,7 +47,9 @@ namespace Genometric.MSPC.Benchmark
 
                     results.Add(result);
 
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write($"\r{msg}{Math.Floor((i - minRepCount) / (double)(maxRepCount - minRepCount) * 100)}%");
+                    Console.ResetColor();
                 }
 
                 foreach (var syntheticRep in syntheticReps)
@@ -53,7 +57,9 @@ namespace Genometric.MSPC.Benchmark
                 if (verInfo.OutputDir != null)
                     Directory.Delete(verInfo.OutputDir, true);
                 timer.Stop();
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"\r{msg}Done!\t(ET: {timer.Elapsed}");
+                Console.ResetColor();
 
                 var writer = new StreamWriter(resultsFilename, append: true);
                 foreach (var result in results)
@@ -66,8 +72,8 @@ namespace Genometric.MSPC.Benchmark
         {
             var result = new Result();
 
-            info.UseShellExecute = false;
-            info.RedirectStandardOutput = true;
+            //info.UseShellExecute = false;
+            //info.RedirectStandardOutput = true;
 
             using (var process = Process.Start(info))
             {
@@ -94,7 +100,7 @@ namespace Genometric.MSPC.Benchmark
                             // usage information will throw this error. 
                         }
 
-                        process.StandardOutput.ReadToEnd();
+                        //process.StandardOutput.ReadToEnd();
                     }
                 }
                 while (!process.WaitForExit(waitToExitInMilliseconds));

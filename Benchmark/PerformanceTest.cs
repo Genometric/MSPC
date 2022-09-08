@@ -72,8 +72,15 @@ namespace Genometric.MSPC.Benchmark
         {
             var result = new Result();
 
-            //info.UseShellExecute = false;
-            //info.RedirectStandardOutput = true;
+            // Do not enable redirecting stdout. 
+            // Because some older versions of MSPC write messages to 
+            // console in a way that cause the console to exit, hence
+            // this processes assumes it as MSPC has finished processing
+            // data, while in fact, all MSPC did was print a message 
+            // in a particular way.
+            // 
+            // info.UseShellExecute = false
+            // info.RedirectStandardOutput = true
 
             using (var process = Process.Start(info))
             {
@@ -100,7 +107,7 @@ namespace Genometric.MSPC.Benchmark
                             // usage information will throw this error. 
                         }
 
-                        //process.StandardOutput.ReadToEnd();
+                        // process.StandardOutput.ReadToEnd()
                     }
                 }
                 while (!process.WaitForExit(waitToExitInMilliseconds));

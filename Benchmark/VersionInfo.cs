@@ -28,6 +28,8 @@ namespace Genometric.MSPC.Benchmark
 
         public string? OutputDir { private set; get; } = null;
 
+        private string? _archivePath;
+
 
         public VersionInfo(
             string version,
@@ -50,7 +52,7 @@ namespace Genometric.MSPC.Benchmark
             if (pattern.IsMatch(version))
             {
                 _invocation = "mspc.exe";
-                ReleaseUri = new Uri(ReleaseUri, $"download/{version}/mspc.zip");
+                ReleaseUri = new Uri(ReleaseUri, $"download/{version}/win-x64.zip");
                 SetOutputDir();
                 return true;
             }
@@ -63,6 +65,16 @@ namespace Genometric.MSPC.Benchmark
                 return true;
             }
 
+            if (version == "v1.1")
+            {
+                _invocation = "mspc.exe";
+                _archivePath = "v.1.1";
+#pragma warning disable S1075 // URIs should not be hardcoded
+                ReleaseUri = new Uri("https://github.com/Genometric/MSPC/raw/cfb7ec899cf3982805277384b0a6a27d8f3aceac/Downloads/v1.1.zip");
+#pragma warning restore S1075 // URIs should not be hardcoded
+                return true;
+            }
+
             return false;
         }
 
@@ -70,7 +82,8 @@ namespace Genometric.MSPC.Benchmark
         {
             var dir = Path.Join(Path.GetTempPath(), "mspc", Version.ToLower().Replace(".", "_"));
             if (Directory.Exists(dir))
-                Directory.Delete(dir, true);
+                return (true, dir);
+                
             Directory.CreateDirectory(dir);
             var filename = Path.Join(dir, "mspc.zip");
 
@@ -83,6 +96,17 @@ namespace Genometric.MSPC.Benchmark
                 await response.Content.CopyToAsync(stream);
 
             ZipFile.ExtractToDirectory(filename, dir);
+
+            // If this condition is satisfied, it implies that release
+            // files are extracted to a directory, which need to be
+            // moved to `dir`. 
+            if (_archivePath !=null)
+            {
+                var releaseFilesDir = Path.Join(dir, _archivePath);
+                foreach (var file in Directory.GetFiles(releaseFilesDir))
+                    File.Move(file, Path.Join(dir, Path.GetFileName(file)));
+                Directory.Delete(releaseFilesDir, true);
+            }
 
             return (true, dir);
         }

@@ -16,7 +16,8 @@ module.exports = {
       "cli/input",
       "cli/output",
       "cli/args",
-      "cli/parser"
+      "cli/parser",
+	  "cli/benchmarking"
     ],
     "Library": [
       "library/install",

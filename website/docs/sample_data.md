@@ -2,6 +2,11 @@
 title: Sample Data
 ---
 
+A cohort containing `48` randomly selected experiments from ENCODE
+is available from the following page. 
+
+https://osf.io/jqrwu/
+
 [Download](http://www.bioinformatics.deib.polimi.it/genomic_computing/MSPC/packages/ENCODE_Samples.zip) 
 a dataset of test peaks (37 MB).
 

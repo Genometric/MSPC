@@ -12,14 +12,17 @@ We use the following resources for benchmarking MSPC:
 - **Test data.** We use `48` randomly selected experiments from ENCODE, 
 where each contains two [biological] replicates. We then call peaks 
 on these samples using `MACS2` with permissive p-value threshold (cutoff at `0.0001`).
-We share the called peaks at the following page: https://osf.io/jqrwu/. 
-Please visit [sample data](sample_data.md) page for details and other datasets.
+The peaks we called on the samples of this cohort are available from the 
+following page: https://osf.io/jqrwu/. 
+Please visit [sample data](sample_data.md) page for details and other cohorts.
 
 - **Benchmarking scripts.** We have developed a console application written 
 in C# for benchmarking different releases of MSPC
 (see [this section](#benchmark-a-release-version) on how to use it).
 The application is distributed along with MSPC as `benchmark.exe`, 
 and its source code is available from the [MSPC/Benchmark on github](https://github.com/Genometric/MSPC/tree/dev/Benchmark).
+This code currently supports releases [`v5.x`, `v4.x`, `v2.x`, and `v1.1`](https://github.com/Genometric/MSPC/blob/909dc99eecbf60646fb44d59a1646b10efef4a77/Benchmark/VersionInfo.cs#L49)
+and other release will be added.
 
 - **Jupyter Notebook for Downstream Analysis of Benchmarks.**
 We have developed a Jupyter Notebook for plotting and 
@@ -27,8 +30,9 @@ in-depth analysis of the runtime. The notebook can be
 executed on Colab, and is available from 
 [MSPC github page](https://github.com/Genometric/MSPC/blob/dev/Benchmark/PlotBenchmarkings.ipynb).
  
-- **Our Benchmarks.** We publicly distribute our 
-benchmarking resouts at https://osf.io/jqrwu/.
+- **Our Benchmarks.** We publicly distribute the results
+of running `benchmark.exe` on the aforementioned cohort
+at the following page. https://osf.io/jqrwu/
 
 
 ## Benchmark a Released Version

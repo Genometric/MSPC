@@ -69,9 +69,9 @@ namespace Genometric.MSPC.Benchmark
             {
                 _invocation = "mspc.exe";
                 _archivePath = "v.1.1";
-#pragma warning disable S1075 // URIs should not be hardcoded
+                #pragma warning disable S1075 // URIs should not be hardcoded
                 ReleaseUri = new Uri("https://github.com/Genometric/MSPC/raw/cfb7ec899cf3982805277384b0a6a27d8f3aceac/Downloads/v1.1.zip");
-#pragma warning restore S1075 // URIs should not be hardcoded
+                #pragma warning restore S1075 // URIs should not be hardcoded
                 return true;
             }
 

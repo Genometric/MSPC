@@ -93,10 +93,4 @@ page for more details.
 - #### [__Bioconductor R package__:](https://bioconductor.org/packages/release/bioc/html/rmspc.html) [Bioconductor user guide with examples on installing and using it in R](https://bioconductor.org/packages/release/bioc/vignettes/rmspc/inst/doc/rmpsc.html). 
 
 MSPC is distributed as a cross-platform console application, a .NET library, 
-and a Bioconductor R package. See the following figure for its current 
-cross-platform build stats.
-
-| Operating System |  Build Status | Build History |
-| :--------------: | :-----------: | :-----------: |
-| Microsoft Windows  | [![Build status](https://ci.appveyor.com/api/projects/status/p63wau60mm2fldcr/branch/master?svg=true)](https://ci.appveyor.com/project/VJalili/mspc/branch/master) | [![Build history](https://buildstats.info/appveyor/chart/VJalili/mspc)](https://ci.appveyor.com/project/VJalili/mspc/history) |
-| Linux Ubuntu 14.04 | [![Build status](https://travis-ci.org/Genometric/MSPC.svg?branch=master)](https://travis-ci.org/Genometric/MSPC) | [![Build history](https://buildstats.info/travisci/chart/Genometric/MSPC)](https://travis-ci.org/Genometric/MSPC/builds) |
+and a Bioconductor R package. 

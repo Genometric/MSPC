@@ -1,10 +1,12 @@
 ﻿using System.CommandLine;
+using System.CommandLine.Builder;
+using System.CommandLine.Parsing;
 
 namespace Genometric.MSPC.Benchmark.CLI
 {
     internal class CommandLineInterface
     {
-        private readonly RootCommand _rootCmd;
+        private readonly Parser _parser;
 
         public CommandLineInterface(Func<string[], DirectoryInfo, int, Task> handler)
         {
@@ -40,7 +42,7 @@ namespace Genometric.MSPC.Benchmark.CLI
             };
             maxRepCount.AddAlias("-c");
 
-            _rootCmd = new RootCommand(
+            var rootCmd = new RootCommand(
                 "Benchmarks given versions of MSPC using the given data cohort. " +
                 "It records the runtime and peak memory usage.")
             {
@@ -49,16 +51,31 @@ namespace Genometric.MSPC.Benchmark.CLI
                 maxRepCount
             };
 
-            _rootCmd.SetHandler(async (releases, dir, repCount) =>
+            rootCmd.SetHandler(async (releases, dir, repCount) =>
             {
                 await handler(releases, dir, repCount);
-            }, 
+            },
             releaseOption, dataDirOption, maxRepCount);
+
+            _parser = new CommandLineBuilder(rootCmd)
+                .UseExceptionHandler((e, context) =>
+                {
+                    Console.Error.WriteLine(e.Message);
+                }, 1)
+                .UseHelp()
+                .UseEnvironmentVariableDirective()
+                .UseParseDirective()
+                .UseSuggestDirective()
+                .RegisterWithDotnetSuggest()
+                .UseTypoCorrections()
+                .UseParseErrorReporting()
+                .CancelOnProcessTermination()
+                .Build();
         }
 
         public async Task<int> InvokeAsync(string[] args)
         {
-            return await _rootCmd.InvokeAsync(args);
+            return await _parser.InvokeAsync(args);
         }
     }
 }

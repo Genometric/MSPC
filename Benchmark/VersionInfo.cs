@@ -80,7 +80,7 @@ namespace Genometric.MSPC.Benchmark
 
         private async Task<(bool, string)> TryLocalize()
         {
-            var dir = Path.Join(Path.GetTempPath(), "mspc", Version.ToLower().Replace(".", "_"));
+            var dir = Path.Combine(Environment.CurrentDirectory, "mspc", Version.ToLower().Replace(".", "_"));
             if (Directory.Exists(dir))
                 return (true, dir);
                 

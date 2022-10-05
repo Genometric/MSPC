@@ -12,6 +12,9 @@ namespace Genometric.MSPC.Benchmark
 
         public static async Task Handler(string[] releases, DirectoryInfo dataDir, int maxRepCount)
         {
+            if (!dataDir.Exists)
+                throw new DirectoryNotFoundException($"{dataDir.FullName} does not exist.");
+
             var resultsFilename = Path.Join(
                 dataDir.FullName,
                 $"mspc_versions_benchmarking_results_" +

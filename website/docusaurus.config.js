@@ -78,8 +78,8 @@ module.exports = {
     algolia: {
       // This is a public API key. This key is only usable for 
       // search queries and sending data to the Insights API.
-      appId: 'RKE330JSXW',
-	  apiKey: 'aab79977ea094db4ed98dba66a22dd42', 
+      appId: 'BH4D9OD16A',
+      apiKey: 'aab79977ea094db4ed98dba66a22dd42', 
       indexName: 'mspc',
       contextualSearch: true,
       // searchParameter: {} // Optional

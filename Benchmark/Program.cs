@@ -5,13 +5,7 @@ namespace Genometric.MSPC.Benchmark
     static class Program
     {
         public static async Task<int> Main(string[] args)
-        {
-            if(!OperatingSystem.IsWindows())
-            {
-                Console.Error.WriteLine("Running benchmarks is currently supported on Windows only.");
-                return 1;
-            }
-            
+        {            
             var cli = new CommandLineInterface(Handler);
             return await cli.InvokeAsync(args);
         }

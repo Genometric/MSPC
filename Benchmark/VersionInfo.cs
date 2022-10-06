@@ -7,6 +7,7 @@ namespace Genometric.MSPC.Benchmark
     internal class VersionInfo
     {
         private string _invocation = "mspc.exe";
+        private string _prgName = string.Empty;
 
         public string Args { set; get; } = "-r bio -w 1e-4 -s 1e-8";
 
@@ -18,7 +19,7 @@ namespace Genometric.MSPC.Benchmark
             {
                 return new ProcessStartInfo(
                     _invocation,
-                    Args + " -i " + string.Join(" -i ", InputFiles));
+                    _prgName.TrimEnd() + " " + Args.Trim() + " -i " + string.Join(" -i ", InputFiles));
             }
         }
 
@@ -43,7 +44,11 @@ namespace Genometric.MSPC.Benchmark
             (var success, var root) = TryLocalize().Result;
             if (!success)
                 throw new ArgumentException($"No release for version {version} is found.");
-            _invocation = Path.Join(root, _invocation);
+
+            if (string.IsNullOrEmpty(_prgName))
+                _invocation = Path.Join(root, _invocation);
+            else
+                _prgName = Path.Join(root, _prgName);
         }
 
         private bool TryRunVerSpecificConfig(string version)
@@ -51,8 +56,9 @@ namespace Genometric.MSPC.Benchmark
             var pattern = new Regex(@"^v[4,5]\.\d+(\.\d+)?$");
             if (pattern.IsMatch(version))
             {
-                _invocation = "mspc.exe";
-                ReleaseUri = new Uri(ReleaseUri, $"download/{version}/win-x64.zip");
+                _invocation = "dotnet";
+                _prgName = "mspc.dll";
+                ReleaseUri = new Uri(ReleaseUri, $"download/{version}/mspc.zip");
                 SetOutputDir();
                 return true;
             }
@@ -60,6 +66,9 @@ namespace Genometric.MSPC.Benchmark
             pattern = new Regex(@"^v2\.\d+(\.\d+)?$");
             if (pattern.IsMatch(version))
             {
+                if (!OperatingSystem.IsWindows())
+                    throw new ArgumentException($"Running version {version} is only supported on Windows.");
+
                 _invocation = "mspc.exe";
                 ReleaseUri = new Uri(ReleaseUri, $"download/{version}/v2.1.zip");
                 return true;
@@ -67,6 +76,9 @@ namespace Genometric.MSPC.Benchmark
 
             if (version == "v1.1")
             {
+                if (!OperatingSystem.IsWindows())
+                    throw new ArgumentException($"Running version {version} is only supported on Windows.");
+
                 _invocation = "mspc.exe";
                 _archivePath = "v.1.1";
                 #pragma warning disable S1075 // URIs should not be hardcoded

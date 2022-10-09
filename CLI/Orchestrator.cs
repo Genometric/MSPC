@@ -48,7 +48,6 @@ namespace Genometric.MSPC.CLI
                 });
         }
 
-        // TODO: make this method async and avoid using Wait()
         public void Invoke(string[] args)
         {
             _cli.Invoke(args);

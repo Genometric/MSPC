@@ -415,7 +415,7 @@ namespace Genometric.MSPC.CLI.Tests
             using (var o = new Orchestrator())
             {
                 o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
-                outputPath = o.OutputPath;
+                outputPath = o.Config.OutputPath;
             }
 
             string rep1Confirmed;

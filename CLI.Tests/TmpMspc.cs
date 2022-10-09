@@ -17,7 +17,16 @@ namespace Genometric.MSPC.CLI.Tests
 
     public class TmpMspc : IDisposable
     {
-        public List<string> TmpSamples { set; get; }
+        private List<string> _tmpSamples = null;
+        public List<string> TmpSamples
+        {
+            get
+            {
+                if (_tmpSamples == null)
+                    CreateTempSamples();
+                return _tmpSamples;
+            }
+        }
 
         public string SessionPath { private set; get; }
 
@@ -60,7 +69,7 @@ namespace Genometric.MSPC.CLI.Tests
             return output;
         }
 
-        public string Run(bool createSample = true, string template = null, string sessionPath = null)
+        public string Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true)
         {
             if (sessionPath != null)
                 SessionPath = sessionPath;
@@ -74,14 +83,17 @@ namespace Genometric.MSPC.CLI.Tests
 
             if (template == null)
                 template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", TmpSamples[0], TmpSamples[1]);
-            template += string.Format(" -o {0}", SessionPath);
+            if (appendOutputOption)
+                template += string.Format(" -o {0}", SessionPath);
 
             string output;
-            using (StringWriter sw = new StringWriter())
+            using (var swOut = new StringWriter())
+            using (var swErr = new StringWriter())
             {
-                Console.SetOut(sw);
+                Console.SetOut(swOut);
+                Console.SetError(swErr);
                 Program.Main(template.Split(' '));
-                output = sw.ToString();
+                output = swErr.ToString() + swOut.ToString();
             }
 
             var standardOutput = new StreamWriter(Console.OpenStandardOutput())
@@ -92,22 +104,16 @@ namespace Genometric.MSPC.CLI.Tests
             return output;
         }
 
-        public List<string> FailRun(string template1 = null, string template2 = null)
+        public static string FailRun(string template1 = null, string template2 = null)
         {
-            string logFile;
-            using (var o = new Orchestrator())
-            {
-                o.Invoke((template1 ?? "-i rep1 -i rep2 -r bio -s 1e-8 -w 1e-4").Split(' '));
-                o.Invoke((template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
-                logFile = o.LogFile;
-            }
-
-            var messages = new List<string>();
-            string line;
-            using (var reader = new StreamReader(logFile))
-                while ((line = reader.ReadLine()) != null)
-                    messages.Add(line);
-            return messages;
+            using var swOut = new StringWriter();
+            using var swErr = new StringWriter();
+            using var o = new Orchestrator();
+            Console.SetOut(swOut);
+            Console.SetError(swErr);
+            o.Invoke((template1 ?? $"-i rep1.bed -i rep2.bed -r bio -s 1e-8 -w 1e-4").Split(' '));
+            o.Invoke((template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
+            return swErr.ToString() + swOut.ToString();
         }
 
         public string Run(IExporter<Peak> exporter)
@@ -116,7 +122,6 @@ namespace Genometric.MSPC.CLI.Tests
                 "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
                 new Random().Next(100000, 999999).ToString();
 
-            CreateTempSamples();
             var template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", TmpSamples[0], TmpSamples[1]);
 
             string output;
@@ -141,7 +146,7 @@ namespace Genometric.MSPC.CLI.Tests
             string filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
             FileStream stream = File.Create(filename);
             var rnd = new Random();
-            using (StreamWriter writter = new StreamWriter(stream))
+            using (var writter = new StreamWriter(stream))
                 while (featureCount-- > 0)
                     writter.WriteLine(
                         string.Format(
@@ -152,9 +157,9 @@ namespace Genometric.MSPC.CLI.Tests
                             rnd.Next(),
                             rnd.NextDouble()));
 
-            if (TmpSamples == null)
-                TmpSamples = new List<string>();
-            TmpSamples.Add(filename);
+            if (_tmpSamples == null)
+                _tmpSamples = new List<string>();
+            _tmpSamples.Add(filename);
             return filename;
         }
 
@@ -163,17 +168,17 @@ namespace Genometric.MSPC.CLI.Tests
             string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
             string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
 
-            TmpSamples = new List<string> { rep1Path, rep2Path };
+            _tmpSamples = new List<string> { rep1Path, rep2Path };
 
             FileStream stream = File.Create(rep1Path);
-            using (StreamWriter writter = new StreamWriter(stream))
+            using (StreamWriter writter = new(stream))
             {
                 writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t3");
                 writter.WriteLine("chr1\t25\t35\tmspc_peak_1\t5");
             }
 
             stream = File.Create(rep2Path);
-            using (StreamWriter writter = new StreamWriter(stream))
+            using (StreamWriter writter = new(stream))
             {
                 writter.WriteLine("chr1\t11\t18\tmspc_peak_2\t2");
                 writter.WriteLine("chr1\t22\t28\tmspc_peak_2\t3");

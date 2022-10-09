@@ -8,7 +8,9 @@ using System.CommandLine.Parsing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.CommandLine.Help;
 
 namespace Genometric.MSPC.CLI.CommandLineInterface
 {
@@ -17,7 +19,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
         private readonly Parser _parser;
 
         public Cli(
-            Action<CliConfig> handler, 
+            Action<CliConfig> handler,
             Action<Exception, InvocationContext> exceptionHandler)
         {
             var inputsOption = new Option<List<string>>(
@@ -30,6 +32,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                         x.ErrorMessage = "Required";
 
                     var filenames = new List<string>();
+                    var missingFiles = new List<string>();
                     foreach (var token in x.Tokens)
                     {
                         var filename = token.Value;
@@ -46,7 +49,22 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                         {
                             if (File.Exists(filename))
                                 filenames.Add(filename);
+                            else
+                                missingFiles.Add(filename);
                         }
+                    }
+
+                    if (missingFiles.Count > 0)
+                    {
+                        var errMsgbuilder = new StringBuilder();
+                        errMsgbuilder.AppendLine("The following files are missing.");
+                        foreach (var file in missingFiles)
+                            errMsgbuilder.AppendLine($"- {file}");
+                        x.ErrorMessage = errMsgbuilder.ToString();
+                    }
+                    else if (filenames.Count < 2)
+                    {
+                        x.ErrorMessage = $"At least two samples are required, {filenames.Count} given.";
                     }
 
                     return filenames;
@@ -283,8 +301,16 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
             rootCmd.AddValidator(x =>
             {
-                var tauW = x.GetValueForOption(wTOption);
-                var tauS = x.GetValueForOption(sTOption);
+                var tauWResult = x.FindResultFor(wTOption);
+                if (tauWResult is null || tauWResult.Token is null)
+                    return;
+
+                var tauSResult = x.FindResultFor(sTOption);
+                if (tauSResult is null || tauSResult.Token is null)
+                    return;
+
+                var tauW = tauWResult.GetValueOrDefault<double>();
+                var tauS = tauSResult.GetValueOrDefault<double>();
 
                 if (tauW <= tauS)
                     x.ErrorMessage = "Stringency threshold (TauS) " +
@@ -299,7 +325,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 {
                     exceptionHandler(e, context);
                 }, 1)
-                .UseHelp()
+                .UseVersionOption()
                 .UseEnvironmentVariableDirective()
                 .UseParseDirective()
                 .UseSuggestDirective()
@@ -307,12 +333,22 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 .UseTypoCorrections()
                 .UseParseErrorReporting()
                 .CancelOnProcessTermination()
+                .UseTypoCorrections()
+                .UseHelp()
                 .Build();
         }
 
-        public int Invoke(string[] args)
+        public void Invoke(string[] args)
         {
-            return _parser.Invoke(args);
+            var filteredArgs = args.Where(
+                x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
+            // Do not use the exit code from the Invoke, 
+            // since System.CommandLine does not propogate 
+            // the exit code properly from exception handeling
+            // delegate when an exception happens in setting the
+            // binding context.
+            _parser.Invoke(filteredArgs);
         }
     }
 }

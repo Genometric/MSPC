@@ -6,6 +6,8 @@ using Genometric.MSPC.Core.Model;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.CommandLine;
+using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
 using System.Reflection;

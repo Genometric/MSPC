@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Builder;
+using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
     {
         private readonly Parser _parser;
 
-        public Cli(Action<CliConfig> handler)
+        public Cli(
+            Action<CliConfig> handler, 
+            Action<Exception, InvocationContext> exceptionHandler)
         {
             var inputsOption = new Option<List<string>>(
                 name: "--input",
@@ -281,7 +284,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 // https://github.com/dotnet/command-line-api/issues/796
                 .UseExceptionHandler((e, context) =>
                 {
-                    Console.Error.WriteLine(e.Message);
+                    exceptionHandler(e, context);
                 }, 1)
                 .UseHelp()
                 .UseEnvironmentVariableDirective()
@@ -294,9 +297,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 .Build();
         }
 
-        public async Task<int> InvokeAsync(string[] args)
+        public int Invoke(string[] args)
         {
-            return await _parser.InvokeAsync(args);
+            return _parser.Invoke(args);
         }
     }
 }

@@ -387,7 +387,7 @@ namespace Genometric.MSPC.CLI.Tests
             var o = new Orchestrator();
 
             // Act
-            o.Orchestrate("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+            o.Invoke("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
 
             // Assert
             Assert.True(!string.IsNullOrEmpty(o.OutputPath) && !string.IsNullOrWhiteSpace(o.OutputPath));
@@ -411,7 +411,7 @@ namespace Genometric.MSPC.CLI.Tests
             }
 
             // Act
-            o.Orchestrate($"-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8 -o {dirs[0]}".Split(' '));
+            o.Invoke($"-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8 -o {dirs[0]}".Split(' '));
 
             // Assert
             Assert.Equal(o.OutputPath, dirs[0] + "_2");
@@ -525,7 +525,7 @@ namespace Genometric.MSPC.CLI.Tests
             using (StringWriter sw = new StringWriter())
             {
                 Console.SetOut(sw);
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 output = sw.ToString();
             }
             var standardOutput = new StreamWriter(Console.OpenStandardOutput())
@@ -599,7 +599,7 @@ namespace Genometric.MSPC.CLI.Tests
             string path;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
                 path = o.OutputPath;
             }
@@ -638,7 +638,7 @@ namespace Genometric.MSPC.CLI.Tests
             string path;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
                 path = o.OutputPath;
             }
@@ -674,7 +674,7 @@ namespace Genometric.MSPC.CLI.Tests
             string path;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
                 path = o.OutputPath;
             }
@@ -731,7 +731,7 @@ namespace Genometric.MSPC.CLI.Tests
             string logFile;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -o {outputPath}".Split(' '));
+                o.Invoke($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -o {outputPath}".Split(' '));
                 logFile = o.LogFile;
             }
 

@@ -14,7 +14,7 @@ namespace Genometric.MSPC.CLI
         {
             Environment.ExitCode = 0;
             using (var orchestrator = new Orchestrator())
-                orchestrator.Orchestrate(args);
+                orchestrator.Invoke(args);
         }
     }
 }

@@ -5,6 +5,7 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
+using Genometric.MSPC.CLI.CommandLineInterface;
 using Genometric.MSPC.CLI.Exporter;
 using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.CLI.Logging;
@@ -16,6 +17,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Genometric.MSPC.CLI
 {
@@ -30,20 +32,33 @@ namespace Genometric.MSPC.CLI
 
         internal string loggerTimeStampFormat = "yyyyMMdd_HHmmssfffffff";
 
+        private readonly Cli _cli;
+
         public Orchestrator() : this(new Exporter<Peak>()) { }
 
         public Orchestrator(IExporter<Peak> exporter)
         {
             _exporter = exporter;
+
+            _cli = new Cli(
+                Invoke,
+                (e, c) =>
+                {
+                    Logger.LogExceptionStatic(e.Message);
+                    Environment.ExitCode = 1;
+                });
         }
 
-        public void Orchestrate(string[] args)
+        // TODO: make this method async and avoid using Wait()
+        public void Invoke(string[] args)
+        {
+            _cli.Invoke(args);
+        }
+
+        private void Invoke(CliConfig options)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-
-            if (!ParseArgs(args, out CommandLineOptions options))
-                return;
 
             if (!AssertOutputPath(options.OutputPath))
                 return;
@@ -51,18 +66,16 @@ namespace Genometric.MSPC.CLI
             if (!SetupLogger())
                 return;
 
-            if (!AssertInput(options.Input))
+            if (!AssertInput(options.InputFiles))
                 return;
 
-            AssertDegreeOfParallelism(options.DegreeOfParallelism);
-
-            if (!LoadParserConfig(options, out ParserConfig config))
+            if (!LoadParserConfig(options.ParserConfigFilename, out ParserConfig config))
                 return;
 
-            if (!ParseFiles(options.Input, config, out List<Bed<Peak>> samples))
+            if (!ParseFiles(options.InputFiles, config, out List<Bed<Peak>> samples))
                 return;
 
-            if (!Run(samples, options.Options, out Mspc mspc))
+            if (!Run(samples, options, out Mspc mspc))
                 return;
 
             var attributes = Enum.GetValues(typeof(Attributes)).Cast<Attributes>().ToList();
@@ -81,36 +94,6 @@ namespace Genometric.MSPC.CLI
 
             stopwatch.Stop();
             _logger.LogFinish(stopwatch.Elapsed.ToString());
-        }
-
-        private bool ParseArgs(string[] args, out CommandLineOptions options)
-        {
-            options = new CommandLineOptions();
-
-            try
-            {
-                options.Parse(args, out bool helpIsDisplayed);
-                if (helpIsDisplayed)
-                    return false;
-                if (options.Warnings.Count > 0)
-                    if (_logger == null)
-                        foreach (var msg in options.Warnings)
-                            Logger.LogWarningStatic(msg);
-                    else
-                        foreach (var msg in options.Warnings)
-                            _logger.LogWarning(msg);
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                if (_logger == null)
-                    Logger.LogExceptionStatic(e.Message);
-                else
-                    _logger.LogException(e);
-                Environment.ExitCode = 1;
-                return false;
-            }
         }
 
         private bool AssertOutputPath(string path)
@@ -158,25 +141,21 @@ namespace Genometric.MSPC.CLI
 
         private bool SetupLogger()
         {
-            try
-            {
-                if (_logger != null)
-                    return true;
-
-                var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString(loggerTimeStampFormat, CultureInfo.InvariantCulture);
-                LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
-                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), OutputPath);
+            if (_logger != null)
                 return true;
-            }
-            catch (Exception e)
-            {
-                Logger.LogExceptionStatic(e.Message);
-                Environment.ExitCode = 1;
-                return false;
-            }
+
+            var repository = 
+                _defaultLoggerRepoName + "_" + 
+                DateTime.Now.ToString(
+                    loggerTimeStampFormat, 
+                    CultureInfo.InvariantCulture);
+
+            LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
+            _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), OutputPath);
+            return true;
         }
 
-        private bool AssertInput(IReadOnlyList<string> input)
+        private bool AssertInput(IReadOnlyCollection<string> input)
         {
             if (input.Count < 2)
             {
@@ -201,28 +180,20 @@ namespace Genometric.MSPC.CLI
             return true;
         }
 
-        private void AssertDegreeOfParallelism(int dp)
-        {
-            if (dp > 0)
-                _degreeOfParallelism = dp;
-
-            _logger.Log(string.Format("Degree of parallelism is set to {0}.", _degreeOfParallelism), ConsoleColor.DarkGray);
-        }
-
-        private bool LoadParserConfig(CommandLineOptions options, out ParserConfig config)
+        private bool LoadParserConfig(string filename, out ParserConfig config)
         {
             config = new ParserConfig();
-            if (options.ParserConfig != null)
+            if (filename != null)
             {
                 try
                 {
-                    config = ParserConfig.LoadFromJSON(options.ParserConfig);
+                    config = ParserConfig.LoadFromJSON(filename);
                     if (config == null)
                     {
                         _logger.LogException(string.Format(
                             "error reading parser configuration JSON object, " +
                             "check if the given file '{0}' exists and is accessible.",
-                            options.ParserConfig));
+                            filename));
                         return false;
                     }
                 }
@@ -236,7 +207,7 @@ namespace Genometric.MSPC.CLI
             return true;
         }
 
-        private bool ParseFiles(IReadOnlyList<string> files, ParserConfig parserConfig, out List<Bed<Peak>> samples)
+        private bool ParseFiles(IReadOnlyCollection<string> files, ParserConfig parserConfig, out List<Bed<Peak>> samples)
         {
             try
             {
@@ -278,7 +249,7 @@ namespace Genometric.MSPC.CLI
             }
         }
 
-        private bool Run(List<Bed<Peak>> samples, Config config, out Mspc mspc)
+        private bool Run(List<Bed<Peak>> samples, CliConfig options, out Mspc mspc)
         {
             try
             {
@@ -290,7 +261,7 @@ namespace Genometric.MSPC.CLI
                 mspc.StatusChanged += _logger.LogMSPCStatus;
                 foreach (var sample in samples)
                     mspc.AddSample(sample.FileHashKey, sample);
-                mspc.RunAsync(config);
+                mspc.RunAsync(options);
                 mspc.Done.WaitOne();
                 return true;
             }

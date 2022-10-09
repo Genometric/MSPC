@@ -91,7 +91,7 @@ namespace Genometric.MSPC.CLI.Tests
             string logFile;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", rep1Path, rep2Path, parserFilename).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", rep1Path, rep2Path, parserFilename).Split(' '));
                 logFile = o.LogFile;
             }
 
@@ -120,7 +120,7 @@ namespace Genometric.MSPC.CLI.Tests
             string logFile;
             using (var o = new Orchestrator())
             {
-                o.Orchestrate(string.Format(
+                o.Invoke(string.Format(
                     "-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", 
                     rep1Path, 
                     rep2Path, 

@@ -1,7 +1,10 @@
 ﻿using Genometric.MSPC.Core.Model;
+using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Binding;
+using System.IO;
+using System.Linq;
 
 namespace Genometric.MSPC.CLI.CommandLineInterface
 {
@@ -61,33 +64,16 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             var filenames = GetValue(_inputsOption, new List<string>());
             filenames.AddRange(GetValue(_inputsPathOption, new List<string>()));
 
-            int c = 1;
-            var cOption = GetValue(_cOption);
-            if (cOption != null)
-            {
-                if (cOption.Contains('%'))
-                {
-                    var percentage = int.Parse(cOption.Replace("%", ""));
-                    c = filenames.Count * percentage / 100;
-                }
-                else
-                {
-                    c = int.Parse(cOption);
-                    if (c > filenames.Count)
-                        c = filenames.Count;
-                }
-            }
-
             return new CliConfig(
                 inputFiles: filenames.AsReadOnly(),
-                outputPath: GetValue(_outputPathOption),
+                outputPath: EnsureOutputPath(GetValue(_outputPathOption)),
                 replicateType: GetValue(_replicateTypeOption),
                 parserConfigFilename: GetValue(_parserConfigFilenameOption),
                 tauS: GetValue(_sTOption),
                 tauW: GetValue(_wTOption),
                 gamma: GetValue(_gTOption, GetValue(_sTOption)),
                 alpha: GetValue(_alphaOption),
-                c: c,
+                c: ParseAndAdjustCInNeeded(GetValue(_cOption), filenames.Count),
                 multipleIntersections: GetValue(_mOption),
                 degreeOfParallelism: GetValue(_dpOption),
                 excludeHeader: GetValue(_excludeHeaderOption));
@@ -107,6 +93,56 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 return defaultValue;
 
             return value;
+        }
+
+        private static int ParseAndAdjustCInNeeded(string proposedC, int inputFilesCount)
+        {
+            int c = 1;
+            if (proposedC is not null)
+            {
+                if (proposedC.Contains('%'))
+                {
+                    var percentage = int.Parse(proposedC.Replace("%", ""));
+                    c = inputFilesCount * percentage / 100;
+                }
+                else
+                {
+                    c = int.Parse(proposedC);
+                    if (c > inputFilesCount)
+                        c = inputFilesCount;
+                }
+            }
+            return c;
+        }
+
+        private static string EnsureOutputPath(string tentativeOutputPath)
+        {
+            tentativeOutputPath = Path.GetFullPath(tentativeOutputPath);
+            var outputPath = tentativeOutputPath;
+            try
+            {
+                if (Directory.Exists(outputPath))
+                {
+                    if (Directory.GetFiles(outputPath).Any())
+                    {
+                        int counter = 0;
+                        do outputPath = $"{tentativeOutputPath}_{counter++}";
+                        while (Directory.Exists(outputPath));
+                        Directory.CreateDirectory(outputPath);
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory(outputPath);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new IOException(
+                    $"Cannot ensure the given output path " +
+                    $"`{outputPath}`: {e.Message}");
+            }
+            return outputPath;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,8 +82,17 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
             var outputOption = new Option<string>(
                 name: "--output",
-                description: "Sets a path where analysis results should be persisted.");
+                description: "Sets a path where analysis results should be persisted.",
+                getDefaultValue: () =>
+                {
+                    return Path.Join(
+                        Environment.CurrentDirectory,
+                        "session_" + DateTime.Now.ToString(
+                            "yyyyMMdd_HHmmssfff",
+                            CultureInfo.InvariantCulture));
+                });
             outputOption.AddAlias("-o");
+            outputOption.LegalFilePathsOnly();
 
             var parserFilenameOption = new Option<string>(
                 name: "--parser",
@@ -115,6 +125,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 });
             repTypeOption.AddAlias("-r");
             repTypeOption.IsRequired = true;
+            repTypeOption.FromAmong(new string[] { "bio", "biological", "tec", "technical" });
 
             var sTOption = new Option<double>(
                 name: "--tauS",
@@ -159,7 +170,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             var alphaOption = new Option<float>(
                 name: "--alpha",
                 description: "Sets false discovery rate " +
-                "of Benjamini–Hochberg step-up procedure.");
+                "of Benjamini–Hochberg step-up procedure.", getDefaultValue: () => 0.05F);
             alphaOption.AddAlias("-a");
             alphaOption.AddValidator(x =>
             {
@@ -171,15 +182,16 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             var cOption = new Option<string>(
                 name: "-c",
                 description: "Sets minimum number of overlapping " +
-                "peaks before combining p-values.")
+                "peaks before combining p-values.",
+                getDefaultValue: () => "1")
             {
                 IsRequired = false
             };
             cOption.AddValidator(x =>
             {
-                var token = x.Token;
-                if (token == null)
+                if (x.Token is null)
                     return;
+                var token = x.Token;
                 var value = token.Value;
 
                 // TODO: this can be improved using regex.
@@ -215,6 +227,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                     }
                 });
             mOption.AddAlias("-m");
+            mOption.FromAmong(new string[] { "lowest", "highest" });
 
             var dpOption = new Option<int?>(
                 name: "--degreeOfParallelism",

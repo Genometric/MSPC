@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.CommandLine.Help;
+using Spectre.Console;
 
 namespace Genometric.MSPC.CLI.CommandLineInterface
 {
@@ -334,7 +335,13 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 .UseParseErrorReporting()
                 .CancelOnProcessTermination()
                 .UseTypoCorrections()
-                .UseHelp()
+                .UseHelp(context =>
+                {
+                    context.HelpBuilder.CustomizeLayout(
+                        _ => HelpBuilder.Default.GetLayout().Prepend(
+                            _ => AnsiConsole.Write(
+                                new FigletText("MSPC").Color(Color.Chartreuse1))));
+                })
                 .Build();
         }
 

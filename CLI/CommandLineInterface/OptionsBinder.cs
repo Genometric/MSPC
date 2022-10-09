@@ -61,18 +61,21 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             var filenames = GetValue(_inputsOption, new List<string>());
             filenames.AddRange(GetValue(_inputsPathOption, new List<string>()));
 
-            int c;
+            int c = 1;
             var cOption = GetValue(_cOption);
-            if (cOption.Contains('%'))
+            if (cOption != null)
             {
-                var percentage = int.Parse(cOption.Replace("%", ""));
-                c = filenames.Count * percentage / 100;
-            }
-            else
-            {
-                c = int.Parse(cOption);
-                if (c > filenames.Count)
-                    c = filenames.Count;
+                if (cOption.Contains('%'))
+                {
+                    var percentage = int.Parse(cOption.Replace("%", ""));
+                    c = filenames.Count * percentage / 100;
+                }
+                else
+                {
+                    c = int.Parse(cOption);
+                    if (c > filenames.Count)
+                        c = filenames.Count;
+                }
             }
 
             return new CliConfig(

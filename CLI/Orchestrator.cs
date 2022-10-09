@@ -17,22 +17,21 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Genometric.MSPC.CLI
 {
     internal class Orchestrator : IDisposable
     {
-        private int _degreeOfParallelism = Environment.ProcessorCount;
         private Logger _logger;
         private readonly IExporter<Peak> _exporter;
         private readonly string _defaultLoggerRepoName = "EventsLog";
-        public string OutputPath { private set; get; }
         public string LogFile { private set; get; }
 
         internal string loggerTimeStampFormat = "yyyyMMdd_HHmmssfffffff";
 
         private readonly Cli _cli;
+
+        public CliConfig Config { private set; get; }
 
         public Orchestrator() : this(new Exporter<Peak>()) { }
 
@@ -57,11 +56,9 @@ namespace Genometric.MSPC.CLI
 
         private void Invoke(CliConfig options)
         {
+            Config = options;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-
-            if (!AssertOutputPath(options.OutputPath))
-                return;
 
             if (!SetupLogger())
                 return;
@@ -96,49 +93,6 @@ namespace Genometric.MSPC.CLI
             _logger.LogFinish(stopwatch.Elapsed.ToString());
         }
 
-        private bool AssertOutputPath(string path)
-        {
-            if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
-                path =
-                    Environment.CurrentDirectory + Path.DirectorySeparatorChar +
-                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-            else
-                path = path.TrimEnd(Path.DirectorySeparatorChar);
-
-            OutputPath = Path.GetFullPath(path);
-            try
-            {
-                if (Directory.Exists(OutputPath))
-                {
-                    if (Directory.GetFiles(OutputPath).Any())
-                    {
-                        int c = 0;
-                        do OutputPath = $"{path}_{c++}";
-                        while (Directory.Exists(OutputPath));
-                        Directory.CreateDirectory(OutputPath);
-                    }
-                }
-                else
-                {
-                    Directory.CreateDirectory(OutputPath);
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                string msg =
-                    $"Cannot ensure the given output path " +
-                    $"`{OutputPath}`: {e.Message}";
-                if (_logger == null)
-                    Logger.LogExceptionStatic(msg);
-                else
-                    _logger.LogException(msg);
-                Environment.ExitCode = 1;
-                return false;
-            }
-        }
-
         private bool SetupLogger()
         {
             if (_logger != null)
@@ -150,8 +104,8 @@ namespace Genometric.MSPC.CLI
                     loggerTimeStampFormat, 
                     CultureInfo.InvariantCulture);
 
-            LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
-            _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), OutputPath);
+            LogFile = Path.Join(Config.OutputPath, repository + ".txt");
+            _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), Config.OutputPath);
             return true;
         }
 
@@ -256,7 +210,7 @@ namespace Genometric.MSPC.CLI
                 _logger.LogStartOfASection("Analyzing Samples");
                 mspc = new Mspc()
                 {
-                    DegreeOfParallelism = _degreeOfParallelism
+                    DegreeOfParallelism = options.DegreeOfParallelism ?? Environment.ProcessorCount
                 };
                 mspc.StatusChanged += _logger.LogMSPCStatus;
                 foreach (var sample in samples)
@@ -280,7 +234,7 @@ namespace Genometric.MSPC.CLI
             {
                 _logger.LogStartOfASection("Saving Results");
                 var options = new Options(
-                    path: OutputPath,
+                    path: Config.OutputPath,
                     includeHeader: !excludeHeader,
                     attributesToExport: attributesToExport);
 

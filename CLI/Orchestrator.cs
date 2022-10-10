@@ -62,9 +62,6 @@ namespace Genometric.MSPC.CLI
             if (!SetupLogger())
                 return;
 
-            if (!AssertInput(options.InputFiles))
-                return;
-
             if (!LoadParserConfig(options.ParserConfigFilename, out ParserConfig config))
                 return;
 
@@ -97,39 +94,14 @@ namespace Genometric.MSPC.CLI
             if (_logger != null)
                 return true;
 
-            var repository = 
-                _defaultLoggerRepoName + "_" + 
+            var repository =
+                _defaultLoggerRepoName + "_" +
                 DateTime.Now.ToString(
-                    loggerTimeStampFormat, 
+                    loggerTimeStampFormat,
                     CultureInfo.InvariantCulture);
 
             LogFile = Path.Join(Config.OutputPath, repository + ".txt");
             _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), Config.OutputPath);
-            return true;
-        }
-
-        private bool AssertInput(IReadOnlyCollection<string> input)
-        {
-            if (input.Count < 2)
-            {
-                _logger.LogException(
-                    string.Format("at least two samples are required; {0} is given.", input.Count));
-                Environment.ExitCode = 1;
-                return false;
-            }
-
-            var missingFiles = new List<string>();
-            foreach (var file in input)
-                if (!File.Exists(file))
-                    missingFiles.Add(file);
-            if (missingFiles.Count > 0)
-            {
-                _logger.LogException(
-                    string.Format("the following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
-                Environment.ExitCode = 1;
-                return false;
-            }
-
             return true;
         }
 

@@ -65,14 +65,15 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
+            int exitCode;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(false, $"-i {tmpMspc.TmpSamples[0]} -r bio -w 1E-2 -s 1E-8");
+                (msg, exitCode) = tmpMspc.Run(false, $"-i {tmpMspc.TmpSamples[0]} -r bio -w 1E-2 -s 1E-8");
 
             // Assert
             Assert.Contains("At least two samples are required, 1 given.", msg);
-            Assert.False(Environment.ExitCode == 0);
+            Assert.False(exitCode == 0);
         }
 
         [Fact]
@@ -80,14 +81,15 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
+            int exitCode;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
+                (msg, exitCode) = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
 
             // Assert
             Assert.Contains("Option '--replicate' is required.", msg);
-            Assert.False(Environment.ExitCode == 0);
+            Assert.False(exitCode == 0);
         }
 
         [Fact]
@@ -95,14 +97,15 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
+            int exitCode;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8");
+                (msg, exitCode) = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8");
 
             // Assert
             Assert.Contains("The following files are missing.\r\n- rep1.bed\r\n- rep2.bed", msg);
-            Assert.False(Environment.ExitCode == 0);
+            Assert.False(exitCode == 0);
         }
 
         [Fact]
@@ -113,7 +116,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                (msg, _) = tmpMspc.Run();
 
             // Assert
             Assert.Contains("  2\t", msg);
@@ -128,7 +131,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                (msg, _) = tmpMspc.Run();
 
             // Assert
             Assert.Contains("1.000E-005", msg);
@@ -143,7 +146,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                (msg, _) = tmpMspc.Run();
 
             // Assert
             Assert.Contains("1.000E-003", msg);
@@ -158,7 +161,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                (msg, _) = tmpMspc.Run();
 
             // Assert
             Assert.Contains("Elapsed time: ", msg);
@@ -172,7 +175,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                (msg, _) = tmpMspc.Run();
 
             // Assert
             Assert.Contains("All processes successfully finished", msg);
@@ -191,9 +194,9 @@ namespace Genometric.MSPC.CLI.Tests
             string outputPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) + new Random().Next(100000, 999999).ToString();
             WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture);
 
-            ParserConfig cols = new ParserConfig() { Culture = culture };
+            var cols = new ParserConfig() { Culture = culture };
             var configFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
-            using (StreamWriter w = new StreamWriter(configFilename))
+            using (var w = new StreamWriter(configFilename))
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
             string args = $"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -p {configFilename} -o {outputPath}";
@@ -201,7 +204,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string output;
-            using (StringWriter sw = new StringWriter())
+            using (var sw = new StringWriter())
             {
                 Console.SetOut(sw);
                 Program.Main(args.Split(' '));
@@ -265,10 +268,11 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
+            int exitCode;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template: template);
+                (msg, exitCode) = tmpMspc.Run(template: template);
 
             // Assert
             Assert.Contains("Description:", msg);
@@ -293,7 +297,7 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains("Show version information", msg);
             Assert.Contains("-?, -h, --help", msg);
             Assert.Contains("Show help and usage information", msg);
-            Assert.True(Environment.ExitCode == 0);
+            Assert.True(exitCode == 0);
         }
 
         [Theory]
@@ -302,17 +306,18 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
+            int exitCode;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template: template, appendOutputOption: false);
+                (msg, exitCode) = tmpMspc.Run(template: template, appendOutputOption: false);
 
             // The displayed version is the version of the test env, not the
             // app. However, the app is executed, it correctly shows the version of mspc.
 
             // Assert
             Assert.True(msg.Split('.').Length == 3);  
-            Assert.True(Environment.ExitCode == 0);
+            Assert.True(exitCode == 0);
         }
 
         [Fact]
@@ -320,17 +325,18 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
+            int exitCode;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(createSample: false, template: "", appendOutputOption: false);
+                (msg, exitCode) = tmpMspc.Run(createSample: false, template: "", appendOutputOption: false);
 
             // Assert
             Assert.True(
                 msg.Contains("-?, -h, --help") &&
                 msg.Contains("Show help and usage information\r\n") &&
                 msg.Contains("Documentation:\thttps://genometric.github.io/MSPC/\r\n"));
-            Assert.False(Environment.ExitCode == 0);
+            Assert.False(exitCode == 0);
         }
 
         [Fact]
@@ -368,7 +374,8 @@ namespace Genometric.MSPC.CLI.Tests
             WriteSampleFiles(out string rep1Filename, out string rep2Filename, out _);
 
             // Act
-            Program.Main($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path + Path.DirectorySeparatorChar}".Split(' '));
+            var orchestrator = new Orchestrator();
+            orchestrator.Invoke($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path + Path.DirectorySeparatorChar}".Split(' '));
             output_path += "_0";
 
             // Assert
@@ -436,10 +443,11 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string msg;
+            int exitCode;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(sessionPath: IllegalPath);
+                (msg, exitCode) = tmpMspc.Run(sessionPath: IllegalPath);
 
             // Assert
             Assert.True(
@@ -447,7 +455,7 @@ namespace Genometric.MSPC.CLI.Tests
                 msg.Contains("The filename, directory name, or volume label syntax is incorrect") ||
                 msg.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
                 msg.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
-            Assert.True(Environment.ExitCode != 0);
+            Assert.True(exitCode != 0);
         }
 
         [Fact]
@@ -584,8 +592,9 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string msg;
+            int exitCode;
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(createSample: false, template: string.Format("-i {0} -i {1} -p {2} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path, path));
+                (msg, exitCode) = tmpMspc.Run(createSample: false, template: string.Format("-i {0} -i {1} -p {2} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path, path));
 
             // Assert
             Assert.Contains("1.000E-016", msg);
@@ -753,7 +762,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                (msg, _) = tmpMspc.Run();
 
             // Assert
             var rx = new Regex($".*Export Directory: (.*){Environment.NewLine}.*");

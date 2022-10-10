@@ -69,7 +69,7 @@ namespace Genometric.MSPC.CLI.Tests
             return output;
         }
 
-        public string Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true)
+        public (string, int) Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true)
         {
             if (sessionPath != null)
                 SessionPath = sessionPath;
@@ -87,13 +87,18 @@ namespace Genometric.MSPC.CLI.Tests
                 template += string.Format(" -o {0}", SessionPath);
 
             string output;
+            int exitCode;
             using (var swOut = new StringWriter())
             using (var swErr = new StringWriter())
             {
                 Console.SetOut(swOut);
                 Console.SetError(swErr);
-                Program.Main(template.Split(' '));
-                output = swErr.ToString() + swOut.ToString();
+                
+                using (var orchestrator = new Orchestrator())
+                {
+                    exitCode = orchestrator.Invoke(template.Split(' '));
+                    output = swErr.ToString() + swOut.ToString();
+                }
 
                 var standardOutput = new StreamWriter(Console.OpenStandardOutput())
                 {
@@ -113,7 +118,7 @@ namespace Genometric.MSPC.CLI.Tests
             
 
 
-            return output;
+            return (output, exitCode);
         }
 
         // Do not make this static because multiple tests

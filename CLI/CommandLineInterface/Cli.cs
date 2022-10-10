@@ -9,9 +9,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.CommandLine.Help;
-using Spectre.Console;
+//using System.CommandLine.Help;
+//using Spectre.Console;
 
 namespace Genometric.MSPC.CLI.CommandLineInterface
 {
@@ -112,6 +111,33 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 });
             outputOption.AddAlias("-o");
             outputOption.LegalFilePathsOnly();
+            outputOption.AddValidator(x =>
+            {
+                var value = x.GetValueForOption(outputOption);
+
+                var p = Path.GetFullPath(value);
+                p = p.EndsWith(Path.DirectorySeparatorChar) ? p[..^1] : p;
+
+                var outputPath = p;
+                try
+                {
+                    if (Directory.Exists(outputPath) && Directory.GetFiles(outputPath).Any())
+                    {
+                        int counter = 0;
+                        do outputPath = $"{p}_{counter++}";
+                        while (Directory.Exists(outputPath));
+                    }
+
+                    // To make sure it can write to the path.
+                    Directory.CreateDirectory(outputPath);
+                    Directory.Delete(outputPath, true);
+                }
+                catch (Exception e)
+                {
+                    x.ErrorMessage = $"Cannot ensure the given output " +
+                    $"path `{outputPath}`: {e.Message}";
+                }
+            });
 
             var parserFilenameOption = new Option<string>(
                 name: "--parser",
@@ -257,10 +283,6 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 name: "--excludeHeader",
                 description: "If provided, MSPC will not add a header line to its output.");
 
-
-            // TODO: compare tauS and tauW
-
-
             var rootCmd = new RootCommand(
                 "Using combined evidence from replicates to evaluate " +
                 "ChIP-seq and single-cell peaks." +
@@ -325,7 +347,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 .UseExceptionHandler((e, context) =>
                 {
                     exceptionHandler(e, context);
-                }, 1)
+                }, errorExitCode: 1)
                 .UseVersionOption()
                 .UseEnvironmentVariableDirective()
                 .UseParseDirective()
@@ -335,27 +357,23 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 .UseParseErrorReporting()
                 .CancelOnProcessTermination()
                 .UseTypoCorrections()
-                .UseHelp(context =>
+                .UseHelp()
+                /*.UseHelp(context =>
                 {
                     context.HelpBuilder.CustomizeLayout(
                         _ => HelpBuilder.Default.GetLayout().Prepend(
                             _ => AnsiConsole.Write(
                                 new FigletText("MSPC").Color(Color.Chartreuse1))));
-                })
+                })*/
                 .Build();
         }
 
-        public void Invoke(string[] args)
+        public int Invoke(string[] args)
         {
             var filteredArgs = args.Where(
                 x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
-            // Do not use the exit code from the Invoke, 
-            // since System.CommandLine does not propogate 
-            // the exit code properly from exception handeling
-            // delegate when an exception happens in setting the
-            // binding context.
-            _parser.Invoke(filteredArgs);
+            return _parser.Invoke(filteredArgs);
         }
     }
 }

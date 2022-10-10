@@ -457,7 +457,8 @@ namespace Genometric.MSPC.CLI.Tests
             string messages;
 
             // Act
-            messages = TmpMspc.FailRun();
+            using (var tmpMspc = new TmpMspc())
+                messages = tmpMspc.FailRun();
 
             // Assert
             Assert.Contains("The following files are missing.", messages);
@@ -473,7 +474,8 @@ namespace Genometric.MSPC.CLI.Tests
             string messages;
 
             // Act
-            messages = TmpMspc.FailRun();
+            using (var tmpMspc = new TmpMspc())
+                messages = tmpMspc.FailRun();
 
             // Assert
             Assert.DoesNotContain(messages, "All processes successfully finished");
@@ -487,12 +489,13 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = TmpMspc.FailRun(template2: $"-i rep1 -i rep2 -o {IllegalPath} -r bio -s 1e-8 -w 1e-4");
+                msg = tmpMspc.FailRun(template2: $"-i {tmpMspc.TmpSamples[0]} -i {tmpMspc.TmpSamples[1]} -o {IllegalPath} -r bio -s 1e-8 -w 1e-4");
 
             // Assert
-            Assert.Contains(msg, "the following files are missing: rep1; rep2");
+            Assert.Contains("The following files are missing.\r\n- rep1.bed\r\n- rep2.bed", msg);
             Assert.True(
                 msg.Contains("Illegal characters in path.") ||
+                msg.Contains($"Cannot ensure the given output path `{IllegalPath}`") || 
                 msg.Contains("The filename, directory name, or volume label syntax is incorrect") ||
                 msg.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
                 msg.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
@@ -710,22 +713,6 @@ namespace Genometric.MSPC.CLI.Tests
             File.Delete(rep1Path);
             File.Delete(rep2Path);
             Directory.Delete(path, true);
-        }
-
-        [Theory]
-        [InlineData("300%", "2")]
-        [InlineData("-300%", "1")]
-        public void WarningDisplayedForInvalidC(string c, string expected)
-        {
-            // Arrange
-            string msg;
-
-            // Act
-            using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template: $"-i sample_1 -i sample_2 -r bio -w 1E-2 -s 1E-8 -c {c}");
-
-            // Assert
-            Assert.Contains($"Invalid `C={c}`, it is set to `C={expected}`.", msg);
         }
 
         [Fact]

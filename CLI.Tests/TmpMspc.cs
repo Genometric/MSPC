@@ -94,25 +94,44 @@ namespace Genometric.MSPC.CLI.Tests
                 Console.SetError(swErr);
                 Program.Main(template.Split(' '));
                 output = swErr.ToString() + swOut.ToString();
+
+                var standardOutput = new StreamWriter(Console.OpenStandardOutput())
+                {
+                    AutoFlush = true
+                };
+                Console.SetOut(standardOutput);
+
+                var standardError = new StreamWriter(Console.OpenStandardError())
+                {
+                    AutoFlush = true
+                };
+                Console.SetError(standardError);
             }
 
-            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
-            {
-                AutoFlush = true
-            };
-            Console.SetOut(standardOutput);
+           // Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+           // Console.SetError(new StreamWriter(Console.OpenStandardError()));
+            
+
+
             return output;
         }
 
-        public static string FailRun(string template1 = null, string template2 = null)
+        // Do not make this static because multiple tests
+        // running concurrently will have the same/combined output. 
+        public string FailRun(string template1 = null, string template2 = null)
         {
             using var swOut = new StringWriter();
             using var swErr = new StringWriter();
             using var o = new Orchestrator();
             Console.SetOut(swOut);
             Console.SetError(swErr);
-            o.Invoke((template1 ?? $"-i rep1.bed -i rep2.bed -r bio -s 1e-8 -w 1e-4").Split(' '));
-            o.Invoke((template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
+
+            Environment.ExitCode = o.Invoke(
+                (template1 ?? $"-i rep1.bed -i rep2.bed -r bio -s 1e-8 -w 1e-4").Split(' '));
+
+            Environment.ExitCode = o.Invoke(
+                (template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
+
             return swErr.ToString() + swOut.ToString();
         }
 

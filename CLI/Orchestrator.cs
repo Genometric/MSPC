@@ -48,9 +48,9 @@ namespace Genometric.MSPC.CLI
                 });
         }
 
-        public void Invoke(string[] args)
+        public int Invoke(string[] args)
         {
-            _cli.Invoke(args);
+            return _cli.Invoke(args);
         }
 
         private void Invoke(CliConfig options)

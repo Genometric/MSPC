@@ -104,6 +104,8 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 {
                     var percentage = int.Parse(proposedC.Replace("%", ""));
                     c = inputFilesCount * percentage / 100;
+                    if (c > inputFilesCount)
+                        c = inputFilesCount;
                 }
                 else
                 {
@@ -117,31 +119,21 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
         private static string EnsureOutputPath(string tentativeOutputPath)
         {
-            tentativeOutputPath = Path.GetFullPath(tentativeOutputPath);
-            var outputPath = tentativeOutputPath;
-            try
+            var p = Path.GetFullPath(tentativeOutputPath);
+            p = p.EndsWith(Path.DirectorySeparatorChar) ? p[..^1] : p;
+
+            var outputPath = p;
+
+            if (Directory.Exists(outputPath) && Directory.GetFiles(outputPath).Any())
             {
-                if (Directory.Exists(outputPath))
-                {
-                    if (Directory.GetFiles(outputPath).Any())
-                    {
-                        int counter = 0;
-                        do outputPath = $"{tentativeOutputPath}_{counter++}";
-                        while (Directory.Exists(outputPath));
-                        Directory.CreateDirectory(outputPath);
-                    }
-                }
-                else
-                {
-                    Directory.CreateDirectory(outputPath);
-                }
+                int counter = 0;
+                do outputPath = $"{p}_{counter++}";
+                while (Directory.Exists(outputPath));
+                Directory.CreateDirectory(outputPath);
             }
-            catch (Exception e)
-            {
-                throw new IOException(
-                    $"Cannot ensure the given output path " +
-                    $"`{outputPath}`: {e.Message}");
-            }
+
+            Directory.CreateDirectory(outputPath);
+
             return outputPath;
         }
     }

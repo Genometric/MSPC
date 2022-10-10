@@ -373,7 +373,17 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             var filteredArgs = args.Where(
                 x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
-            return _parser.Invoke(filteredArgs);
+            // System.CommandLine has some troubling design decisions 
+            // about handling exceptions. Read the following 
+            // Github issues for details. They capture exceptions in 
+            // a middleware and had many issues getting that work
+            // as expected. Therefore, I'm leaving some old-but-solid
+            // solutions I had implemented for the previous CLI for 
+            // now. This can be revisited in when/if system.commandline
+            // improves on exception handling.
+            // https://github.com/dotnet/command-line-api/issues/796
+            var exitCode = _parser.Invoke(filteredArgs);
+            return exitCode != 0 ? exitCode : Environment.ExitCode;
         }
     }
 }

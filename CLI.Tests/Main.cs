@@ -530,28 +530,20 @@ namespace Genometric.MSPC.CLI.Tests
         public void CaptureExceptionsRaisedCreatingLogger()
         {
             // Arrange
-            var o = new Orchestrator
+            var _console = new MockConsole();
+            var o = new Orchestrator(_console)
             {
                 loggerTimeStampFormat = "yyyyMMdd_HHmmssffffffffffff"
             };
 
             // Act
             string output;
-            using (var sw = new StringWriter())
+            using (var tmpMspc = new TmpMspc())
             {
-                Console.SetOut(sw);
-                using (var tmpMspc = new TmpMspc())
-                {
-                    var samples = tmpMspc.TmpSamples;
-                    o.Invoke($"-i {samples[0]} -i {samples[1]} -r bio -w 1e-2 -s 1e-4".Split(' '));
-                }
-                output = sw.ToString();
+                var samples = tmpMspc.TmpSamples;
+                o.Invoke($"-i {samples[0]} -i {samples[1]} -r bio -w 1e-2 -s 1e-4".Split(' '));
             }
-            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
-            {
-                AutoFlush = true
-            };
-            Console.SetOut(standardOutput);
+            output = _console.GetStdo();
 
             // Assert
             Assert.Contains("Input string was not in a correct format.", output);

@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.Intervals.Model;
+using Genometric.MSPC.CLI.ConsoleAbstraction;
 using Genometric.MSPC.CLI.Interfaces;
+using Genometric.MSPC.CLI.Tests.MockTypes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -88,35 +90,13 @@ namespace Genometric.MSPC.CLI.Tests
 
             string output;
             int exitCode;
-            using (var swOut = new StringWriter())
-            using (var swErr = new StringWriter())
+            var _console = new MockConsole();
+
+            using (var orchestrator = new Orchestrator(_console))
             {
-                Console.SetOut(swOut);
-                Console.SetError(swErr);
-                
-                using (var orchestrator = new Orchestrator())
-                {
-                    exitCode = orchestrator.Invoke(template.Split(' '));
-                    output = swErr.ToString() + swOut.ToString();
-                }
-
-                var standardOutput = new StreamWriter(Console.OpenStandardOutput())
-                {
-                    AutoFlush = true
-                };
-                Console.SetOut(standardOutput);
-
-                var standardError = new StreamWriter(Console.OpenStandardError())
-                {
-                    AutoFlush = true
-                };
-                Console.SetError(standardError);
+                exitCode = orchestrator.Invoke(template.Split(' '));
+                output = _console.GetStderr() + _console.GetStdo();
             }
-
-           // Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
-           // Console.SetError(new StreamWriter(Console.OpenStandardError()));
-            
-
 
             return (output, exitCode);
         }
@@ -125,11 +105,8 @@ namespace Genometric.MSPC.CLI.Tests
         // running concurrently will have the same/combined output. 
         public string FailRun(string template1 = null, string template2 = null)
         {
-            using var swOut = new StringWriter();
-            using var swErr = new StringWriter();
-            using var o = new Orchestrator();
-            Console.SetOut(swOut);
-            Console.SetError(swErr);
+            var _console = new MockConsole();
+            using var o = new Orchestrator(_console);
 
             Environment.ExitCode = o.Invoke(
                 (template1 ?? $"-i rep1.bed -i rep2.bed -r bio -s 1e-8 -w 1e-4").Split(' '));
@@ -137,7 +114,7 @@ namespace Genometric.MSPC.CLI.Tests
             Environment.ExitCode = o.Invoke(
                 (template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
 
-            return swErr.ToString() + swOut.ToString();
+            return _console.GetStderr() + _console.GetStdo();
         }
 
         public string Run(IExporter<Peak> exporter)
@@ -149,19 +126,11 @@ namespace Genometric.MSPC.CLI.Tests
             var template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", TmpSamples[0], TmpSamples[1]);
 
             string output;
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                var o = new Orchestrator(exporter);
-                o.Invoke(template.Split(' '));
-                output = sw.ToString();
-            }
+            var _console = new MockConsole();
+            var o = new Orchestrator(exporter, _console);
+            o.Invoke(template.Split(' '));
+            output = _console.GetStdo();
 
-            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
-            {
-                AutoFlush = true
-            };
-            Console.SetOut(standardOutput);
             return output;
         }
 

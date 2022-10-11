@@ -386,8 +386,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             // now. This can be revisited in when/if system.commandline
             // improves on exception handling.
             // https://github.com/dotnet/command-line-api/issues/796
-            var exitCode = _parser.Invoke(filteredArgs, _console);
-            return exitCode != 0 ? exitCode : Environment.ExitCode;
+            // var exitCode = _parser.Invoke(filteredArgs, _console)
+            // return exitCode != 0 ? exitCode : Environment.ExitCode
+            return _parser.Invoke(filteredArgs, _console);
         }
     }
 }

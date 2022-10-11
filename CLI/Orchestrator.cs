@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace Genometric.MSPC.CLI
 {
@@ -58,7 +59,7 @@ namespace Genometric.MSPC.CLI
                 (e, c) =>
                 {
                     Logger.LogExceptionStatic(_console, e.Message);
-                    Environment.ExitCode = 1;
+                    //Environment.ExitCode = 1;
                 });
         }
 
@@ -138,9 +139,11 @@ namespace Genometric.MSPC.CLI
                 }
                 catch (Exception e)
                 {
-                    _logger.LogException("error reading parser configuration JSON object: " + e.Message);
+                    var msg = "error reading parser configuration JSON object: " + e.Message;
+                    throw new JsonException(msg);
+                    /*_logger.LogException(msg);
                     Environment.ExitCode = 1;
-                    return false;
+                    return false;*/
                 }
             }
             return true;

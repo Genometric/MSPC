@@ -1,16 +1,16 @@
 ﻿using Genometric.MSPC.Core.Model;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Builder;
+using System.CommandLine.Help;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-//using System.CommandLine.Help;
-//using Spectre.Console;
 
 namespace Genometric.MSPC.CLI.CommandLineInterface
 {
@@ -361,14 +361,14 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 .UseParseErrorReporting()
                 .CancelOnProcessTermination()
                 .UseTypoCorrections()
-                .UseHelp()
-                /*.UseHelp(context =>
+                //.UseHelp()
+                .UseHelp(context =>
                 {
                     context.HelpBuilder.CustomizeLayout(
                         _ => HelpBuilder.Default.GetLayout().Prepend(
                             _ => AnsiConsole.Write(
                                 new FigletText("MSPC").Color(Color.Chartreuse1))));
-                })*/
+                })
                 .Build();
         }
 

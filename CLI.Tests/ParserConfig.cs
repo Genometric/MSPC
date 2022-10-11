@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.Intervals.Parsers;
+using Genometric.MSPC.CLI.Tests.MockTypes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -89,12 +90,14 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string logFile;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
                 o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", rep1Path, rep2Path, parserFilename).Split(' '));
                 logFile = o.LogFile;
             }
 
+            var msg = console.GetStdo();
             var log = new List<string>();
             string line;
             using (var reader = new StreamReader(logFile))
@@ -103,8 +106,8 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(
-                log,
-                x => x.Contains("Unexpected character encountered while parsing value"));
+                "Unexpected character encountered while parsing value",
+                msg);
         }
 
         [Fact]
@@ -186,12 +189,12 @@ namespace Genometric.MSPC.CLI.Tests
                 w.WriteLine("{\"Culture\":\"xyz\"}");
 
             // Act
-            string msg;
+            Result x;
             using (var tmpMSPC = new TmpMspc())
-                msg = tmpMSPC.Run(parserFilename: parserFilename);
+                x = tmpMSPC.Run(parserFilename: parserFilename);
             
             // Assert
-            Assert.Contains("Error setting value to 'Culture'", msg);
+            Assert.Contains("Error setting value to 'Culture'", x.ConsoleOutput);
         }
     }
 }

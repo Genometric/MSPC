@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.Intervals.Model;
-using Genometric.MSPC.CLI.ConsoleAbstraction;
 using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.CLI.Tests.MockTypes;
 using System;
@@ -32,7 +31,13 @@ namespace Genometric.MSPC.CLI.Tests
 
         public string SessionPath { private set; get; }
 
-        public string Run(string parserFilename, string rep1=null, string rep2=null, double tauW=1e-4, double tauS=1e-8)
+        private static int SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
+            int exitCode, int envExitCode)
+        {
+            return envExitCode != 0 ? envExitCode : exitCode;
+        }
+
+        public Result Run(string parserFilename, string rep1=null, string rep2=null, double tauW=1e-4, double tauS=1e-8)
         {
             string SessionPath =
                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
@@ -55,11 +60,13 @@ namespace Genometric.MSPC.CLI.Tests
 
             args.Append(string.Format("-o {0} ", SessionPath));
 
+            int exitCode;
             string output;
             using (StringWriter sw = new StringWriter())
             {
                 Console.SetOut(sw);
                 Program.Main(args.ToString().Trim().Split(' '));
+                exitCode = Environment.ExitCode;
                 output = sw.ToString();
             }
 
@@ -68,56 +75,78 @@ namespace Genometric.MSPC.CLI.Tests
                 AutoFlush = true
             };
             Console.SetOut(standardOutput);
-            return output;
+
+            exitCode = SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
+                exitCode, Environment.ExitCode);
+
+            return new Result(exitCode, output);
         }
 
-        public (string, int) Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true)
+        public Result Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true)
         {
-            if (sessionPath != null)
-                SessionPath = sessionPath;
-            else
-                SessionPath =
-                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
-                    new Random().Next(100000, 999999).ToString();
-
             if (createSample)
                 CreateTempSamples();
 
             if (template == null)
                 template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", TmpSamples[0], TmpSamples[1]);
             if (appendOutputOption)
+            {
+                if (sessionPath != null)
+                    SessionPath = sessionPath;
+                else
+                    SessionPath =
+                        "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
+                        new Random().Next(100000, 999999).ToString();
+
                 template += string.Format(" -o {0}", SessionPath);
+            }
 
             string output;
             int exitCode;
-            var _console = new MockConsole();
+            var log = new List<string>();
+            var console = new MockConsole();
 
-            using (var orchestrator = new Orchestrator(_console))
+            string logFilename;
+            using (var orchestrator = new Orchestrator(console))
             {
                 exitCode = orchestrator.Invoke(template.Split(' '));
-                output = _console.GetStderr() + _console.GetStdo();
+                output = console.GetStderr() + console.GetStdo();
+                logFilename = orchestrator.LogFile;
             }
 
-            return (output, exitCode);
+            string line;
+            if (logFilename != null)
+            {
+                using (var reader = new StreamReader(logFilename))
+                {
+                    while ((line = reader.ReadLine()) != null)
+                        log.Add(line);
+                }
+            }
+
+            return new Result(exitCode, output, log.AsReadOnly());
         }
 
         // Do not make this static because multiple tests
         // running concurrently will have the same/combined output. 
-        public string FailRun(string template1 = null, string template2 = null)
+        public Result FailRun(string template1 = null, string template2 = null)
         {
             var _console = new MockConsole();
             using var o = new Orchestrator(_console);
 
-            Environment.ExitCode = o.Invoke(
+            var exitCode = o.Invoke(
                 (template1 ?? $"-i rep1.bed -i rep2.bed -r bio -s 1e-8 -w 1e-4").Split(' '));
 
-            Environment.ExitCode = o.Invoke(
+            exitCode = o.Invoke(
                 (template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
 
-            return _console.GetStderr() + _console.GetStdo();
+            exitCode = SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
+                exitCode, Environment.ExitCode);
+
+            return new Result(exitCode, _console.GetStderr() + _console.GetStdo());
         }
 
-        public string Run(IExporter<Peak> exporter)
+        public Result Run(IExporter<Peak> exporter)
         {
             SessionPath =
                 "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
@@ -126,12 +155,13 @@ namespace Genometric.MSPC.CLI.Tests
             var template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", TmpSamples[0], TmpSamples[1]);
 
             string output;
-            var _console = new MockConsole();
-            var o = new Orchestrator(exporter, _console);
-            o.Invoke(template.Split(' '));
-            output = _console.GetStdo();
+            var console = new MockConsole();
+            var o = new Orchestrator(exporter, console);
+            var exitCode = o.Invoke(template.Split(' '));
+            exitCode = SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
+                exitCode, Environment.ExitCode);
 
-            return output;
+            return new Result(exitCode, console.GetStdo());
         }
 
         public string AddTempSample(int featureCount = 1)

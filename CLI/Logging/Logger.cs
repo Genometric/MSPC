@@ -4,6 +4,7 @@
 
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
+using Genometric.MSPC.CLI.ConsoleAbstraction;
 using Genometric.MSPC.Core.Model;
 using log4net;
 using log4net.Appender;
@@ -13,6 +14,7 @@ using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.CommandLine;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -22,6 +24,7 @@ namespace Genometric.MSPC.CLI.Logging
 {
     public class Logger
     {
+        private readonly IConsoleExtended _console;
         private readonly int _sectionHeaderLenght = 20;
         private readonly int _fileNameMaxLength = 20;
         private static readonly string _cannotContinue = "MSPC cannot continue.";
@@ -47,8 +50,9 @@ namespace Genometric.MSPC.CLI.Logging
             }
         }
 
-        public Logger(string logFilePath, string repository, string name, string exportPath)
+        public Logger(IConsoleExtended console, string logFilePath, string repository, string name, string exportPath)
         {
+            _console = console;
             Setup(logFilePath, repository, name, exportPath);
         }
 
@@ -101,7 +105,7 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void LogException(string message)
         {
-            LogExceptionStatic(message);
+            LogExceptionStatic(_console, message);
             log.Error(message);
             log.Info(_linkToDocumentation);
             log.Info(_linkToIssuesPage);
@@ -109,27 +113,27 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(_cannotContinue);
         }
 
-        public static void LogExceptionStatic(string message)
+        public static void LogExceptionStatic(IConsoleExtended console, string message)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(string.Format("Error: {0}", message));
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(HintHelpMessage);
-            Console.ResetColor();
-            Console.WriteLine(_cannotContinue);
+            console.SetForegroundColor(ConsoleColor.Red);
+            console.WriteLine(string.Format("Error: {0}", message));
+            console.SetForegroundColor(ConsoleColor.Yellow);
+            console.WriteLine(HintHelpMessage);
+            console.ResetColor();
+            console.WriteLine(_cannotContinue);
         }
 
         public void LogWarning(string message)
         {
             log.Warn(message);
-            LogWarningStatic(message);
+            LogWarningStatic(_console, message);
         }
 
-        public static void LogWarningStatic(string message)
+        public static void LogWarningStatic(IConsoleExtended console, string message)
         {
-            Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine($"Warning: {message}");
-            Console.ResetColor();
+            console.SetForegroundColor(ConsoleColor.DarkMagenta);
+            console.WriteLine($"Warning: {message}");
+            console.ResetColor();
         }
 
         public void LogMSPCStatus(object sender, ValueEventArgs e)
@@ -155,14 +159,14 @@ namespace Genometric.MSPC.CLI.Logging
             if (report.UpdatesPrevious)
             {
                 msg.Insert(0, "\r");
-                Console.Write(msg.ToString());
+                _console.Write(msg.ToString());
                 _lastStatusUpdatedItsPrevious = true;
             }
             else
             {
                 if (_lastStatusUpdatedItsPrevious)
                     msg.Insert(0, Environment.NewLine);
-                Console.WriteLine(msg.ToString());
+                _console.WriteLine(msg.ToString());
                 _lastStatusUpdatedItsPrevious = false;
             }
         }
@@ -170,20 +174,20 @@ namespace Genometric.MSPC.CLI.Logging
         public void Log(string message, ConsoleColor color = ConsoleColor.Black)
         {
             if (color != ConsoleColor.Black)
-                Console.ForegroundColor = color;
-            Console.WriteLine(message);
-            Console.ResetColor();
+                _console.SetForegroundColor(color);
+            _console.WriteLine(message);
+            _console.ResetColor();
             log.Info(message);
         }
 
         public void LogFinish(string elapsedTime, string message = "All processes successfully finished.")
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(Environment.NewLine);
+            _console.SetForegroundColor(ConsoleColor.Green);
+            _console.WriteLine(Environment.NewLine);
             Log($"Elapsed time: {elapsedTime}");
             Log(message);
-            Console.WriteLine(Environment.NewLine);
-            Console.ResetColor();
+            _console.WriteLine(Environment.NewLine);
+            _console.ResetColor();
         }
 
         public void ShutdownLogger()
@@ -227,7 +231,7 @@ namespace Genometric.MSPC.CLI.Logging
             };
 
             columns[1] = Path.GetFileNameWithoutExtension(filename);
-            Console.WriteLine(_parserLogTable.GetRow(true, columns));
+            _console.WriteLine(_parserLogTable.GetRow(true, columns));
 
             columns[1] = filename;
             log.Info(_parserLogTable.GetRow(false, columns));
@@ -280,7 +284,7 @@ namespace Genometric.MSPC.CLI.Logging
                 }
 
                 var row = table.GetRow(true, sampleSummary);
-                Console.WriteLine(row);
+                _console.WriteLine(row);
                 log.Info(row);
             }
         }

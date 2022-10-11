@@ -6,6 +6,7 @@ using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.CommandLineInterface;
+using Genometric.MSPC.CLI.ConsoleAbstraction;
 using Genometric.MSPC.CLI.Exporter;
 using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.CLI.Logging;
@@ -23,6 +24,7 @@ namespace Genometric.MSPC.CLI
     internal class Orchestrator : IDisposable
     {
         private Logger _logger;
+        private readonly IConsoleExtended _console;
         private readonly IExporter<Peak> _exporter;
         private readonly string _defaultLoggerRepoName = "EventsLog";
         public string LogFile { private set; get; }
@@ -33,17 +35,29 @@ namespace Genometric.MSPC.CLI
 
         public CliConfig Config { private set; get; }
 
-        public Orchestrator() : this(new Exporter<Peak>()) { }
+        public Orchestrator() :
+            this(new Exporter<Peak>(), new SystemConsoleExtended())
+        { }
 
-        public Orchestrator(IExporter<Peak> exporter)
+        public Orchestrator(IConsoleExtended console) :
+            this(new Exporter<Peak>(), console)
+        { }
+
+        public Orchestrator(IExporter<Peak> exporter) :
+            this(exporter, new SystemConsoleExtended())
+        { }
+
+        public Orchestrator(IExporter<Peak> exporter, IConsoleExtended console)
         {
+            _console = console;
             _exporter = exporter;
 
             _cli = new Cli(
+                console,
                 Invoke,
                 (e, c) =>
                 {
-                    Logger.LogExceptionStatic(e.Message);
+                    Logger.LogExceptionStatic(_console, e.Message);
                     Environment.ExitCode = 1;
                 });
         }
@@ -101,7 +115,7 @@ namespace Genometric.MSPC.CLI
                     CultureInfo.InvariantCulture);
 
             LogFile = Path.Join(Config.OutputPath, repository + ".txt");
-            _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), Config.OutputPath);
+            _logger = new Logger(_console, LogFile, repository, Guid.NewGuid().ToString(), Config.OutputPath);
             return true;
         }
 

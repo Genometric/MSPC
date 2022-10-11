@@ -16,12 +16,16 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 {
     internal class Cli
     {
+        private readonly IConsole _console;
         private readonly Parser _parser;
 
         public Cli(
+            IConsole console,
             Action<CliConfig> handler,
             Action<Exception, InvocationContext> exceptionHandler)
         {
+            _console = console;
+
             var inputsOption = new Option<List<string>>(
                 name: "--input",
                 description: "Input samples to be processed in " +
@@ -382,7 +386,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             // now. This can be revisited in when/if system.commandline
             // improves on exception handling.
             // https://github.com/dotnet/command-line-api/issues/796
-            var exitCode = _parser.Invoke(filteredArgs);
+            var exitCode = _parser.Invoke(filteredArgs, _console);
             return exitCode != 0 ? exitCode : Environment.ExitCode;
         }
     }

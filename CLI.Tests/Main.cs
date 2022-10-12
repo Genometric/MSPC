@@ -280,13 +280,13 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains("testhost [options]", x.ConsoleOutput); // `testhost` since it is running the test env, otherwise it will correctly show `mspc`.
             Assert.Contains("Options:", x.ConsoleOutput);
             Assert.Contains("-i, --input <input> (REQUIRED)", x.ConsoleOutput);
-            Assert.Contains("-r, --replicate <bio|Biological|biological|tec|Technical|technical> (REQUIRED)", x.ConsoleOutput);
+            Assert.Contains("-r, --replicate <bio|biological|tec|technical> (REQUIRED)", x.ConsoleOutput);
             Assert.Contains("-s, --tauS <tauS> (REQUIRED)", x.ConsoleOutput);
             Assert.Contains("-w, --tauW <tauW> (REQUIRED)", x.ConsoleOutput);
             Assert.Contains("-g, --gamma <gamma>         ", x.ConsoleOutput);
             Assert.Contains("-a, --alpha <alpha>         ", x.ConsoleOutput);
             Assert.Contains("p procedure. [default: 0.05]", x.ConsoleOutput);
-            Assert.Contains("-m, --multipleIntersections <highest|lowest|UseHighestPValue|UseLowestPValue>", x.ConsoleOutput);
+            Assert.Contains("-m, --multipleIntersections <highest|lowest>", x.ConsoleOutput);
             Assert.Contains("-d, --degreeOfParallelism <degreeOfParallelism> ", x.ConsoleOutput);
             Assert.Contains("--excludeHeader          ", x.ConsoleOutput);
             Assert.Contains("--version", x.ConsoleOutput);
@@ -400,7 +400,8 @@ namespace Genometric.MSPC.CLI.Tests
         public void AppendNumberToGivenPathIfAlreadyExists()
         {
             // Arrange
-            var o = new Orchestrator();
+            var console = new MockConsole();
+            var o = new Orchestrator(console);
             string baseName = @"TT" + new Random().Next().ToString();
             var dirs = new List<string>
             {
@@ -419,6 +420,9 @@ namespace Genometric.MSPC.CLI.Tests
                 var samples = tmpMspc.TmpSamples;
                 o.Invoke($"-i {samples[0]} -i {samples[1]} -r bio -w 1E-2 -s 1E-8 -o {dirs[0]}".Split(' '));
             }
+
+            var test = console.GetStdo();
+
 
             // Assert
             // Gets the directory name from full path.

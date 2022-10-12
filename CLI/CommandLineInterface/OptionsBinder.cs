@@ -14,13 +14,13 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
         private readonly Option<List<string>> _inputsPathOption;
         private readonly Option<string> _outputPathOption;
         private readonly Option<string> _parserConfigFilenameOption;
-        private readonly Option<ReplicateType> _replicateTypeOption;
+        private readonly Option<string> _replicateTypeOption;
         private readonly Option<double> _sTOption;
         private readonly Option<double> _wTOption;
         private readonly Option<double> _gTOption;
         private readonly Option<float> _alphaOption;
         private readonly Option<string> _cOption;
-        private readonly Option<MultipleIntersections> _mOption;
+        private readonly Option<string> _mOption;
         private readonly Option<int?> _dpOption;
         private readonly Option<bool> _excludeHeaderOption;
 
@@ -31,13 +31,13 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             Option<List<string>> inputsDirOption,
             Option<string> outputPathOption,
             Option<string> parserConfigFilenameOption,
-            Option<ReplicateType> replicateTypeOption,
+            Option<string> replicateTypeOption,
             Option<double> sTOption,
             Option<double> wTOption,
             Option<double> gTOption,
             Option<float> alphaOption,
             Option<string> cOption,
-            Option<MultipleIntersections> mOption,
+            Option<string> mOption,
             Option<int?> dbOption,
             Option<bool> excludeHeaderOption)
         {
@@ -64,17 +64,20 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             var filenames = GetValue(_inputsOption, new List<string>());
             filenames.AddRange(GetValue(_inputsPathOption, new List<string>()));
 
+            _ = Enum.TryParse(GetValue(_mOption), out MultipleIntersections m);
+            _ = Enum.TryParse(GetValue(_replicateTypeOption), out ReplicateType r);
+
             return new CliConfig(
                 inputFiles: filenames.AsReadOnly(),
                 outputPath: EnsureOutputPath(GetValue(_outputPathOption)),
-                replicateType: GetValue(_replicateTypeOption),
+                replicateType: r,
                 parserConfigFilename: GetValue(_parserConfigFilenameOption),
                 tauS: GetValue(_sTOption),
                 tauW: GetValue(_wTOption),
                 gamma: GetValue(_gTOption, GetValue(_sTOption)),
                 alpha: GetValue(_alphaOption),
                 c: ParseAndAdjustCInNeeded(GetValue(_cOption), filenames.Count),
-                multipleIntersections: GetValue(_mOption),
+                multipleIntersections: m,
                 degreeOfParallelism: GetValue(_dpOption),
                 excludeHeader: GetValue(_excludeHeaderOption));
         }

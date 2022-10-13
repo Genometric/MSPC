@@ -181,11 +181,11 @@ namespace Genometric.MSPC.CLI.Tests
         public void ThrowExceptionForInvalidCultureValue()
         {
             // Arrange
-            var parserFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
+            var parserFilename = Path.Join(Environment.CurrentDirectory, Guid.NewGuid().ToString() + ".json");
 
             // Create an json file with a `culture` field containing 
             // invalid culture name. 
-            using (StreamWriter w = new StreamWriter(parserFilename))
+            using (var w = new StreamWriter(parserFilename))
                 w.WriteLine("{\"Culture\":\"xyz\"}");
 
             // Act

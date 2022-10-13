@@ -5,7 +5,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 {
     internal class CliConfig : Config
     {
-        public IReadOnlyCollection<string> InputFiles { get; }
+        public IReadOnlyList<string> InputFiles { get; }
 
         public string OutputPath { get; }
 
@@ -16,7 +16,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
         public string ParserConfigFilename { get; }
 
         public CliConfig(
-            IReadOnlyCollection<string> inputFiles,
+            IReadOnlyList<string> inputFiles,
             string outputPath,
             ReplicateType replicateType,
             double tauW, double tauS, double gamma,

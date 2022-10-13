@@ -11,7 +11,6 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
     internal class OptionsBinder : BinderBase<CliConfig>
     {
         private readonly Option<List<string>> _inputsOption;
-        private readonly Option<List<string>> _inputsPathOption;
         private readonly Option<string> _outputPathOption;
         private readonly Option<string> _parserConfigFilenameOption;
         private readonly Option<string> _replicateTypeOption;
@@ -28,7 +27,6 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
         public OptionsBinder(
             Option<List<string>> inputsOption,
-            Option<List<string>> inputsDirOption,
             Option<string> outputPathOption,
             Option<string> parserConfigFilenameOption,
             Option<string> replicateTypeOption,
@@ -42,7 +40,6 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             Option<bool> excludeHeaderOption)
         {
             _inputsOption = inputsOption;
-            _inputsPathOption = inputsDirOption;
             _outputPathOption = outputPathOption;
             _parserConfigFilenameOption = parserConfigFilenameOption;
             _replicateTypeOption = replicateTypeOption;
@@ -62,7 +59,6 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             _context = bindingContext;
 
             var filenames = GetValue(_inputsOption, new List<string>());
-            filenames.AddRange(GetValue(_inputsPathOption, new List<string>()));
 
             _ = Enum.TryParse(GetValue(_mOption), out MultipleIntersections m);
             _ = Enum.TryParse(GetValue(_replicateTypeOption), out ReplicateType r);
@@ -117,6 +113,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                         c = inputFilesCount;
                 }
             }
+
+            if (c < 1)
+                c = 1;
             return c;
         }
 

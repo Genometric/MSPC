@@ -46,7 +46,7 @@ namespace Genometric.MSPC.CLI.Logging
             {
                 return
                     $"You may run {Assembly.GetCallingAssembly().GetName().Name} " +
-                    $"with either of [{CommandLineOptions.HelpOption}] tags for help.";
+                    $"with either of [-?, -h, --help] tags for help.";
             }
         }
 

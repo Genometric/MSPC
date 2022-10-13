@@ -73,10 +73,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             return _parser.Invoke(filteredArgs, _console);
         }
 
-        private RootCommand GetRootCommand(Action<CliConfig> handler)
+        private static RootCommand GetRootCommand(Action<CliConfig> handler)
         {
             var inputsOption = GetInputsOption();
-            var inputsDirOption = GetInputsDirOption();
             var outputOption = GetOutputOption();
             var parserFilenameOption = GetParserOptionFilename();
             var repTypeOption = GetRepTypeOption();
@@ -106,7 +105,6 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             rootCmd.AddOption(cOption);
             rootCmd.AddOption(outputOption);
             rootCmd.AddOption(mOption);
-            rootCmd.AddOption(inputsDirOption);
             rootCmd.AddOption(parserFilenameOption);
             rootCmd.AddOption(dpOption);
             rootCmd.AddOption(excludeHeaderOption);
@@ -116,7 +114,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 handler(options);
             },
             new OptionsBinder(
-                inputsOption, inputsDirOption,
+                inputsOption,
                 outputPathOption: outputOption,
                 parserConfigFilenameOption: parserFilenameOption,
                 replicateTypeOption: repTypeOption,
@@ -207,38 +205,6 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             option.AddAlias("-i");
             option.IsRequired = true;
             option.AllowMultipleArgumentsPerToken = true;
-
-            return option;
-        }
-
-        private static Option<List<string>> GetInputsDirOption()
-        {
-            var option = new Option<List<string>>(
-                name: "--folder-input",
-                description:
-                    "Sets a path to a folder that all " +
-                    "its containing files in BED format are considered " +
-                    "as inputs.",
-                parseArgument: x =>
-                {
-                    if (!x.Tokens.Any())
-                        x.ErrorMessage = "Required";
-
-                    var filenames = new List<string>();
-                    foreach (var token in x.Tokens)
-                    {
-                        var dirName = token.Value;
-                        var files = Directory.GetFiles(
-                            Path.GetDirectoryName(dirName),
-                            Path.GetFileName(dirName));
-                        foreach (var file in files)
-                            filenames.Add(file);
-                    }
-
-                    return filenames;
-                });
-
-            option.AddAlias("-f");
 
             return option;
         }
@@ -434,15 +400,15 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
             option.AddValidator(x =>
             {
-                if (x.Token is null)
+                if (!x.Tokens.Any())
                     return;
-                var token = x.Token;
-                var value = token.Value;
+
+                string value = x.Tokens.Single().Value;
 
                 // TODO: this can be improved using regex.
                 // Currently values such as `1%2` will be
                 // incorrectly parsed as valid values.
-                if (!int.TryParse(value.Replace("%", ""), out int c) || c < 1)
+                if (!int.TryParse(value.Replace("%", ""), out int c))
                     x.ErrorMessage = "Invalid value";
             });
 
@@ -487,7 +453,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
         {
             var option = new Option<int?>(
                 name: "--degreeOfParallelism",
-                description: 
+                description:
                     "Set the degree of parallelism. If not provided, " +
                     "it utilizes as many threads as the underlying " +
                     "scheduler provides.");

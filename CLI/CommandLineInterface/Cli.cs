@@ -47,9 +47,15 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 .UseHelp(context =>
                 {
                     context.HelpBuilder.CustomizeLayout(
-                        _ => HelpBuilder.Default.GetLayout().Prepend(
-                            _ => AnsiConsole.Write(
-                                new FigletText("MSPC").Color(Color.Chartreuse1))));
+                        x =>
+                        {
+                            if (x.ParseResult.Errors.Any())
+                                return new List<HelpSectionDelegate>();
+
+                            return HelpBuilder.Default.GetLayout().Prepend(
+                           _ => AnsiConsole.Write(
+                               new FigletText("MSPC").Color(Color.Chartreuse1)));
+                        });
                 })
                 .Build();
         }

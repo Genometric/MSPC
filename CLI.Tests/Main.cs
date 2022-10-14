@@ -85,10 +85,12 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             Result x;
+            var rep1 = GetFilename("rep1");
+            var rep2 = GetFilename("rep2");
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                x = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
+                x = tmpMspc.Run(false, $"-i {rep1} -i {rep2} -w 1E-2 -s 1E-8");
 
             // Assert
             Assert.Contains("Option '--replicate' is required.", x.ConsoleOutput);
@@ -467,20 +469,23 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(x.ExitCode != 0);
         }
 
-        //[Fact]
+        [Fact]
         public void ReuseExistingLogger()
         {
             // Arrange
             Result x;
+            var rep1 = GetFilename("rep1");
+            var rep2 = GetFilename("rep2");
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                x = tmpMspc.FailRun();
+                x = tmpMspc.FailRun(
+                    template2: $"-i {rep1} -i {rep2} -r bio -s 1e-8 -w 1e-4");
 
             // Assert
-            Assert.Contains("The following files are missing.", x.ConsoleOutput);
-            Assert.Contains("- rep1.bed", x.ConsoleOutput);
-            Assert.Contains("- rep2.bed", x.ConsoleOutput);
+            Assert.Contains("The following files are missing or inaccessible.", x.ConsoleOutput);
+            Assert.Contains($"{Environment.NewLine}- {rep1}", x.ConsoleOutput);
+            Assert.Contains($"{Environment.NewLine}- {rep2}", x.ConsoleOutput);
             Assert.Contains("Option '--input' is required.", x.ConsoleOutput);
         }
 

@@ -309,7 +309,6 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
-        [InlineData("0%")]
         [InlineData("10%")]
         [InlineData("50%")]
         [InlineData("100%")]
@@ -318,8 +317,6 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange
             int inputCount = 10;
             int expectedC = (int.Parse(c.Replace("%", "")) * 10) / 100;
-            if (expectedC == 0)
-                expectedC = 1;
 
             var tmpDir = Path.GetTempPath();
             var files = new List<string>();
@@ -327,7 +324,7 @@ namespace Genometric.MSPC.CLI.Tests
             for (int i = 0; i < inputCount; i++)
             {
                 var file = Path.Join(tmpDir, $"sample_{i}.bed");
-                using (File.Create(file)) ;
+                File.Create(file).Close();
                 files.Add(file);
                 args.Append($" -i {file}");
             }                

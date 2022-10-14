@@ -239,3 +239,11 @@ a header to all the files it generates.
 | Short | Long | Required | Valid values | Default value |
 | ----- | ---- | ---- | ------------ | ------------- |
 |       | `--excludeHeader` | Optional |  | `False` (not provided) |
+
+Example:
+
+```shell
+dotnet mspc.dll --excludeHeader
+dotnet mspc.dll --excludeHeader true
+dotnet mspc.dll --excludeHeader false
+```

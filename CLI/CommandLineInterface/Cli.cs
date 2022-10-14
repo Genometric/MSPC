@@ -19,6 +19,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
         private readonly IConsole _console;
         private readonly Parser _parser;
 
+        private const string _tauSName = "--tauS";
+        private const string _tauWName = "--tauW";
+
         public Cli(
             IConsole console,
             Action<CliConfig> handler,
@@ -143,12 +146,16 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 if (tauSResult is null || tauSResult.Token is null)
                     return;
 
-                var tauW = tauWResult.GetValueOrDefault<double>();
-                var tauS = tauSResult.GetValueOrDefault<double>();
-
-                if (tauW <= tauS)
-                    x.ErrorMessage = "Stringency threshold (TauS) " +
-                    "should be lower than weak threshold (TauW).";
+                if (tauWResult.ErrorMessage is null &&
+                    tauSResult.ErrorMessage is null)
+                {
+                    var tauW = tauWResult.GetValueOrDefault<double>();
+                    var tauS = tauSResult.GetValueOrDefault<double>();
+                    if (tauW <= tauS)
+                        x.ErrorMessage =
+                        $"Stringency threshold ({_tauSName} {tauS}) " +
+                        $"should be lower than weak threshold ({_tauWName} {tauW}).";
+                }
             });
 
             return rootCmd;
@@ -296,15 +303,17 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
         private static Option<string> GetRepTypeOption()
         {
+            var n = "--replicate";
             var option = new Option<string>(
-                name: "--replicate",
+                name: n,
                 description: "Sets the replicate type of samples.",
                 parseArgument: x =>
                 {
                     if (!x.Tokens.Any())
                         x.ErrorMessage = "Required";
 
-                    switch (x.Tokens.Single().Value.ToLower())
+                    var value = x.Tokens.Single().Value.ToLower();
+                    switch (value)
                     {
                         case "bio":
                         case "biological":
@@ -315,7 +324,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                             return ReplicateType.Technical.ToString();
 
                         default:
-                            x.ErrorMessage = "Invalid value";
+                            x.ErrorMessage = $"Invalid value `{n} {value}`";
                             return default;
                     }
                 });
@@ -332,7 +341,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
         private static Option<double> GetTauSOption()
         {
             var option = new Option<double>(
-                name: "--tauS",
+                name: _tauSName,
                 description:
                     "Sets stringency threshold. All peaks " +
                     "with p-values lower than this value are considered as " +
@@ -344,7 +353,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             {
                 var value = x.GetValueForOption(option);
                 if (value < 0 || value > 1)
-                    x.ErrorMessage = "Invalid probability";
+                    x.ErrorMessage =
+                        $"Invalid probability `{_tauSName} {value}`; " +
+                        $"value should be between 0 and 1.";
             });
 
             return option;
@@ -353,7 +364,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
         private static Option<double> GetTauWOption()
         {
             var option = new Option<double>(
-                name: "--tauW",
+                name: _tauWName,
                 description:
                     "Sets weak threshold. All peaks with p-values " +
                     "higher than this value are considered as weak peaks.");
@@ -364,7 +375,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             {
                 var value = x.GetValueForOption(option);
                 if (value < 0 || value > 1)
-                    x.ErrorMessage = "Invalid probability";
+                    x.ErrorMessage = 
+                        $"Invalid probability `{_tauWName} {value}`; " +
+                        $"value should be between 0 and 1.";
             });
 
             return option;
@@ -372,21 +385,25 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
         private static Option<double> GetTauGOption()
         {
+            var n = "--gamma";
             var option = new Option<double>(
-                name: "--gamma",
+                name: n,
                 description:
-                    "Sets combined stringency threshold. " +
+                    "Sets the combined stringency threshold. " +
                     "The peaks with their combined p-values satisfying " +
                     "this threshold will be confirmed." +
                     $"By default, the value of this option will " +
-                    $"be set to the value given for --{GetTauSOption().Name}.");
+                    $"be set to the value given for the " +
+                    $"stringency threshold ({_tauSName}).");
 
             option.AddAlias("-g");
             option.AddValidator(x =>
             {
                 var value = x.GetValueForOption(option);
                 if (value < 0 || value > 1)
-                    x.ErrorMessage = "Invalid probability";
+                    x.ErrorMessage = 
+                    $"Invalid probability `{n} {value}`; " +
+                    $"value should be between 0 and 1.";
             });
 
             return option;
@@ -394,8 +411,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
         private static Option<float> GetAlphaOption()
         {
+            var n = "--alpha";
             var option = new Option<float>(
-                name: "--alpha",
+                name: n,
                 description:
                     "Sets false discovery rate " +
                     "of Benjamini–Hochberg step-up procedure.",
@@ -406,7 +424,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             {
                 var value = x.GetValueForOption(option);
                 if (value < 0 || value > 1)
-                    x.ErrorMessage = "Invalid value";
+                    x.ErrorMessage = 
+                        $"Invalid value `{n} {value}`; " +
+                        $"value should be between 0 and 1.";
             });
 
             return option;
@@ -414,11 +434,18 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
         private static Option<string> GetCOption()
         {
+            var n = "-c";
             var option = new Option<string>(
-                name: "-c",
+                name: n,
                 description:
                     "Sets minimum number of overlapping " +
-                    "peaks before combining p-values.",
+                    "peaks before combining p-values. " +
+                    "you may set the value to an absolute " +
+                    "number (e.g., `3`) or a percentage " +
+                    "of the number of input samples " +
+                    "(e.g., `100%`). If set to more than the " +
+                    "number of samples, it will be changed to " +
+                    "the number of samples.",
                 getDefaultValue: () => "1")
             {
                 IsRequired = false
@@ -434,8 +461,11 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 // TODO: this can be improved using regex.
                 // Currently values such as `1%2` will be
                 // incorrectly parsed as valid values.
-                if (!int.TryParse(value.Replace("%", ""), out int c))
-                    x.ErrorMessage = "Invalid value";
+                if (!int.TryParse(value.Replace("%", ""), out int c) || c < 1)
+                    x.ErrorMessage =
+                        $"Invalid value `{n} {value}`; it should " +
+                        $"be more than 1 and less than or equal " +
+                        $"to the number of samples.";
             });
 
             return option;
@@ -443,8 +473,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
         private static Option<string> GetMOption()
         {
+            var n = "--multipleIntersections";
             var option = new Option<string>(
-                name: "--multipleIntersections",
+                name: n,
                 description:
                     "When multiple peaks from a sample overlap " +
                     "with a given peak, this argument defines which of the " +
@@ -455,7 +486,8 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                     if (!x.Tokens.Any())
                         return default;
 
-                    switch (x.Tokens.Single().Value.ToLower())
+                    var value = x.Tokens.Single().Value.ToLower();
+                    switch (value)
                     {
                         case "lowest":
                             return MultipleIntersections.UseLowestPValue.ToString();
@@ -464,7 +496,8 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                             return MultipleIntersections.UseHighestPValue.ToString();
 
                         default:
-                            x.ErrorMessage = "Invalid value";
+                            x.ErrorMessage = 
+                                $"Invalid value `{n} {value}`";
                             return default;
                     }
                 });
@@ -480,13 +513,26 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
         private static Option<int?> GetDpOption()
         {
+            var n = "--degreeOfParallelism";
             var option = new Option<int?>(
-                name: "--degreeOfParallelism",
+                name: n,
                 description:
                     "Set the degree of parallelism. If not provided, " +
                     "it utilizes as many threads as the underlying " +
-                    "scheduler provides.");
+                    "scheduler allows.");
             option.AddAlias("-d");
+
+            option.AddValidator(x =>
+            {
+                if (!x.Tokens.Any())
+                    return;
+
+                string value = x.Tokens.Single().Value;
+                if (!int.TryParse(value, out int m) || m < 1)
+                    x.ErrorMessage =
+                        $"Invalid value `{n} {value}`. " +
+                        $"It should be an integer greater than 0.";
+            });
 
             return option;
         }

@@ -6,6 +6,7 @@ using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Exporter;
+using Genometric.MSPC.CLI.Tests.MockTypes;
 using Genometric.MSPC.Core;
 using Genometric.MSPC.Core.Model;
 using System;
@@ -398,12 +399,12 @@ namespace Genometric.MSPC.CLI.Tests
             Directory.Delete(path, true);
         }
 
-        //[Fact]
-        public void ExportPeaksWithPValueZero()
+        [Fact]
+        public void InfForPeaksWithVeryLowPValue()
         {
             // Arrange
-            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep1Path = Path.Join(Environment.CurrentDirectory, Main.GetFilename("rep1"));
+            string rep2Path = Path.Join(Environment.CurrentDirectory, Main.GetFilename("rep2"));
 
             using (var w = new StreamWriter(rep1Path))
                 w.WriteLine("chr1\t10\t20\tA\t326");
@@ -412,29 +413,36 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string outputPath;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
-                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke($"-i {rep1Path} -i {rep2Path} -r bio -w 1e-2 -s 1e-4".Split(' '));
                 outputPath = o.Config.OutputPath;
             }
 
             string rep1Confirmed;
-            using (var reader = new StreamReader(outputPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(rep1Path) + Path.DirectorySeparatorChar + Attributes.Confirmed + ".bed"))
+            using (var reader = new StreamReader(Path.Join(
+                outputPath,
+                Path.GetFileNameWithoutExtension(rep1Path),
+                Attributes.Confirmed + ".bed")))
             {
                 reader.ReadLine();
                 rep1Confirmed = reader.ReadLine();
             }
 
             string rep2Confirmed;
-            using (var reader = new StreamReader(outputPath + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(rep2Path) + Path.DirectorySeparatorChar + Attributes.Confirmed + ".bed"))
+            using (var reader = new StreamReader(Path.Join(
+                outputPath,
+                Path.GetFileNameWithoutExtension(rep2Path),
+                Attributes.Confirmed + ".bed")))
             {
                 reader.ReadLine();
                 rep2Confirmed = reader.ReadLine();
             }
 
             // Assert
-            Assert.Equal("chr1\t10\t20\tA\t0", rep1Confirmed);
-            Assert.Equal("chr1\t15\t25\tB\t0", rep2Confirmed);
+            Assert.Equal("chr1\t10\t20\tA\tinf", rep1Confirmed);
+            Assert.Equal("chr1\t15\t25\tB\tinf", rep2Confirmed);
 
             // Clean up
             File.Delete(rep1Path);

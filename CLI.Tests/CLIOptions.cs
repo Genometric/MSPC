@@ -121,7 +121,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(rep1: rep1, rep2: rep2, rep3: rep3).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(rep1: rep1, rep2: rep2, rep3: rep3));
 
             // Assert
             Assert.True(options.InputFiles.Count == validInputCount);
@@ -173,7 +173,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(args.Split(' '));
+            cli.Invoke(args);
 
             // Assert
             Assert.True(options.InputFiles.Count == inputCount);
@@ -202,7 +202,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "mspc_" + timeStamp + "_*.bed", rep3: null).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "mspc_" + timeStamp + "_*.bed", rep3: null));
 
             // Assert
             Assert.True(options.InputFiles.Count == 10);
@@ -223,7 +223,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(p: parserPath).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(p: parserPath));
 
             // Assert
             Assert.Equal(parserPath, options.ParserConfigFilename);
@@ -239,7 +239,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(tauS: tauS).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(tauS: tauS));
 
             // Assert
             Assert.True(options.TauS == tauS);
@@ -255,7 +255,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(tauW: tauW).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(tauW: tauW));
 
             // Assert
             Assert.True(options.TauW == tauW);
@@ -271,7 +271,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(gamma: gamma).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(gamma: gamma));
 
             // Assert
             Assert.True(options.Gamma == gamma);
@@ -287,7 +287,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(alpha: alpha).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(alpha: alpha));
 
             // Assert
             Assert.True(options.Alpha == alpha);
@@ -302,7 +302,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(c: c).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(c: c));
 
             // Assert
             Assert.True(options.C == int.Parse(c));
@@ -332,7 +332,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(args.ToString().Split(' '));
+            cli.Invoke(args.ToString());
 
             // Assert
             Assert.Equal(expectedC, options.C);
@@ -354,7 +354,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(args.ToString().Split(' '));
+            cli.Invoke(args.ToString());
 
             // Assert
             Assert.Equal(expectedC, options.C);
@@ -362,14 +362,14 @@ namespace Genometric.MSPC.CLI.Tests
 
         [Theory]
         [InlineData("lowest", MultipleIntersections.UseLowestPValue)]
-        //[InlineData("LowEST", MultipleIntersections.UseLowestPValue)]
+        [InlineData("LowEST", MultipleIntersections.UseLowestPValue)]
         [InlineData("highest", MultipleIntersections.UseHighestPValue)]
         public void ReadM(string m, MultipleIntersections expectedValue)
         {
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(m: m).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(m: m));
 
             // Assert
             Assert.True(options.MultipleIntersections == expectedValue);
@@ -385,7 +385,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(r: r).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(r: r));
 
             // Assert
             Assert.True(options.ReplicateType == expectedValue);
@@ -399,7 +399,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(d: dp.ToString()).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(d: dp.ToString()));
 
             // Assert
             Assert.True(options.DegreeOfParallelism == dp);
@@ -413,7 +413,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(excludeHeader: exclude).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(excludeHeader: exclude));
 
             // Assert
             Assert.True(options.ExcludeHeader == exclude);
@@ -425,7 +425,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(rep3: null, r: "bio", tauW: 1e-2, tauS: 1e-8, gamma: null, alpha: null, c: null, m: null, p: null, d: null, excludeHeader: null).Split(' '));
+            cli.Invoke(GenerateShortNameArguments(rep3: null, r: "bio", tauW: 1e-2, tauS: 1e-8, gamma: null, alpha: null, c: null, m: null, p: null, d: null, excludeHeader: null));
 
             // Assert
             Assert.True(options.InputFiles.Count == 2);
@@ -441,7 +441,7 @@ namespace Genometric.MSPC.CLI.Tests
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
             cli.Invoke(GenerateShortNameArguments(
-                c: null, tauW: 1e-2, tauS: 1e-8, gamma: null, alpha: null).Split(' '));
+                c: null, tauW: 1e-2, tauS: 1e-8, gamma: null, alpha: null));
 
             // Assert
             Assert.True(options.Gamma == 1E-8);

@@ -59,7 +59,7 @@ namespace Genometric.MSPC.CLI
                 (e, c) =>
                 {
                     Logger.LogExceptionStatic(_console, e.Message);
-                    //Environment.ExitCode = 1;
+                    //Environment.ExitCode = 1
                 });
         }
 

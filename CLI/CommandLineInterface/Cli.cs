@@ -63,6 +63,11 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 .Build();
         }
 
+        public int Invoke(string args, char delimiter = ' ')
+        {
+            return Invoke(args.Split(delimiter));
+        }
+
         public int Invoke(string[] args)
         {
             var filteredArgs = args.Where(

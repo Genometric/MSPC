@@ -151,7 +151,8 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string logFile;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
                 o.Invoke(string.Format(
                     "-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", 

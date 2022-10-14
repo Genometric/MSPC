@@ -36,7 +36,7 @@ namespace Genometric.MSPC.CLI
 
         public CliConfig Config { private set; get; }
 
-        public Orchestrator() :
+        internal Orchestrator() :
             this(new Exporter<Peak>(), new SystemConsoleExtended())
         { }
 

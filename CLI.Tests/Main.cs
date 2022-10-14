@@ -382,7 +382,8 @@ namespace Genometric.MSPC.CLI.Tests
             WriteSampleFiles(out string rep1Filename, out string rep2Filename, out _);
 
             // Act
-            var orchestrator = new Orchestrator();
+            var console = new MockConsole();
+            var orchestrator = new Orchestrator(console);
             orchestrator.Invoke($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path + Path.DirectorySeparatorChar}".Split(' '));
             output_path += "_0";
 
@@ -400,7 +401,8 @@ namespace Genometric.MSPC.CLI.Tests
         public void GenerateOutputPathIfNotGiven()
         {
             // Arrange
-            var o = new Orchestrator();
+            var console = new MockConsole();
+            var o = new Orchestrator(console);
 
             // Act
             using (var mspc = new TmpMspc())
@@ -622,7 +624,8 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             string logFile;
             string path;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
                 o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
@@ -661,7 +664,8 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             string logFile;
             string path;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
                 o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
@@ -697,7 +701,8 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             string logFile;
             string path;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
                 o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
@@ -738,7 +743,8 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string logFile;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
                 o.Invoke($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -o {outputPath}".Split(' '));
                 logFile = o.LogFile;

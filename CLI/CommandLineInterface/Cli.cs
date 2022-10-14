@@ -97,9 +97,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             var rootCmd = new RootCommand(
                 "Using combined evidence from replicates to evaluate " +
                 "ChIP-seq and single-cell peaks." +
-                $"{Environment.NewLine}Documentation:\thttps://genometric.github.io/MSPC/" +
-                $"{Environment.NewLine}Source Code:\thttps://github.com/Genometric/MSPC" +
-                $"{Environment.NewLine}Publications:\thttps://genometric.github.io/MSPC/publications" +
+                $"{Environment.NewLine}Documentation: https://genometric.github.io/MSPC/" +
+                $"{Environment.NewLine}Source Code:   https://github.com/Genometric/MSPC" +
+                $"{Environment.NewLine}Publications:  https://genometric.github.io/MSPC/publications" +
                 $"{Environment.NewLine}");
 
             rootCmd.AddOption(inputsOption);
@@ -315,17 +315,16 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                             return ReplicateType.Technical.ToString();
 
                         default:
-                            //x.ErrorMessage = "Invalid value";
+                            x.ErrorMessage = "Invalid value";
                             return default;
                     }
                 });
 
             option.AddAlias("-r");
             option.IsRequired = true;
-            option.FromAmong(new string[] {
+            option.AddCompletions(new[] {
                 "bio", ReplicateType.Biological.ToString().ToLower(),
-                "tec", ReplicateType.Technical.ToString().ToLower()
-            });
+                "tec", ReplicateType.Technical.ToString().ToLower()});
 
             return option;
         }
@@ -378,7 +377,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 description:
                     "Sets combined stringency threshold. " +
                     "The peaks with their combined p-values satisfying " +
-                    "this threshold will be confirmed.");
+                    "this threshold will be confirmed." +
+                    $"By default, the value of this option will " +
+                    $"be set to the value given for --{GetTauSOption().Name}.");
 
             option.AddAlias("-g");
             option.AddValidator(x =>
@@ -469,7 +470,10 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                 });
 
             option.AddAlias("-m");
-            option.FromAmong(new string[] { "lowest", "highest" });
+            option.AddCompletions(new[] { "lowest", "highest" });
+            option.SetDefaultValue(
+                default == MultipleIntersections.UseLowestPValue ?
+                "lowest" : "highest");
 
             return option;
         }

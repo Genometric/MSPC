@@ -286,9 +286,9 @@ namespace Genometric.MSPC.CLI.Tests
             // Assert
             Assert.Contains("Description:", x.ConsoleOutput);
             Assert.Contains("Using combined evidence from replicates to evaluate ChIP-seq and single-cell peaks.", x.ConsoleOutput);
-            Assert.Contains("Documentation:\thttps://genometric.github.io/MSPC/", x.ConsoleOutput);
-            Assert.Contains("Source Code:\thttps://github.com/Genometric/MSPC", x.ConsoleOutput);
-            Assert.Contains("Publications:\thttps://genometric.github.io/MSPC/publications", x.ConsoleOutput);
+            Assert.Contains("Documentation: https://genometric.github.io/MSPC/", x.ConsoleOutput);
+            Assert.Contains("Source Code:   https://github.com/Genometric/MSPC", x.ConsoleOutput);
+            Assert.Contains("Publications:  https://genometric.github.io/MSPC/publications", x.ConsoleOutput);
             Assert.Contains("Usage:", x.ConsoleOutput);
             Assert.Contains("testhost [options]", x.ConsoleOutput); // `testhost` since it is running the test env, otherwise it will correctly show `mspc`.
             Assert.Contains("Options:", x.ConsoleOutput);

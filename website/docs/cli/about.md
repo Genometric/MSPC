@@ -2,13 +2,28 @@
 title: About
 ---
 
-MSPC `mspc.dll` is a command line interface to the MSPC method; 
+```shell
+  __  __   ____    ____     ____
+ |  \/  | / ___|  |  _ \   / ___|
+ | |\/| | \___ \  | |_) | | |
+ | |  | |  ___) | |  __/  | |___
+ |_|  |_| |____/  |_|      \____|
+
+
+Description:
+  Using combined evidence from replicates to evaluate ChIP-seq and single-cell peaks.
+  Documentation: https://genometric.github.io/MSPC/
+  Source Code:   https://github.com/Genometric/MSPC
+  Publications:  https://genometric.github.io/MSPC/publications
+```
+
+MSPC `mspc` is a command line interface to the MSPC method; 
 it parses input datasets (e.g., BED files), invokes the method
 to analyze them, and persists the results. 
 
-The `mspc.dll` is a cross-platform command-line application, and 
+The `mspc` is a cross-platform command-line application, and 
 can be invoked from any shell, such as Windows PowerShell, Linux 
-shell, or Mac OS Terminal. A basic `mspc.dll` invocation takes four 
+shell, or Mac OS Terminal. A basic `mspc` invocation takes four 
 arguments (i.e., [input](cli/args.md#input), 
 [replicate type](cli/args.md#replicate-type), and
 [stringency](cli/args.md#stringency-threshold) and
@@ -61,7 +76,7 @@ biological replicates (`-r bio`) with `1E-4` and `1E-8` thresholds
 on p-values defining stringent and weak peaks respectively. 
 
 
-Once executed, MSPC reports the following: 
+Once executed, MSPC reports the following (see the [Output section](output) for details): 
 - For each parsed sample, it reports the number of parsed peaks,
 minimum and maximum p-values parsed from the file;
 - Reports analysis steps;

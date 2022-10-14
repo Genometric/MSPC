@@ -12,6 +12,7 @@ using System.Linq;
 using Genometric.MSPC.CLI.CommandLineInterface;
 using Genometric.MSPC.CLI.ConsoleAbstraction;
 using Genometric.MSPC.CLI.Logging;
+using Genometric.MSPC.CLI.Tests.MockTypes;
 
 namespace Genometric.MSPC.CLI.Tests
 {
@@ -37,7 +38,7 @@ namespace Genometric.MSPC.CLI.Tests
 
         private static Cli GetCli(Action<CliConfig> handler)
         {
-            var console = new SystemConsoleExtended();
+            var console = new MockConsole();
             var cli = new Cli(
                 console,
                 handler,
@@ -62,7 +63,7 @@ namespace Genometric.MSPC.CLI.Tests
             bool? excludeHeader = false)
         {
             var builder = new StringBuilder();
-            var tmpDir = Environment.CurrentDirectory;// Path.GetTempPath();
+            var tmpDir = Environment.CurrentDirectory;
             if (rep1 is not null)
             {
                 if (!rep1.Contains('*') && !rep1.Contains('?'))
@@ -455,11 +456,15 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // The new cli does not throw exception.
             // Arrange & Act
-            /*(var cli, var options) = GetCli();
-            string[] arguments = "-w 1E-2 -s 1E-8 -r bio".Split(' ');
+            CliConfig options = default;
+            var cli = GetCli((x) => { options = x; });
+
+            // Act
+            cli.Invoke("-w 1E-2 -s 1E-8 -r bio");
 
             // Assert
-            Assert.Throws<ArgumentException>(() => cli.Invoke(arguments));*/
+            
+            //Assert.Throws<ArgumentException>(() => cli.Invoke(arguments));
         }
 
         [Fact]

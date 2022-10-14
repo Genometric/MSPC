@@ -29,12 +29,17 @@ namespace Genometric.MSPC.CLI.Tests
         /// the underscore (_) char is added to keep 
         /// forward slash (/) in the path.
         /// </summary>
-        private string IllegalPath
+        private static string IllegalPath
         {
             get
             {
                 return OperatingSystem.IsWindows() ? "C:\\*<>*\\//" : "/_";
             }
+        }
+
+        public static string GetFilename(string prefix)
+        {
+            return $"{prefix}{DateTimeOffset.Now.ToUnixTimeMilliseconds}";
         }
 
         private static void WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture)
@@ -95,13 +100,19 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             Result x;
+            var rep1 = GetFilename("rep1");
+            var rep2 = GetFilename("rep2");
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                x = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8");
+                x = tmpMspc.Run(false, $"-i {rep1} -i {rep2} -r bio -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("The following files are missing.\r\n- rep1.bed\r\n- rep2.bed", x.ConsoleOutput);
+            Assert.Contains(
+                $"The following files are missing or inaccessible." +
+                $"{Environment.NewLine}- {rep1}" +
+                $"{Environment.NewLine}- {rep2}", 
+                x.ConsoleOutput);
             Assert.False(x.ExitCode == 0);
         }
 
@@ -456,7 +467,7 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(x.ExitCode != 0);
         }
 
-        [Fact]
+        //[Fact]
         public void ReuseExistingLogger()
         {
             // Arrange
@@ -495,17 +506,17 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                x = tmpMspc.FailRun(template2: $"-i {tmpMspc.TmpSamples[0]} -i {tmpMspc.TmpSamples[1]} -o {IllegalPath} -r bio -s 1e-8 -w 1e-4");
+                x = tmpMspc.FailRun(template: $"-i {tmpMspc.TmpSamples[0]} -i {tmpMspc.TmpSamples[1]} -o {IllegalPath} -r bio -s 1e-8 -w 1e-4");
 
             // Assert
-            Assert.Contains("The following files are missing.\r\n- rep1.bed\r\n- rep2.bed", x.ConsoleOutput);
+            Assert.DoesNotContain("All processes successfully finished.", x.ConsoleOutput);
             Assert.True(
                 x.ConsoleOutput.Contains("Illegal characters in path.") ||
                 x.ConsoleOutput.Contains($"Cannot ensure the given output path `{IllegalPath}`") ||
                 x.ConsoleOutput.Contains("The filename, directory name, or volume label syntax is incorrect") ||
                 x.ConsoleOutput.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
                 x.ConsoleOutput.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
-            Assert.False(Environment.ExitCode == 0);
+            Assert.False(x.ExitCode == 0);
         }
 
         [Fact]

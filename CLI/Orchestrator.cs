@@ -123,12 +123,12 @@ namespace Genometric.MSPC.CLI
         private bool LoadParserConfig(string filename, out ParserConfig config)
         {
             config = new ParserConfig();
-            if (filename != null)
+            if (filename is not null)
             {
                 try
                 {
                     config = ParserConfig.LoadFromJSON(filename);
-                    if (config == null)
+                    if (config is null)
                     {
                         _logger.LogException(string.Format(
                             "error reading parser configuration JSON object, " +

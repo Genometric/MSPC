@@ -62,7 +62,7 @@ namespace Genometric.MSPC.CLI.Tests
             bool? excludeHeader = false)
         {
             var builder = new StringBuilder();
-            var tmpDir = Path.GetTempPath();
+            var tmpDir = Environment.CurrentDirectory;// Path.GetTempPath();
             if (rep1 is not null)
             {
                 if (!rep1.Contains('*') && !rep1.Contains('?'))
@@ -152,7 +152,7 @@ namespace Genometric.MSPC.CLI.Tests
                 if (files is null)
                     return inputsA;
                 var insA = files.Split(' ');
-                var tmpDir = Path.GetTempPath();
+                var tmpDir = Environment.CurrentDirectory; // Path.GetTempPath();
                 foreach (var i in insA)
                 {
                     var x = Path.Join(tmpDir, i);
@@ -191,7 +191,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void InputSpecifiedUsingWildCardCharacters()
         {
             // Arrange
-            var tmpPath = Path.GetTempPath();
+            var tmpPath = Environment.CurrentDirectory; // Path.GetTempPath();
             var tmpFiles = new List<string>();
             string timeStamp = DateTime.Now.ToOADate().ToString();
             for (int i = 0; i < 9; i++)

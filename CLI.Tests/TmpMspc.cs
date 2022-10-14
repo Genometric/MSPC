@@ -129,16 +129,13 @@ namespace Genometric.MSPC.CLI.Tests
 
         // Do not make this static because multiple tests
         // running concurrently will have the same/combined output. 
-        public Result FailRun(string template1 = null, string template2 = null)
+        public Result FailRun(string template = null)
         {
             var _console = new MockConsole();
             using var o = new Orchestrator(_console);
 
             var exitCode = o.Invoke(
-                (template1 ?? $"-i rep1.bed -i rep2.bed -r bio -s 1e-8 -w 1e-4").Split(' '));
-
-            exitCode = o.Invoke(
-                (template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
+                (template ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
 
             exitCode = SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
                 exitCode, Environment.ExitCode);

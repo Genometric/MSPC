@@ -168,33 +168,52 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
 
                     var filenames = new List<string>();
                     var missingFiles = new List<string>();
+                    var exceptions = new List<string>();
                     foreach (var token in x.Tokens)
                     {
                         var filename = token.Value;
                         if (filename.Contains('*') || filename.Contains('?'))
                         {
-                            foreach (var file in Directory.GetFiles(
-                                Path.GetDirectoryName(filename),
-                                Path.GetFileName(filename)))
+                            try
                             {
-                                filenames.Add(file);
+                                foreach (var file in Directory.GetFiles(
+                                    Path.GetDirectoryName(filename),
+                                    Path.GetFileName(filename)))
+                                {
+                                    filenames.Add(file);
+                                }
+                            }
+                            catch(Exception e)
+                            {
+                                missingFiles.Add(filename);
+                                exceptions.Add(e.Message);
                             }
                         }
                         else
                         {
-                            if (File.Exists(filename))
-                                filenames.Add(filename);
-                            else
+                            try
+                            {
+                                if (File.Exists(filename))
+                                    filenames.Add(filename);
+                                else
+                                    missingFiles.Add(filename);
+                            }
+                            catch (Exception e)
+                            {
                                 missingFiles.Add(filename);
+                                exceptions.Add(e.Message);
+                            }
                         }
                     }
 
                     if (missingFiles.Count > 0)
                     {
                         var errMsgbuilder = new StringBuilder();
-                        errMsgbuilder.AppendLine("The following files are missing.");
+                        errMsgbuilder.AppendLine("The following files are missing or inaccessible.");
                         foreach (var file in missingFiles)
                             errMsgbuilder.AppendLine($"- {file}");
+                        foreach (var e in exceptions)
+                            errMsgbuilder.AppendLine(e);
                         x.ErrorMessage = errMsgbuilder.ToString();
                     }
                     else if (filenames.Count < 2)

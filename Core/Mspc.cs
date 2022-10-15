@@ -8,7 +8,13 @@ namespace Genometric.MSPC.Core
 {
     public class Mspc : Mspc<Peak>
     {
-        public Mspc(bool trackSupportingRegions = false) : base(new PeakConstructor(), trackSupportingRegions)
+        public Mspc(
+            bool trackSupportingRegions = false,
+            int? maxDegreeOfParallelism = null) :
+            base(
+                new PeakConstructor(),
+                trackSupportingRegions,
+                maxDegreeOfParallelism: maxDegreeOfParallelism)
         { }
     }
 }

@@ -31,15 +31,21 @@ namespace Genometric.MSPC.Core
 
         private ReadOnlyDictionary<uint, Result<I>> _results { set; get; }
 
-        public int DegreeOfParallelism
+        public int? DegreeOfParallelism
         {
-            set { _processor.DegreeOfParallelism = value; }
             get { return _processor.DegreeOfParallelism; }
         }
 
-        public Mspc(IPeakConstructor<I> peakConstructor, bool trackSupportingRegions = false)
+        public Mspc(
+            IPeakConstructor<I> peakConstructor,
+            bool trackSupportingRegions = false,
+            int? maxDegreeOfParallelism = null)
         {
-            _processor = new Processor<I>(peakConstructor, trackSupportingRegions);
+            _processor = new Processor<I>(
+                peakConstructor,
+                trackSupportingRegions,
+                maxDegreeOfParallelism);
+
             _processor.OnProgressUpdate += _processorOnProgressUpdate;
             _backgroundProcessor = new BackgroundWorker();
             _backgroundProcessor.DoWork += _doWork;

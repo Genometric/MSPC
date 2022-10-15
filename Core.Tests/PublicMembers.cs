@@ -218,10 +218,7 @@ namespace Genometric.MSPC.Core.Tests
         {
             // Arrange && Act
             int dp = 123;
-            var mspc = new Mspc()
-            {
-                DegreeOfParallelism = dp
-            };
+            var mspc = new Mspc(maxDegreeOfParallelism: dp);
 
             // Assert
             Assert.Equal(mspc.DegreeOfParallelism, dp);

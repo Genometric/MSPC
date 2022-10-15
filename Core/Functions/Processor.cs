@@ -42,7 +42,7 @@ namespace Genometric.MSPC.Core.Functions
             get { return new ReadOnlyDictionary<string, List<ProcessedPeak<I>>>(_consensusPeaks); }
         }
 
-        public int DegreeOfParallelism { set; get; }
+        public int? DegreeOfParallelism { get; }
 
         private List<double> _cachedChiSqrd { set; get; }
 
@@ -56,12 +56,15 @@ namespace Genometric.MSPC.Core.Functions
 
         internal int SamplesCount { get { return _samples.Count; } }
 
-        internal Processor(IPeakConstructor<I> peakConstructor, bool trackSupportingRegions)
+        internal Processor(
+            IPeakConstructor<I> peakConstructor,
+            bool trackSupportingRegions,
+            int? maxDegreeOfParallelism = null)
         {
             _samples = new Dictionary<uint, Bed<I>>();
             _peakConstructor = peakConstructor;
             _trackSupportingRegions = trackSupportingRegions;
-            DegreeOfParallelism = Environment.ProcessorCount;
+            DegreeOfParallelism = maxDegreeOfParallelism;
         }
 
         internal void AddSample(uint id, Bed<I> peaks)
@@ -127,9 +130,12 @@ namespace Genometric.MSPC.Core.Functions
                 }
             }
 
+            var options = new ParallelOptions();
+            if (DegreeOfParallelism is not null)
+                options.MaxDegreeOfParallelism = (int)DegreeOfParallelism;
             Parallel.ForEach(
                 _tree,
-                new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
+                options,
                 tree => { tree.Value.BuildAndFinalize(); });
         }
 
@@ -140,10 +146,14 @@ namespace Genometric.MSPC.Core.Functions
                 ProcessChr(sampleKey, chr);
             }
 
+            var options = new ParallelOptions();
+            if (DegreeOfParallelism is not null)
+                options.MaxDegreeOfParallelism = (int)DegreeOfParallelism;
+
             foreach (var sample in _samples)
                 Parallel.ForEach(
                     sample.Value.Chromosomes,
-                    new ParallelOptions { MaxDegreeOfParallelism = DegreeOfParallelism },
+                    options,
                     chr =>
                     {
                         processChr(sample.Key, chr);

@@ -18,11 +18,15 @@ namespace Genometric.MSPC.Core.Functions
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha, int degreeOfParallelism)
+        public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha, int? degreeOfParallelism)
         {
+            var options = new ParallelOptions();
+            if (degreeOfParallelism is not null)
+                options.MaxDegreeOfParallelism = (int)degreeOfParallelism;
+
             Parallel.ForEach(
                 results,
-                new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
+                options,
                 result =>
                 {
                     PerformMultipleTestingCorrection(UnionChrs(result.Value.Chromosomes), alpha);

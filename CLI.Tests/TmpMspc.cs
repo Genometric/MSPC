@@ -4,6 +4,7 @@
 
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.CLI.Interfaces;
+using Genometric.MSPC.CLI.Tests.MockTypes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,11 +18,26 @@ namespace Genometric.MSPC.CLI.Tests
 
     public class TmpMspc : IDisposable
     {
-        public List<string> TmpSamples { set; get; }
+        private List<string> _tmpSamples = null;
+        public List<string> TmpSamples
+        {
+            get
+            {
+                if (_tmpSamples == null)
+                    CreateTempSamples();
+                return _tmpSamples;
+            }
+        }
 
         public string SessionPath { private set; get; }
 
-        public string Run(string parserFilename, string rep1=null, string rep2=null, double tauW=1e-4, double tauS=1e-8)
+        private static int SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
+            int exitCode, int envExitCode)
+        {
+            return envExitCode != 0 ? envExitCode : exitCode;
+        }
+
+        public Result Run(string parserFilename, string rep1=null, string rep2=null, double tauW=1e-4, double tauS=1e-8)
         {
             string SessionPath =
                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
@@ -44,11 +60,13 @@ namespace Genometric.MSPC.CLI.Tests
 
             args.Append(string.Format("-o {0} ", SessionPath));
 
+            int exitCode;
             string output;
             using (StringWriter sw = new StringWriter())
             {
                 Console.SetOut(sw);
                 Program.Main(args.ToString().Trim().Split(' '));
+                exitCode = Environment.ExitCode;
                 output = sw.ToString();
             }
 
@@ -57,83 +75,93 @@ namespace Genometric.MSPC.CLI.Tests
                 AutoFlush = true
             };
             Console.SetOut(standardOutput);
-            return output;
+
+            exitCode = SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
+                exitCode, Environment.ExitCode);
+
+            return new Result(exitCode, output);
         }
 
-        public string Run(bool createSample = true, string template = null, string sessionPath = null)
+        public Result Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true)
         {
-            if (sessionPath != null)
-                SessionPath = sessionPath;
-            else
-                SessionPath =
-                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
-                    new Random().Next(100000, 999999).ToString();
-
             if (createSample)
                 CreateTempSamples();
 
             if (template == null)
                 template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", TmpSamples[0], TmpSamples[1]);
-            template += string.Format(" -o {0}", SessionPath);
+            if (appendOutputOption)
+            {
+                if (sessionPath != null)
+                    SessionPath = sessionPath;
+                else
+                    SessionPath =
+                        "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
+                        new Random().Next(100000, 999999).ToString();
+
+                template += string.Format(" -o {0}", SessionPath);
+            }
 
             string output;
-            using (StringWriter sw = new StringWriter())
+            int exitCode;
+            var log = new List<string>();
+            var console = new MockConsole();
+
+            string logFilename;
+            using (var orchestrator = new Orchestrator(console))
             {
-                Console.SetOut(sw);
-                Program.Main(template.Split(' '));
-                output = sw.ToString();
+                exitCode = orchestrator.Invoke(template.Split(' '));
+                output = console.GetStderr() + console.GetStdo();
+                logFilename = orchestrator.LogFile;
             }
 
-            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
-            {
-                AutoFlush = true
-            };
-            Console.SetOut(standardOutput);
-            return output;
-        }
-
-        public List<string> FailRun(string template1 = null, string template2 = null)
-        {
-            string logFile;
-            using (var o = new Orchestrator())
-            {
-                o.Orchestrate((template1 ?? "-i rep1 -i rep2 -r bio -s 1e-8 -w 1e-4").Split(' '));
-                o.Orchestrate((template2 ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
-                logFile = o.LogFile;
-            }
-
-            var messages = new List<string>();
             string line;
-            using (var reader = new StreamReader(logFile))
-                while ((line = reader.ReadLine()) != null)
-                    messages.Add(line);
-            return messages;
+            if (logFilename != null)
+            {
+                using (var reader = new StreamReader(logFilename))
+                {
+                    while ((line = reader.ReadLine()) != null)
+                        log.Add(line);
+                }
+            }
+
+            return new Result(exitCode, output, log.AsReadOnly());
         }
 
-        public string Run(IExporter<Peak> exporter)
+        // Do not make this static because multiple tests
+        // running concurrently will have the same/combined output. 
+        public Result FailRun(string template = null, string? template2 = null)
+        {
+            var _console = new MockConsole();
+            using var o = new Orchestrator(_console);
+
+            var exitCode = o.Invoke(
+                (template ?? "-r bio -s 1e-8 -w 1e-4").Split(' '));
+
+            if (template2 is not null)
+                o.Invoke(template2.Split(' '));
+
+            exitCode = SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
+                exitCode, Environment.ExitCode);
+
+            return new Result(exitCode, _console.GetStderr() + _console.GetStdo());
+        }
+
+        public Result Run(IExporter<Peak> exporter)
         {
             SessionPath =
                 "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
                 new Random().Next(100000, 999999).ToString();
 
-            CreateTempSamples();
             var template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", TmpSamples[0], TmpSamples[1]);
 
             string output;
-            using (StringWriter sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                var o = new Orchestrator(exporter);
-                o.Orchestrate(template.Split(' '));
-                output = sw.ToString();
-            }
+            var console = new MockConsole();
+            var o = new Orchestrator(exporter, console);
+            var exitCode = o.Invoke(template.Split(' '));
+            exitCode = SetExitCode_REMOVE_ME_AFTER_THE_BUG_SYSTEM_COMMANDLINE_IS_FIXED(
+                exitCode, Environment.ExitCode);
 
-            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
-            {
-                AutoFlush = true
-            };
-            Console.SetOut(standardOutput);
-            return output;
+            return new Result(exitCode, console.GetStdo());
         }
 
         public string AddTempSample(int featureCount = 1)
@@ -141,7 +169,7 @@ namespace Genometric.MSPC.CLI.Tests
             string filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
             FileStream stream = File.Create(filename);
             var rnd = new Random();
-            using (StreamWriter writter = new StreamWriter(stream))
+            using (var writter = new StreamWriter(stream))
                 while (featureCount-- > 0)
                     writter.WriteLine(
                         string.Format(
@@ -152,9 +180,9 @@ namespace Genometric.MSPC.CLI.Tests
                             rnd.Next(),
                             rnd.NextDouble()));
 
-            if (TmpSamples == null)
-                TmpSamples = new List<string>();
-            TmpSamples.Add(filename);
+            if (_tmpSamples == null)
+                _tmpSamples = new List<string>();
+            _tmpSamples.Add(filename);
             return filename;
         }
 
@@ -163,17 +191,17 @@ namespace Genometric.MSPC.CLI.Tests
             string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
             string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
 
-            TmpSamples = new List<string> { rep1Path, rep2Path };
+            _tmpSamples = new List<string> { rep1Path, rep2Path };
 
             FileStream stream = File.Create(rep1Path);
-            using (StreamWriter writter = new StreamWriter(stream))
+            using (StreamWriter writter = new(stream))
             {
                 writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t3");
                 writter.WriteLine("chr1\t25\t35\tmspc_peak_1\t5");
             }
 
             stream = File.Create(rep2Path);
-            using (StreamWriter writter = new StreamWriter(stream))
+            using (StreamWriter writter = new(stream))
             {
                 writter.WriteLine("chr1\t11\t18\tmspc_peak_2\t2");
                 writter.WriteLine("chr1\t22\t28\tmspc_peak_2\t3");

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.Intervals.Parsers;
+using Genometric.MSPC.CLI.Tests.MockTypes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -45,16 +46,21 @@ namespace Genometric.MSPC.CLI.Tests
                 DropPeakIfInvalidValue = dropPeakIfInvalidValue,
                 Culture = culture
             };
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            using (StreamWriter w = new StreamWriter(path))
+            var path = Path.Join(
+                Environment.CurrentDirectory,
+                "MSPCTests_" + new Random().NextDouble().ToString());
+
+            using (var w = new StreamWriter(path))
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
             // Act
             ParserConfig parsedCols = ParserConfig.LoadFromJSON(path);
-            File.Delete(path);
 
             // Assert
             Assert.True(parsedCols.Equals(cols));
+
+            // Clean up
+            File.Delete(path);
         }
 
         [Fact]
@@ -62,39 +68,55 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             var expected = new ParserConfig() { Chr = 123 };
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            using (StreamWriter w = new StreamWriter(path))
+            var path = Path.Join(
+                Environment.CurrentDirectory, 
+                "MSPCTests_" + new Random().NextDouble().ToString());
+
+            using (var w = new StreamWriter(path))
                 w.WriteLine("{\"m\":7,\"l\":789,\"u\":-1,\"Chr\":123,\"L\":9,\"R\":2,\"d\":-1}");
 
             // Act
             var parsedCols = ParserConfig.LoadFromJSON(path);
-            File.Delete(path);
 
             // Assert
             Assert.True(parsedCols.Equals(expected));
+
+            // Clean up
+            File.Delete(path);
         }
 
         [Fact]
         public void HandleExceptionReadingInvalidJSON()
         {
             // Arrange
-            var parserFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
-            using (StreamWriter w = new StreamWriter(parserFilename))
+            var parserFilename = Path.Join(
+                Environment.CurrentDirectory,
+                Guid.NewGuid().ToString() + ".json");
+
+            using (var w = new StreamWriter(parserFilename))
                 w.WriteLine("abc");
 
-            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep1Path = Path.Join(
+                Environment.CurrentDirectory, 
+                Guid.NewGuid().ToString() + ".bed");
+
+            string rep2Path = Path.Join(
+                Environment.CurrentDirectory, 
+                Guid.NewGuid().ToString() + ".bed");
+
             new StreamWriter(rep1Path).Close();
             new StreamWriter(rep2Path).Close();
 
             // Act
             string logFile;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", rep1Path, rep2Path, parserFilename).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", rep1Path, rep2Path, parserFilename).Split(' '));
                 logFile = o.LogFile;
             }
 
+            var msg = console.GetStdo();
             var log = new List<string>();
             string line;
             using (var reader = new StreamReader(logFile))
@@ -103,24 +125,36 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains(
-                log,
-                x => x.Contains("Unexpected character encountered while parsing value"));
+                "Unexpected character encountered while parsing value",
+                msg);
+
+            // Clean up
+            File.Delete(parserFilename);
+            File.Delete(rep1Path);
+            File.Delete(rep2Path);
         }
 
         [Fact]
         public void RaiseExceptionForInvalidParserFiles()
         {
             // Arrange
-            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep1Path = Path.Join(
+                Environment.CurrentDirectory, 
+                Guid.NewGuid().ToString() + ".bed");
+
+            string rep2Path = Path.Join(
+                Environment.CurrentDirectory,
+                Guid.NewGuid().ToString() + ".bed");
+
             new StreamWriter(rep1Path).Close();
             new StreamWriter(rep2Path).Close();
 
             // Act
             string logFile;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
-                o.Orchestrate(string.Format(
+                o.Invoke(string.Format(
                     "-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", 
                     rep1Path, 
                     rep2Path, 
@@ -178,20 +212,25 @@ namespace Genometric.MSPC.CLI.Tests
         public void ThrowExceptionForInvalidCultureValue()
         {
             // Arrange
-            var parserFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
+            var parserFilename = Path.Join(
+                Environment.CurrentDirectory,
+                Guid.NewGuid().ToString() + ".json");
 
             // Create an json file with a `culture` field containing 
             // invalid culture name. 
-            using (StreamWriter w = new StreamWriter(parserFilename))
+            using (var w = new StreamWriter(parserFilename))
                 w.WriteLine("{\"Culture\":\"xyz\"}");
 
             // Act
-            string msg;
+            Result x;
             using (var tmpMSPC = new TmpMspc())
-                msg = tmpMSPC.Run(parserFilename: parserFilename);
+                x = tmpMSPC.Run(parserFilename: parserFilename);
             
             // Assert
-            Assert.Contains("Error setting value to 'Culture'", msg);
+            Assert.Contains("Error setting value to 'Culture'", x.ConsoleOutput);
+
+            // Clean up
+            File.Delete(parserFilename);
         }
     }
 }

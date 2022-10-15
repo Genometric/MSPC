@@ -5,6 +5,8 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
+using Genometric.MSPC.CLI.CommandLineInterface;
+using Genometric.MSPC.CLI.ConsoleAbstraction;
 using Genometric.MSPC.CLI.Exporter;
 using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.CLI.Logging;
@@ -16,53 +18,72 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace Genometric.MSPC.CLI
 {
     internal class Orchestrator : IDisposable
     {
-        private int _degreeOfParallelism = Environment.ProcessorCount;
         private Logger _logger;
+        private readonly IConsoleExtended _console;
         private readonly IExporter<Peak> _exporter;
         private readonly string _defaultLoggerRepoName = "EventsLog";
-        public string OutputPath { private set; get; }
         public string LogFile { private set; get; }
 
         internal string loggerTimeStampFormat = "yyyyMMdd_HHmmssfffffff";
 
-        public Orchestrator() : this(new Exporter<Peak>()) { }
+        private readonly Cli _cli;
 
-        public Orchestrator(IExporter<Peak> exporter)
+        public CliConfig Config { private set; get; }
+
+        internal Orchestrator() :
+            this(new Exporter<Peak>(), new SystemConsoleExtended())
+        { }
+
+        public Orchestrator(IConsoleExtended console) :
+            this(new Exporter<Peak>(), console)
+        { }
+
+        public Orchestrator(IExporter<Peak> exporter) :
+            this(exporter, new SystemConsoleExtended())
+        { }
+
+        public Orchestrator(IExporter<Peak> exporter, IConsoleExtended console)
         {
+            _console = console;
             _exporter = exporter;
+
+            _cli = new Cli(
+                console,
+                Invoke,
+                (e, c) =>
+                {
+                    Logger.LogExceptionStatic(_console, e.Message);
+                    //Environment.ExitCode = 1
+                });
         }
 
-        public void Orchestrate(string[] args)
+        public int Invoke(string[] args)
         {
+            return _cli.Invoke(args);
+        }
+
+        private void Invoke(CliConfig options)
+        {
+            Config = options;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-
-            if (!ParseArgs(args, out CommandLineOptions options))
-                return;
-
-            if (!AssertOutputPath(options.OutputPath))
-                return;
 
             if (!SetupLogger())
                 return;
 
-            if (!AssertInput(options.Input))
+            if (!LoadParserConfig(options.ParserConfigFilename, out ParserConfig config))
                 return;
 
-            AssertDegreeOfParallelism(options.DegreeOfParallelism);
-
-            if (!LoadParserConfig(options, out ParserConfig config))
+            if (!ParseFiles(options.InputFiles, config, out List<Bed<Peak>> samples))
                 return;
 
-            if (!ParseFiles(options.Input, config, out List<Bed<Peak>> samples))
-                return;
-
-            if (!Run(samples, options.Options, out Mspc mspc))
+            if (!Run(samples, options, out Mspc mspc))
                 return;
 
             var attributes = Enum.GetValues(typeof(Attributes)).Cast<Attributes>().ToList();
@@ -83,160 +104,52 @@ namespace Genometric.MSPC.CLI
             _logger.LogFinish(stopwatch.Elapsed.ToString());
         }
 
-        private bool ParseArgs(string[] args, out CommandLineOptions options)
-        {
-            options = new CommandLineOptions();
-
-            try
-            {
-                options.Parse(args, out bool helpIsDisplayed);
-                if (helpIsDisplayed)
-                    return false;
-                if (options.Warnings.Count > 0)
-                    if (_logger == null)
-                        foreach (var msg in options.Warnings)
-                            Logger.LogWarningStatic(msg);
-                    else
-                        foreach (var msg in options.Warnings)
-                            _logger.LogWarning(msg);
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                if (_logger == null)
-                    Logger.LogExceptionStatic(e.Message);
-                else
-                    _logger.LogException(e);
-                Environment.ExitCode = 1;
-                return false;
-            }
-        }
-
-        private bool AssertOutputPath(string path)
-        {
-            if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
-                path =
-                    Environment.CurrentDirectory + Path.DirectorySeparatorChar +
-                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff", CultureInfo.InvariantCulture);
-            else
-                path = path.TrimEnd(Path.DirectorySeparatorChar);
-
-            OutputPath = Path.GetFullPath(path);
-            try
-            {
-                if (Directory.Exists(OutputPath))
-                {
-                    if (Directory.GetFiles(OutputPath).Any())
-                    {
-                        int c = 0;
-                        do OutputPath = $"{path}_{c++}";
-                        while (Directory.Exists(OutputPath));
-                        Directory.CreateDirectory(OutputPath);
-                    }
-                }
-                else
-                {
-                    Directory.CreateDirectory(OutputPath);
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                string msg =
-                    $"Cannot ensure the given output path " +
-                    $"`{OutputPath}`: {e.Message}";
-                if (_logger == null)
-                    Logger.LogExceptionStatic(msg);
-                else
-                    _logger.LogException(msg);
-                Environment.ExitCode = 1;
-                return false;
-            }
-        }
-
         private bool SetupLogger()
         {
-            try
-            {
-                if (_logger != null)
-                    return true;
-
-                var repository = _defaultLoggerRepoName + "_" + DateTime.Now.ToString(loggerTimeStampFormat, CultureInfo.InvariantCulture);
-                LogFile = OutputPath + Path.DirectorySeparatorChar + repository + ".txt";
-                _logger = new Logger(LogFile, repository, Guid.NewGuid().ToString(), OutputPath);
+            if (_logger != null)
                 return true;
-            }
-            catch (Exception e)
-            {
-                Logger.LogExceptionStatic(e.Message);
-                Environment.ExitCode = 1;
-                return false;
-            }
-        }
 
-        private bool AssertInput(IReadOnlyList<string> input)
-        {
-            if (input.Count < 2)
-            {
-                _logger.LogException(
-                    string.Format("at least two samples are required; {0} is given.", input.Count));
-                Environment.ExitCode = 1;
-                return false;
-            }
+            var repository =
+                _defaultLoggerRepoName + "_" +
+                DateTime.Now.ToString(
+                    loggerTimeStampFormat,
+                    CultureInfo.InvariantCulture);
 
-            var missingFiles = new List<string>();
-            foreach (var file in input)
-                if (!File.Exists(file))
-                    missingFiles.Add(file);
-            if (missingFiles.Count > 0)
-            {
-                _logger.LogException(
-                    string.Format("the following files are missing: {0}", string.Join("; ", missingFiles.ToArray())));
-                Environment.ExitCode = 1;
-                return false;
-            }
-
+            LogFile = Path.Join(Config.OutputPath, repository + ".txt");
+            _logger = new Logger(_console, LogFile, repository, Guid.NewGuid().ToString(), Config.OutputPath);
             return true;
         }
 
-        private void AssertDegreeOfParallelism(int dp)
-        {
-            if (dp > 0)
-                _degreeOfParallelism = dp;
-
-            _logger.Log(string.Format("Degree of parallelism is set to {0}.", _degreeOfParallelism), ConsoleColor.DarkGray);
-        }
-
-        private bool LoadParserConfig(CommandLineOptions options, out ParserConfig config)
+        private bool LoadParserConfig(string filename, out ParserConfig config)
         {
             config = new ParserConfig();
-            if (options.ParserConfig != null)
+            if (filename is not null)
             {
                 try
                 {
-                    config = ParserConfig.LoadFromJSON(options.ParserConfig);
-                    if (config == null)
+                    config = ParserConfig.LoadFromJSON(filename);
+                    if (config is null)
                     {
                         _logger.LogException(string.Format(
                             "error reading parser configuration JSON object, " +
                             "check if the given file '{0}' exists and is accessible.",
-                            options.ParserConfig));
+                            filename));
                         return false;
                     }
                 }
                 catch (Exception e)
                 {
-                    _logger.LogException("error reading parser configuration JSON object: " + e.Message);
+                    var msg = "error reading parser configuration JSON object: " + e.Message;
+                    throw new JsonException(msg);
+                    /*_logger.LogException(msg);
                     Environment.ExitCode = 1;
-                    return false;
+                    return false;*/
                 }
             }
             return true;
         }
 
-        private bool ParseFiles(IReadOnlyList<string> files, ParserConfig parserConfig, out List<Bed<Peak>> samples)
+        private bool ParseFiles(IReadOnlyCollection<string> files, ParserConfig parserConfig, out List<Bed<Peak>> samples)
         {
             try
             {
@@ -278,19 +191,19 @@ namespace Genometric.MSPC.CLI
             }
         }
 
-        private bool Run(List<Bed<Peak>> samples, Config config, out Mspc mspc)
+        private bool Run(List<Bed<Peak>> samples, CliConfig options, out Mspc mspc)
         {
             try
             {
                 _logger.LogStartOfASection("Analyzing Samples");
                 mspc = new Mspc()
                 {
-                    DegreeOfParallelism = _degreeOfParallelism
+                    DegreeOfParallelism = options.DegreeOfParallelism ?? Environment.ProcessorCount
                 };
                 mspc.StatusChanged += _logger.LogMSPCStatus;
                 foreach (var sample in samples)
                     mspc.AddSample(sample.FileHashKey, sample);
-                mspc.RunAsync(config);
+                mspc.RunAsync(options);
                 mspc.Done.WaitOne();
                 return true;
             }
@@ -309,7 +222,7 @@ namespace Genometric.MSPC.CLI
             {
                 _logger.LogStartOfASection("Saving Results");
                 var options = new Options(
-                    path: OutputPath,
+                    path: Config.OutputPath,
                     includeHeader: !excludeHeader,
                     attributesToExport: attributesToExport);
 

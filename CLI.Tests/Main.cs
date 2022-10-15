@@ -29,12 +29,17 @@ namespace Genometric.MSPC.CLI.Tests
         /// the underscore (_) char is added to keep 
         /// forward slash (/) in the path.
         /// </summary>
-        private string IllegalPath
+        private static string IllegalPath
         {
             get
             {
                 return OperatingSystem.IsWindows() ? "C:\\*<>*\\//" : "/_";
             }
+        }
+
+        public static string GetFilename(string prefix)
+        {
+            return $"{prefix}{DateTimeOffset.Now.ToUnixTimeMilliseconds}";
         }
 
         private static void WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture)
@@ -64,119 +69,127 @@ namespace Genometric.MSPC.CLI.Tests
         public void ErrorIfLessThanTwoSamplesAreGiven()
         {
             // Arrange
-            string msg;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(false, "-i rep1.bed -r bio -w 1E-2 -s 1E-8");
+                x = tmpMspc.Run(false, $"-i {tmpMspc.TmpSamples[0]} -r bio -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("at least two samples are required; 1 is given.", msg);
-            Assert.False(Environment.ExitCode == 0);
+            Assert.Contains("At least two samples are required, 1 given.", x.ConsoleOutput);
+            Assert.False(x.ExitCode == 0);
         }
 
         [Fact]
         public void ErrorIfARequiredArgumentIsMissing()
         {
             // Arrange
-            string msg;
+            Result x;
+            var rep1 = GetFilename("rep1");
+            var rep2 = GetFilename("rep2");
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8");
+                x = tmpMspc.Run(false, $"-i {rep1} -i {rep2} -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("the following required arguments are missing: -r|--replicate.", msg);
-            Assert.False(Environment.ExitCode == 0);
+            Assert.Contains("Option '--replicate' is required.", x.ConsoleOutput);
+            Assert.False(x.ExitCode == 0);
         }
 
         [Fact]
         public void ErrorIfASpecifiedFileIsMissing()
         {
             // Arrange
-            string msg;
+            Result x;
+            var rep1 = GetFilename("rep1");
+            var rep2 = GetFilename("rep2");
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(false, "-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8");
+                x = tmpMspc.Run(false, $"-i {rep1} -i {rep2} -r bio -w 1E-2 -s 1E-8");
 
             // Assert
-            Assert.Contains("the following files are missing: rep1.bed; rep2.bed", msg);
-            Assert.False(Environment.ExitCode == 0);
+            Assert.Contains(
+                $"The following files are missing or inaccessible." +
+                $"{Environment.NewLine}- {rep1}" +
+                $"{Environment.NewLine}- {rep2}", 
+                x.ConsoleOutput);
+            Assert.False(x.ExitCode == 0);
         }
 
         [Fact]
         public void AssertInformingPeaksCount()
         {
             // Arrange
-            string msg;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                x = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("  2\t", msg);
-            Assert.Contains("  3\t", msg);
+            Assert.Contains("  2\t", x.ConsoleOutput);
+            Assert.Contains("  3\t", x.ConsoleOutput);
         }
 
         [Fact]
         public void AssertInformingMinPValue()
         {
             // Arrange
-            string msg;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                x = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("1.000E-005", msg);
-            Assert.Contains("1.000E-007", msg);
+            Assert.Contains("1.000E-005", x.ConsoleOutput);
+            Assert.Contains("1.000E-007", x.ConsoleOutput);
         }
 
         [Fact]
         public void AssertInformingMaxPValue()
         {
             // Arrange
-            string msg;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                x = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("1.000E-003", msg);
-            Assert.Contains("1.000E-002", msg);
+            Assert.Contains("1.000E-003", x.ConsoleOutput);
+            Assert.Contains("1.000E-002", x.ConsoleOutput);
         }
 
         [Fact]
         public void ReportRuntime()
         {
             // Arrange
-            string msg;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                x = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("Elapsed time: ", msg);
+            Assert.Contains("Elapsed time: ", x.ConsoleOutput);
         }
 
         [Fact]
         public void SuccessfulAnalysis()
         {
             // Arrange
-            string msg;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                x = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("All processes successfully finished", msg);
-            Assert.True(Environment.ExitCode == 0);
+            Assert.Contains("All processes successfully finished", x.ConsoleOutput);
+            Assert.True(x.ExitCode == 0);
         }
 
         [Fact]
@@ -191,9 +204,9 @@ namespace Genometric.MSPC.CLI.Tests
             string outputPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) + new Random().Next(100000, 999999).ToString();
             WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture);
 
-            ParserConfig cols = new ParserConfig() { Culture = culture };
+            var cols = new ParserConfig() { Culture = culture };
             var configFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
-            using (StreamWriter w = new StreamWriter(configFilename))
+            using (var w = new StreamWriter(configFilename))
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
             string args = $"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -p {configFilename} -o {outputPath}";
@@ -201,7 +214,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string output;
-            using (StringWriter sw = new StringWriter())
+            using (var sw = new StringWriter())
             {
                 Console.SetOut(sw);
                 Program.Main(args.Split(' '));
@@ -264,73 +277,75 @@ namespace Genometric.MSPC.CLI.Tests
         public void ShowsHelpText(string template)
         {
             // Arrange
-            string msg;
-            string n = Environment.NewLine;
-            string expected =
-                $"{n}{n}Usage: MSPC CLI [options]{n}{n}Options:" +
-                $"{n}  -? | -h | --help                      Show help information" +
-                $"{n}  -v | --version                        Show version information" +
-                $"{n}  -i | --input <value>                  Input samples to be processed in Browser Extensible Data (BED) Format." +
-                $"{n}  -f | --folder-input <value>           Sets a path to a folder that all its containing files in BED format are considered as inputs." +
-                $"{n}  -r | --replicate <value>              Sets the replicate type of samples. Possible values are: {{ Bio, Biological, Tec, Technical }}" +
-                $"{n}  -w | --tauW <value>                   Sets weak threshold. All peaks with p-values higher than this value are considered as weak peaks." +
-                $"{n}  -s | --tauS <value>                   Sets stringency threshold. All peaks with p-values lower than this value are considered as stringent peaks." +
-                $"{n}  -g | --gamma <value>                  Sets combined stringency threshold. The peaks with their combined p-values satisfying this threshold will be confirmed." +
-                $"{n}  -a | --alpha <value>                  Sets false discovery rate of Benjamini–Hochberg step-up procedure." +
-                $"{n}  -c <value>                            Sets minimum number of overlapping peaks before combining p-values." +
-                $"{n}  -m | --multipleIntersections <value>  When multiple peaks from a sample overlap with a given peak, this argument defines which of the peaks to be considered: the one with lowest p-value, or the one with highest p-value? Possible values are: {{ Lowest, Highest }}" +
-                $"{n}  -d | --degreeOfParallelism <value>    Set the degree of parallelism." +
-                $"{n}  -p | --parser <value>                 Sets the path to the parser configuration file in JSON." +
-                $"{n}  -o | --output <value>                 Sets a path where analysis results should be persisted." +
-                $"{n}  --excludeHeader                       If provided, MSPC will not add a header line to its output." +
-                $"{n}" +
-                $"{n}Documentation:\thttps://genometric.github.io/MSPC/" +
-                $"{n}Source Code:\thttps://github.com/Genometric/MSPC" +
-                $"{n}Publications:\thttps://genometric.github.io/MSPC/publications" +
-                $"{n}";
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template: template);
+                x = tmpMspc.Run(template: template);
 
             // Assert
-            Assert.Contains(expected, msg);
-            Assert.True(Environment.ExitCode == 0);
+            Assert.Contains("Description:", x.ConsoleOutput);
+            Assert.Contains("Using combined evidence from replicates to evaluate ChIP-seq and single-cell peaks.", x.ConsoleOutput);
+            Assert.Contains("Documentation: https://genometric.github.io/MSPC/", x.ConsoleOutput);
+            Assert.Contains("Source Code:   https://github.com/Genometric/MSPC", x.ConsoleOutput);
+            Assert.Contains("Publications:  https://genometric.github.io/MSPC/publications", x.ConsoleOutput);
+            Assert.Contains("Usage:", x.ConsoleOutput);
+            Assert.Contains("testhost [options]", x.ConsoleOutput); // `testhost` since it is running the test env, otherwise it will correctly show `mspc`.
+            Assert.Contains("Options:", x.ConsoleOutput);
+            Assert.Contains("-i, --input <input> (REQUIRED)", x.ConsoleOutput);
+            Assert.Contains("-r, --replicate <bio|biological|tec|technical> (REQUIRED)", x.ConsoleOutput);
+            Assert.Contains("-s, --tauS <tauS> (REQUIRED)", x.ConsoleOutput);
+            Assert.Contains("-w, --tauW <tauW> (REQUIRED)", x.ConsoleOutput);
+            Assert.Contains("-g, --gamma <gamma>         ", x.ConsoleOutput);
+            Assert.Contains("-a, --alpha <alpha>         ", x.ConsoleOutput);
+            Assert.Contains("p procedure. [default: 0.05]", x.ConsoleOutput);
+            Assert.Contains("-m, --multipleIntersections <highest|lowest>", x.ConsoleOutput);
+            Assert.Contains("-d, --degreeOfParallelism <degreeOfParallelism> ", x.ConsoleOutput);
+            Assert.Contains("--excludeHeader          ", x.ConsoleOutput);
+            Assert.Contains("--version", x.ConsoleOutput);
+            Assert.Contains("Show version information", x.ConsoleOutput);
+            Assert.Contains("-?, -h, --help", x.ConsoleOutput);
+            Assert.Contains("Show help and usage information", x.ConsoleOutput);
+            Assert.True(x.ExitCode == 0);
         }
 
         [Theory]
-        [InlineData("-v")]
         [InlineData("--version")]
         public void ShowVersion(string template)
         {
             // Arrange
-            string msg;
-            string expected = $"{Environment.NewLine}Version ";
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template: template);
+                x = tmpMspc.Run(template: template, appendOutputOption: false);
+
+            // The displayed version is the version of the test env, not the
+            // app. However, the app is executed, it correctly shows the version of mspc.
 
             // Assert
-            Assert.Contains(expected, msg);
-            Assert.True(Environment.ExitCode == 0);
+            Assert.True(x.ConsoleOutput.Split('.').Length == 3);  
+            Assert.True(x.ExitCode == 0);
         }
 
-        [Fact]
-        public void HintHowToUseHelpWhenAnExceptionOccurs()
+        // This feature is not currently easily possible with system.commandline.
+        //[Fact]
+        /*public void HintHowToUseHelpWhenAnExceptionOccurs()
         {
             // Arrange
-            string msg;
-            string expected = "You may run mspc with either of [-? | -h | --help] tags for help.";
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template: "");
+                x = tmpMspc.Run(createSample: false, template: "", appendOutputOption: false);
 
             // Assert
-            Assert.Contains(expected, msg);
-            Assert.False(Environment.ExitCode == 0);
-        }
+            Assert.True(
+                x.ConsoleOutput.Contains("-?, -h, --help") &&
+                x.ConsoleOutput.Contains("Show help and usage information\r\n") &&
+                x.ConsoleOutput.Contains("Documentation:\thttps://genometric.github.io/MSPC/\r\n"));
+            Assert.False(x.ExitCode == 0);
+        }*/
 
         [Fact]
         public void ExportToGivenOutputPath()
@@ -367,7 +382,9 @@ namespace Genometric.MSPC.CLI.Tests
             WriteSampleFiles(out string rep1Filename, out string rep2Filename, out _);
 
             // Act
-            Program.Main($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path + Path.DirectorySeparatorChar}".Split(' '));
+            var console = new MockConsole();
+            var orchestrator = new Orchestrator(console);
+            orchestrator.Invoke($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1E-2 -s 1E-8 -o {output_path + Path.DirectorySeparatorChar}".Split(' '));
             output_path += "_0";
 
             // Assert
@@ -384,20 +401,23 @@ namespace Genometric.MSPC.CLI.Tests
         public void GenerateOutputPathIfNotGiven()
         {
             // Arrange
-            var o = new Orchestrator();
+            var console = new MockConsole();
+            var o = new Orchestrator(console);
 
             // Act
-            o.Orchestrate("-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8".Split(' '));
+            using (var mspc = new TmpMspc())
+                o.Invoke($"-i {mspc.TmpSamples[0]} -i {mspc.TmpSamples[1]} -r bio -w 1E-2 -s 1E-8".Split(' '));
 
             // Assert
-            Assert.True(!string.IsNullOrEmpty(o.OutputPath) && !string.IsNullOrWhiteSpace(o.OutputPath));
+            Assert.True(!string.IsNullOrEmpty(o.Config.OutputPath) && !string.IsNullOrWhiteSpace(o.Config.OutputPath));
         }
 
         [Fact]
         public void AppendNumberToGivenPathIfAlreadyExists()
         {
             // Arrange
-            var o = new Orchestrator();
+            var console = new MockConsole();
+            var o = new Orchestrator(console);
             string baseName = @"TT" + new Random().Next().ToString();
             var dirs = new List<string>
             {
@@ -411,10 +431,19 @@ namespace Genometric.MSPC.CLI.Tests
             }
 
             // Act
-            o.Orchestrate($"-i rep1.bed -i rep2.bed -r bio -w 1E-2 -s 1E-8 -o {dirs[0]}".Split(' '));
+            using (var tmpMspc = new TmpMspc())
+            {
+                var samples = tmpMspc.TmpSamples;
+                o.Invoke($"-i {samples[0]} -i {samples[1]} -r bio -w 1E-2 -s 1E-8 -o {dirs[0]}".Split(' '));
+            }
+
+            var test = console.GetStdo();
+
 
             // Assert
-            Assert.Equal(o.OutputPath, dirs[0] + "_2");
+            // Gets the directory name from full path.
+            var createdDir = Path.GetFileName(o.Config.OutputPath);
+            Assert.Equal(createdDir, dirs[0] + "_2");
 
             // Clean up
             o.Dispose();
@@ -427,112 +456,110 @@ namespace Genometric.MSPC.CLI.Tests
         public void RaiseExceptionWritingToIllegalPath()
         {
             // Arrange
-            string msg;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(sessionPath: IllegalPath);
+                x = tmpMspc.Run(sessionPath: IllegalPath);
 
             // Assert
             Assert.True(
-                msg.Contains("Illegal characters in path.") ||
-                msg.Contains("The filename, directory name, or volume label syntax is incorrect") ||
-                msg.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
-                msg.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
-            Assert.False(Environment.ExitCode == 0);
+                x.ConsoleOutput.Contains("Illegal characters in path.") ||
+                x.ConsoleOutput.Contains("The filename, directory name, or volume label syntax is incorrect") ||
+                x.ConsoleOutput.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
+                x.ConsoleOutput.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
+            Assert.True(x.ExitCode != 0);
         }
 
         [Fact]
         public void ReuseExistingLogger()
         {
             // Arrange
-            List<string> messages;
+            Result x;
+            var rep1 = GetFilename("rep1");
+            var rep2 = GetFilename("rep2");
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                messages = tmpMspc.FailRun();
+                x = tmpMspc.FailRun(
+                    template2: $"-i {rep1} -i {rep2} -r bio -s 1e-8 -w 1e-4");
 
             // Assert
-            Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
-            Assert.Contains(messages, x => x.Contains("the following required arguments are missing: (-i|--input or -f|--folder-input)."));
+            Assert.Contains("The following files are missing or inaccessible.", x.ConsoleOutput);
+            Assert.Contains($"{Environment.NewLine}- {rep1}", x.ConsoleOutput);
+            Assert.Contains($"{Environment.NewLine}- {rep2}", x.ConsoleOutput);
+            Assert.Contains("Option '--input' is required.", x.ConsoleOutput);
         }
 
         [Fact]
         public void DontReportSuccessfullyFinishedIfExitedAfterAnError()
         {
             // Arrange
-            List<string> messages;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                messages = tmpMspc.FailRun();
+                x = tmpMspc.FailRun();
 
             // Assert
-            Assert.DoesNotContain(messages, x => x.Contains("All processes successfully finished"));
+            Assert.DoesNotContain(x.ConsoleOutput, "All processes successfully finished");
         }
 
         [Fact]
         public void WriteOutputPathExceptionToLoggerIfAvailable()
         {
             // Arrange
-            List<string> messages;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                messages = tmpMspc.FailRun(template2: $"-i rep1 -i rep2 -o {IllegalPath} -r bio -s 1e-8 -w 1e-4");
+                x = tmpMspc.FailRun(template: $"-i {tmpMspc.TmpSamples[0]} -i {tmpMspc.TmpSamples[1]} -o {IllegalPath} -r bio -s 1e-8 -w 1e-4");
 
             // Assert
-            Assert.Contains(messages, x => x.Contains("the following files are missing: rep1; rep2"));
-            Assert.Contains(
-                messages,
-                x => x.Contains("Illegal characters in path.") ||
-                x.Contains("The filename, directory name, or volume label syntax is incorrect") ||
-                x.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
-                x.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
-            Assert.False(Environment.ExitCode == 0);
+            Assert.DoesNotContain("All processes successfully finished.", x.ConsoleOutput);
+            Assert.True(
+                x.ConsoleOutput.Contains("Illegal characters in path.") ||
+                x.ConsoleOutput.Contains($"Cannot ensure the given output path `{IllegalPath}`") ||
+                x.ConsoleOutput.Contains("The filename, directory name, or volume label syntax is incorrect") ||
+                x.ConsoleOutput.Contains($"Cannot ensure the given output path `{IllegalPath}`: Read-only file system") ||
+                x.ConsoleOutput.Contains($"Cannot ensure the given output path `{IllegalPath}`: Access to the path '/_' is denied"));
+            Assert.False(x.ExitCode == 0);
         }
 
         [Fact]
         public void CaptureExporterExceptions()
         {
             // Arrange
-            string message;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                message = tmpMspc.Run(new MExporter());
+                x = tmpMspc.Run(new MExporter());
 
             // Assert
-            Assert.Contains("The method or operation is not implemented.", message);
-            Assert.DoesNotContain("All processes successfully finished", message);
-            Assert.False(Environment.ExitCode == 0);
+            Assert.Contains("The method or operation is not implemented.", x.ConsoleOutput);
+            Assert.DoesNotContain("All processes successfully finished", x.ConsoleOutput);
+            Assert.False(x.ExitCode == 0);
         }
 
         [Fact]
         public void CaptureExceptionsRaisedCreatingLogger()
         {
             // Arrange
-            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-
-            var o = new Orchestrator
+            var _console = new MockConsole();
+            var o = new Orchestrator(_console)
             {
                 loggerTimeStampFormat = "yyyyMMdd_HHmmssffffffffffff"
             };
 
             // Act
             string output;
-            using (StringWriter sw = new StringWriter())
+            using (var tmpMspc = new TmpMspc())
             {
-                Console.SetOut(sw);
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
-                output = sw.ToString();
+                var samples = tmpMspc.TmpSamples;
+                o.Invoke($"-i {samples[0]} -i {samples[1]} -r bio -w 1e-2 -s 1e-4".Split(' '));
             }
-            var standardOutput = new StreamWriter(Console.OpenStandardOutput())
-            {
-                AutoFlush = true
-            };
-            Console.SetOut(standardOutput);
+            output = _console.GetStdo();
 
             // Assert
             Assert.Contains("Input string was not in a correct format.", output);
@@ -572,13 +599,13 @@ namespace Genometric.MSPC.CLI.Tests
                 writter.WriteLine("chr1\tMSPC_PEAK\t.\t15\t25\tEEE\t20");
 
             // Act
-            string msg;
+            Result x;
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(createSample: false, template: string.Format("-i {0} -i {1} -p {2} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path, path));
+                x = tmpMspc.Run(createSample: false, template: string.Format("-i {0} -i {1} -p {2} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path, path));
 
             // Assert
-            Assert.Contains("1.000E-016", msg);
-            Assert.Contains("1.230E-045", msg);
+            Assert.Contains("1.000E-016", x.ConsoleOutput);
+            Assert.Contains("1.230E-045", x.ConsoleOutput);
         }
 
         [Fact]
@@ -597,11 +624,12 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             string logFile;
             string path;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
-                path = o.OutputPath;
+                path = o.Config.OutputPath;
             }
 
             string line;
@@ -636,11 +664,12 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             string logFile;
             string path;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
-                path = o.OutputPath;
+                path = o.Config.OutputPath;
             }
 
             string line;
@@ -672,11 +701,12 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             string logFile;
             string path;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
-                o.Orchestrate(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
                 logFile = o.LogFile;
-                path = o.OutputPath;
+                path = o.Config.OutputPath;
             }
 
             string line;
@@ -704,22 +734,6 @@ namespace Genometric.MSPC.CLI.Tests
             Directory.Delete(path, true);
         }
 
-        [Theory]
-        [InlineData("300%", "2")]
-        [InlineData("-300%", "1")]
-        public void WarningDisplayedForInvalidC(string c, string expected)
-        {
-            // Arrange
-            string msg;
-
-            // Act
-            using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run(template: $"-i sample_1 -i sample_2 -r bio -w 1E-2 -s 1E-8 -c {c}");
-
-            // Assert
-            Assert.Contains($"Invalid `C={c}`, it is set to `C={expected}`.", msg);
-        }
-
         [Fact]
         public void ExportPathIsReportedInLogs()
         {
@@ -729,9 +743,10 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             string logFile;
-            using (var o = new Orchestrator())
+            var console = new MockConsole();
+            using (var o = new Orchestrator(console))
             {
-                o.Orchestrate($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -o {outputPath}".Split(' '));
+                o.Invoke($"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -o {outputPath}".Split(' '));
                 logFile = o.LogFile;
             }
 
@@ -754,15 +769,15 @@ namespace Genometric.MSPC.CLI.Tests
         public void ExportPathIsReportedInConsole()
         {
             // Arrange
-            string msg;
+            Result x;
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                msg = tmpMspc.Run();
+                x = tmpMspc.Run();
 
             // Assert
             var rx = new Regex($".*Export Directory: (.*){Environment.NewLine}.*");
-            var loggedOutputPath = rx.Match(msg).Groups[1].Value.Trim();
+            var loggedOutputPath = rx.Match(x.ConsoleOutput).Groups[1].Value.Trim();
 
             var isAValidPath = TryGetFullPath(loggedOutputPath, out _);
             Assert.True(isAValidPath);

@@ -196,10 +196,9 @@ namespace Genometric.MSPC.CLI
             try
             {
                 _logger.LogStartOfASection("Analyzing Samples");
-                mspc = new Mspc()
-                {
-                    DegreeOfParallelism = options.DegreeOfParallelism ?? Environment.ProcessorCount
-                };
+                mspc = new Mspc(
+                    maxDegreeOfParallelism: options.DegreeOfParallelism);
+
                 mspc.StatusChanged += _logger.LogMSPCStatus;
                 foreach (var sample in samples)
                     mspc.AddSample(sample.FileHashKey, sample);

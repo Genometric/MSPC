@@ -54,10 +54,9 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
         public void HighDegreeOfParallelisim()
         {
             // Arrange
-            var mspc = new Mspc();
+            var mspc = new Mspc(maxDegreeOfParallelism: 20);
             mspc.AddSample(0, CreateSample(0, 20, 10000));
             mspc.AddSample(1, CreateSample(2, 20, 20000));
-            mspc.DegreeOfParallelism = 20;
 
             // Act
             var res = mspc.Run(new Config(

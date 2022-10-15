@@ -19,7 +19,7 @@ namespace Genometric.MSPC.Core.Functions
         public Dictionary<string, List<ProcessedPeak<I>>> Compute(
             Dictionary<uint, Result<I>> analysisResults,
             IPeakConstructor<I> peakConstructor,
-            int degreeOfParallelisim,
+            int? degreeOfParallelisim,
             float alpha)
         {
             // Initialize data structures.
@@ -32,9 +32,12 @@ namespace Genometric.MSPC.Core.Functions
             // Determin consensus peaks; stored in mutable and light-weight types.
             foreach (var result in analysisResults)
             {
+                var options = new ParallelOptions();
+                if (degreeOfParallelisim is not null)
+                    options.MaxDegreeOfParallelism = (int)degreeOfParallelisim;
                 Parallel.ForEach(
                     result.Value.Chromosomes,
-                    new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelisim },
+                    options,
                     chr =>
                     {
                         DetermineConsensusPeaks(chr.Key, chr.Value.Get(Attributes.Confirmed));
@@ -72,16 +75,19 @@ namespace Genometric.MSPC.Core.Functions
             }
         }
 
-        private Dictionary<string, List<ProcessedPeak<I>>> ConvertToListOfProcessedPeaks(IPeakConstructor<I> peakConstructor, int degreeOfParallelism)
+        private Dictionary<string, List<ProcessedPeak<I>>> ConvertToListOfProcessedPeaks(IPeakConstructor<I> peakConstructor, int? degreeOfParallelism)
         {
             var rtv = new Dictionary<string, List<ProcessedPeak<I>>>();
             foreach (var chr in _consensusPeaks)
                 rtv.Add(chr.Key, new List<ProcessedPeak<I>>(capacity: chr.Value.Count));
 
             int counter = 0;
+            var options = new ParallelOptions();
+            if (degreeOfParallelism is not null)
+                options.MaxDegreeOfParallelism = (int)degreeOfParallelism;
             Parallel.ForEach(
                 _consensusPeaks,
-                new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism },
+                options,
                 chr =>
                 {
                     foreach (var peak in chr.Value)

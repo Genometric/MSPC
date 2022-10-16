@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Model;
+﻿using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Exporter;
@@ -23,7 +19,7 @@ namespace Genometric.MSPC.CLI.Tests
         private readonly char _strand = '.';
         private readonly List<Attributes> _attributes;
 
-        readonly List<Peak> peaks = new List<Peak>()
+        readonly List<Peak> peaks = new()
             {
                 new Peak(10, 11, 1E-8),
                 new Peak(100, 110, 1E-8),
@@ -39,16 +35,42 @@ namespace Genometric.MSPC.CLI.Tests
                 new Peak(910000000, 920000000, 1E-8),
                 new Peak(930000000, 940000000, 1E-8)
             };
-        readonly List<string> chrs = new List<string>()
-            {
-                "chr1", "chr3", "chr5", "chr8", "chr9", "chr9", "chr9", "chr18", "chr18", "chrX", "chrX", "chrY", "chrY"
-            };
-
-        private string Header(bool mspcFormat)
+        readonly List<string> chrs = new()
         {
-            return mspcFormat ?
-                "chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)" :
-                "chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand";
+            "chr1", "chr3", "chr5", "chr8", "chr9",
+            "chr9", "chr9", "chr18", "chr18", "chrX",
+            "chrX", "chrY", "chrY"
+        };
+
+        private static string Header(bool mspcFormat)
+        {
+            if (mspcFormat)
+            {
+                return string.Join("\t", new string[]
+                {
+                    "chr",
+                    "start",
+                    "stop",
+                    "name",
+                    "-1xlog10(p-value)",
+                    "strand",
+                    "xSqrd",
+                    "-1xlog10(Right-Tail Probability)",
+                    "-1xlog10(AdjustedP-value)"
+                });
+            }
+            else
+            {
+                return string.Join("\t", new string[]
+                {
+                    "chr",
+                    "start",
+                    "stop",
+                    "name",
+                    "-1xlog10(p-value)",
+                    "strand"
+                });
+            }
         }
 
         private string RunMSPCAndExportResultsWithMultiChr()
@@ -64,9 +86,21 @@ namespace Genometric.MSPC.CLI.Tests
             mspc.AddSample(0, s0);
             mspc.AddSample(1, s1);
 
-            mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-5, 1e-5, 1, 0.05F, MultipleIntersections.UseLowestPValue));
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            new Exporter<Peak>().Export(_sidfm, mspc.GetResults(), mspc.GetConsensusPeaks(), new Options(path, false, _attributes));
+            mspc.Run(new Config(
+                ReplicateType.Biological,
+                1e-4, 1e-5, 1e-5, 1, 0.05F,
+                MultipleIntersections.UseLowestPValue));
+
+            var path = Path.Join(
+                Environment.CurrentDirectory,
+                "MSPCTests_" + new Random().NextDouble().ToString());
+
+            new Exporter<Peak>().Export(
+                _sidfm,
+                mspc.GetResults(),
+                mspc.GetConsensusPeaks(),
+                new Options(path, false, _attributes));
+
             return path;
         }
 
@@ -76,7 +110,8 @@ namespace Genometric.MSPC.CLI.Tests
         public Exporter()
         {
             _attributes = new List<Attributes>();
-            foreach (var att in Enum.GetValues(typeof(Attributes)).Cast<Attributes>())
+            foreach (var att in Enum.GetValues(
+                typeof(Attributes)).Cast<Attributes>())
                 _attributes.Add(att);
 
             _sidfm = new Dictionary<uint, string>
@@ -129,17 +164,27 @@ namespace Genometric.MSPC.CLI.Tests
             return mspc;
         }
 
-        private string RunMSPCAndExportResults(bool includeHeader = false)
+        private string RunMSPCAndExportResults(
+            bool includeHeader = false)
         {
             var mspc = InitializeMSPC();
-            mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-4, 2, 0.05F, MultipleIntersections.UseLowestPValue));
+            mspc.Run(new Config(
+                ReplicateType.Biological,
+                1e-4, 1e-8, 1e-4, 2, 0.05F,
+                MultipleIntersections.UseLowestPValue));
 
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
+            var path = Path.Join(
+                Environment.CurrentDirectory,
+                "MSPCTests_" + new Random().NextDouble().ToString());
 
             var exporter = new Exporter<Peak>();
             var options = new Options(path, includeHeader, _attributes);
 
-            exporter.Export(_sidfm, mspc.GetResults(), mspc.GetConsensusPeaks(), options);
+            exporter.Export(
+                _sidfm,
+                mspc.GetResults(),
+                mspc.GetConsensusPeaks(),
+                options);
 
             return path;
         }
@@ -158,8 +203,12 @@ namespace Genometric.MSPC.CLI.Tests
                 // Assert
                 foreach (var att in _attributes)
                 {
-                    Assert.Contains(files, (string p) => { return p.Equals(att + "_mspc_peaks.txt"); });
-                    Assert.True(files.Count(x => x.Equals(att + "_mspc_peaks.txt")) == 1);
+                    Assert.Contains(
+                        files,
+                        (string p) => { return p.Equals(att + "_mspc_peaks.txt"); });
+
+                    Assert.True(files.Count(
+                        x => x.Equals(att + "_mspc_peaks.txt")) == 1);
                 }
             }
 
@@ -210,13 +259,32 @@ namespace Genometric.MSPC.CLI.Tests
         [InlineData(false, 0, Attributes.Weak, 0)]
         [InlineData(false, 1, Attributes.Weak, 2)]
         [InlineData(false, 2, Attributes.Weak, 1)]
-        public void CountNumberOfExportedPeaksInEachSet(bool mspcFormat, uint sampleID, Attributes attribute, int count)
+        public void CountNumberOfExportedPeaksInEachSet(
+            bool mspcFormat, uint sampleID, Attributes attribute, int count)
         {
             // Arrange & Act
             string path = RunMSPCAndExportResults();
-            string filename = mspcFormat ? attribute.ToString() + "_mspc_peaks" : attribute.ToString();
-            var sampleFolder = Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[sampleID]); });
-            var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(filename); });
+            string filename =
+                mspcFormat ?
+                attribute.ToString() + "_mspc_peaks" :
+                attribute.ToString();
+
+            var sampleFolder =
+                Array.Find(
+                    Directory.GetDirectories(path),
+                    (string f) =>
+                    {
+                        return f.Contains(_sidfm[sampleID]);
+                    });
+
+            var file =
+                Array.Find(
+                    Directory.GetFiles(sampleFolder),
+                    (string f) =>
+                    {
+                        return Path.GetFileNameWithoutExtension(f).Equals(filename);
+                    });
+
             var bedParser = new BedParser
             {
                 PValueFormat = PValueFormats.minus1_Log10_pValue
@@ -227,7 +295,9 @@ namespace Genometric.MSPC.CLI.Tests
             if (count == 0)
                 Assert.False(parsedSample.Chromosomes.ContainsKey(_chr));
             else
-                Assert.True(parsedSample.Chromosomes[_chr].Strands[_strand].Intervals.Count == count);
+                Assert.True(
+                    parsedSample.Chromosomes[_chr].Strands[_strand]
+                    .Intervals.Count == count);
 
             // Clean up
             Directory.Delete(path, true);
@@ -242,7 +312,7 @@ namespace Genometric.MSPC.CLI.Tests
             string path = RunMSPCAndExportResults(write);
             foreach (var sampleFolder in Directory.GetDirectories(path))
                 foreach (var file in Directory.GetFiles(sampleFolder))
-                    using (StreamReader reader = new StreamReader(file))
+                    using (var reader = new StreamReader(file))
                         if (Path.GetFileNameWithoutExtension(file).Contains("_mspc_peaks"))
                             Assert.True(Header(true).Equals(reader.ReadLine()) == write);
                         else
@@ -263,8 +333,12 @@ namespace Genometric.MSPC.CLI.Tests
             string line;
             string expectedHeader = Header(mspcFormat);
             string path = RunMSPCAndExportResults(write);
-            string filename = mspcFormat ? "ConsensusPeaks_mspc_peaks.txt" : "ConsensusPeaks.bed";
-            using (StreamReader reader = new StreamReader(path + Path.DirectorySeparatorChar + filename))
+            string filename =
+                mspcFormat ?
+                "ConsensusPeaks_mspc_peaks.txt" :
+                "ConsensusPeaks.bed";
+
+            using (var reader = new StreamReader(Path.Join(path, filename)))
                 line = reader.ReadLine();
 
             // Assert
@@ -316,17 +390,46 @@ namespace Genometric.MSPC.CLI.Tests
         [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, '.', double.NaN, double.NaN, double.NaN)]
         public void CorrectValuesForEachPropertyOfExportedPeakInMSPCPeakFile(
             uint sampleID, Attributes attribute,
-            string chr, int left, int right, string name, double value, char strand, double xSqrd, double rtp, double adjustedPValue)
+            string chr, int left, int right, string name,
+            double value, char strand, double xSqrd,
+            double rtp, double adjustedPValue)
         {
             // Arrange
             string path = RunMSPCAndExportResults();
-            string expectedLine = chr + "\t" + left + "\t" + right + "\t" + name + "\t" + value + "\t" + strand + "\t" + xSqrd + "\t" + rtp + "\t" + adjustedPValue;
+            string expectedLine =
+                string.Join("\t", new string[]
+                {
+                    chr,
+                    left.ToString(),
+                    right.ToString(),
+                    name,
+                    value.ToString(),
+                    strand.ToString(),
+                    xSqrd.ToString(),
+                    rtp.ToString(),
+                    adjustedPValue.ToString()
+                });
+
             string readLine = "";
-            var sampleFolder = Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[sampleID]); });
-            var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(attribute.ToString() + "_mspc_peaks"); });
+            var sampleFolder =
+                Array.Find(
+                    Directory.GetDirectories(path),
+                    (string f) =>
+                    {
+                        return f.Contains(_sidfm[sampleID]);
+                    });
+
+            var file =
+                Array.Find(
+                    Directory.GetFiles(sampleFolder),
+                    (string f) =>
+                    {
+                        return Path.GetFileNameWithoutExtension(f)
+                        .Equals(attribute.ToString() + "_mspc_peaks");
+                    });
 
             // Act
-            using (StreamReader reader = new StreamReader(file))
+            using (var reader = new StreamReader(file))
                 readLine = reader.ReadLine();
 
             // Assert
@@ -343,14 +446,26 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var path = RunMSPCAndExportResultsWithMultiChr();
-            string name = mspcFormat ? Attributes.Confirmed.ToString() + "_mspc_peaks" : Attributes.Confirmed.ToString();
+            string name =
+                mspcFormat ?
+                Attributes.Confirmed.ToString() + "_mspc_peaks" :
+                Attributes.Confirmed.ToString();
 
             // In the exported session folder, first finds the folder that contains 
             // analysis results for a given sample, then within that folder
             // finds the file that contains data belonging to a given attributes.
             var filename = Array.Find(
-                Directory.GetFiles(Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[0]); })),
-                (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(name); });
+                Directory.GetFiles(
+                    Array.Find(
+                        Directory.GetDirectories(path),
+                        (string f) =>
+                        {
+                            return f.Contains(_sidfm[0]);
+                        })),
+                (string f) =>
+                {
+                    return Path.GetFileNameWithoutExtension(f).Equals(name);
+                });
 
             // Assert
             int lineCounter = 0;
@@ -378,11 +493,14 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange & Act
             var path = RunMSPCAndExportResultsWithMultiChr();
-            string filename = mspcFormat ? "ConsensusPeaks_mspc_peaks.txt" : "ConsensusPeaks.bed";
+            string filename =
+                mspcFormat ?
+                "ConsensusPeaks_mspc_peaks.txt" :
+                "ConsensusPeaks.bed";
 
             // Assert
             int lineCounter = 0;
-            using (var reader = new StreamReader(path + Path.DirectorySeparatorChar + filename))
+            using (var reader = new StreamReader(Path.Join(path, filename)))
             {
                 for (int i = 0; i < peaks.Count; i++)
                 {
@@ -402,9 +520,9 @@ namespace Genometric.MSPC.CLI.Tests
         // This test causes (maybe) deadlock on Github actions
         // (Linux and Window environment, runs as expected on mac env).
         //[Fact]
-        #pragma warning disable xUnit1013 // Public method should be marked as test
+#pragma warning disable xUnit1013 // Public method should be marked as test
         public void InfForPeaksWithVeryLowPValue()
-        #pragma warning restore xUnit1013 // Public method should be marked as test
+#pragma warning restore xUnit1013 // Public method should be marked as test
         {
             // Arrange
             string rep1Path = Path.Join(Environment.CurrentDirectory, Main.GetFilename("rep1"));

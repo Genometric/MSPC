@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Model;
+﻿using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.Core.Model;
 using Xunit;
 
@@ -28,7 +24,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         [Theory]
         [InlineData(100, 10, 1)]
         [InlineData(10, 100, -1)]
-        [InlineData(100,100, 0)]
+        [InlineData(100, 100, 0)]
         public void CompareByLeftEnd(int xLeft, int yLeft, int expectedResult)
         {
             // Arrange
@@ -94,7 +90,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         }
 
         [Theory]
-        [InlineData(100, 10,true)]
+        [InlineData(100, 10, true)]
         [InlineData(10, 100, false)]
         [InlineData(100, 100, false)]
         public void GreaterOperator(int xValue, int yValue, bool expectedResult)

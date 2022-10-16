@@ -1,13 +1,8 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Model;
+﻿using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;
 
@@ -19,7 +14,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         private readonly char _strand = '.';
         private readonly string[] _chrs = new string[] { "chr1", "chr2", "chr3", "chr9", "chrx" };
 
-        private Dictionary<string, Dictionary<char, List<ProcessedPeak<Peak>>>> GetSampleConsensusPeaks(float alpha= 1e-15F)
+        private Dictionary<string, Dictionary<char, List<ProcessedPeak<Peak>>>> GetSampleConsensusPeaks(float alpha = 1e-15F)
         {
             ///                 r11                 r12
             /// Sample 0: ----▓▓▓▓▓▓--------------▓▓▓▓▓▓-----------------------

@@ -1,16 +1,11 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.IGenomics;
-using Genometric.MSPC.Core.Model;
+﻿using Genometric.GeUtilities.IGenomics;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Functions;
+using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
-using Genometric.GeUtilities.Intervals.Parsers.Model;
 
 namespace Genometric.MSPC.Core
 {
@@ -26,10 +21,10 @@ namespace Genometric.MSPC.Core
         public AutoResetEvent Done { set; get; }
         public AutoResetEvent Canceled { set; get; }
 
-        private Processor<I> _processor { set; get; }
-        private BackgroundWorker _backgroundProcessor { set; get; }
+        private readonly Processor<I> _processor;
+        private readonly BackgroundWorker _backgroundProcessor;
 
-        private Dictionary<uint, Result<I>> _results { set; get; }
+        private Dictionary<uint, Result<I>> _results;
 
         public int? DegreeOfParallelism
         {
@@ -46,10 +41,10 @@ namespace Genometric.MSPC.Core
                 trackSupportingRegions,
                 maxDegreeOfParallelism);
 
-            _processor.OnProgressUpdate += _processorOnProgressUpdate;
+            _processor.OnProgressUpdate += ProcessorOnProgressUpdate;
             _backgroundProcessor = new BackgroundWorker();
-            _backgroundProcessor.DoWork += _doWork;
-            _backgroundProcessor.RunWorkerCompleted += _runWorkerCompleted;
+            _backgroundProcessor.DoWork += DoWork;
+            _backgroundProcessor.RunWorkerCompleted += RunWorkerCompleted;
             _backgroundProcessor.WorkerSupportsCancellation = true;
             Done = new AutoResetEvent(false);
             Canceled = new AutoResetEvent(false);
@@ -102,19 +97,19 @@ namespace Genometric.MSPC.Core
             return _processor.ConsensusPeaks;
         }
 
-        private void _doWork(object sender, DoWorkEventArgs e)
+        private void DoWork(object sender, DoWorkEventArgs e)
         {
             _processor.Run((Config)e.Argument, sender as BackgroundWorker, e);
             _results = _processor.AnalysisResults;
         }
 
-        private void _runWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Canceled.Set();
             Done.Set();
         }
 
-        private void _processorOnProgressUpdate(ProgressReport value)
+        private void ProcessorOnProgressUpdate(ProgressReport value)
         {
             OnStatusValueChaned(value);
         }

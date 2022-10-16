@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Genometric.MSPC.CLI.Exporter
 {
@@ -48,7 +44,7 @@ namespace Genometric.MSPC.CLI.Exporter
                     if (marker1 < len1)
                         ch1 = x[marker1];
                     else
-                        break;                    
+                        break;
                 } while (char.IsDigit(ch1) == char.IsDigit(space1[0]));
 
                 do
@@ -64,8 +60,8 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 // If we have collected numbers, compare them numerically.
                 // Otherwise, if we have strings, compare them alphabetically.
-                string str1 = new string(space1);
-                string str2 = new string(space2);
+                var str1 = new string(space1);
+                var str2 = new string(space2);
 
                 int result;
 

@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.IGenomics;
+﻿using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
@@ -14,7 +10,7 @@ namespace Genometric.MSPC.Core.Functions
     internal class ConsensusPeaks<I>
         where I : IPeak
     {
-        private Dictionary<string, Dictionary<char, SortedDictionary<Interval, Interval>>> _consensusPeaks { set; get; }
+        private Dictionary<string, Dictionary<char, SortedDictionary<Interval, Interval>>> _consensusPeaks;
 
         public Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> Compute(
             Dictionary<uint, Result<I>> analysisResults,
@@ -66,7 +62,7 @@ namespace Genometric.MSPC.Core.Functions
             // Convert the type of determined consensus peaks.
             var processedPeaks = ConvertToListOfProcessedPeaks(peakConstructor, degreeOfParallelisim);
             var fdr = new FalseDiscoveryRate<I>();
-            fdr.PerformMultipleTestingCorrection(processedPeaks, alpha);
+            FalseDiscoveryRate<I>.PerformMultipleTestingCorrection(processedPeaks, alpha);
             return processedPeaks;
         }
 

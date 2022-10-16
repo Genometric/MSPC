@@ -16,10 +16,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
     public class TConsensusPeaks
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
         private readonly string[] _chrs = new string[] { "chr1", "chr2", "chr3", "chr9", "chrx" };
 
-        private ReadOnlyDictionary<string, List<ProcessedPeak<Peak>>> GetSampleConsensusPeaks(float alpha= 1e-15F)
+        private Dictionary<string, Dictionary<char, List<ProcessedPeak<Peak>>>> GetSampleConsensusPeaks(float alpha= 1e-15F)
         {
             ///                 r11                 r12
             /// Sample 0: ----▓▓▓▓▓▓--------------▓▓▓▓▓▓-----------------------
@@ -73,7 +73,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
 
             // Act
             mspc.Run(new Config(ReplicateType.Biological, 1, 1, 1, 1, 1F, MultipleIntersections.UseLowestPValue));
-            var cp = mspc.GetConsensusPeaks()[_chr].First();
+            var cp = mspc.GetConsensusPeaks()[_chr][_strand].First();
 
             // Assert
             Assert.True(cp.Source.Left == cLeft && cp.Source.Right == cRight);
@@ -86,10 +86,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var cPeaks = GetSampleConsensusPeaks();
 
             // Assert
-            Assert.True(cPeaks[_chrs[0]][0].Source.Left == 2 && cPeaks[_chrs[0]][0].Source.Right == 26);
-            Assert.True(cPeaks[_chrs[1]][0].Source.Left == 36 && cPeaks[_chrs[1]][0].Source.Right == 40);
-            Assert.True(cPeaks[_chrs[2]][0].Source.Left == 50 && cPeaks[_chrs[2]][0].Source.Right == 60);
-            Assert.True(cPeaks[_chrs[4]][0].Source.Left == 70 && cPeaks[_chrs[4]][0].Source.Right == 90);
+            Assert.True(cPeaks[_chrs[0]][_strand][0].Source.Left == 2 && cPeaks[_chrs[0]][_strand][0].Source.Right == 26);
+            Assert.True(cPeaks[_chrs[1]][_strand][0].Source.Left == 36 && cPeaks[_chrs[1]][_strand][0].Source.Right == 40);
+            Assert.True(cPeaks[_chrs[2]][_strand][0].Source.Left == 50 && cPeaks[_chrs[2]][_strand][0].Source.Right == 60);
+            Assert.True(cPeaks[_chrs[4]][_strand][0].Source.Left == 70 && cPeaks[_chrs[4]][_strand][0].Source.Right == 90);
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange and Act
             var cPeaks = GetSampleConsensusPeaks();
-            var cPeak = cPeaks[_chrs[0]].First(x => x.Source.Left == 2 && x.Source.Right == 26);
+            var cPeak = cPeaks[_chrs[0]][_strand].First(x => x.Source.Left == 2 && x.Source.Right == 26);
 
             // Assert
             Assert.True(Math.Round(cPeak.XSquared, 6) == 112.154559);
@@ -108,7 +108,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange and Act
             var cPeaks = GetSampleConsensusPeaks();
-            var cPeak = cPeaks[_chrs[0]].First(x => x.Source.Left == 2 && x.Source.Right == 26);
+            var cPeak = cPeaks[_chrs[0]][_strand].First(x => x.Source.Left == 2 && x.Source.Right == 26);
 
             // Assert
             Assert.True(cPeak.RTP.ToString("E5") == "7.21069E-022");
@@ -119,10 +119,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange & Act
             var cPeaks = GetSampleConsensusPeaks();
-            var r1 = cPeaks[_chrs[0]].First(x => x.Source.Left == 2);
-            var r2 = cPeaks[_chrs[1]].First(x => x.Source.Left == 36);
-            var r3 = cPeaks[_chrs[2]].First(x => x.Source.Left == 50);
-            var r4 = cPeaks[_chrs[4]].First(x => x.Source.Left == 70);
+            var r1 = cPeaks[_chrs[0]][_strand].First(x => x.Source.Left == 2);
+            var r2 = cPeaks[_chrs[1]][_strand].First(x => x.Source.Left == 36);
+            var r3 = cPeaks[_chrs[2]][_strand].First(x => x.Source.Left == 50);
+            var r4 = cPeaks[_chrs[4]][_strand].First(x => x.Source.Left == 70);
 
             // Assert
             Assert.Equal("9.614E-022", r1.AdjPValue.ToString("E3"));
@@ -136,10 +136,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange & Act
             var cPeaks = GetSampleConsensusPeaks();
-            var r1 = cPeaks[_chrs[0]].First(x => x.Source.Left == 2);
-            var r2 = cPeaks[_chrs[1]].First(x => x.Source.Left == 36);
-            var r3 = cPeaks[_chrs[2]].First(x => x.Source.Left == 50);
-            var r4 = cPeaks[_chrs[4]].First(x => x.Source.Left == 70);
+            var r1 = cPeaks[_chrs[0]][_strand].First(x => x.Source.Left == 2);
+            var r2 = cPeaks[_chrs[1]][_strand].First(x => x.Source.Left == 36);
+            var r3 = cPeaks[_chrs[2]][_strand].First(x => x.Source.Left == 50);
+            var r4 = cPeaks[_chrs[4]][_strand].First(x => x.Source.Left == 70);
 
             // Assert
             Assert.True(r1.HasAttribute(Attributes.TruePositive));

@@ -29,17 +29,23 @@ namespace Genometric.MSPC.Core.Functions
         public event ProgressUpdate OnProgressUpdate;
 
         private Dictionary<uint, Result<I>> _analysisResults { set; get; }
-        public ReadOnlyDictionary<uint, Result<I>> AnalysisResults
+        public Dictionary<uint, Result<I>> AnalysisResults
         {
-            get { return new ReadOnlyDictionary<uint, Result<I>>(_analysisResults); }
+            get { return new Dictionary<uint, Result<I>>(_analysisResults); }
         }
 
-        private Dictionary<string, Tree<I>> _tree { set; get; }
+        private Dictionary<string, Dictionary<char, Tree<I>>> _tree { set; get; }
 
-        private Dictionary<string, List<ProcessedPeak<I>>> _consensusPeaks { set; get; }
-        public ReadOnlyDictionary<string, List<ProcessedPeak<I>>> ConsensusPeaks
+        private Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> _consensusPeaks { set; get; }
+        public Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> ConsensusPeaks
         {
-            get { return new ReadOnlyDictionary<string, List<ProcessedPeak<I>>>(_consensusPeaks); }
+            get
+            {
+                return new
+                    Dictionary<string,
+                    Dictionary<char,
+                    List<ProcessedPeak<I>>>>(_consensusPeaks);
+            }
         }
 
         public int? DegreeOfParallelism { get; }
@@ -110,7 +116,7 @@ namespace Genometric.MSPC.Core.Functions
 
         private void BuildDataStructures()
         {
-            _tree = new Dictionary<string, Tree<I>>();
+            _tree = new Dictionary<string, Dictionary<char, Tree<I>>>();
             _analysisResults = new Dictionary<uint, Result<I>>();
             foreach (var sample in _samples)
             {
@@ -118,15 +124,24 @@ namespace Genometric.MSPC.Core.Functions
                 foreach (var chr in sample.Value.Chromosomes)
                 {
                     if (!_tree.ContainsKey(chr.Key))
-                        _tree.Add(chr.Key, new Tree<I>());
-                    _analysisResults[sample.Key].AddChromosome(chr.Key, chr.Value.Statistics.Count);
+                        _tree.Add(chr.Key, new Dictionary<char, Tree<I>>());
+                    _analysisResults[sample.Key].AddChromosome(chr.Key);
                     foreach (var strand in chr.Value.Strands)
+                    {
+                        _analysisResults[sample.Key].AddStrand(
+                            chr.Key, strand.Key, chr.Value.Statistics.Count);
+                        if (!_tree[chr.Key].ContainsKey(strand.Key))
+                            _tree[chr.Key].Add(strand.Key, new Tree<I>());
+
                         foreach (I p in strand.Value.Intervals)
+                        {
                             if (p.Value < _config.TauW)
                             {
-                                _tree[chr.Key].Add(p, sample.Key);
+                                _tree[chr.Key][strand.Key].Add(p, sample.Key);
                                 _peaksToBeProcessed++;
                             }
+                        }
+                    }
                 }
             }
 
@@ -136,16 +151,15 @@ namespace Genometric.MSPC.Core.Functions
             Parallel.ForEach(
                 _tree,
                 options,
-                tree => { tree.Value.BuildAndFinalize(); });
+                tree =>
+                {
+                    foreach (var strand in tree.Value.Values)
+                        strand.BuildAndFinalize();
+                });
         }
 
         private void ProcessSamples()
         {
-            void processChr(uint sampleKey, KeyValuePair<string, Chromosome<I, BedStats>> chr)
-            {
-                ProcessChr(sampleKey, chr);
-            }
-
             var options = new ParallelOptions();
             if (DegreeOfParallelism is not null)
                 options.MaxDegreeOfParallelism = (int)DegreeOfParallelism;
@@ -156,7 +170,7 @@ namespace Genometric.MSPC.Core.Functions
                     options,
                     chr =>
                     {
-                        processChr(sample.Key, chr);
+                        ProcessChr(sample.Key, chr);
                     });
         }
 
@@ -178,11 +192,11 @@ namespace Genometric.MSPC.Core.Functions
                     {
                         var pp = new ProcessedPeak<I>(peak, double.NaN);
                         pp.AddClassification(Attributes.Background);
-                        _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
+                        _analysisResults[sampleKey].Chromosomes[chr.Key][strand.Key].AddOrUpdate(pp);
                         continue;
                     }
 
-                    var supportingPeaks = FindSupportingPeaks(sampleKey, chr.Key, peak);
+                    var supportingPeaks = FindSupportingPeaks(sampleKey, chr.Key, strand.Key, peak);
                     if (supportingPeaks.Count + 1 >= _config.C)
                     {
                         double xsqrd = CalculateXsqrd(peak, supportingPeaks);
@@ -195,18 +209,18 @@ namespace Genometric.MSPC.Core.Functions
                         if (xsqrd >= _cachedChiSqrd[supportingPeaks.Count])
                         {
                             pp.AddClassification(Attributes.Confirmed);
-                            _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
+                            _analysisResults[sampleKey].Chromosomes[chr.Key][strand.Key].AddOrUpdate(pp);
                             ProcessSupportingPeaks(
-                                sampleKey, chr.Key, peak, supportingPeaks,
+                                sampleKey, chr.Key, strand.Key, peak, supportingPeaks,
                                 xsqrd, Attributes.Confirmed, Messages.Codes.M000);
                         }
                         else
                         {
                             pp.reason = Messages.Codes.M001;
                             pp.AddClassification(Attributes.Discarded);
-                            _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
+                            _analysisResults[sampleKey].Chromosomes[chr.Key][strand.Key].AddOrUpdate(pp);
                             ProcessSupportingPeaks(
-                                sampleKey, chr.Key, peak, supportingPeaks,
+                                sampleKey, chr.Key, strand.Key, peak, supportingPeaks,
                                 xsqrd, Attributes.Discarded, Messages.Codes.M001);
                         }
                     }
@@ -216,7 +230,7 @@ namespace Genometric.MSPC.Core.Functions
                         pp.AddClassification(attribute);
                         pp.AddClassification(Attributes.Discarded);
                         pp.reason = Messages.Codes.M002;
-                        _analysisResults[sampleKey].Chromosomes[chr.Key].AddOrUpdate(pp);
+                        _analysisResults[sampleKey].Chromosomes[chr.Key][strand.Key].AddOrUpdate(pp);
                     }
 
                     Interlocked.Increment(ref _processedPeaks);
@@ -225,14 +239,14 @@ namespace Genometric.MSPC.Core.Functions
             }
         }
 
-        private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, I queryPeak)
+        private List<SupportingPeak<I>> FindSupportingPeaks(uint id, string chr, char strand, I queryPeak)
         {
             var supportingPeaks = new List<SupportingPeak<I>>();
             if (!_tree.ContainsKey(chr))
                 return supportingPeaks;
 
             var overlappingPeaks = new List<NodeData<I>>();
-            overlappingPeaks = _tree[chr].GetIntervals(queryPeak, id);
+            overlappingPeaks = _tree[chr][strand].GetIntervals(queryPeak, id);
 
             switch (overlappingPeaks.Count)
             {
@@ -269,7 +283,7 @@ namespace Genometric.MSPC.Core.Functions
         }
 
         private void ProcessSupportingPeaks
-            (uint id, string chr, I p, List<SupportingPeak<I>> supportingPeaks,
+            (uint id, string chr, char strand, I p, List<SupportingPeak<I>> supportingPeaks,
             double xsqrd, Attributes attribute, Messages.Codes message)
         {
             foreach (var supPeak in supportingPeaks)
@@ -296,7 +310,7 @@ namespace Genometric.MSPC.Core.Functions
                 else
                     pp.AddClassification(Attributes.Weak);
 
-                _analysisResults[supPeak.SampleID].Chromosomes[chr].AddOrUpdate(pp);
+                _analysisResults[supPeak.SampleID].Chromosomes[chr][strand].AddOrUpdate(pp);
             }
         }
 

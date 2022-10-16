@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Genometric.MSPC.CLI.CommandLineInterface
 {
-    internal class CliConfig : Config
+    public class CliConfig : Config
     {
         public IReadOnlyList<string> InputFiles { get; }
 

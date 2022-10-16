@@ -12,6 +12,9 @@ namespace Genometric.MSPC.Core.Tests.Basic
 {
     public class ColocalizationCount
     {
+        private const string _chr = "chr1";
+        private const char _strand = '.';
+
         [Theory]
         [InlineData(1, 1)]
         [InlineData(2, 0)]
@@ -19,10 +22,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 30, right: 40, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 30, right: 40, value: 0.01), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -36,8 +39,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(new[]
             {
-                res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count()
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count()
             }.All(x => x == expected));
         }
 
@@ -48,10 +51,10 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 40, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 40, value: 0.01), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -65,8 +68,8 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(new[]
             {
-                res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count()
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count()
             }.All(x => x == expected));
         }
 
@@ -78,13 +81,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 12, value: 0.01), _chr, _strand);
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 18, right: 25, value: 0.01), "chr1", '*');
+            sC.Add(new Peak(left: 18, right: 25, value: 0.01), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -99,9 +102,9 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(new[]
             {
-                res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count()
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[2].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count()
             }.All(x => x == expected));
         }
 
@@ -113,13 +116,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 18, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 18, value: 0.01), _chr, _strand);
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 14, right: 25, value: 0.01), "chr1", '*');
+            sC.Add(new Peak(left: 14, right: 25, value: 0.01), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -134,9 +137,9 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(new[]
             {
-                res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count()
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[2].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count()
             }.All(x => x == expected));
         }
 
@@ -148,13 +151,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 8, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 8, value: 0.01), _chr, _strand);
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 24, right: 25, value: 0.01), "chr1", '*');
+            sC.Add(new Peak(left: 24, right: 25, value: 0.01), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -169,9 +172,9 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(new[]
             {
-                res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count()
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[2].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count()
             }.All(x => x == expected));
         }
 
@@ -180,19 +183,19 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 18, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 18, value: 0.01), _chr, _strand);
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 14, right: 25, value: 0.01), "chr1", '*');
+            sC.Add(new Peak(left: 14, right: 25, value: 0.01), _chr, _strand);
 
             var sD = new Bed<Peak>();
-            sD.Add(new Peak(left: 35, right: 40, value: 0.01), "chr1", '*');
+            sD.Add(new Peak(left: 35, right: 40, value: 0.01), _chr, _strand);
 
             var sE = new Bed<Peak>();
-            sE.Add(new Peak(left: 43, right: 50, value: 0.01), "chr1", '*');
+            sE.Add(new Peak(left: 43, right: 50, value: 0.01), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -209,11 +212,11 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.True(new[]
             {
-                res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[1].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[2].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[3].Chromosomes["chr1"].Get(Attributes.Confirmed).Count(),
-                res[4].Chromosomes["chr1"].Get(Attributes.Confirmed).Count()
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[2].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[3].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count(),
+                res[4].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count()
             }.All(x => x == 1));
         }
 
@@ -222,14 +225,14 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 0.01), "chr1", '*');
-            sB.Add(new Peak(left: 14, right: 22, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 12, value: 0.01), _chr, _strand);
+            sB.Add(new Peak(left: 14, right: 22, value: 0.01), _chr, _strand);
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 24, right: 25, value: 0.01), "chr1", '*');
+            sC.Add(new Peak(left: 24, right: 25, value: 0.01), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -242,7 +245,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(config);
 
             // Assert
-            Assert.False(res[0].Chromosomes["chr1"].Get(Attributes.Confirmed).Any());
+            Assert.False(res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any());
         }
 
         [Fact]
@@ -250,16 +253,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
         {
             // Arrange
             var sA = new Bed<Peak>();
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "0"), "chr1", '*');
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "1"), "chr1", '*');
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "2"), "chr1", '*');
-            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "3"), "chr1", '*');
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "0"), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "1"), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "2"), _chr, _strand);
+            sA.Add(new Peak(left: 10, right: 20, value: 0.01, hashSeed: "3"), _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(new Peak(left: 5, right: 12, value: 0.01), "chr1", '*');
+            sB.Add(new Peak(left: 5, right: 12, value: 0.01), _chr, _strand);
 
             var sC = new Bed<Peak>();
-            sC.Add(new Peak(left: 18, right: 25, value: 0.01), "chr1", '*');
+            sC.Add(new Peak(left: 18, right: 25, value: 0.01), _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -272,7 +275,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes["chr1"].Count(Attributes.Confirmed) == 0);
+            Assert.True(res[0].Chromosomes[_chr][_strand].Count(Attributes.Confirmed) == 0);
         }
 
         [Fact]
@@ -284,16 +287,16 @@ namespace Genometric.MSPC.Core.Tests.Basic
             for (uint i = 0; i < sampleCount - 2; i++)
             {
                 var bed = new Bed<Peak>();
-                bed.Add(new Peak(10, 20, 0.01), "chr1", '*');
+                bed.Add(new Peak(10, 20, 0.01), _chr, _strand);
                 mspc.AddSample(i, bed);
             }
 
             var bedB = new Bed<Peak>();
-            bedB.Add(new Peak(8, 12, 0.01), "chr1", '*');
+            bedB.Add(new Peak(8, 12, 0.01), _chr, _strand);
             mspc.AddSample((uint)sampleCount - 2, bedB);
 
             var bedC = new Bed<Peak>();
-            bedC.Add(new Peak(18, 25, 0.01), "chr1", '*');
+            bedC.Add(new Peak(18, 25, 0.01), _chr, _strand);
             mspc.AddSample((uint)sampleCount - 1, bedC);
 
             var config = new Config(ReplicateType.Biological, 1, 1, 1, sampleCount, 1F, MultipleIntersections.UseLowestPValue);
@@ -303,7 +306,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
 
             // Assert
             for (uint i = 0; i < sampleCount; i++)
-                Assert.True(res[i].Chromosomes["chr1"].Count(Attributes.Confirmed) == 1);
+                Assert.True(res[i].Chromosomes[_chr][_strand].Count(Attributes.Confirmed) == 1);
         }
     }
 }

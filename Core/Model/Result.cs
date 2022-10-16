@@ -11,17 +11,22 @@ namespace Genometric.MSPC.Core.Model
         where I : IPeak
     {
         private readonly ReplicateType _replicateType;
-        public ConcurrentDictionary<string, Sets<I>> Chromosomes { set; get; }
+        public ConcurrentDictionary<string, ConcurrentDictionary<char, Sets<I>>> Chromosomes { set; get; }
 
         internal Result(ReplicateType replicateType)
         {
             _replicateType = replicateType;
-            Chromosomes = new ConcurrentDictionary<string, Sets<I>>();
+            Chromosomes = new ConcurrentDictionary<string, ConcurrentDictionary<char, Sets<I>>>();
         }
 
-        public void AddChromosome(string chr, int capacity)
+        public void AddChromosome(string chr)
         {
-            Chromosomes.TryAdd(chr, new Sets<I>(capacity, _replicateType));
+            Chromosomes.TryAdd(chr, new ConcurrentDictionary<char, Sets<I>>());
+        }
+
+        public void AddStrand(string chr, char strand, int capacity)
+        {
+            Chromosomes[chr].TryAdd(strand, new Sets<I>(capacity, _replicateType));
         }
     }
 }

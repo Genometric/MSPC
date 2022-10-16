@@ -7,7 +7,6 @@ using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -21,8 +20,8 @@ namespace Genometric.MSPC.CLI.Exporter
 
         public void Export(
             Dictionary<uint, string> fileNames,
-            ReadOnlyDictionary<uint, Result<I>> results,
-            ReadOnlyDictionary<string, List<ProcessedPeak<I>>> consensusPeaks,
+            Dictionary<uint, Result<I>> results,
+            Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> consensusPeaks,
             Options options)
         {
             _options = options;
@@ -48,8 +47,8 @@ namespace Genometric.MSPC.CLI.Exporter
         private string Header(bool mspcFormat)
         {
             return mspcFormat ?
-                "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)" :
-                "chr\tstart\tstop\tname\t-1xlog10(p-value)";
+                "chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)" :
+                "chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand";
         }
 
         private void WriteToFile(bool mspcFormat, string samplePath, Result<I> data, Attributes attribute)
@@ -66,36 +65,42 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in sortedChrs)
                 {
-                    var sortedDictionary = from entry
-                                           in data.Chromosomes[chr].Get(attribute)
-                                           orderby entry
-                                           ascending
-                                           select entry;
+                    foreach (var strand in data.Chromosomes[chr])
+                    {
+                        var sortedDictionary =
+                            from entry
+                            in strand.Value.Get(attribute)
+                            orderby entry
+                            ascending
+                            select entry;
 
-                    if (mspcFormat)
-                        foreach (var item in sortedDictionary)
-                            writter.WriteLine(
-                                chr + "\t" +
-                                item.Source.Left.ToString() + "\t" +
-                                item.Source.Right.ToString() + "\t" +
-                                item.Source.Name + "\t" +
-                                ConvertPValue(item.Source.Value) + "\t" +
-                                Math.Round(item.XSquared, 3) + "\t" +
-                                ConvertPValue(item.RTP) + "\t" +
-                                ConvertPValue(item.AdjPValue));
-                    else
-                        foreach (var item in sortedDictionary)
-                            writter.WriteLine(
-                                chr + "\t" +
-                                item.Source.Left.ToString() + "\t" +
-                                item.Source.Right.ToString() + "\t" +
-                                item.Source.Name + "\t" +
-                                ConvertPValue(item.Source.Value));
+                        if (mspcFormat)
+                            foreach (var item in sortedDictionary)
+                                writter.WriteLine(
+                                    chr + "\t" +
+                                    item.Source.Left.ToString() + "\t" +
+                                    item.Source.Right.ToString() + "\t" +
+                                    item.Source.Name + "\t" +
+                                    ConvertPValue(item.Source.Value) + "\t" +
+                                    strand.Key + "\t" +
+                                    Math.Round(item.XSquared, 3) + "\t" +
+                                    ConvertPValue(item.RTP) + "\t" +
+                                    ConvertPValue(item.AdjPValue));
+                        else
+                            foreach (var item in sortedDictionary)
+                                writter.WriteLine(
+                                    chr + "\t" +
+                                    item.Source.Left.ToString() + "\t" +
+                                    item.Source.Right.ToString() + "\t" +
+                                    item.Source.Name + "\t" +
+                                    ConvertPValue(item.Source.Value) + "\t" +
+                                    strand.Key);
+                    }
                 }
             }
         }
 
-        private void ExportConsensusPeaks(bool mspcFormat, ReadOnlyDictionary<string, List<ProcessedPeak<I>>> peaks)
+        private void ExportConsensusPeaks(bool mspcFormat, Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> peaks)
         {
             string filename = _options.Path + Path.DirectorySeparatorChar + (mspcFormat ? "ConsensusPeaks_mspc_peaks.txt" : "ConsensusPeaks.bed");
             File.Create(filename).Dispose();
@@ -109,31 +114,36 @@ namespace Genometric.MSPC.CLI.Exporter
 
                 foreach (var chr in sortedChrs)
                 {
-                    var sortedPeaks = from entry
-                                      in peaks[chr]
-                                      orderby entry
-                                      ascending
-                                      select entry;
+                    foreach (var strand in peaks[chr])
+                    {
+                        var sortedPeaks = from entry
+                                          in peaks[chr][strand.Key]
+                                          orderby entry
+                                          ascending
+                                          select entry;
 
-                    if (mspcFormat)
-                        foreach (var peak in sortedPeaks)
-                            writter.WriteLine(
-                                chr + "\t" +
-                                peak.Source.Left.ToString() + "\t" +
-                                peak.Source.Right.ToString() + "\t" +
-                                peak.Source.Name + "\t" +
-                                ConvertPValue(peak.Source.Value) + "\t" +
-                                Math.Round(peak.XSquared, 3) + "\t" +
-                                ConvertPValue(peak.RTP) + "\t" +
-                                ConvertPValue(peak.AdjPValue));
-                    else
-                        foreach (var peak in sortedPeaks)
-                            writter.WriteLine(
-                                chr + "\t" +
-                                peak.Source.Left.ToString() + "\t" +
-                                peak.Source.Right.ToString() + "\t" +
-                                peak.Source.Name + "\t" +
-                                ConvertPValue(peak.Source.Value));
+                        if (mspcFormat)
+                            foreach (var peak in sortedPeaks)
+                                writter.WriteLine(
+                                    chr + "\t" +
+                                    peak.Source.Left.ToString() + "\t" +
+                                    peak.Source.Right.ToString() + "\t" +
+                                    peak.Source.Name + "\t" +
+                                    ConvertPValue(peak.Source.Value) + "\t" +
+                                    strand.Key + "\t" +
+                                    Math.Round(peak.XSquared, 3) + "\t" +
+                                    ConvertPValue(peak.RTP) + "\t" +
+                                    ConvertPValue(peak.AdjPValue));
+                        else
+                            foreach (var peak in sortedPeaks)
+                                writter.WriteLine(
+                                    chr + "\t" +
+                                    peak.Source.Left.ToString() + "\t" +
+                                    peak.Source.Right.ToString() + "\t" +
+                                    peak.Source.Name + "\t" +
+                                    ConvertPValue(peak.Source.Value) + "\t" +
+                                    strand.Key);
+                    }
                 }
             }
         }

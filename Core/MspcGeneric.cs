@@ -29,7 +29,7 @@ namespace Genometric.MSPC.Core
         private Processor<I> _processor { set; get; }
         private BackgroundWorker _backgroundProcessor { set; get; }
 
-        private ReadOnlyDictionary<uint, Result<I>> _results { set; get; }
+        private Dictionary<uint, Result<I>> _results { set; get; }
 
         public int? DegreeOfParallelism
         {
@@ -60,7 +60,7 @@ namespace Genometric.MSPC.Core
             _processor.AddSample(id, sample);
         }
 
-        public ReadOnlyDictionary<uint, Result<I>> Run(Config config)
+        public Dictionary<uint, Result<I>> Run(Config config)
         {
             if (_processor.SamplesCount < 2)
                 throw new InvalidOperationException(string.Format("Minimum two samples are required; {0} is given.", _processor.SamplesCount));
@@ -92,12 +92,12 @@ namespace Genometric.MSPC.Core
             Canceled.Reset();
         }
 
-        public ReadOnlyDictionary<uint, Result<I>> GetResults()
+        public Dictionary<uint, Result<I>> GetResults()
         {
             return _results;
         }
 
-        public ReadOnlyDictionary<string, List<ProcessedPeak<I>>> GetConsensusPeaks()
+        public Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> GetConsensusPeaks()
         {
             return _processor.ConsensusPeaks;
         }

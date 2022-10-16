@@ -6,7 +6,7 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -15,7 +15,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
     public class ChooseOnePeakFromManyOverlappingPeaks
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
         //                            r11
         // Sample 1: ---------█████████████████████------
@@ -27,7 +27,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
         private readonly static Peak r22 = new Peak(left: 16, right: 20, name: "r22", value: 1e-6);
         private readonly static Peak r23 = new Peak(left: 26, right: 32, name: "r23", value: 1e-9);
 
-        private ReadOnlyDictionary<uint, Result<Peak>> InitializeAndRun(MultipleIntersections miChoice, bool trackSupportingPeaks = false)
+        private Dictionary<uint, Result<Peak>> InitializeAndRun(MultipleIntersections miChoice, bool trackSupportingPeaks = false)
         {
             // Arrange
             var sA = new Bed<Peak>();
@@ -53,7 +53,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = InitializeAndRun(MultipleIntersections.UseLowestPValue, true);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].SupportingPeaks[0].Source.CompareTo(r23) == 0);
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).ToList()[0].SupportingPeaks[0].Source.CompareTo(r23) == 0);
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = InitializeAndRun(MultipleIntersections.UseHighestPValue, true);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].SupportingPeaks[0].Source.CompareTo(r21) == 0);
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).ToList()[0].SupportingPeaks[0].Source.CompareTo(r21) == 0);
         }
     }
 }

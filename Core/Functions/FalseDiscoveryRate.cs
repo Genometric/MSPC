@@ -33,22 +33,24 @@ namespace Genometric.MSPC.Core.Functions
                 });
         }
 
-        private List<ProcessedPeak<I>> UnionChrs(ConcurrentDictionary<string, Sets<I>> chrs)
+        private List<ProcessedPeak<I>> UnionChrs(ConcurrentDictionary<string, ConcurrentDictionary<char, Sets<I>>> chrs)
         {
             IEnumerable<ProcessedPeak<I>> peaks = new List<ProcessedPeak<I>>();
             foreach (var chr in chrs)
-                peaks = peaks.Union(chr.Value.Get(Attributes.Confirmed));
+                foreach (var strand in chr.Value)
+                    peaks = peaks.Union(strand.Value.Get(Attributes.Confirmed));
             return peaks.ToList();
         }
 
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<string, List<ProcessedPeak<I>>> peaks, float alpha)
+        public void PerformMultipleTestingCorrection(Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> peaks, float alpha)
         {
             IEnumerable<ProcessedPeak<I>> ps = new List<ProcessedPeak<I>>();
             foreach (var chr in peaks)
-                ps = ps.Union(chr.Value);
+                foreach (var strand in chr.Value)
+                    ps = ps.Union(strand.Value);
             PerformMultipleTestingCorrection(ps.ToList(), alpha);
         }
 

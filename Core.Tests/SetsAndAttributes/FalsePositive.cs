@@ -5,7 +5,7 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -14,9 +14,9 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
     public class FalsePositive
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
-        private ReadOnlyDictionary<uint, Result<Peak>> GenerateAndProcessBackgroundPeaks()
+        private Dictionary<uint, Result<Peak>> GenerateAndProcessBackgroundPeaks()
         {
             var sA = new Bed<Peak>();
             sA.Add(new Peak(left: 10, right: 20, value: 1e-6), _chr, _strand);
@@ -41,7 +41,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = GenerateAndProcessBackgroundPeaks();
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Count(Attributes.FalsePositive) == 1);
+            Assert.True(res[0].Chromosomes[_chr][_strand].Count(Attributes.FalsePositive) == 1);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var sample in res)
-                Assert.True(sample.Value.Chromosomes[_chr].Count(Attributes.FalsePositive) == 2);
+                Assert.True(sample.Value.Chromosomes[_chr][_strand].Count(Attributes.FalsePositive) == 2);
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.FalsePositive).First().Source.Equals(r11));
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.FalsePositive).First().Source.Equals(r11));
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var sample in res)
-                Assert.True(sample.Value.Chromosomes[_chr].Count(Attributes.FalsePositive) == 4);
+                Assert.True(sample.Value.Chromosomes[_chr][_strand].Count(Attributes.FalsePositive) == 4);
         }
     }
 }

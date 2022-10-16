@@ -6,7 +6,7 @@ using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -15,9 +15,9 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
     public class Confirmed
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
-        private ReadOnlyDictionary<uint, Result<Peak>> CreateStringentPeaksAndConfirmThem()
+        private Dictionary<uint, Result<Peak>> CreateStringentPeaksAndConfirmThem()
         {
             var sA = new Bed<Peak>();
             sA.Add(new Peak(left: 10, right: 20, value: 1e-9), _chr, _strand);
@@ -44,7 +44,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             // Assert
             foreach (var result in results)
                 Assert.True(
-                    Math.Round(result.Value.Chromosomes[_chr].Get(Attributes.Confirmed).First().XSquared, 8) == 96.70857391);
+                    Math.Round(result.Value.Chromosomes[_chr][_strand].Get(Attributes.Confirmed).First().XSquared, 8) == 96.70857391);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var result in results)
-                Assert.True(result.Value.Chromosomes[_chr].Get(Attributes.Confirmed).First().RTP.ToString("E5") == "4.93543E-020");
+                Assert.True(result.Value.Chromosomes[_chr][_strand].Get(Attributes.Confirmed).First().RTP.ToString("E5") == "4.93543E-020");
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Count(Attributes.Confirmed) == 1);
+                Assert.True(s.Value.Chromosomes[_chr][_strand].Count(Attributes.Confirmed) == 1);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Count(Attributes.Confirmed) == 1);
+                Assert.True(s.Value.Chromosomes[_chr][_strand].Count(Attributes.Confirmed) == 1);
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Count(Attributes.Confirmed) == 1);
+                Assert.True(s.Value.Chromosomes[_chr][_strand].Count(Attributes.Confirmed) == 1);
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.False(s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Any());
+                Assert.False(s.Value.Chromosomes[_chr][_strand].Get(Attributes.Discarded).Any());
         }
 
         [Fact]
@@ -152,8 +152,8 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             // Assert
 
             Assert.True(
-                res[0].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.Equals(sAP) &&
-                res[1].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.Equals(sBP));
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).ToList()[0].Source.Equals(sAP) &&
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).ToList()[0].Source.Equals(sBP));
         }
 
         [Fact]
@@ -178,7 +178,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any());
         }
 
         [Fact]
@@ -204,8 +204,8 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             Assert.True(
-                res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any() &&
-                res[1].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any() &&
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any());
         }
     }
 }

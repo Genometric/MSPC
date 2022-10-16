@@ -13,7 +13,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
     public class AdjPValue
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
         [Fact]
         public void ComputeAdjustedPValue()
@@ -25,7 +25,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var sB = new Bed<Peak>();
             sB.Add(new Peak(left: 5, right: 12, value: 0.01), _chr, _strand);
             sB.Add(new Peak(left: 50, right: 120, value: 0.001), _chr, _strand);
-            
+
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
             mspc.AddSample(1, sB);
@@ -36,8 +36,13 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.TruePositive).First().AdjPValue == 0.01);
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.TruePositive).Last().AdjPValue == 0.002);
+
+            foreach (var strand in res[0].Chromosomes[_chr])
+            {
+                var x = strand.Value;
+                Assert.True(x.Get(Attributes.TruePositive).First().AdjPValue == 0.01);
+                Assert.True(x.Get(Attributes.TruePositive).Last().AdjPValue == 0.002);
+            }
         }
     }
 }

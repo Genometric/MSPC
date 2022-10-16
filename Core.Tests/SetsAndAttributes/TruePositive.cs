@@ -15,7 +15,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
     public class TruePositive
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
         private readonly string[] _chrs = new string[] { "chr1", "chr1", "chr5", "chrx" };
 
@@ -54,7 +54,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             return mspc;
         }
 
-        private ReadOnlyDictionary<uint, Result<Peak>> GetResults(int peakCount = 4, float alpha = 5e-10F)
+        private Dictionary<uint, Result<Peak>> GetResults(int peakCount = 4, float alpha = 5e-10F)
         {
             return SetupMSPC(peakCount, alpha).GetResults();
         }
@@ -66,7 +66,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = GetResults(peakCount: 1, alpha: 5e-7F);
 
             // Assert
-            Assert.True(res[1].Chromosomes[_chr].Count(Attributes.TruePositive) == 1);
+            Assert.True(res[1].Chromosomes[_chr][_strand].Count(Attributes.TruePositive) == 1);
         }
 
         [Fact]
@@ -80,7 +80,8 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             {
                 int count = 0;
                 foreach (var chr in sample.Value.Chromosomes)
-                    count += chr.Value.Count(Attributes.TruePositive);
+                    foreach (var strand in chr.Value)
+                        count += strand.Value.Count(Attributes.TruePositive);
 
                 Assert.True(count == 2);
             }
@@ -93,7 +94,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var results = GetResults();
 
             // Assert
-            Assert.True(results[0].Chromosomes[_chrs[2]].Get(Attributes.TruePositive).First().Source.Equals(_setA[2]));
+            Assert.True(results[0].Chromosomes[_chrs[2]][_strand].Get(Attributes.TruePositive).First().Source.Equals(_setA[2]));
         }
 
         [Fact]
@@ -107,7 +108,8 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             {
                 int count = 0;
                 foreach (var chr in sample.Value.Chromosomes)
-                    count += chr.Value.Count(Attributes.TruePositive);
+                    foreach (var strand in chr.Value)
+                        count += strand.Value.Count(Attributes.TruePositive);
 
                 Assert.True(count == 4);
             }

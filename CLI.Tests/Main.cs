@@ -2,13 +2,17 @@
 // The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
 // See the LICENSE file in the project root for more information.
 
+using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
+using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Tests.MockTypes;
+using Genometric.MSPC.Core.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.Text.RegularExpressions;
 using Xunit;
@@ -37,9 +41,14 @@ namespace Genometric.MSPC.CLI.Tests
             }
         }
 
-        public static string GetFilename(string prefix)
+        public static string GetFilename(string prefix, string postfix = ".bed")
         {
-            return $"{prefix}{DateTimeOffset.Now.ToUnixTimeMilliseconds}";
+            var rnd = new Random();
+            return
+                $"{prefix}" +
+                $"{DateTimeOffset.Now.ToUnixTimeMilliseconds()}" +
+                $"{rnd.Next(1000, 9999)}" +
+                $"{postfix}";
         }
 
         private static void WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture)
@@ -231,9 +240,9 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains("All processes successfully finished", output);
             using (var reader = new StreamReader(Directory.GetFiles(outputPath, "*ConsensusPeaks.bed")[0]))
             {
-                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)", reader.ReadLine());
-                Assert.Equal("chr1\t4\t20\tMSPC_Peak_2\t25.219", reader.ReadLine());
-                Assert.Equal("chr1\t25\t45\tMSPC_Peak_1\t12.97", reader.ReadLine());
+                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand", reader.ReadLine());
+                Assert.Equal("chr1\t4\t20\tMSPC_Peak_2\t25.219\t.", reader.ReadLine());
+                Assert.Equal("chr1\t25\t45\tMSPC_Peak_1\t12.97\t.", reader.ReadLine());
                 Assert.Null(reader.ReadLine());
             }
 
@@ -244,11 +253,11 @@ namespace Genometric.MSPC.CLI.Tests
             string line;
             using (var reader = new StreamReader(Directory.GetFiles(dirs[0], "*TruePositive.bed")[0]))
             {
-                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)", reader.ReadLine());
+                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand", reader.ReadLine());
                 line = reader.ReadLine();
-                Assert.True("chr1\t10\t20\tmspc_peak_1\t7.12" == line || "chr1\t4\t12\tmspc_peak_3\t19.9" == line);
+                Assert.True("chr1\t10\t20\tmspc_peak_1\t7.12\t." == line || "chr1\t4\t12\tmspc_peak_3\t19.9\t." == line);
                 line = reader.ReadLine();
-                Assert.True("chr1\t25\t35\tmspc_peak_2\t5.507" == line || "chr1\t30\t45\tmspc_peak_4\t9" == line);
+                Assert.True("chr1\t25\t35\tmspc_peak_2\t5.507\t." == line || "chr1\t30\t45\tmspc_peak_4\t9\t." == line);
                 Assert.Null(reader.ReadLine());
             }
 
@@ -256,11 +265,11 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(Directory.GetFiles(dirs[1]).Length == 14);
             using (var reader = new StreamReader(Directory.GetFiles(dirs[1], "*TruePositive.bed")[0]))
             {
-                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)", reader.ReadLine());
+                Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand", reader.ReadLine());
                 line = reader.ReadLine();
-                Assert.True("chr1\t10\t20\tmspc_peak_1\t7.12" == line || "chr1\t4\t12\tmspc_peak_3\t19.9" == line);
+                Assert.True("chr1\t10\t20\tmspc_peak_1\t7.12\t." == line || "chr1\t4\t12\tmspc_peak_3\t19.9\t." == line);
                 line = reader.ReadLine();
-                Assert.True("chr1\t25\t35\tmspc_peak_2\t5.507" == line || "chr1\t30\t45\tmspc_peak_4\t9" == line);
+                Assert.True("chr1\t25\t35\tmspc_peak_2\t5.507\t." == line || "chr1\t30\t45\tmspc_peak_4\t9\t." == line);
                 Assert.Null(reader.ReadLine());
             }
 
@@ -781,6 +790,79 @@ namespace Genometric.MSPC.CLI.Tests
 
             var isAValidPath = TryGetFullPath(loggedOutputPath, out _);
             Assert.True(isAValidPath);
+        }
+
+        [Fact]
+        public void ReadProcessWriteStranded()
+        {
+            // Arrange
+            Result x;
+
+            // Act
+            var tmpMspc = new TmpMspc();
+            x = tmpMspc.Run(stranded: true);  // -w 1e-2 -s 1e-8 -r bio
+            var outputs = new Dictionary<string, Dictionary<Attributes, Bed<Peak>>>();
+            var outputPath = x.Config.OutputPath;
+            foreach (var inputFilename in x.Config.InputFiles)
+            {
+                outputs.Add(inputFilename, new Dictionary<Attributes, Bed<Peak>>());
+                var sampleFolder =
+                    Directory.GetDirectories(
+                        outputPath).First((x) =>
+                        {
+                            return
+                                Path.GetFileName(x) ==
+                                Path.GetFileNameWithoutExtension(inputFilename);
+                        });
+
+                foreach (var attr in Enum.GetValues<Attributes>())
+                {
+                    var bedParser = new BedParser(new BedColumns() { Strand = 5 })
+                    {
+                        PValueFormat = PValueFormats.minus1_Log10_pValue
+                    };
+                    outputs[inputFilename].Add(
+                        attr,
+                        bedParser.Parse(
+                            Path.Join(sampleFolder, attr.ToString() + ".bed")));
+                }
+            }
+            tmpMspc.Dispose();
+
+            // Assert
+            var r1 = outputs[x.Config.InputFiles[0]];
+            var r2 = outputs[x.Config.InputFiles[1]];
+
+            var r1c = r1[Attributes.Confirmed].Chromosomes["chr1"];
+            var r2c = r2[Attributes.Confirmed].Chromosomes["chr1"];
+            Assert.True(r1c.Strands.ContainsKey('+'));
+            Assert.True(r1c.Strands.ContainsKey('-'));
+            Assert.False(r1c.Strands.ContainsKey('.'));
+            Assert.True(r2c.Strands.ContainsKey('+'));
+            Assert.True(r2c.Strands.ContainsKey('-'));
+            Assert.False(r2c.Strands.ContainsKey('.'));
+            Assert.True(r1c.Strands['+'].Intervals.Count == 1);
+            Assert.True(r1c.Strands['-'].Intervals.Count == 2);
+            Assert.True(r2c.Strands['+'].Intervals.Count == 2);
+            Assert.True(r2c.Strands['-'].Intervals.Count == 2);
+
+            var r1d = r1[Attributes.Discarded].Chromosomes["chr1"];
+            var r2d = r2[Attributes.Discarded].Chromosomes["chr1"];
+            Assert.True(r1d.Strands.ContainsKey('+'));
+            Assert.False(r1d.Strands.ContainsKey('-'));
+            Assert.False(r1d.Strands.ContainsKey('.'));
+            Assert.True(r2d.Strands.ContainsKey('+'));
+            Assert.False(r2d.Strands.ContainsKey('-'));
+            Assert.False(r2d.Strands.ContainsKey('.'));
+            Assert.True(r1d.Strands['+'].Intervals.Count == 1);
+            Assert.True(r2d.Strands['+'].Intervals.Count == 1);
+
+            Assert.True(r1[Attributes.Background].Chromosomes.Count == 0);
+            var r2b = r2[Attributes.Background].Chromosomes["chr1"];
+            Assert.True(r2b.Strands.ContainsKey('+'));
+            Assert.True(r2b.Strands.ContainsKey('-'));
+            Assert.True(r2b.Strands['+'].Intervals.Count == 1);
+            Assert.True(r2b.Strands['-'].Intervals.Count == 1);
         }
 
         private static bool TryGetFullPath(string path, out string result)

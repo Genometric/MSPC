@@ -17,7 +17,7 @@ namespace Genometric.MSPC.Core.Tests
     public class PublicMembers
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
         private string _status;
         private AutoResetEvent _continueIni;
         private AutoResetEvent _continuePrc;
@@ -26,7 +26,7 @@ namespace Genometric.MSPC.Core.Tests
 
         public enum Status { Init, Process, MTC, Consensu }; 
 
-        private ReadOnlyDictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount, Status status)
+        private Dictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount, Status status)
         {
             var sA = new Bed<Peak>();
             var sB = new Bed<Peak>();
@@ -148,7 +148,7 @@ namespace Genometric.MSPC.Core.Tests
             // Arrange
             int c = 10000;
             int tries = 10;
-            ReadOnlyDictionary<uint, Result<Peak>> results = null;
+            Dictionary<uint, Result<Peak>> results = null;
             for (int i = 0; i < tries; i++)
             {
                 // Act
@@ -156,8 +156,8 @@ namespace Genometric.MSPC.Core.Tests
                 if (results.Count > 0 &&
                     results[0].Chromosomes.Count > 0 &&
                     results[0].Chromosomes.ContainsKey(_chr) &&
-                    !results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any() &&
-                    results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c)
+                    !results[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any() &&
+                    results[0].Chromosomes[_chr][_strand].Get(Attributes.Background).Count() == c)
                     break;
                 Thread.Sleep(10000);
             }
@@ -167,8 +167,8 @@ namespace Genometric.MSPC.Core.Tests
                     string.Format("Tried CancelCurrentAsyncRun unit test on {0} status for {1} times, all tries failed.", status, tries));
 
             // Assert
-            Assert.True(!results[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
-            Assert.True(results[0].Chromosomes[_chr].Get(Attributes.Background).Count() == c);
+            Assert.True(!results[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any());
+            Assert.True(results[0].Chromosomes[_chr][_strand].Get(Attributes.Background).Count() == c);
         }
 
         [Fact]

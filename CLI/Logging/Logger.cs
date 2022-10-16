@@ -13,7 +13,6 @@ using log4net.Layout;
 using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.CommandLine;
 using System.IO;
 using System.Reflection;
@@ -240,8 +239,8 @@ namespace Genometric.MSPC.CLI.Logging
         public void LogSummary(
             List<Bed<Peak>> samples,
             Dictionary<uint, string> samplesDict,
-            ReadOnlyDictionary<uint, Result<Peak>> results,
-            ReadOnlyDictionary<string, List<ProcessedPeak<Peak>>> consensusPeaks,
+            Dictionary<uint, Result<Peak>> results,
+            Dictionary<string, Dictionary<char, List<ProcessedPeak<Peak>>>> consensusPeaks,
             List<Attributes> exportedAttributes = null)
         {
             // Create table header
@@ -279,7 +278,8 @@ namespace Genometric.MSPC.CLI.Logging
                 {
                     int value = 0;
                     foreach (var chr in res.Value.Chromosomes)
-                        value += chr.Value.Count(att);
+                        foreach (var strand in chr.Value)
+                            value += strand.Value.Count(att);
                     sampleSummary[i++] = (value / totalPeaks).ToString("P");
                 }
 

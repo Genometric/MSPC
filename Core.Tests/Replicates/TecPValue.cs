@@ -13,7 +13,7 @@ namespace Genometric.MSPC.Core.Tests.Replicates
     public class TecPValue
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
         /// <summary>
         /// This test asserts if MSPC correctly discards a weak peak
@@ -49,9 +49,9 @@ namespace Genometric.MSPC.Core.Tests.Replicates
             var res = mspc.Run(config);
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 1);
-            Assert.False(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r11) == 0);
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.Discarded).Count() == 1);
+            Assert.False(res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any());
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r11) == 0);
         }
 
         /// <summary>
@@ -94,15 +94,15 @@ namespace Genometric.MSPC.Core.Tests.Replicates
             var res = mspc.Run(config);
 
             // Assert
-            Assert.False(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Any());
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 1);
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r11) == 0);
+            Assert.False(res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any());
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.Discarded).Count() == 1);
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r11) == 0);
 
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == 1);
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).Count() == 2);
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Confirmed).ToList()[0].Source.CompareTo(r22) == 0);
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r21) == 0);
-            Assert.True(res[1].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[1].Source.CompareTo(r23) == 0);
+            Assert.True(res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Count() == 1);
+            Assert.True(res[1].Chromosomes[_chr][_strand].Get(Attributes.Discarded).Count() == 2);
+            Assert.True(res[1].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).ToList()[0].Source.CompareTo(r22) == 0);
+            Assert.True(res[1].Chromosomes[_chr][_strand].Get(Attributes.Discarded).ToList()[0].Source.CompareTo(r21) == 0);
+            Assert.True(res[1].Chromosomes[_chr][_strand].Get(Attributes.Discarded).ToList()[1].Source.CompareTo(r23) == 0);
         }
     }
 }

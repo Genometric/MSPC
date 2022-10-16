@@ -13,6 +13,9 @@ namespace Genometric.MSPC.Core.Tests.Example
 {
     public class Eg1
     {
+        private const string _chr = "chr1";
+        private const char _strand = '.';
+
         //                 r11                r12
         // Sample 1: --███████████-------████████████----------------------------
         //                           r21             r22        r23
@@ -64,18 +67,18 @@ namespace Genometric.MSPC.Core.Tests.Example
         private Mspc<Peak> InitializeMSPC()
         {
             var sA = new Bed<Peak>();
-            sA.Add(r11, "chr1", '*');
-            sA.Add(r12, "chr1", '*');
+            sA.Add(r11, _chr, _strand);
+            sA.Add(r12, _chr, _strand);
 
             var sB = new Bed<Peak>();
-            sB.Add(r21, "chr1", '*');
-            sB.Add(r22, "chr1", '*');
-            sB.Add(r23, "chr1", '*');
+            sB.Add(r21, _chr, _strand);
+            sB.Add(r22, _chr, _strand);
+            sB.Add(r23, _chr, _strand);
 
             var sC = new Bed<Peak>();
-            sC.Add(r31, "chr1", '*');
-            sC.Add(r32, "chr1", '*');
-            sC.Add(r33, "chr1", '*');
+            sC.Add(r31, _chr, _strand);
+            sC.Add(r32, _chr, _strand);
+            sC.Add(r33, _chr, _strand);
 
             var mspc = new Mspc();
             mspc.AddSample(0, sA);
@@ -95,7 +98,7 @@ namespace Genometric.MSPC.Core.Tests.Example
 
             // Act
             var res = mspc.Run(new Config(replicateType, 1e-4, 1e-8, 1e-4, c, 1F, MultipleIntersections.UseLowestPValue));
-            var qres = res[sampleIndex].Chromosomes["chr1"].Get(processed).FirstOrDefault(x => x.Source.CompareTo(peak) == 0);
+            var qres = res[sampleIndex].Chromosomes[_chr][_strand].Get(processed).FirstOrDefault(x => x.Source.CompareTo(peak) == 0);
 
             // Assert
             Assert.NotNull(qres);
@@ -132,7 +135,7 @@ namespace Genometric.MSPC.Core.Tests.Example
 
             // Act
             var res = mspc.Run(new Config(replicateType, 1e-4, 1e-8, 1e-4, c, 1F, MultipleIntersections.UseLowestPValue));
-            var qres = res[sampleIndex].Chromosomes["chr1"].Get(attribute);
+            var qres = res[sampleIndex].Chromosomes[_chr][_strand].Get(attribute);
 
             // Assert
             Assert.True(qres.Count() == expectedCount);

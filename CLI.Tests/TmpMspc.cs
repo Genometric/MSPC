@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Genometric.GeUtilities.Intervals.Model;
+using Genometric.MSPC.CLI.CommandLineInterface;
 using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.CLI.Tests.MockTypes;
 using System;
@@ -82,13 +83,28 @@ namespace Genometric.MSPC.CLI.Tests
             return new Result(exitCode, output);
         }
 
-        public Result Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true)
+        public Result Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true, bool stranded = false)
         {
             if (createSample)
-                CreateTempSamples();
+            {
+                if (!stranded)
+                    CreateTempSamples();
+                else
+                    CreateTempSamplesStranded();
+            }
 
             if (template == null)
-                template = string.Format("-i {0} -i {1} -r bio -w 1E-2 -s 1E-8", TmpSamples[0], TmpSamples[1]);
+            {
+                template = $"-i {TmpSamples[0]} -i {TmpSamples[1]} -r bio -w 1E-2 -s 1E-8";
+
+                if (stranded)
+                {
+                    var parserConfigFilename = Main.GetFilename("parserConfig");
+                    using (var writer = new StreamWriter(parserConfigFilename))
+                        writer.WriteLine("{\"Strand\":5}");
+                    template += $" -p {parserConfigFilename}";
+                }
+            }
             if (appendOutputOption)
             {
                 if (sessionPath != null)
@@ -105,6 +121,7 @@ namespace Genometric.MSPC.CLI.Tests
             int exitCode;
             var log = new List<string>();
             var console = new MockConsole();
+            CliConfig config;
 
             string logFilename;
             using (var orchestrator = new Orchestrator(console))
@@ -112,6 +129,7 @@ namespace Genometric.MSPC.CLI.Tests
                 exitCode = orchestrator.Invoke(template.Split(' '));
                 output = console.GetStderr() + console.GetStdo();
                 logFilename = orchestrator.LogFile;
+                config = orchestrator.Config;
             }
 
             string line;
@@ -124,7 +142,7 @@ namespace Genometric.MSPC.CLI.Tests
                 }
             }
 
-            return new Result(exitCode, output, log.AsReadOnly());
+            return new Result(exitCode, output, log.AsReadOnly(), config);
         }
 
         // Do not make this static because multiple tests
@@ -188,8 +206,8 @@ namespace Genometric.MSPC.CLI.Tests
 
         private void CreateTempSamples()
         {
-            string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
+            string rep1Path = Path.Join(Environment.CurrentDirectory, Main.GetFilename("rep1"));
+            string rep2Path = Path.Join(Environment.CurrentDirectory, Main.GetFilename("rep2"));
 
             _tmpSamples = new List<string> { rep1Path, rep2Path };
 
@@ -206,6 +224,35 @@ namespace Genometric.MSPC.CLI.Tests
                 writter.WriteLine("chr1\t11\t18\tmspc_peak_2\t2");
                 writter.WriteLine("chr1\t22\t28\tmspc_peak_2\t3");
                 writter.WriteLine("chr1\t30\t40\tmspc_peak_2\t7");
+            }
+        }
+
+        private void CreateTempSamplesStranded()
+        {
+            string rep1Path = Path.Join(Environment.CurrentDirectory, Main.GetFilename("rep1"));
+            string rep2Path = Path.Join(Environment.CurrentDirectory, Main.GetFilename("rep2"));
+
+            _tmpSamples = new List<string> { rep1Path, rep2Path };
+
+            FileStream stream = File.Create(rep1Path);
+            using (StreamWriter writter = new(stream))
+            {
+                writter.WriteLine("chr1\t10\t20\tmspc_peak_01\t3\t+");
+                writter.WriteLine("chr1\t25\t35\tmspc_peak_02\t5\t+");
+                writter.WriteLine("chr1\t25\t45\tmspc_peak_03\t5\t-");
+                writter.WriteLine("chr1\t65\t90\tmspc_peak_04\t8\t-");
+            }
+
+            stream = File.Create(rep2Path);
+            using (StreamWriter writter = new(stream))
+            {
+                writter.WriteLine("chr1\t11\t18\tmspc_peak_05\t2\t+");
+                writter.WriteLine("chr1\t22\t28\tmspc_peak_06\t3\t+");
+                writter.WriteLine("chr1\t30\t40\tmspc_peak_07\t7\t+");
+                writter.WriteLine("chr1\t50\t52\tmspc_peak_07\t8\t+");
+                writter.WriteLine("chr1\t08\t55\tmspc_peak_08\t9\t-");
+                writter.WriteLine("chr1\t60\t70\tmspc_peak_09\t2\t-");
+                writter.WriteLine("chr1\t72\t80\tmspc_peak_10\t7\t-");
             }
         }
 

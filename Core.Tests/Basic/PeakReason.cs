@@ -5,7 +5,7 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -20,9 +20,9 @@ namespace Genometric.MSPC.Core.Tests.Basic
     public class PeakReason
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
-        private ReadOnlyDictionary<uint, Result<Peak>> RunMSPCAndReturnResult(Config config)
+        private Dictionary<uint, Result<Peak>> RunMSPCAndReturnResult(Config config)
         {
             var sA = new Bed<Peak>();
             sA.Add(new Peak(left: 10, right: 20, value: 1E-5), _chr, _strand);
@@ -45,7 +45,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
                 new Config(ReplicateType.Biological, 1E-2, 1E-4, 1E-4, 1, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).First().Reason == "");
+            Assert.True(res[0].Chromosomes[_chr][_strand].Get(Attributes.Confirmed).First().Reason == "");
         }
 
 
@@ -59,7 +59,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.Equal(
                 "X-squared is below chi-squared of Gamma.",
-                res[0].Chromosomes[_chr].Get(Attributes.Discarded).First().Reason);
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Discarded).First().Reason);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Assert
             Assert.Equal(
                 "Intersecting peaks count doesn't comply minimum C requirement.",
-                res[0].Chromosomes[_chr].Get(Attributes.Discarded).First().Reason);
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Discarded).First().Reason);
         }
     }
 }

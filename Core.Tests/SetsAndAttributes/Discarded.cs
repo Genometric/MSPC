@@ -5,7 +5,7 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -14,9 +14,9 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
     public class Discarded
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
-        private ReadOnlyDictionary<uint, Result<Peak>> CreateStringentPeaksAndDiscardThem()
+        private Dictionary<uint, Result<Peak>> CreateStringentPeaksAndDiscardThem()
         {
             var sA = new Bed<Peak>();
             sA.Add(new Peak(left: 10, right: 20, value: 1e-9), _chr, _strand);
@@ -42,7 +42,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Count(Attributes.Discarded) == 1);
+                Assert.True(s.Value.Chromosomes[_chr][_strand].Count(Attributes.Discarded) == 1);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Count(Attributes.Discarded) == 1);
+                Assert.True(s.Value.Chromosomes[_chr][_strand].Count(Attributes.Discarded) == 1);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Count(Attributes.Discarded) == 1);
+                Assert.True(s.Value.Chromosomes[_chr][_strand].Count(Attributes.Discarded) == 1);
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.False(s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Any());
+                Assert.False(s.Value.Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any());
         }
 
         [Fact]
@@ -128,8 +128,8 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             // Assert
 
             Assert.True(
-                res[0].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.Equals(sAP) &&
-                res[1].Chromosomes[_chr].Get(Attributes.Discarded).ToList()[0].Source.Equals(sBP));
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Discarded).ToList()[0].Source.Equals(sAP) &&
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Discarded).ToList()[0].Source.Equals(sBP));
         }
     }
 }

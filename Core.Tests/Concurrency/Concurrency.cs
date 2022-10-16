@@ -12,6 +12,8 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
 {
     public class Concurrency
     {
+        private const char _strand = '.';
+
         private Bed<Peak> CreateSample(int offset, int chrCount, int iCount)
         {
             var rtv = new Bed<Peak>();
@@ -25,7 +27,7 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
                             name: "r1" + i
                         ),
                         "chr" + c,
-                        '*');
+                        _strand);
 
             return rtv;
         }
@@ -45,8 +47,8 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
             // Assert
             for (int c = 0; c < 20; c++)
             {
-                Assert.True(res[0].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 1000);
-                Assert.True(res[1].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 2000);
+                Assert.True(res[0].Chromosomes["chr" + c][_strand].Get(Attributes.Confirmed).Count() == 1000);
+                Assert.True(res[1].Chromosomes["chr" + c][_strand].Get(Attributes.Confirmed).Count() == 2000);
             }
         }
 
@@ -65,8 +67,8 @@ namespace Genometric.MSPC.Core.Tests.Concurrency
             // Assert
             for (int c = 0; c < 20; c++)
             {
-                Assert.True(res[0].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 10000);
-                Assert.True(res[1].Chromosomes["chr" + c].Get(Attributes.Confirmed).Count() == 20000);
+                Assert.True(res[0].Chromosomes["chr" + c][_strand].Get(Attributes.Confirmed).Count() == 10000);
+                Assert.True(res[1].Chromosomes["chr" + c][_strand].Get(Attributes.Confirmed).Count() == 20000);
             }
         }
     }

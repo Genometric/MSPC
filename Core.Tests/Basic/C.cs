@@ -14,7 +14,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
     public class C
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
         //                        r11
         // Sample 1: ---------███████████----------
@@ -59,7 +59,7 @@ namespace Genometric.MSPC.Core.Tests.Basic
             // Arrange
             uint id = 0;
             var mspc = new Mspc();
-            foreach(var peak in GetPeaks(samplesCount))
+            foreach (var peak in GetPeaks(samplesCount))
             {
                 var sample = new Bed<Peak>();
                 sample.Add(peak, _chr, _strand);
@@ -70,8 +70,12 @@ namespace Genometric.MSPC.Core.Tests.Basic
             var res = mspc.Run(new Config(ReplicateType.Biological, 1e-4, 1e-8, 1e-8, c, 1F, MultipleIntersections.UseLowestPValue));
 
             // Assert
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Confirmed).Count() == confirmedPeaksCount);
-            Assert.True(res[0].Chromosomes[_chr].Get(Attributes.Discarded).Count() == discardedPeaksCount);
+            foreach (var strand in res[0].Chromosomes[_chr])
+            {
+                var x = strand.Value;
+                Assert.True(x.Get(Attributes.Confirmed).Count() == confirmedPeaksCount);
+                Assert.True(x.Get(Attributes.Discarded).Count() == discardedPeaksCount);
+            }
         }
     }
 }

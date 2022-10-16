@@ -5,7 +5,7 @@
 using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -14,9 +14,9 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
     public class BackgroundPeaks
     {
         private readonly string _chr = "chr1";
-        private readonly char _strand = '*';
+        private readonly char _strand = '.';
 
-        private ReadOnlyDictionary<uint, Result<Peak>> GenerateAndProcessBackgroundPeaks()
+        private Dictionary<uint, Result<Peak>> GenerateAndProcessBackgroundPeaks()
         {
             var sA = new Bed<Peak>();
             sA.Add(new Peak(left: 10, right: 20, value: 1e-2), _chr, _strand);
@@ -42,7 +42,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
 
             // Assert
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Get(Attributes.Background).Count() == 1);
+                Assert.True(s.Value.Chromosomes[_chr][_strand].Get(Attributes.Background).Count() == 1);
         }
 
         [Fact]
@@ -54,12 +54,12 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             // Assert
             foreach (var s in res)
                 Assert.True(
-                    !s.Value.Chromosomes[_chr].Get(Attributes.Weak).Any() &&
-                    !s.Value.Chromosomes[_chr].Get(Attributes.Stringent).Any() &&
-                    !s.Value.Chromosomes[_chr].Get(Attributes.Confirmed).Any() &&
-                    !s.Value.Chromosomes[_chr].Get(Attributes.Discarded).Any() &&
-                    !s.Value.Chromosomes[_chr].Get(Attributes.TruePositive).Any() &&
-                    !s.Value.Chromosomes[_chr].Get(Attributes.FalsePositive).Any());
+                    !s.Value.Chromosomes[_chr][_strand].Get(Attributes.Weak).Any() &&
+                    !s.Value.Chromosomes[_chr][_strand].Get(Attributes.Stringent).Any() &&
+                    !s.Value.Chromosomes[_chr][_strand].Get(Attributes.Confirmed).Any() &&
+                    !s.Value.Chromosomes[_chr][_strand].Get(Attributes.Discarded).Any() &&
+                    !s.Value.Chromosomes[_chr][_strand].Get(Attributes.TruePositive).Any() &&
+                    !s.Value.Chromosomes[_chr][_strand].Get(Attributes.FalsePositive).Any());
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = mspc.Run(config);
 
             foreach (var s in res)
-                Assert.True(s.Value.Chromosomes[_chr].Count(Attributes.Background) == 1);
+                Assert.True(s.Value.Chromosomes[_chr][_strand].Count(Attributes.Background) == 1);
         }
 
         [Fact]
@@ -105,8 +105,8 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             var res = mspc.Run(config);
 
             Assert.True(
-                res[0].Chromosomes[_chr].Count(Attributes.Background) == 1 &&
-                res[1].Chromosomes[_chr].Count(Attributes.Background) == 0);
+                res[0].Chromosomes[_chr][_strand].Count(Attributes.Background) == 1 &&
+                res[1].Chromosomes[_chr][_strand].Count(Attributes.Background) == 0);
         }
 
         [Fact]
@@ -133,8 +133,8 @@ namespace Genometric.MSPC.Core.Tests.SetsAndAttributes
             // Assert
 
             Assert.True(
-                res[0].Chromosomes[_chr].Get(Attributes.Background).ToList()[0].Source.Equals(sAP) &&
-                res[1].Chromosomes[_chr].Get(Attributes.Background).ToList()[0].Source.Equals(sBP));
+                res[0].Chromosomes[_chr][_strand].Get(Attributes.Background).ToList()[0].Source.Equals(sAP) &&
+                res[1].Chromosomes[_chr][_strand].Get(Attributes.Background).ToList()[0].Source.Equals(sBP));
         }
     }
 }

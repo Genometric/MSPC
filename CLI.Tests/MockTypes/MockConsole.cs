@@ -27,7 +27,7 @@ namespace Genometric.MSPC.CLI.Tests.MockTypes
             return _stderr.ToString();
         }
 
-        public IStandardStreamWriter Out {get;}
+        public IStandardStreamWriter Out { get; }
 
         public bool IsOutputRedirected => false;
 

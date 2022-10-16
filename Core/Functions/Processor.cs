@@ -1,15 +1,10 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.IGenomics;
+﻿using Genometric.GeUtilities.IGenomics;
 using Genometric.GeUtilities.Intervals.Genome;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.IntervalTree;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,15 +23,15 @@ namespace Genometric.MSPC.Core.Functions
         public delegate void ProgressUpdate(ProgressReport value);
         public event ProgressUpdate OnProgressUpdate;
 
-        private Dictionary<uint, Result<I>> _analysisResults { set; get; }
+        private Dictionary<uint, Result<I>> _analysisResults;
         public Dictionary<uint, Result<I>> AnalysisResults
         {
             get { return new Dictionary<uint, Result<I>>(_analysisResults); }
         }
 
-        private Dictionary<string, Dictionary<char, Tree<I>>> _tree { set; get; }
+        private Dictionary<string, Dictionary<char, Tree<I>>> _tree;
 
-        private Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> _consensusPeaks { set; get; }
+        private Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> _consensusPeaks;
         public Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> ConsensusPeaks
         {
             get
@@ -50,13 +45,13 @@ namespace Genometric.MSPC.Core.Functions
 
         public int? DegreeOfParallelism { get; }
 
-        private List<double> _cachedChiSqrd { set; get; }
+        private List<double> _cachedChiSqrd;
 
-        private bool _trackSupportingRegions;
+        private readonly bool _trackSupportingRegions;
 
-        private Config _config { set; get; }
+        private Config _config;
 
-        private Dictionary<uint, Bed<I>> _samples { set; get; }
+        private readonly Dictionary<uint, Bed<I>> _samples;
 
         private readonly IPeakConstructor<I> _peakConstructor;
 
@@ -99,8 +94,7 @@ namespace Genometric.MSPC.Core.Functions
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step++, stepCount, false, false, "Performing Multiple testing correction"));
-            var fdr = new FalseDiscoveryRate<I>();
-            fdr.PerformMultipleTestingCorrection(_analysisResults, _config.Alpha, DegreeOfParallelism);
+            FalseDiscoveryRate<I>.PerformMultipleTestingCorrection(_analysisResults, _config.Alpha, DegreeOfParallelism);
 
             if (CheckCancellationPending()) return;
             OnProgressUpdate(new ProgressReport(step, stepCount, false, false, "Creating consensus peaks set"));
@@ -314,7 +308,7 @@ namespace Genometric.MSPC.Core.Functions
             }
         }
 
-        private double CalculateXsqrd(I p, List<SupportingPeak<I>> supportingPeaks)
+        private static double CalculateXsqrd(I p, List<SupportingPeak<I>> supportingPeaks)
         {
             double xsqrd;
             if (p.Value != 0)
@@ -328,7 +322,7 @@ namespace Genometric.MSPC.Core.Functions
                 else
                     xsqrd += Math.Log(Config.default0PValue, Math.E);
 
-            xsqrd = xsqrd * (-2);
+            xsqrd *= (-2);
 
             return xsqrd;
         }

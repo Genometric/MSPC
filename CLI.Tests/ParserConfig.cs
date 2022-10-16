@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Parsers;
+﻿using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.MSPC.CLI.Tests.MockTypes;
 using Newtonsoft.Json;
 using System;
@@ -19,20 +15,20 @@ namespace Genometric.MSPC.CLI.Tests
         [InlineData(0, 1, 2, 3, 4, 5, 6, true, 1E-4, PValueFormats.minus1_Log10_pValue, "fa-IR")]
         [InlineData(5, 0, -1, 12, -1, -1, 1, false, 123.456, PValueFormats.SameAsInput, "fa-IR")]
         public void ReadParserConfig(
-            byte chr, 
-            byte left, 
-            sbyte right, 
-            byte name, 
-            sbyte strand, 
-            sbyte summit, 
-            byte value, 
-            bool dropPeakIfInvalidValue, 
-            double defaultValue, 
+            byte chr,
+            byte left,
+            sbyte right,
+            byte name,
+            sbyte strand,
+            sbyte summit,
+            byte value,
+            bool dropPeakIfInvalidValue,
+            double defaultValue,
             PValueFormats pValueFormat,
             string culture)
         {
             // Arrange
-            ParserConfig cols = new ParserConfig()
+            var cols = new ParserConfig()
             {
                 Chr = chr,
                 Left = left,
@@ -54,7 +50,7 @@ namespace Genometric.MSPC.CLI.Tests
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
             // Act
-            ParserConfig parsedCols = ParserConfig.LoadFromJSON(path);
+            var parsedCols = ParserConfig.LoadFromJSON(path);
 
             // Assert
             Assert.True(parsedCols.Equals(cols));
@@ -69,7 +65,7 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange
             var expected = new ParserConfig() { Chr = 123 };
             var path = Path.Join(
-                Environment.CurrentDirectory, 
+                Environment.CurrentDirectory,
                 "MSPCTests_" + new Random().NextDouble().ToString());
 
             using (var w = new StreamWriter(path))
@@ -97,11 +93,11 @@ namespace Genometric.MSPC.CLI.Tests
                 w.WriteLine("abc");
 
             string rep1Path = Path.Join(
-                Environment.CurrentDirectory, 
+                Environment.CurrentDirectory,
                 Guid.NewGuid().ToString() + ".bed");
 
             string rep2Path = Path.Join(
-                Environment.CurrentDirectory, 
+                Environment.CurrentDirectory,
                 Guid.NewGuid().ToString() + ".bed");
 
             new StreamWriter(rep1Path).Close();
@@ -139,7 +135,7 @@ namespace Genometric.MSPC.CLI.Tests
         {
             // Arrange
             string rep1Path = Path.Join(
-                Environment.CurrentDirectory, 
+                Environment.CurrentDirectory,
                 Guid.NewGuid().ToString() + ".bed");
 
             string rep2Path = Path.Join(
@@ -155,9 +151,9 @@ namespace Genometric.MSPC.CLI.Tests
             using (var o = new Orchestrator(console))
             {
                 o.Invoke(string.Format(
-                    "-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}", 
-                    rep1Path, 
-                    rep2Path, 
+                    "-i {0} -i {1} -r bio -w 1e-2 -s 1e-4 -p {2}",
+                    rep1Path,
+                    rep2Path,
                     Path.GetTempFileName()).Split(' '));
                 logFile = o.LogFile;
             }
@@ -225,7 +221,7 @@ namespace Genometric.MSPC.CLI.Tests
             Result x;
             using (var tmpMSPC = new TmpMspc())
                 x = tmpMSPC.Run(parserFilename: parserFilename);
-            
+
             // Assert
             Assert.Contains("Error setting value to 'Culture'", x.ConsoleOutput);
 

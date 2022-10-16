@@ -1,13 +1,8 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Model;
+﻿using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Xunit;
@@ -24,7 +19,7 @@ namespace Genometric.MSPC.Core.Tests
         private AutoResetEvent _continueMtc;
         private AutoResetEvent _continueCon;
 
-        public enum Status { Init, Process, MTC, Consensu }; 
+        public enum Status { Init, Process, MTC, Consensu };
 
         private Dictionary<uint, Result<Peak>> RunThenCancelMSPC(int iCount, Status status)
         {

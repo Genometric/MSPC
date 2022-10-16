@@ -195,7 +195,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                                     filenames.Add(file);
                                 }
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
                                 missingFiles.Add(filename);
                                 exceptions.Add(e.Message);
@@ -380,7 +380,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             {
                 var value = x.GetValueForOption(option);
                 if (value < 0 || value > 1)
-                    x.ErrorMessage = 
+                    x.ErrorMessage =
                         $"Invalid probability `{_tauWName} {value}`; " +
                         $"value should be between 0 and 1.";
             });
@@ -406,7 +406,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             {
                 var value = x.GetValueForOption(option);
                 if (value < 0 || value > 1)
-                    x.ErrorMessage = 
+                    x.ErrorMessage =
                     $"Invalid probability `{n} {value}`; " +
                     $"value should be between 0 and 1.";
             });
@@ -429,7 +429,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             {
                 var value = x.GetValueForOption(option);
                 if (value < 0 || value > 1)
-                    x.ErrorMessage = 
+                    x.ErrorMessage =
                         $"Invalid value `{n} {value}`; " +
                         $"value should be between 0 and 1.";
             });
@@ -501,7 +501,7 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
                             return MultipleIntersections.UseHighestPValue.ToString();
 
                         default:
-                            x.ErrorMessage = 
+                            x.ErrorMessage =
                                 $"Invalid value `{n} {value}`";
                             return default;
                     }

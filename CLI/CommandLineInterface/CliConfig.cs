@@ -25,9 +25,9 @@ namespace Genometric.MSPC.CLI.CommandLineInterface
             bool excludeHeader,
             string parserConfigFilename,
             MultipleIntersections multipleIntersections) : base(
-                replicateType: replicateType, 
-                tauW: tauW, tauS: tauS, gamma: gamma, 
-                c: c, alpha: alpha, 
+                replicateType: replicateType,
+                tauW: tauW, tauS: tauS, gamma: gamma,
+                c: c, alpha: alpha,
                 multipleIntersections: multipleIntersections)
         {
             InputFiles = inputFiles;

@@ -47,8 +47,8 @@ namespace Genometric.MSPC.CLI.Tests
         private string Header(bool mspcFormat)
         {
             return mspcFormat ?
-                "chr\tstart\tstop\tname\t-1xlog10(p-value)\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)" :
-                "chr\tstart\tstop\tname\t-1xlog10(p-value)";
+                "chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand\txSqrd\t-1xlog10(Right-Tail Probability)\t-1xlog10(AdjustedP-value)" :
+                "chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand";
         }
 
         private string RunMSPCAndExportResultsWithMultiChr()
@@ -313,14 +313,14 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Theory]
-        [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, double.NaN, double.NaN, double.NaN)]
+        [InlineData(0, Attributes.Background, "chr1", 3, 13, "r11", 2, '.', double.NaN, double.NaN, double.NaN)]
         public void CorrectValuesForEachPropertyOfExportedPeakInMSPCPeakFile(
             uint sampleID, Attributes attribute,
-            string chr, int left, int right, string name, double value, double xSqrd, double rtp, double adjustedPValue)
+            string chr, int left, int right, string name, double value, char strand, double xSqrd, double rtp, double adjustedPValue)
         {
             // Arrange
             string path = RunMSPCAndExportResults();
-            string expectedLine = chr + "\t" + left + "\t" + right + "\t" + name + "\t" + value + "\t" + xSqrd + "\t" + rtp + "\t" + adjustedPValue;
+            string expectedLine = chr + "\t" + left + "\t" + right + "\t" + name + "\t" + value + "\t" + strand + "\t" + xSqrd + "\t" + rtp + "\t" + adjustedPValue;
             string readLine = "";
             var sampleFolder = Array.Find(Directory.GetDirectories(path), (string f) => { return f.Contains(_sidfm[sampleID]); });
             var file = Array.Find(Directory.GetFiles(sampleFolder), (string f) => { return Path.GetFileNameWithoutExtension(f).Equals(attribute.ToString() + "_mspc_peaks"); });

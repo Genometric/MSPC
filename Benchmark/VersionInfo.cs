@@ -53,7 +53,7 @@ namespace Genometric.MSPC.Benchmark
 
         private bool TryRunVerSpecificConfig(string version)
         {
-            var pattern = new Regex(@"^v[4,5]\.\d+(\.\d+)?$");
+            var pattern = new Regex(@"^v[4,5,6]\.\d+(\.\d+)?$");
             if (pattern.IsMatch(version))
             {
                 _invocation = "dotnet";

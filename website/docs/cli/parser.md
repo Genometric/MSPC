@@ -19,7 +19,7 @@ chr1	35083	35124	MACS_peak_7	4.59
 ```
 
 The fifth column represents the p-value, and by default, MSPC expects
-it be in `-Log10` format (read [how to adjust this configuration](#p-value-format). 
+it be in `-Log10` format (read [how to adjust this configuration](#p-value-format)). 
 Also, by default, MSPC expects each peak 
 to have a p-value; otherwise, that peak will not be parsed into MSPC.
 
@@ -38,9 +38,9 @@ in the following sections.
    "Left":1,
    "Right":2,
    "Name":3,
-   "Strand":4,
-   "Summit":5,
-   "Value":6,
+   "Value":4,
+   "Strand":-1,
+   "Summit":-1,
    "Culture":"en-US",
    "PValueFormat":1,
    "DefaultValue":0.0001,
@@ -59,25 +59,32 @@ requiring the users to convert them to a common format, MSPC allows
 users to configure its parser by specifying the number of columns
 that contain required information.
 
-To specify column order, create a plain text file with the 
-following content: 
 
-```json
-{  
-   "Chr":0,
-   "Left":1,
-   "Right":2,
-   "Strand":4,
-   "Name":3,
-   "Value":4,
-   "Summit":5
-}
+For instance, if your samples are stranded, you may 
+configure the parser as the following. 
+
+```
+chr1	633859	634162	peak_1	137	.
+chr1	1079427	1079669	peak_2	67	.
+chr1	1109848	1110187	peak_3	91	.
 ```
 
-Change the values of each configuration key according 
-to your BED file. Then save this file with any name 
-(e.g., `myConfig.json`), and give its path to MSPC 
-using [`--parser` argument](cli/args.md#input-parser-configuration).
+Create a JSON file as the following:
+
+```json
+{"Strand": 5}
+```
+
+and execute MSPC as the following passing the 
+[parser configuration](args#input-parser-configuration) :
+
+```shell
+mspc.exe -i inputs*.bed -r bio -w 1e-4 -s 1e-8 -p parser_config.json
+```
+
+where `parser_config.json` is the filename of the file
+containing the JSON object you created above.
+
 
 ## p-Value Format
 

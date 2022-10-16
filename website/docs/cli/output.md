@@ -79,20 +79,20 @@ in a `Confirmed.bed` and `Discarded.bed` files may read is the following:
 
 ```
 $ head .\rep1\Confirmed.bed
-chr     start   stop    name    -1xlog10(p-value)
-chr1    32600   32680   MACS_peak_4     4.08
-chr1    32726   32936   MACS_peak_5     17.5
-chr1    34689   34797   MACS_peak_6     5.82
-chr1    35083   35124   MACS_peak_7     4.59
-chr1    38593   38836   MACS_peak_8     10.7
+chr     start   stop    name     -1xlog10(p-value)	strand
+chr1    32600   32680   peak_4   4.08	            .
+chr1    32726   32936   peak_5   17.5	            .
+chr1    34689   34797   peak_6   5.82	            .
+chr1    35083   35124   peak_7   4.59	            .
+chr1    38593   38836   peak_8   10.7	            .
 
 $ head .\rep1\Discarded.bed
-chr     start   stop    name    -1xlog10(p-value)
-chr1    137343  137383  MACS_peak_10    4.8
-chr1    228585  228625  MACS_peak_12    4.37
-chr1    265059  265115  MACS_peak_14    5.22
-chr1    557793  557833  MACS_peak_29    4.16
-chr1    725914  725963  MACS_peak_34    5.95
+chr     start   stop    name     -1xlog10(p-value)	strand
+chr1    137343  137383  peak_10  4.8	            .
+chr1    228585  228625  peak_12  4.37	            .
+chr1    265059  265115  peak_14  5.22	            .
+chr1    557793  557833  peak_29  4.16	            .
+chr1    725914  725963  peak_34  5.95	            .
 ``` 
 
 Accordingly, the peak named `MACS_peak_4 ` is _confirmed_ while 
@@ -120,20 +120,20 @@ peaks in the confirmed and discarded sets are as the following.
 
 ```
 $ head .\rep1\Confirmed_mspc_peaks.txt
-chr     start   stop    name    -1xlog10(p-value)       xSqrd   -1xlog10(Right-Tail Probability)        -1xlog10(AdjustedP-value)
-chr1    32600   32680   MACS_peak_4     4.08    222.936 46.359  4.07
-chr1    32726   32936   MACS_peak_5     17.5    284.738 59.674  16.146
-chr1    34689   34797   MACS_peak_6     5.82    74.005  14.49   5.634
-chr1    35083   35124   MACS_peak_7     4.59    52.867  10.042  4.537
-chr1    38593   38836   MACS_peak_8     10.7    121.576 24.609  9.892
+chr     start   stop    name	  -1xlog10(p-value)  strand  xSqrd	  -1xlog10(Right-Tail Probability)  -1xlog10(AdjustedP-value)
+chr1    32600   32680   peak_4    4.08               .       222.936  46.359                            4.07
+chr1    32726   32936   peak_5    17.5               .       284.738  59.674                            16.146
+chr1    34689   34797   peak_6    5.82               .       74.005   14.49                             5.634
+chr1    35083   35124   peak_7    4.59               .       52.867   10.042                            4.537
+chr1    38593   38836   peak_8    10.7               .       121.576  24.609                            9.892
 
 $ head .\rep1\Discarded_mspc_peaks.txt
-chr     start   stop    name    -1xlog10(p-value)       xSqrd   -1xlog10(Right-Tail Probability)        -1xlog10(AdjustedP-value)
-chr1    137343  137383  MACS_peak_10    4.8     22.105  4.8     NaN
-chr1    228585  228625  MACS_peak_12    4.37    20.125  4.37    NaN
-chr1    265059  265115  MACS_peak_14    5.22    24.039  5.22    NaN
-chr1    557793  557833  MACS_peak_29    4.16    19.158  4.16    NaN
-chr1    725914  725963  MACS_peak_34    5.95    27.401  5.95    NaN
+chr     start   stop    name	  -1xlog10(p-value)  strand  xSqrd   -1xlog10(Right-Tail Probability)  -1xlog10(AdjustedP-value)
+chr1    137343  137383  peak_10   4.8                .       22.105  4.8                               NaN
+chr1    228585  228625  peak_12   4.37               .       20.125  4.37                              NaN
+chr1    265059  265115  peak_14   5.22               .       24.039  5.22                              NaN
+chr1    557793  557833  peak_29   4.16               .       19.158  4.16                              NaN
+chr1    725914  725963  peak_34   5.95               .       27.401  5.95                              NaN
 ```
 
 Note that the first five columns are identical between `*.bed` 

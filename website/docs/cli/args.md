@@ -67,6 +67,12 @@ $ dotnet mspc.dll -i *.bed -r bio -w 1e-4 -s 1e-8
 $ dotnet mspc.dll -i C:\setA\*.bed -i C:\setB\sci-ATAC*.bed -r bio -w 1e-4 -s 1e-8
 ```
 
+:::info
+By default, MSPC reads input files unstranded, if your
+data are stranded, you may [adjust the parser](parser) accordingly.
+
+:::
+
 ### Replicate Type
 Samples could be biological or technical replicates. MSPC differentiates between 
 the two replicate types based on the fact that less variations between technical 

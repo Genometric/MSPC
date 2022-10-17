@@ -1,0 +1,24 @@
+=====
+v6.0
+=====
+
+- Change the command line interface library to `System.CommandLine` (see PR 174_);
+- Read and apply strand information when processing peaks (see PR 176_);
+- Improve performance by changing the default max degree of parallelism to the maximum allowed by the scheduler (see PR 175_);
+- Update documentation (see PRs 170_);
+- Add scripts to benchmark different versions of MSPC (see PRs 167_, 168_, 169_, 171_, 172_, 173_);
+- Update Docusaurus version to the stable v2 version (see PR 170_);
+- Code clean-up and improve on code smell (see PR 177_).
+
+
+.. _177: https://github.com/Genometric/MSPC/pull/177
+.. _176: https://github.com/Genometric/MSPC/pull/176
+.. _175: https://github.com/Genometric/MSPC/pull/175
+.. _174: https://github.com/Genometric/MSPC/pull/174
+.. _173: https://github.com/Genometric/MSPC/pull/173
+.. _172: https://github.com/Genometric/MSPC/pull/172
+.. _171: https://github.com/Genometric/MSPC/pull/171
+.. _170: https://github.com/Genometric/MSPC/pull/170
+.. _169: https://github.com/Genometric/MSPC/pull/169
+.. _168: https://github.com/Genometric/MSPC/pull/168
+.. _167: https://github.com/Genometric/MSPC/pull/167

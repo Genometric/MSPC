@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Genometric.MSPC.Core</RootNamespace>
     <PackageId>Genometric.MSPC.Core</PackageId>
-    <Authors>Vahid Jalili</Authors>
+    <Authors>https://github.com/Genometric/MSPC/graphs/contributors</Authors>
     <Product>Genometric.MSPC.Core</Product>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
@@ -18,7 +18,8 @@
     <PackageIcon>logo.png</PackageIcon>
     <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
     <PackageLicenseFile>license.md</PackageLicenseFile>
-    <Version>5.5.0</Version>
+    <Version>6.0.0</Version>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Genometric.MSPC.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <PackageId>Genometric.MSPC.Benchmark</PackageId>
-    <Version>5.5.0</Version>
+    <Version>6.0.0</Version>
     <Authors>https://github.com/Genometric/MSPC/graphs/contributors</Authors>
     <Company>Genometric</Company>
     <Product>Genometric.MSPC.Benchmark</Product>
@@ -16,6 +16,7 @@
     <RepositoryUrl>https://genometric.github.io/MSPC/</RepositoryUrl>
     <PackageTags>Next-Generation-Sequencing; NGS-analysis; ChIP-seq; genome-analysis; Peak-calling; Comparative-Peak-Calling; Replicates; Single-Cell; ATAC-seq; biological-replicates; technical-replicates</PackageTags>
     <AssemblyName>benchmark</AssemblyName>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

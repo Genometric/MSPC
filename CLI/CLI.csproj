@@ -6,7 +6,7 @@
     <StartupObject>Genometric.MSPC.CLI.Program</StartupObject>
     <ApplicationIcon />
     <Win32Resource />
-    <Authors>Vahid Jalili</Authors>
+    <Authors>https://github.com/Genometric/MSPC/graphs/contributors</Authors>
     <Product>Genometric.MSPC.CLI</Product>
     <PackageProjectUrl>https://genometric.github.io/MSPC/</PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
@@ -21,8 +21,8 @@
     <AssemblyName>mspc</AssemblyName>
     <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
     <PackageLicenseFile>license.md</PackageLicenseFile>
-    <Version>5.5.0</Version>
-    <AssemblyVersion>5.5.0.0</AssemblyVersion>
+    <Version>6.0.0</Version>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

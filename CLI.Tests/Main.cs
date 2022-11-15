@@ -213,6 +213,47 @@ namespace Genometric.MSPC.CLI.Tests
         }
 
         [Fact]
+        public void CorrectlyReportTheNumberOfConsensusPeaksAsASumOfAllPeaksInAllChrsAndStrands()
+        {
+            // Arrange
+            var outputPath = Environment.CurrentDirectory;
+            string rep1Path = Path.Join(outputPath, GetFilename("rep1"));
+            string rep2Path = Path.Join(outputPath, GetFilename("rep2"));
+
+            FileStream stream = File.Create(rep1Path);
+            using (StreamWriter writter = new(stream))
+            {
+                writter.WriteLine("chr1\t10\t20\tmspc_peak_01\t44\t+");
+                writter.WriteLine("chr2\t65\t80\tmspc_peak_02\t55\t-");
+            }
+
+            stream = File.Create(rep2Path);
+            using (StreamWriter writter = new(stream))
+            {
+                writter.WriteLine("chr1\t11\t18\tmspc_peak_03\t55\t+");
+                writter.WriteLine("chr2\t60\t70\tmspc_peak_04\t66\t-");
+                writter.WriteLine("chr2\t90\t99\tmspc_peak_05\t88\t+");
+            }
+
+            var template = $"-i {rep1Path} {rep2Path} -c 1 -r bio -w 1e-4 -s 1e-8 -o {outputPath}";
+            Result x;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                x = tmpMspc.Run(
+                    template: template, 
+                    appendOutputOption: false, 
+                    createSample: false);
+
+            // Assert
+            Assert.Contains(
+                $".::.Consensus Peaks Count.::.{Environment.NewLine}" +
+                $"3{Environment.NewLine}",
+                x.ConsoleOutput);
+            Assert.True(x.ExitCode == 0);
+        }
+
+        [Fact]
         public void CorrectAndSuccessfulAnalysis()
         {
             /// TODO: This is a big test as it does an end-to-end assertion 

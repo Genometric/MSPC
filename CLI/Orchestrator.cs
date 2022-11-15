@@ -98,7 +98,8 @@ namespace Genometric.MSPC.CLI
             _logger.LogStartOfASection("Consensus Peaks Count");
             int cPeaksCount = 0;
             foreach (var chr in mspc.GetConsensusPeaks())
-                cPeaksCount += chr.Value.Count;
+                foreach (var strand in chr.Value)
+                    cPeaksCount += strand.Value.Count;
             _logger.Log(cPeaksCount.ToString("N0"));
 
             stopwatch.Stop();

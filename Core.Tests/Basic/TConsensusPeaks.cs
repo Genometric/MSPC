@@ -142,5 +142,38 @@ namespace Genometric.MSPC.Core.Tests.Basic
             Assert.True(r3.HasAttribute(Attributes.TruePositive));
             Assert.True(r4.HasAttribute(Attributes.FalsePositive));
         }
+
+        [Fact]
+        public void ReportAllChrsAndStrands()
+        {
+            // Arrange
+            var s0 = new Bed<Peak>();
+            s0.Add(new Peak(10, 20, 1.23E-8), "chr1", '+');
+            s0.Add(new Peak(50, 60, 1.56E-80), "chr2", '-');
+
+            var s1 = new Bed<Peak>();
+            s1.Add(new Peak(6, 16, 4.56E-8), "chr1", '+');
+            s1.Add(new Peak(70, 80, 8.76E-9), "chr3", '-');
+
+            var s2 = new Bed<Peak>();
+            s2.Add(new Peak(2, 26, 7.89E-10), "chr1", '+');
+            s2.Add(new Peak(50, 60, 9.9E-20), "chr2", '-');
+            s2.Add(new Peak(76, 90, 1.1E-8), "chr3", '+');
+
+            var mspc = new Mspc();
+            mspc.AddSample(0, s0);
+            mspc.AddSample(1, s1);
+            mspc.AddSample(2, s2);
+
+            // Act
+            mspc.Run(new Config(ReplicateType.Biological, 1E-4, 1E-6, 1E-6, 1, 0.05f, MultipleIntersections.UseLowestPValue));
+            var consensusPeaks = mspc.GetConsensusPeaks();
+
+            // Assert
+            Assert.True(consensusPeaks.Count == 3);
+            Assert.True(consensusPeaks["chr1"].Count == 1);
+            Assert.True(consensusPeaks["chr2"].Count == 1);
+            Assert.True(consensusPeaks["chr3"].Count == 2);
+        }
     }
 }

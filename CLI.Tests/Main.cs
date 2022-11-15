@@ -64,7 +64,7 @@ namespace Genometric.MSPC.CLI.Tests
 
                 pValue = 5.5067;
                 writter.WriteLine(
-                    "chr1\t25\t35\tmspc_peak_2\t" +
+                    "chr2\t25\t35\tmspc_peak_2\t" +
                     pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
             }
 
@@ -78,7 +78,7 @@ namespace Genometric.MSPC.CLI.Tests
 
                 pValue = 8.999999;
                 writter.WriteLine(
-                    "chr1\t30\t45\tmspc_peak_4\t" +
+                    "chr2\t30\t45\tmspc_peak_4\t" +
                     pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
             }
         }
@@ -265,8 +265,8 @@ namespace Genometric.MSPC.CLI.Tests
             using (var reader = new StreamReader(Directory.GetFiles(outputPath, "*ConsensusPeaks.bed")[0]))
             {
                 Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand", reader.ReadLine());
-                Assert.Equal("chr1\t4\t20\tMSPC_Peak_2\t25.219\t.", reader.ReadLine());
-                Assert.Equal("chr1\t25\t45\tMSPC_Peak_1\t12.97\t.", reader.ReadLine());
+                Assert.Equal("chr1\t4\t20\tMSPC_Peak_1\t25.219\t.", reader.ReadLine());
+                Assert.Equal("chr2\t25\t45\tMSPC_Peak_2\t12.97\t.", reader.ReadLine());
                 Assert.Null(reader.ReadLine());
             }
 
@@ -281,7 +281,7 @@ namespace Genometric.MSPC.CLI.Tests
                 line = reader.ReadLine();
                 Assert.True("chr1\t10\t20\tmspc_peak_1\t7.12\t." == line || "chr1\t4\t12\tmspc_peak_3\t19.9\t." == line);
                 line = reader.ReadLine();
-                Assert.True("chr1\t25\t35\tmspc_peak_2\t5.507\t." == line || "chr1\t30\t45\tmspc_peak_4\t9\t." == line);
+                Assert.True("chr2\t25\t35\tmspc_peak_2\t5.507\t." == line || "chr2\t30\t45\tmspc_peak_4\t9\t." == line);
                 Assert.Null(reader.ReadLine());
             }
 
@@ -293,7 +293,7 @@ namespace Genometric.MSPC.CLI.Tests
                 line = reader.ReadLine();
                 Assert.True("chr1\t10\t20\tmspc_peak_1\t7.12\t." == line || "chr1\t4\t12\tmspc_peak_3\t19.9\t." == line);
                 line = reader.ReadLine();
-                Assert.True("chr1\t25\t35\tmspc_peak_2\t5.507\t." == line || "chr1\t30\t45\tmspc_peak_4\t9\t." == line);
+                Assert.True("chr2\t25\t35\tmspc_peak_2\t5.507\t." == line || "chr2\t30\t45\tmspc_peak_4\t9\t." == line);
                 Assert.Null(reader.ReadLine());
             }
 

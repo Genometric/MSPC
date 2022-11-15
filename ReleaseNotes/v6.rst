@@ -1,4 +1,11 @@
 =====
+v6.0.1
+=====
+
+- Fix incorrectly reported number of consensus peaks (see PR 181_);
+- Extend testing exporing peaks on different chromosomes and strands (see PR 180_).
+
+=====
 v6.0
 =====
 
@@ -11,6 +18,8 @@ v6.0
 - Code clean-up and improve on code smell (see PR 177_).
 
 
+.. _181: https://github.com/Genometric/MSPC/pull/181
+.. _180: https://github.com/Genometric/MSPC/pull/180
 .. _177: https://github.com/Genometric/MSPC/pull/177
 .. _176: https://github.com/Genometric/MSPC/pull/176
 .. _175: https://github.com/Genometric/MSPC/pull/175

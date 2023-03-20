@@ -29,7 +29,7 @@
 
     <PackageIcon>logo.png</PackageIcon>
 
-    <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/master/docs/releases/v4.rst</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/main/ReleaseNotes/v6.rst</PackageReleaseNotes>
 
     <PackageLicenseFile>license.md</PackageLicenseFile>
 

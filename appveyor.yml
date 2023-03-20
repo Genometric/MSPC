@@ -39,7 +39,7 @@ deploy: off
 for:
     -
         branches:
-            only: [master]
+            only: [main]
         configuration: Release
         build_script:
             - 'MSBuild.exe /t:Rebuild'

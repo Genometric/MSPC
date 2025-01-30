@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>Genometric.MSPC.Core</RootNamespace>
     <PackageId>Genometric.MSPC.Core</PackageId>
     <Authors>Vahid Jalili</Authors>

@@ -7,7 +7,7 @@
 
 <p align="center">
     <a href="https://www.nuget.org/packages/Genometric.MSPC.Core">
-        <img src="https://buildstats.info/nuget/Genometric.MSPC.Core?vWidth=50&dWidth=50">
+        <img src="https://img.shields.io/nuget/v/Genometric.MSPC.Core?style=flat&color=%2390c04f&link=https%3A%2F%2Fwww.nuget.org%2Fpackages%2FGenometric.MSPC.Core%2F">
     </a>
     <a href="https://sonarcloud.io/project/overview?id=genometric_mspc">
         <img src="https://sonarcloud.io/api/project_badges/measure?project=genometric_mspc&metric=alert_status">

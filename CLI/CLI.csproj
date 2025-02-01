@@ -21,8 +21,6 @@
     <AssemblyName>mspc</AssemblyName>
     <PackageReleaseNotes>https://github.com/Genometric/MSPC/blob/main/ReleaseNotes/v6.rst</PackageReleaseNotes>
     <PackageLicenseFile>license.md</PackageLicenseFile>
-    <Version>6.0.0</Version>
-    <AssemblyVersion>6.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

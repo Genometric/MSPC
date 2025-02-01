@@ -1,4 +1,13 @@
 =====
+v6.1.0
+=====
+
+- Update target .net framework from .NET 6 to .NET 9 and related docs (see PR 221_).
+- Update CI/CD actions to match the latest versions of the actions used (see PR 180_).
+- Improve package versioning using `Directory.Build.props`. 
+- Update all nuget dependencies to their current latest versions. 
+
+=====
 v6.0.1
 =====
 
@@ -18,6 +27,8 @@ v6.0
 - Code clean-up and improve on code smell (see PR 177_).
 
 
+.. _221: https://github.com/Genometric/MSPC/pull/221
+.. _220: https://github.com/Genometric/MSPC/pull/220
 .. _181: https://github.com/Genometric/MSPC/pull/181
 .. _180: https://github.com/Genometric/MSPC/pull/180
 .. _177: https://github.com/Genometric/MSPC/pull/177

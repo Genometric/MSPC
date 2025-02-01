@@ -36,8 +36,8 @@
 
   <ItemGroup>
     <PackageReference Include="Genometric.GeUtilities" Version="6.2.0" />
-    <PackageReference Include="MathNet.Numerics" Version="4.9.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>

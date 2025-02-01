@@ -39,10 +39,10 @@
 
   <ItemGroup>
     <PackageReference Include="Genometric.GeUtilities" Version="6.2.0" />
-    <PackageReference Include="log4net" Version="2.0.10" />
+    <PackageReference Include="log4net" Version="3.0.3" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Spectre.Console" Version="0.45.1-preview.0.19" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Spectre.Console" Version="0.49.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 

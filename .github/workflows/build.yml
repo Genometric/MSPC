@@ -2,9 +2,7 @@ name: Build and Test
 
 on:
   push:
-    # Run on all branches
     branches: ['*']
-  # trigger the workflow on ALL pull request events (i.e., all the different types of pull requests)
   pull_request:
 
 jobs:
@@ -24,6 +22,7 @@ jobs:
             arch: x64
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup .NET ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v4
         with:
@@ -39,10 +38,9 @@ jobs:
         run: dotnet test --no-restore --verbosity normal
 
   deploy:
-    name: Deploy NuGet Package
+    name: Pack and Push NuGet Package
     runs-on: windows-latest
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
@@ -58,9 +56,11 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Pack NuGet Package
-        run: dotnet pack --configuration Release --no-build -o ./nupkgs /p:PackageVersion=1.0.${{ github.run_number }}
+        run: dotnet pack --configuration Release --no-build -o ./nupkgs
+        # version is picked up automatically from Directory.Build.props
 
       - name: Push NuGet Package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: dotnet nuget push ./nupkgs/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./nupkgs/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate

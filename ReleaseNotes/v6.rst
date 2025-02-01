@@ -6,6 +6,7 @@ v6.1.0
 - Update CI/CD actions to match the latest versions of the actions used (see PR 180_).
 - Improve package versioning using `Directory.Build.props`. 
 - Update all nuget dependencies to their current latest versions. 
+- Retire appveyor and update the GitHub actions to use the latest version of the actions (see PR 222_).
 
 =====
 v6.0.1
@@ -27,6 +28,7 @@ v6.0
 - Code clean-up and improve on code smell (see PR 177_).
 
 
+.. _222: https://github.com/Genometric/MSPC/pull/222
 .. _221: https://github.com/Genometric/MSPC/pull/221
 .. _220: https://github.com/Genometric/MSPC/pull/220
 .. _181: https://github.com/Genometric/MSPC/pull/181

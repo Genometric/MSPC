@@ -5,21 +5,46 @@ on: [push, pull_request]
 jobs:
   build:
     name: env-specific
-    runs-on: ${{ matrix.os }} 
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        dotnet-version: ['6.0.x']
-
+        include:
+          - os: ubuntu-latest
+            dotnet-version: '9.0.x'
+            arch: 'x64'
+          - os: windows-latest
+            dotnet-version: '9.0.x'
+            arch: 'x64'
+          - os: macos-latest
+            dotnet-version: '9.0.x'
+            arch: 'x64'
+          - os: macos-latest
+            dotnet-version: '9.0.x'
+            arch: 'arm64'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Install Rosetta 2 (macOS x64 on ARM)
+        if: matrix.os == 'macos-latest' && matrix.arch == 'x64'
+        shell: bash
+        run: |
+          if [ "$(uname -m)" = "arm64" ]; then
+            echo "Installing Rosetta 2 for x64 compatibility..."
+            /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+          else
+            echo "Running on an x64 macOS machine. No need for Rosetta."
+          fi
+
       - name: Setup .NET ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v1.7.2
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
+          architecture: ${{ matrix.arch }}
+
       - name: Install dependencies
         run: dotnet restore
+
       - name: Build
         run: dotnet build --configuration Release --no-restore
+
       - name: Test
         run: dotnet test --no-restore --verbosity normal

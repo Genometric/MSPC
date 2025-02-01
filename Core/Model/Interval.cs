@@ -1,12 +1,10 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 
 namespace Genometric.MSPC.Core.Model
 {
+#pragma warning disable S1210 // "Equals" and the comparison operators should be overridden when implementing "IComparable"
     internal class Interval : IComparable<Interval>
+#pragma warning restore S1210 // "Equals" and the comparison operators should be overridden when implementing "IComparable"
     {
         public int left;
         public int right;

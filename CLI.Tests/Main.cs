@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Model;
+﻿using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.Tests.MockTypes;
@@ -51,26 +47,39 @@ namespace Genometric.MSPC.CLI.Tests
                 $"{postfix}";
         }
 
-        private static void WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture)
+        private static void WriteSampleFiles(
+            out string rep1Filename,
+            out string rep2Filename,
+            out string culture)
         {
             culture = "fa-IR";
             double pValue;
             rep1Filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            using (StreamWriter writter = new StreamWriter(rep1Filename))
+            using (var writter = new StreamWriter(rep1Filename))
             {
                 pValue = 7.12;
-                writter.WriteLine("chr1\t10\t20\tmspc_peak_1\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+                writter.WriteLine(
+                    "chr1\t10\t20\tmspc_peak_1\t" +
+                    pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+
                 pValue = 5.5067;
-                writter.WriteLine("chr1\t25\t35\tmspc_peak_2\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+                writter.WriteLine(
+                    "chr2\t25\t35\tmspc_peak_2\t" +
+                    pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
             }
 
             rep2Filename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
-            using (StreamWriter writter = new StreamWriter(rep2Filename))
+            using (var writter = new StreamWriter(rep2Filename))
             {
                 pValue = 19.9;
-                writter.WriteLine("chr1\t4\t12\tmspc_peak_3\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+                writter.WriteLine(
+                    "chr1\t4\t12\tmspc_peak_3\t" +
+                    pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+
                 pValue = 8.999999;
-                writter.WriteLine("chr1\t30\t45\tmspc_peak_4\t" + pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
+                writter.WriteLine(
+                    "chr2\t30\t45\tmspc_peak_4\t" +
+                    pValue.ToString(CultureInfo.CreateSpecificCulture(culture)));
             }
         }
 
@@ -122,7 +131,7 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.Contains(
                 $"The following files are missing or inaccessible." +
                 $"{Environment.NewLine}- {rep1}" +
-                $"{Environment.NewLine}- {rep2}", 
+                $"{Environment.NewLine}- {rep2}",
                 x.ConsoleOutput);
             Assert.False(x.ExitCode == 0);
         }
@@ -197,7 +206,50 @@ namespace Genometric.MSPC.CLI.Tests
                 x = tmpMspc.Run();
 
             // Assert
-            Assert.Contains("All processes successfully finished", x.ConsoleOutput);
+            Assert.Contains(
+                "All processes successfully finished",
+                x.ConsoleOutput);
+            Assert.True(x.ExitCode == 0);
+        }
+
+        [Fact]
+        public void CorrectlyReportTheNumberOfConsensusPeaksAsASumOfAllPeaksInAllChrsAndStrands()
+        {
+            // Arrange
+            var outputPath = Environment.CurrentDirectory;
+            string rep1Path = Path.Join(outputPath, GetFilename("rep1"));
+            string rep2Path = Path.Join(outputPath, GetFilename("rep2"));
+
+            FileStream stream = File.Create(rep1Path);
+            using (StreamWriter writter = new(stream))
+            {
+                writter.WriteLine("chr1\t10\t20\tmspc_peak_01\t44\t+");
+                writter.WriteLine("chr2\t65\t80\tmspc_peak_02\t55\t-");
+            }
+
+            stream = File.Create(rep2Path);
+            using (StreamWriter writter = new(stream))
+            {
+                writter.WriteLine("chr1\t11\t18\tmspc_peak_03\t55\t+");
+                writter.WriteLine("chr2\t60\t70\tmspc_peak_04\t66\t-");
+                writter.WriteLine("chr2\t90\t99\tmspc_peak_05\t88\t+");
+            }
+
+            var template = $"-i {rep1Path} {rep2Path} -c 1 -r bio -w 1e-4 -s 1e-8 -o {outputPath}";
+            Result x;
+
+            // Act
+            using (var tmpMspc = new TmpMspc())
+                x = tmpMspc.Run(
+                    template: template, 
+                    appendOutputOption: false, 
+                    createSample: false);
+
+            // Assert
+            Assert.Contains(
+                $".::.Consensus Peaks Count.::.{Environment.NewLine}" +
+                $"3{Environment.NewLine}",
+                x.ConsoleOutput);
             Assert.True(x.ExitCode == 0);
         }
 
@@ -210,16 +262,29 @@ namespace Genometric.MSPC.CLI.Tests
             /// 
 
             // Arrange
-            string outputPath = "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) + new Random().Next(100000, 999999).ToString();
-            WriteSampleFiles(out string rep1Filename, out string rep2Filename, out string culture);
+            string outputPath =
+                "session_" +
+                DateTime.Now.ToString(
+                    "yyyyMMdd_HHmmssfff_",
+                    CultureInfo.InvariantCulture) +
+                new Random().Next(100000, 999999).ToString();
+
+            WriteSampleFiles(
+                out string rep1Filename,
+                out string rep2Filename,
+                out string culture);
 
             var cols = new ParserConfig() { Culture = culture };
             var configFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".json";
             using (var w = new StreamWriter(configFilename))
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
-            string args = $"-i {rep1Filename} -i {rep2Filename} -r bio -w 1e-2 -s 1e-4 -p {configFilename} -o {outputPath}";
-
+            string args =
+                $"-i {rep1Filename} " +
+                $"-i {rep2Filename} " +
+                $"-r bio -w 1e-2 -s 1e-4 " +
+                $"-p {configFilename} " +
+                $"-o {outputPath}";
 
             // Act
             string output;
@@ -238,11 +303,28 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Assert
             Assert.Contains("All processes successfully finished", output);
+            string[] columns;
             using (var reader = new StreamReader(Directory.GetFiles(outputPath, "*ConsensusPeaks.bed")[0]))
             {
                 Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand", reader.ReadLine());
-                Assert.Equal("chr1\t4\t20\tMSPC_Peak_2\t25.219\t.", reader.ReadLine());
-                Assert.Equal("chr1\t25\t45\tMSPC_Peak_1\t12.97\t.", reader.ReadLine());
+
+                columns = reader.ReadLine().Split('\t');
+                Assert.True(
+                    columns[0] == "chr1" && 
+                    columns[1] == "4" && 
+                    columns[2] == "20" && 
+                    columns[3].StartsWith("MSPC_Peak_") && 
+                    columns[4] == "25.219" && 
+                    columns[5] == ".");
+
+                columns = reader.ReadLine().Split('\t');
+                Assert.True(
+                    columns[0] == "chr2" &&
+                    columns[1] == "25" &&
+                    columns[2] == "45" &&
+                    columns[3].StartsWith("MSPC_Peak_") &&
+                    columns[4] == "12.97" &&
+                    columns[5] == ".");
                 Assert.Null(reader.ReadLine());
             }
 
@@ -250,14 +332,28 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(dirs.Length == 2);
 
             Assert.True(Directory.GetFiles(dirs[0]).Length == 14);
-            string line;
             using (var reader = new StreamReader(Directory.GetFiles(dirs[0], "*TruePositive.bed")[0]))
             {
                 Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand", reader.ReadLine());
-                line = reader.ReadLine();
-                Assert.True("chr1\t10\t20\tmspc_peak_1\t7.12\t." == line || "chr1\t4\t12\tmspc_peak_3\t19.9\t." == line);
-                line = reader.ReadLine();
-                Assert.True("chr1\t25\t35\tmspc_peak_2\t5.507\t." == line || "chr1\t30\t45\tmspc_peak_4\t9\t." == line);
+
+                columns = reader.ReadLine().Split('\t');
+                Assert.True(
+                    columns[0] == "chr1" &&
+                    (columns[1] == "10" || columns[1] == "4") &&
+                    (columns[2] == "20" || columns[2] == "12") &&
+                    columns[3].ToLower().StartsWith("mspc_peak_") &&
+                    (columns[4] == "7.12" || columns[4] == "19.9") &&
+                    columns[5] == ".");
+
+                columns = reader.ReadLine().Split('\t');
+                Assert.True(
+                    columns[0] == "chr2" &&
+                    (columns[1] == "25" || columns[1] == "30") &&
+                    (columns[2] == "35" || columns[2] == "45") &&
+                    columns[3].ToLower().StartsWith("mspc_peak_") &&
+                    (columns[4] == "5.507" || columns[4] == "9") &&
+                    columns[5] == ".");
+
                 Assert.Null(reader.ReadLine());
             }
 
@@ -266,10 +362,25 @@ namespace Genometric.MSPC.CLI.Tests
             using (var reader = new StreamReader(Directory.GetFiles(dirs[1], "*TruePositive.bed")[0]))
             {
                 Assert.Equal("chr\tstart\tstop\tname\t-1xlog10(p-value)\tstrand", reader.ReadLine());
-                line = reader.ReadLine();
-                Assert.True("chr1\t10\t20\tmspc_peak_1\t7.12\t." == line || "chr1\t4\t12\tmspc_peak_3\t19.9\t." == line);
-                line = reader.ReadLine();
-                Assert.True("chr1\t25\t35\tmspc_peak_2\t5.507\t." == line || "chr1\t30\t45\tmspc_peak_4\t9\t." == line);
+
+                columns = reader.ReadLine().Split('\t');
+                Assert.True(
+                    columns[0] == "chr1" &&
+                    (columns[1] == "10" || columns[1] == "4") &&
+                    (columns[2] == "20" || columns[2] == "12") &&
+                    columns[3].ToLower().StartsWith("mspc_peak_") &&
+                    (columns[4] == "7.12" || columns[4] == "19.9") &&
+                    columns[5] == ".");
+
+                columns = reader.ReadLine().Split('\t');
+                Assert.True(
+                    columns[0] == "chr2" &&
+                    (columns[1] == "25" || columns[1] == "30") &&
+                    (columns[2] == "35" || columns[2] == "45") &&
+                    columns[3].ToLower().StartsWith("mspc_peak_") &&
+                    (columns[4] == "5.507" || columns[4] == "9") &&
+                    columns[5] == ".");
+
                 Assert.Null(reader.ReadLine());
             }
 
@@ -333,7 +444,7 @@ namespace Genometric.MSPC.CLI.Tests
             // app. However, the app is executed, it correctly shows the version of mspc.
 
             // Assert
-            Assert.True(x.ConsoleOutput.Split('.').Length == 3);  
+            Assert.True(x.ConsoleOutput.Split('.').Length == 3);
             Assert.True(x.ExitCode == 0);
         }
 
@@ -418,7 +529,9 @@ namespace Genometric.MSPC.CLI.Tests
                 o.Invoke($"-i {mspc.TmpSamples[0]} -i {mspc.TmpSamples[1]} -r bio -w 1E-2 -s 1E-8".Split(' '));
 
             // Assert
-            Assert.True(!string.IsNullOrEmpty(o.Config.OutputPath) && !string.IsNullOrWhiteSpace(o.Config.OutputPath));
+            Assert.True(
+                !string.IsNullOrEmpty(o.Config.OutputPath) &&
+                !string.IsNullOrWhiteSpace(o.Config.OutputPath));
         }
 
         [Fact]
@@ -436,7 +549,7 @@ namespace Genometric.MSPC.CLI.Tests
             foreach (var dir in dirs)
             {
                 Directory.CreateDirectory(dir);
-                File.Create(dir + Path.DirectorySeparatorChar + "test").Dispose();
+                File.Create(Path.Join(dir, "test")).Dispose();
             }
 
             // Act
@@ -445,9 +558,6 @@ namespace Genometric.MSPC.CLI.Tests
                 var samples = tmpMspc.TmpSamples;
                 o.Invoke($"-i {samples[0]} -i {samples[1]} -r bio -w 1E-2 -s 1E-8 -o {dirs[0]}".Split(' '));
             }
-
-            var test = console.GetStdo();
-
 
             // Assert
             // Gets the directory name from full path.
@@ -511,7 +621,9 @@ namespace Genometric.MSPC.CLI.Tests
                 x = tmpMspc.FailRun();
 
             // Assert
-            Assert.DoesNotContain(x.ConsoleOutput, "All processes successfully finished");
+            Assert.DoesNotContain(
+                x.ConsoleOutput,
+                "All processes successfully finished");
         }
 
         [Fact]
@@ -522,7 +634,11 @@ namespace Genometric.MSPC.CLI.Tests
 
             // Act
             using (var tmpMspc = new TmpMspc())
-                x = tmpMspc.FailRun(template: $"-i {tmpMspc.TmpSamples[0]} -i {tmpMspc.TmpSamples[1]} -o {IllegalPath} -r bio -s 1e-8 -w 1e-4");
+                x = tmpMspc.FailRun(template:
+                    $"-i {tmpMspc.TmpSamples[0]} " +
+                    $"-i {tmpMspc.TmpSamples[1]} " +
+                    $"-o {IllegalPath} " +
+                    $"-r bio -s 1e-8 -w 1e-4");
 
             // Assert
             Assert.DoesNotContain("All processes successfully finished.", x.ConsoleOutput);
@@ -579,7 +695,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void ReadDataAccordingToParserConfig()
         {
             // Arrange
-            ParserConfig cols = new ParserConfig()
+            var cols = new ParserConfig()
             {
                 Chr = 0,
                 Left = 3,
@@ -592,25 +708,30 @@ namespace Genometric.MSPC.CLI.Tests
                 PValueFormat = PValueFormats.minus1_Log10_pValue,
                 DropPeakIfInvalidValue = false,
             };
-            var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "MSPCTests_" + new Random().NextDouble().ToString();
-            using (StreamWriter w = new StreamWriter(path))
+            var path = Path.Join(
+                Environment.CurrentDirectory,
+                "MSPCTests_" + new Random().NextDouble().ToString());
+
+            using (var w = new StreamWriter(path))
                 w.WriteLine(JsonConvert.SerializeObject(cols));
 
             string rep1Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
             string rep2Path = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bed";
 
             FileStream stream = File.Create(rep1Path);
-            using (StreamWriter writter = new StreamWriter(stream))
+            using (var writter = new StreamWriter(stream))
                 writter.WriteLine("chr1\tMSPC_PEAK\t.\t10\t20\t16\t15");
 
             stream = File.Create(rep2Path);
-            using (StreamWriter writter = new StreamWriter(stream))
+            using (var writter = new StreamWriter(stream))
                 writter.WriteLine("chr1\tMSPC_PEAK\t.\t15\t25\tEEE\t20");
 
             // Act
             Result x;
             using (var tmpMspc = new TmpMspc())
-                x = tmpMspc.Run(createSample: false, template: string.Format("-i {0} -i {1} -p {2} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path, path));
+                x = tmpMspc.Run(
+                    createSample: false,
+                    template: $"-i {rep1Path} -i {rep2Path} -p {path} -r bio -w 1e-2 -s 1e-4");
 
             // Assert
             Assert.Contains("1.000E-016", x.ConsoleOutput);
@@ -628,7 +749,11 @@ namespace Genometric.MSPC.CLI.Tests
             new StreamWriter(rep2Path).Close();
 
             // Lock the file so the parser cannot access it.
-            var fs = new FileStream(path: rep1Path, mode: FileMode.OpenOrCreate, access: FileAccess.Write, share: FileShare.None);
+            var fs = new FileStream(
+                path: rep1Path,
+                mode: FileMode.OpenOrCreate,
+                access: FileAccess.Write,
+                share: FileShare.None);
 
             // Act
             string logFile;
@@ -636,7 +761,7 @@ namespace Genometric.MSPC.CLI.Tests
             var console = new MockConsole();
             using (var o = new Orchestrator(console))
             {
-                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(($"-i {rep1Path} -i {rep2Path} -r bio -w 1e-2 -s 1e-4").Split(' '));
                 logFile = o.LogFile;
                 path = o.Config.OutputPath;
             }
@@ -676,7 +801,7 @@ namespace Genometric.MSPC.CLI.Tests
             var console = new MockConsole();
             using (var o = new Orchestrator(console))
             {
-                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(($"-i {rep1Path} -i {rep2Path} -r bio -w 1e-2 -s 1e-4").Split(' '));
                 logFile = o.LogFile;
                 path = o.Config.OutputPath;
             }
@@ -713,7 +838,7 @@ namespace Genometric.MSPC.CLI.Tests
             var console = new MockConsole();
             using (var o = new Orchestrator(console))
             {
-                o.Invoke(string.Format("-i {0} -i {1} -r bio -w 1e-2 -s 1e-4", rep1Path, rep2Path).Split(' '));
+                o.Invoke(($"-i {rep1Path} -i {rep2Path} -r bio -w 1e-2 -s 1e-4").Split(' '));
                 logFile = o.LogFile;
                 path = o.Config.OutputPath;
             }
@@ -877,8 +1002,8 @@ namespace Genometric.MSPC.CLI.Tests
                 return true;
             }
             catch (Exception e) when (e is ArgumentException or
-                                           SecurityException or 
-                                           NotSupportedException or 
+                                           SecurityException or
+                                           NotSupportedException or
                                            PathTooLongException)
             {
                 return false;

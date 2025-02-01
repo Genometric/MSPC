@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Model;
+﻿using Genometric.GeUtilities.Intervals.Model;
 using Genometric.MSPC.CLI.CommandLineInterface;
 using Genometric.MSPC.CLI.Interfaces;
 using Genometric.MSPC.CLI.Tests.MockTypes;
@@ -38,7 +34,12 @@ namespace Genometric.MSPC.CLI.Tests
             return envExitCode != 0 ? envExitCode : exitCode;
         }
 
-        public Result Run(string parserFilename, string rep1=null, string rep2=null, double tauW=1e-4, double tauS=1e-8)
+        public Result Run(
+            string parserFilename,
+            string rep1 = null,
+            string rep2 = null,
+            double tauW = 1e-4,
+            double tauS = 1e-8)
         {
             string SessionPath =
                    "session_" + DateTime.Now.ToString("yyyyMMdd_HHmmssfff_", CultureInfo.InvariantCulture) +
@@ -63,7 +64,7 @@ namespace Genometric.MSPC.CLI.Tests
 
             int exitCode;
             string output;
-            using (StringWriter sw = new StringWriter())
+            using (var sw = new StringWriter())
             {
                 Console.SetOut(sw);
                 Program.Main(args.ToString().Trim().Split(' '));
@@ -83,7 +84,12 @@ namespace Genometric.MSPC.CLI.Tests
             return new Result(exitCode, output);
         }
 
-        public Result Run(bool createSample = true, string template = null, string sessionPath = null, bool appendOutputOption = true, bool stranded = false)
+        public Result Run(
+            bool createSample = true,
+            string template = null,
+            string sessionPath = null,
+            bool appendOutputOption = true,
+            bool stranded = false)
         {
             if (createSample)
             {

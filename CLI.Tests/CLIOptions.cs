@@ -1,22 +1,17 @@
-// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
+using Genometric.MSPC.CLI.CommandLineInterface;
+using Genometric.MSPC.CLI.Logging;
+using Genometric.MSPC.CLI.Tests.MockTypes;
 using Genometric.MSPC.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xunit;
-using System.Linq;
-using Genometric.MSPC.CLI.CommandLineInterface;
-using Genometric.MSPC.CLI.ConsoleAbstraction;
-using Genometric.MSPC.CLI.Logging;
-using Genometric.MSPC.CLI.Tests.MockTypes;
 
 namespace Genometric.MSPC.CLI.Tests
 {
-    public class CliOptions:IDisposable
+    public class CliOptions : IDisposable
     {
         private const string _rep1 = "replicate_1.bed";
         private const string _rep2 = "replicate_2.bed";
@@ -55,11 +50,11 @@ namespace Genometric.MSPC.CLI.Tests
             double tauS = _tauS,
             double? gamma = _gamma,
             float? alpha = _alpha,
-            string? c = _c,
-            string? m = _m,
-            string? r = _r,
+            string c = _c,
+            string m = _m,
+            string r = _r,
             string p = _p,
-            string? d = _d,
+            string d = _d,
             bool? excludeHeader = false)
         {
             var builder = new StringBuilder();
@@ -117,7 +112,8 @@ namespace Genometric.MSPC.CLI.Tests
         [Theory]
         [InlineData(_rep1, _rep2, _rep3, 3)]
         [InlineData(_rep1, _rep2, null, 2)]
-        public void ReadInput(string rep1, string rep2, string rep3, int validInputCount)
+        public void ReadInput(
+            string rep1, string rep2, string rep3, int validInputCount)
         {
             // Arrange & Act
             CliConfig options = default;
@@ -135,7 +131,8 @@ namespace Genometric.MSPC.CLI.Tests
         [Theory]
         [InlineData("rep1.bed rep2.bed rep3.bed", null, 3)]
         [InlineData("rep1.bed rep2.bed rep3.bed", "rep4.bed rep5.bed", 5)]
-        public void ReadInputWhenWildCardCharAreExpanded(string inputArg1, string inputArg2, int inputCount)
+        public void ReadInputWhenWildCardCharAreExpanded(
+            string inputArg1, string inputArg2, int inputCount)
         {
             /// While some shell application such as PowerShell
             /// do not expand wildcard characters (i.e., if *.bed
@@ -153,7 +150,7 @@ namespace Genometric.MSPC.CLI.Tests
                 if (files is null)
                     return inputsA;
                 var insA = files.Split(' ');
-                var tmpDir = Environment.CurrentDirectory; // Path.GetTempPath();
+                var tmpDir = Environment.CurrentDirectory;
                 foreach (var i in insA)
                 {
                     var x = Path.Join(tmpDir, i);
@@ -165,7 +162,9 @@ namespace Genometric.MSPC.CLI.Tests
             }
             var filesA = CreateFiles(inputArg1);
             var filesB = CreateFiles(inputArg2);
-            var argsArray = GenerateShortNameArguments(rep1: null, rep2: null, rep3: null).Split(' ');
+            var argsArray = GenerateShortNameArguments(
+                rep1: null, rep2: null, rep3: null).Split(' ');
+
             var args = $" -i {string.Join(' ', filesA)} ";
             if (inputArg2 is not null)
                 args += $"-i {string.Join(' ', filesB)} ";
@@ -192,7 +191,7 @@ namespace Genometric.MSPC.CLI.Tests
         public void InputSpecifiedUsingWildCardCharacters()
         {
             // Arrange
-            var tmpPath = Environment.CurrentDirectory; // Path.GetTempPath();
+            var tmpPath = Environment.CurrentDirectory;
             var tmpFiles = new List<string>();
             string timeStamp = DateTime.Now.ToOADate().ToString();
             for (int i = 0; i < 9; i++)
@@ -203,12 +202,19 @@ namespace Genometric.MSPC.CLI.Tests
             // Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(rep1: "thisFile.bed", rep2: tmpPath + "mspc_" + timeStamp + "_*.bed", rep3: null));
+            cli.Invoke(GenerateShortNameArguments(
+                rep1: "thisFile.bed",
+                rep2: tmpPath + "mspc_" + timeStamp + "_*.bed",
+                rep3: null));
 
             // Assert
             Assert.True(options.InputFiles.Count == 10);
             for (int i = 0; i < 9; i++)
-                Assert.True(options.InputFiles.Count(s => s.Contains(tmpPath + "mspc_" + timeStamp + "_" + i + ".bed")) == 1);
+                Assert.True(
+                    options.InputFiles.Count(
+                        s => s.Contains(
+                            tmpPath + "mspc_" + timeStamp + "_" + i + ".bed"))
+                    == 1);
 
             // Clean up
             foreach (var file in tmpFiles)
@@ -328,7 +334,7 @@ namespace Genometric.MSPC.CLI.Tests
                 File.Create(file).Close();
                 files.Add(file);
                 args.Append($" -i {file}");
-            }                
+            }
 
             // Act
             CliConfig options = default;
@@ -426,7 +432,18 @@ namespace Genometric.MSPC.CLI.Tests
             // Arrange & Act
             CliConfig options = default;
             var cli = GetCli((x) => { options = x; });
-            cli.Invoke(GenerateShortNameArguments(rep3: null, r: "bio", tauW: 1e-2, tauS: 1e-8, gamma: null, alpha: null, c: null, m: null, p: null, d: null, excludeHeader: null));
+            cli.Invoke(GenerateShortNameArguments(
+                rep3: null,
+                r: "bio",
+                tauW: 1e-2,
+                tauS: 1e-8,
+                gamma: null,
+                alpha: null,
+                c: null,
+                m: null,
+                p: null,
+                d: null,
+                excludeHeader: null));
 
             // Assert
             Assert.True(options.InputFiles.Count == 2);
@@ -448,190 +465,202 @@ namespace Genometric.MSPC.CLI.Tests
             Assert.True(options.Gamma == 1E-8);
             Assert.True(options.Alpha == 0.05F);
             Assert.True(options.C == 1);
-            Assert.True(options.MultipleIntersections == MultipleIntersections.UseLowestPValue);
+            Assert.True(
+                options.MultipleIntersections ==
+                MultipleIntersections.UseLowestPValue);
         }
 
-        [Fact]
-        public void ThrowExceptionForMissingInput()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            CliConfig options = default;
-            var cli = GetCli((x) => { options = x; });
 
-            // Act
-            cli.Invoke("-w 1E-2 -s 1E-8 -r bio");
+        // All the following tests are disabled because
+        // they cannot be easily implemented using the 
+        // current cli API. The API may change, hence 
+        // implementing these is postponed until the 
+        // api is solid.
+#pragma warning disable S125 // Sections of code should not be "commented out"
+        /*
+                [Fact]
+                public void ThrowExceptionForMissingInput()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    CliConfig options = default;
+                    var cli = GetCli((x) => { options = x; });
 
-            // Assert
-            
-            //Assert.Throws<ArgumentException>(() => cli.Invoke(arguments));
-        }
+                    // Act
+                    cli.Invoke("-w 1E-2 -s 1E-8 -r bio");
 
-        [Fact]
-        public void ThrowExceptionForInvalidInputFolder()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-f /none/existing/path -w 1E-4 -s 1E-8 -r bio".Split(' ');
+                    // Assert
 
-            // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));*/
-        }
+                    Assert.Throws<ArgumentException>(() => cli.Invoke(arguments));
+                }
 
-        [Fact]
-        public void ThrowExceptionForMissingTauS()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -r bio".Split(' ');
+                [Fact]
+                public void ThrowExceptionForInvalidInputFolder()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-f /none/existing/path -w 1E-4 -s 1E-8 -r bio".Split(' ');
 
-            // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));*/
-        }
+                    // Assert
+                    Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                }
 
-        [Fact]
-        public void ThrowExceptionForMissingTauW()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -s 1E-8 -r bio".Split(' ');
+                [Fact]
+                public void ThrowExceptionForMissingTauS()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -r bio".Split(' ');
 
-            // Assert
-            Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));*/
-        }
+                    // Assert
+                    Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                }
 
-        [Fact]
-        public void ThrowExceptionForMissingReplicateType()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' ');
+                [Fact]
+                public void ThrowExceptionForMissingTauW()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -s 1E-8 -r bio".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("the following required arguments are missing: -r|--replicate.", exception.Message);*/
-        }
+                    // Assert
+                    Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                }
 
-        [Fact]
-        public void ThrowExceptionForInvalidTauW()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w ABC -s 1E-8 -r bio".Split(' ');
+                [Fact]
+                public void ThrowExceptionForMissingReplicateType()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1E-8".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Invalid value given for the `tauW` argument.", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("the following required arguments are missing: -r|--replicate.", exception.Message);
+                }
 
-        [Fact]
-        public void ThrowExceptionForInvalidTauS()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s ABC -r bio".Split(' ');
+                [Fact]
+                public void ThrowExceptionForInvalidTauW()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w ABC -s 1E-8 -r bio".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Invalid value given for the `tauS` argument.", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Invalid value given for the `tauW` argument.", exception.Message);
+                }
 
-        [Fact]
-        public void ThrowExceptionIfTauSIsNotLowerThanTauW()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-8 -s 1E-4 -r bio".Split(' ');
+                [Fact]
+                public void ThrowExceptionForInvalidTauS()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s ABC -r bio".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Stringency threshold (TauS) should be lower than weak threshold (TauW).", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Invalid value given for the `tauS` argument.", exception.Message);
+                }
 
-        [Fact]
-        public void ThrowExceptionForInvalidReplicateType()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r biooo".Split(' ');
+                [Fact]
+                public void ThrowExceptionIfTauSIsNotLowerThanTauW()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-8 -s 1E-4 -r bio".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Invalid value given for the `replicate` argument.", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Stringency threshold (TauS) should be lower than weak threshold (TauW).", exception.Message);
+                }
 
-        [Fact]
-        public void ThrowExceptionForInvalidGamma()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -g ABC".Split(' ');
+                [Fact]
+                public void ThrowExceptionForInvalidReplicateType()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r biooo".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Invalid value given for the `gamma` argument.", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Invalid value given for the `replicate` argument.", exception.Message);
+                }
 
-        [Fact]
-        public void ThrowExceptionForInvalidAlpha()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -a ABC".Split(' ');
+                [Fact]
+                public void ThrowExceptionForInvalidGamma()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -g ABC".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Invalid value given for the `alpha` argument.", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Invalid value given for the `gamma` argument.", exception.Message);
+                }
 
-        [Fact]
-        public void ThrowExceptionForInvalidC()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c ABC".Split(' ');
+                [Fact]
+                public void ThrowExceptionForInvalidAlpha()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -a ABC".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Invalid value given for the `c` argument.", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Invalid value given for the `alpha` argument.", exception.Message);
+                }
 
-        [Fact]
-        public void ThrowExceptionForInvalidPercentageOfC()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c 1A%".Split(' ');
+                [Fact]
+                public void ThrowExceptionForInvalidC()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c ABC".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Invalid value given for the `c` argument.", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Invalid value given for the `c` argument.", exception.Message);
+                }
 
-        [Fact]
-        public void ThrowExceptionForInvalidMultipleIntersection()
-        {
-            // The new cli does not throw exception.
-            // Arrange & Act
-            /*var options = new CommandLineOptions();
-            string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -m ABC".Split(' ');
+                [Fact]
+                public void ThrowExceptionForInvalidPercentageOfC()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -c 1A%".Split(' ');
 
-            // Assert
-            var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
-            Assert.Equal("Invalid value given for the `multipleIntersections` argument.", exception.Message);*/
-        }
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Invalid value given for the `c` argument.", exception.Message);
+                }
+
+                [Fact]
+                public void ThrowExceptionForInvalidMultipleIntersection()
+                {
+                    // The new cli does not throw exception.
+                    // Arrange & Act
+                    var options = new CommandLineOptions();
+                    string[] arguments = "-i rep1.bed -i rep2.bed -w 1E-2 -s 1e-8 -r bio -m ABC".Split(' ');
+
+                    // Assert
+                    var exception = Assert.Throws<ArgumentException>(() => options.Parse(arguments, out bool _));
+                    Assert.Equal("Invalid value given for the `multipleIntersections` argument.", exception.Message);
+                }
+        */
+#pragma warning restore S125 // Sections of code should not be "commented out"
 
         protected virtual void Dispose(bool disposing)
         {

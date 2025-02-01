@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Text;
 
 namespace Genometric.MSPC.CLI.Logging
@@ -45,7 +41,11 @@ namespace Genometric.MSPC.CLI.Logging
         /// <returns></returns>
         public static int IdxColChars(int rowCount)
         {
-            return ((int)(Math.Floor(Math.Log10(rowCount)) + Math.Floor(Math.Floor(Math.Log10(rowCount)) / 3) + 1) * 2) + 2;
+            return (
+                (int)(
+                    Math.Floor(Math.Log10(rowCount)) +
+                    Math.Floor(Math.Floor(Math.Log10(rowCount)) / 3) +
+                    1) * 2) + 2;
         }
 
         public static string IdxColFormat(int rowNumber, int totalRows)
@@ -53,7 +53,10 @@ namespace Genometric.MSPC.CLI.Logging
             /// NOTE:
             /// Any changes to the following format, should also 
             /// be reflect in the IdxColChars method.
-            return string.Format("{0}/{1}", rowNumber.ToString("N0"), totalRows.ToString("N0"));
+            return string.Format(
+                "{0}/{1}",
+                rowNumber.ToString("N0"),
+                totalRows.ToString("N0"));
         }
 
         private string RenderRow(bool truncate = true, params string[] columns)
@@ -68,12 +71,12 @@ namespace Genometric.MSPC.CLI.Logging
             return row.ToString();
         }
 
-        private string TruncateString(string value, int maxLength)
+        private static string TruncateString(string value, int maxLength)
         {
             if (value.Length <= maxLength)
                 return value.PadLeft(maxLength);
             else
-                return "..." + value.Substring(value.Length - (maxLength - 3));
+                return "..." + value[^(maxLength - 3)..];
         }
     }
 }

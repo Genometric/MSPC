@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Parsers;
+﻿using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Newtonsoft.Json;
 using System;
@@ -12,7 +8,7 @@ using System.Linq;
 
 namespace Genometric.MSPC.CLI
 {
-    public class ParserConfig : BedColumns, IEquatable<ParserConfig>
+    sealed public class ParserConfig : BedColumns, IEquatable<ParserConfig>
     {
         public bool DropPeakIfInvalidValue { set; get; }
         public double DefaultValue { set; get; }
@@ -22,8 +18,12 @@ namespace Genometric.MSPC.CLI
         {
             set
             {
-                if (!CultureInfo.GetCultures(CultureTypes.AllCultures).Any(x => x.Name == value))
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "Invalid culture info.");
+                if (!CultureInfo.GetCultures(CultureTypes.AllCultures)
+                    .Any(x => x.Name == value))
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(value), value, "Invalid culture info.");
+                }
                 _culture = value;
             }
             get
@@ -46,7 +46,7 @@ namespace Genometric.MSPC.CLI
         public static ParserConfig LoadFromJSON(string path)
         {
             string json = null;
-            using (StreamReader r = new StreamReader(path))
+            using (var r = new StreamReader(path))
                 json = r.ReadToEnd();
 
             return JsonConvert.DeserializeObject<ParserConfig>(json);
@@ -66,6 +66,16 @@ namespace Genometric.MSPC.CLI
                 PValueFormat == other.PValueFormat &&
                 DefaultValue == other.DefaultValue &&
                 DropPeakIfInvalidValue == other.DropPeakIfInvalidValue;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as ParserConfig);
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
         }
     }
 }

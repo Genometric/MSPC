@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Model;
+﻿using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.ConsoleAbstraction;
 using Genometric.MSPC.Core.Model;
@@ -49,20 +45,29 @@ namespace Genometric.MSPC.CLI.Logging
             }
         }
 
-        public Logger(IConsoleExtended console, string logFilePath, string repository, string name, string exportPath)
+        public Logger(
+            IConsoleExtended console,
+            string logFilePath,
+            string repository,
+            string name,
+            string exportPath)
         {
             _console = console;
             Setup(logFilePath, repository, name, exportPath);
         }
 
-        private void Setup(string logFilePath, string repository, string name, string exportPath)
+        private void Setup(
+            string logFilePath,
+            string repository,
+            string name,
+            string exportPath)
         {
             _repository = repository;
             _name = name;
             LogManager.CreateRepository(_repository);
             Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository(_repository);
 
-            PatternLayout patternLayout = new PatternLayout();
+            var patternLayout = new PatternLayout();
             patternLayout.ConversionPattern = "%date\t[%thread]\t%-5level\t%message%newline";
             patternLayout.ActivateOptions();
 
@@ -93,7 +98,12 @@ namespace Genometric.MSPC.CLI.Logging
 
         public void LogStartOfASection(string header)
         {
-            string msg = ".::." + header.PadLeft(((_sectionHeaderLenght - header.Length) / 2) + header.Length, '.').PadRight(_sectionHeaderLenght, '.') + ".::.";
+            string msg =
+                ".::." +
+                header.PadLeft(
+                    ((_sectionHeaderLenght - header.Length) / 2) +
+                    header.Length, '.')
+                .PadRight(_sectionHeaderLenght, '.') + ".::.";
             Log(Environment.NewLine + msg, ConsoleColor.Yellow);
         }
 
@@ -112,7 +122,9 @@ namespace Genometric.MSPC.CLI.Logging
             log.Info(_cannotContinue);
         }
 
-        public static void LogExceptionStatic(IConsoleExtended console, string message)
+        public static void LogExceptionStatic(
+            IConsoleExtended console,
+            string message)
         {
             console.SetForegroundColor(ConsoleColor.Red);
             console.WriteLine(string.Format("Error: {0}", message));
@@ -128,7 +140,9 @@ namespace Genometric.MSPC.CLI.Logging
             LogWarningStatic(_console, message);
         }
 
-        public static void LogWarningStatic(IConsoleExtended console, string message)
+        public static void LogWarningStatic(
+            IConsoleExtended console,
+            string message)
         {
             console.SetForegroundColor(ConsoleColor.DarkMagenta);
             console.WriteLine($"Warning: {message}");
@@ -192,18 +206,40 @@ namespace Genometric.MSPC.CLI.Logging
         public void ShutdownLogger()
         {
             LogManager.Flush(5000);
-            log4net.Repository.Hierarchy.Logger l = (log4net.Repository.Hierarchy.Logger)LogManager.GetLogger(_repository, _name).Logger;
+            log4net.Repository.Hierarchy.Logger l =
+                (log4net.Repository.Hierarchy.Logger)
+                LogManager.GetLogger(_repository, _name).Logger;
             l.RemoveAllAppenders();
-            LogManager.GetLogger(_repository, _name).Logger.Repository.Shutdown();
+
+            LogManager.GetLogger(_repository, _name)
+                .Logger.Repository.Shutdown();
         }
 
         public void InitializeLoggingParser(int samplesCount)
         {
-            var columnsWidth = new int[] { IdxColChars(samplesCount), _fileNameMaxLength, 11, 11, 12, 11 };
-            _parserLogTable = new Table(columnsWidth);
-            _parserLogTable.AddHeader(out string renderedHeaders, out string renderedHeaderLines, new string[]
+            var columnsWidth = new int[]
             {
-                "#", "Filename", "Read peaks#", "Min p-value", "Mean p-value", "Max p-value"
+                IdxColChars(samplesCount),
+                _fileNameMaxLength,
+                11,
+                11,
+                12,
+                11
+            };
+
+            _parserLogTable = new Table(columnsWidth);
+
+            _parserLogTable.AddHeader(
+                out string renderedHeaders,
+                out string renderedHeaderLines,
+                new string[]
+            {
+                "#",
+                "Filename",
+                "Read peaks#",
+                "Min p-value",
+                "Mean p-value",
+                "Max p-value"
             });
 
             Log(renderedHeaders);
@@ -240,7 +276,6 @@ namespace Genometric.MSPC.CLI.Logging
             List<Bed<Peak>> samples,
             Dictionary<uint, string> samplesDict,
             Dictionary<uint, Result<Peak>> results,
-            Dictionary<string, Dictionary<char, List<ProcessedPeak<Peak>>>> consensusPeaks,
             List<Attributes> exportedAttributes = null)
         {
             // Create table header
@@ -260,7 +295,11 @@ namespace Genometric.MSPC.CLI.Logging
                 columnsWidth[i] = headerColumns[i].Length > 8 ? headerColumns[i].Length : 8;
             }
             var table = new Table(columnsWidth);
-            table.AddHeader(out string renderedHeaders, out string renderedHeaderLines, headerColumns);
+            table.AddHeader(
+                out string renderedHeaders,
+                out string renderedHeaderLines,
+                headerColumns);
+
             Log(renderedHeaders);
             Log(renderedHeaderLines);
 

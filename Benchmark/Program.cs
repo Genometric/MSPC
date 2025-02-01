@@ -5,7 +5,7 @@ namespace Genometric.MSPC.Benchmark
     static class Program
     {
         public static async Task<int> Main(string[] args)
-        {            
+        {
             var cli = new CommandLineInterface(Handler);
             return await cli.InvokeAsync(args);
         }

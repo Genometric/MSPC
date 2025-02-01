@@ -1,13 +1,8 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.IGenomics;
+﻿using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Functions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using static Genometric.MSPC.Core.Model.Messages;
 
 namespace Genometric.MSPC.Core.Model
@@ -19,7 +14,7 @@ namespace Genometric.MSPC.Core.Model
             this(source, xSquared, supportingPeaks.AsReadOnly())
         { }
 
-        public ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks):
+        public ProcessedPeak(I source, double xSquared, ReadOnlyCollection<SupportingPeak<I>> supportingPeaks) :
             this(source, xSquared, supportingPeaks.Count)
         {
             SupportingPeaks = supportingPeaks;
@@ -35,7 +30,7 @@ namespace Genometric.MSPC.Core.Model
             else
                 RTP = ChiSqrd.ChiSqrdDistRTP(XSquared, 2 + (supportingPeaksCount * 2));
         }
-            
+
 
         /// <summary>
         /// Sets and gets X-squared of test
@@ -46,7 +41,7 @@ namespace Genometric.MSPC.Core.Model
         /// Right tailed probability of x-squared.
         /// </summary>
         public double RTP { private set; get; }
-        
+
         public ReadOnlyCollection<SupportingPeak<I>> SupportingPeaks { private set; get; }
 
         /// <summary>

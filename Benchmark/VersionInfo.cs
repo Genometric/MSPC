@@ -53,7 +53,7 @@ namespace Genometric.MSPC.Benchmark
 
         private bool TryRunVerSpecificConfig(string version)
         {
-            var pattern = new Regex(@"^v[4,5]\.\d+(\.\d+)?$");
+            var pattern = new Regex(@"^v[4,5,6]\.\d+(\.\d+)?$");
             if (pattern.IsMatch(version))
             {
                 _invocation = "dotnet";
@@ -81,9 +81,9 @@ namespace Genometric.MSPC.Benchmark
 
                 _invocation = "mspc.exe";
                 _archivePath = "v.1.1";
-                #pragma warning disable S1075 // URIs should not be hardcoded
+#pragma warning disable S1075 // URIs should not be hardcoded
                 ReleaseUri = new Uri("https://github.com/Genometric/MSPC/raw/cfb7ec899cf3982805277384b0a6a27d8f3aceac/Downloads/v1.1.zip");
-                #pragma warning restore S1075 // URIs should not be hardcoded
+#pragma warning restore S1075 // URIs should not be hardcoded
                 return true;
             }
 
@@ -95,7 +95,7 @@ namespace Genometric.MSPC.Benchmark
             var dir = Path.Combine(Environment.CurrentDirectory, "mspc", Version.ToLower().Replace(".", "_"));
             if (Directory.Exists(dir))
                 return (true, dir);
-                
+
             Directory.CreateDirectory(dir);
             var filename = Path.Join(dir, "mspc.zip");
 
@@ -112,7 +112,7 @@ namespace Genometric.MSPC.Benchmark
             // If this condition is satisfied, it implies that release
             // files are extracted to a directory, which need to be
             // moved to `dir`. 
-            if (_archivePath !=null)
+            if (_archivePath != null)
             {
                 var releaseFilesDir = Path.Join(dir, _archivePath);
                 foreach (var file in Directory.GetFiles(releaseFilesDir))

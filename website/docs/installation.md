@@ -77,12 +77,16 @@ Install MSPC using either of the following commands depending on your runtime:
 
 	$ wget -O mspc.zip "https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip"
 	$ unzip mspc.zip -d mspc
+	$ cd mspc
+	$ chmod 777 mspc
 
   </TabItem>
   <TabItem value="mac">
 
 	$ wget -O mspc.zip "https://github.com/Genometric/MSPC/releases/latest/download/osx-x64.zip"
 	$ unzip mspc.zip -d mspc
+	$ cd mspc
+	$ chmod 777 mspc
 
   </TabItem>
 </Tabs>

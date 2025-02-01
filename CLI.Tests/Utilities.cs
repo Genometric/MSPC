@@ -8,7 +8,7 @@ namespace Genometric.MSPC.CLI.Tests
         private static readonly Random _random = new Random();
 
         public static string GetRandomString(
-            int length, 
+            int length,
             string chars = "abcdefghijklmnopqrstuvwxyz")
         {
             return new string(Enumerable.Repeat(chars, length)

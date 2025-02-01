@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.IGenomics;
+﻿using Genometric.GeUtilities.IGenomics;
 using Genometric.MSPC.Core.Comparers;
 using Genometric.MSPC.Core.Model;
 using System.Collections.Concurrent;
@@ -18,7 +14,7 @@ namespace Genometric.MSPC.Core.Functions
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha, int? degreeOfParallelism)
+        public static void PerformMultipleTestingCorrection(Dictionary<uint, Result<I>> results, float alpha, int? degreeOfParallelism)
         {
             var options = new ParallelOptions();
             if (degreeOfParallelism is not null)
@@ -33,7 +29,7 @@ namespace Genometric.MSPC.Core.Functions
                 });
         }
 
-        private List<ProcessedPeak<I>> UnionChrs(ConcurrentDictionary<string, ConcurrentDictionary<char, Sets<I>>> chrs)
+        private static List<ProcessedPeak<I>> UnionChrs(ConcurrentDictionary<string, ConcurrentDictionary<char, Sets<I>>> chrs)
         {
             IEnumerable<ProcessedPeak<I>> peaks = new List<ProcessedPeak<I>>();
             foreach (var chr in chrs)
@@ -45,7 +41,7 @@ namespace Genometric.MSPC.Core.Functions
         /// <summary>
         /// Benjamini–Hochberg (step-up) procedure.
         /// </summary>
-        public void PerformMultipleTestingCorrection(Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> peaks, float alpha)
+        public static void PerformMultipleTestingCorrection(Dictionary<string, Dictionary<char, List<ProcessedPeak<I>>>> peaks, float alpha)
         {
             IEnumerable<ProcessedPeak<I>> ps = new List<ProcessedPeak<I>>();
             foreach (var chr in peaks)
@@ -54,7 +50,7 @@ namespace Genometric.MSPC.Core.Functions
             PerformMultipleTestingCorrection(ps.ToList(), alpha);
         }
 
-        private void PerformMultipleTestingCorrection(List<ProcessedPeak<I>> peaks, float alpha)
+        private static void PerformMultipleTestingCorrection(List<ProcessedPeak<I>> peaks, float alpha)
         {
             int m = peaks.Count;
 

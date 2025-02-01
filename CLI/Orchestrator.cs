@@ -1,8 +1,4 @@
-﻿// Licensed to the Genometric organization (https://github.com/Genometric) under one or more agreements.
-// The Genometric organization licenses this file to you under the GNU General Public License v3.0 (GPLv3).
-// See the LICENSE file in the project root for more information.
-
-using Genometric.GeUtilities.Intervals.Model;
+﻿using Genometric.GeUtilities.Intervals.Model;
 using Genometric.GeUtilities.Intervals.Parsers;
 using Genometric.GeUtilities.Intervals.Parsers.Model;
 using Genometric.MSPC.CLI.CommandLineInterface;
@@ -86,18 +82,24 @@ namespace Genometric.MSPC.CLI
             if (!Run(samples, options, out Mspc mspc))
                 return;
 
-            var attributes = Enum.GetValues(typeof(Attributes)).Cast<Attributes>().ToList();
-            var dict = samples.ToDictionary(x => x.FileHashKey, x => Path.GetFileNameWithoutExtension(x.FileName));
+            var attributes = Enum.GetValues(
+                typeof(Attributes)).Cast<Attributes>().ToList();
+
+            var dict = samples.ToDictionary(
+                x => x.FileHashKey,
+                x => Path.GetFileNameWithoutExtension(x.FileName));
+
             if (!Export(mspc, dict, attributes, options.ExcludeHeader))
                 return;
 
             _logger.LogStartOfASection("Summary Statistics");
-            _logger.LogSummary(samples, dict, mspc.GetResults(), mspc.GetConsensusPeaks(), attributes);
+            _logger.LogSummary(samples, dict, mspc.GetResults(), attributes);
 
             _logger.LogStartOfASection("Consensus Peaks Count");
             int cPeaksCount = 0;
             foreach (var chr in mspc.GetConsensusPeaks())
-                cPeaksCount += chr.Value.Count;
+                foreach (var strand in chr.Value)
+                    cPeaksCount += strand.Value.Count;
             _logger.Log(cPeaksCount.ToString("N0"));
 
             stopwatch.Stop();
@@ -115,12 +117,20 @@ namespace Genometric.MSPC.CLI
                     loggerTimeStampFormat,
                     CultureInfo.InvariantCulture);
 
-            LogFile = Path.Join(Config.OutputPath, repository + ".txt");
-            _logger = new Logger(_console, LogFile, repository, Guid.NewGuid().ToString(), Config.OutputPath);
+            LogFile = Path.Join(
+                Config.OutputPath,
+                repository + ".txt");
+
+            _logger = new Logger(
+                _console, LogFile, repository,
+                Guid.NewGuid().ToString(), Config.OutputPath);
+
             return true;
         }
 
-        private bool LoadParserConfig(string filename, out ParserConfig config)
+        private bool LoadParserConfig(
+            string filename,
+            out ParserConfig config)
         {
             config = new ParserConfig();
             if (filename is not null)
@@ -141,15 +151,20 @@ namespace Genometric.MSPC.CLI
                 {
                     var msg = "error reading parser configuration JSON object: " + e.Message;
                     throw new JsonException(msg);
-                    /*_logger.LogException(msg);
-                    Environment.ExitCode = 1;
-                    return false;*/
+                    /*
+                     * _logger.LogException(msg)
+                     * Environment.ExitCode = 1
+                     * return false
+                    */
                 }
             }
             return true;
         }
 
-        private bool ParseFiles(IReadOnlyCollection<string> files, ParserConfig parserConfig, out List<Bed<Peak>> samples)
+        private bool ParseFiles(
+            IReadOnlyCollection<string> files,
+            ParserConfig parserConfig,
+            out List<Bed<Peak>> samples)
         {
             try
             {
@@ -191,7 +206,10 @@ namespace Genometric.MSPC.CLI
             }
         }
 
-        private bool Run(List<Bed<Peak>> samples, CliConfig options, out Mspc mspc)
+        private bool Run(
+            List<Bed<Peak>> samples,
+            CliConfig options,
+            out Mspc mspc)
         {
             try
             {
@@ -215,7 +233,11 @@ namespace Genometric.MSPC.CLI
             }
         }
 
-        private bool Export(Mspc mspc, Dictionary<uint, string> samplesDictionary, List<Attributes> attributesToExport, bool excludeHeader)
+        private bool Export(
+            Mspc mspc,
+            Dictionary<uint, string> samplesDictionary,
+            List<Attributes> attributesToExport,
+            bool excludeHeader)
         {
             try
             {
@@ -227,7 +249,9 @@ namespace Genometric.MSPC.CLI
 
                 _exporter.Export(
                     samplesDictionary,
-                    mspc.GetResults(), mspc.GetConsensusPeaks(), options);
+                    mspc.GetResults(),
+                    mspc.GetConsensusPeaks(),
+                    options);
                 return true;
             }
             catch (Exception e)

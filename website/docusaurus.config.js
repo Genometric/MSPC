@@ -42,7 +42,7 @@ module.exports = {
 		},
 		{
 			label: 'Publications',
-			to: 'Publications',  
+			to: 'publications',  
 			position: 'right'
 		}
       ],

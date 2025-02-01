@@ -1,8 +1,13 @@
 ﻿<Project>
   <PropertyGroup>
     <Version>6.1.0.0</Version>
-    <PackageVersion>6.1.0.0</PackageVersion>
-    <AssemblyVersion>6.1.0.0</AssemblyVersion>
-    <FileVersion>6.1.0.0</FileVersion>
+    <PackageVersion>$(Version)</PackageVersion>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <!-- the following lines are to prevent the commit hash from being appended -->
+    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+    <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
+    <Deterministic>false</Deterministic>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
 </Project>

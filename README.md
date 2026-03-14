@@ -9,20 +9,8 @@
     <a href="https://www.nuget.org/packages/Genometric.MSPC.Core">
         <img src="https://img.shields.io/nuget/v/Genometric.MSPC.Core?style=flat&color=%2390c04f&link=https%3A%2F%2Fwww.nuget.org%2Fpackages%2FGenometric.MSPC.Core%2F">
     </a>
-    <a href="https://sonarcloud.io/project/overview?id=genometric_mspc">
-        <img src="https://sonarcloud.io/api/project_badges/measure?project=genometric_mspc&metric=alert_status">
-    </a>
     <a href="https://codecov.io/gh/Genometric/MSPC">
     <img src="https://codecov.io/gh/Genometric/MSPC/branch/master/graph/badge.svg?token=TRSk39hCh3"/>
-    </a>
-    <a href="https://sonarcloud.io/summary/new_code?id=genometric_mspc">
-        <img src="https://sonarcloud.io/api/project_badges/measure?project=genometric_mspc&metric=ncloc">
-    </a>
-    <a href="https://sonarcloud.io/summary/new_code?id=genometric_mspc">
-        <img src="https://sonarcloud.io/api/project_badges/measure?project=genometric_mspc&metric=sqale_rating">
-    </a>
-    <a href="https://sonarcloud.io/summary/new_code?id=genometric_mspc">
-        <img src="https://sonarcloud.io/api/project_badges/measure?project=genometric_mspc&metric=reliability_rating">
     </a>
 </p>
 
